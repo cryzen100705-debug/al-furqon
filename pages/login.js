@@ -273,8 +273,8 @@ export default function Login() {
         );
 
         throw new Error(
-          "Backend tidak mengembalikan JSON. Pastikan Express aktif di http://localhost:5000"
-        );
+  "API tidak mengembalikan JSON. Pastikan endpoint /api/fasilitas sudah berjalan."
+);
       }
 
       const result = await response.json();
@@ -864,11 +864,11 @@ function ServerMaintenanceModal({ message, onRetry, onClose }) {
           </div>
 
           <p className="mt-5 text-center text-xs text-green-100/70">
-            Pastikan backend berjalan di{" "}
-            <span className="font-bold text-yellow-300">
-              http://localhost:5000
-            </span>
-          </p>
+  Pastikan endpoint API sudah berjalan melalui{" "}
+  <span className="font-bold text-yellow-300">
+    /api
+  </span>
+</p>
         </div>
       </motion.div>
     </div>

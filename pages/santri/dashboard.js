@@ -30,7 +30,7 @@ import {
   FaHome,
 } from "react-icons/fa";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+const API_URL = "";
 
 export default function SantriDashboard() {
 const [santri, setSantri] = useState(null);

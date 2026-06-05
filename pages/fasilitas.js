@@ -580,13 +580,13 @@ function MaintenancePage({ onRetry, checking }) {
           </button>
 
           <a
-            href="http://localhost:5000/api/fasilitas"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 px-8 py-4 font-black text-white backdrop-blur transition hover:-translate-y-1 hover:bg-white/20"
-          >
-            Cek API Fasilitas
-          </a>
+  href="/api/fasilitas"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 px-8 py-4 font-black text-white backdrop-blur transition hover:-translate-y-1 hover:bg-white/20"
+>
+  Cek API Fasilitas
+</a>
         </div>
       </div>
     </main>

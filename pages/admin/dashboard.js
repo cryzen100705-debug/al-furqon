@@ -94,8 +94,8 @@ export default function AdminDashboard() {
         console.error("Response bukan JSON:", text);
 
         throw new Error(
-          "Backend tidak mengembalikan JSON. Pastikan Express berjalan di http://localhost:5000"
-        );
+  "API tidak mengembalikan JSON. Pastikan endpoint /api/fasilitas sudah berjalan."
+);
       }
 
       const result = await response.json();

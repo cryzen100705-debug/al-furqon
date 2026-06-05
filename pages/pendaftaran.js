@@ -109,8 +109,8 @@ export default function PendaftaranWizard() {
       console.error("Response bukan JSON:", text);
 
       throw new Error(
-        "Backend tidak mengembalikan JSON. Cek apakah backend Express aktif di http://localhost:5000"
-      );
+  "API tidak mengembalikan JSON. Pastikan endpoint /api/fasilitas sudah berjalan."
+);
     }
 
     const result = await response.json();

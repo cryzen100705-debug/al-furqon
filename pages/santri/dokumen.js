@@ -149,7 +149,7 @@ export default function DokumenSantri() {
     strong: isDark ? "text-white" : "text-gray-900",
   };
 
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+  const API_URL = "";
 
   useEffect(() => {
     const getData = async () => {

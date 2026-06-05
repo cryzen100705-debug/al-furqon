@@ -37,7 +37,7 @@ const DEFAULT_SETTINGS = {
 };
 
 export default function PengaturanSantri() {
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+  const API_URL = "";
 
   const [santri, setSantri] = useState(null);
   const [user, setUser] = useState(null);
