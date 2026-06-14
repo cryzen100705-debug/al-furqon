@@ -105,8 +105,8 @@ export default function VerifikasiSantri() {
         );
 
         throw new Error(
-  "API tidak mengembalikan JSON. Pastikan endpoint /api/fasilitas sudah berjalan."
-);
+          "Backend tidak mengembalikan JSON. Pastikan Express aktif di http://localhost:5000"
+        );
       }
 
       const result = await response.json();

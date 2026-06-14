@@ -1350,4 +1350,223 @@ router.put("/profile/:user_id/foto", upload.single("foto"),async (req, res) => {
   }
 );
 
+router.get("/nilai/:userId", async (req, res) => {
+  
+  try {
+    const { userId } = req.params;
+    const headerUserId = req.headers["x-user-id"];
+    const { semester, tahun_ajaran } = req.query;
+
+    if (!headerUserId) {
+      return res.status(401).json({
+        success: false,
+        message: "Akses ditolak. User tidak terdeteksi.",
+      });
+    }
+
+    if (String(userId) !== String(headerUserId)) {
+      return res.status(403).json({
+        success: false,
+        message: "Tidak boleh mengakses nilai santri lain.",
+      });
+    }
+
+    const { data: user, error: userError } = await supabase
+      .from("users")
+      .select("id, nama, email, role")
+      .eq("id", userId)
+      .single();
+
+    if (userError || !user) {
+      return res.status(404).json({
+        success: false,
+        message: "User tidak ditemukan.",
+        error: userError?.message,
+      });
+    }
+
+    if (user.role !== "santri") {
+      return res.status(403).json({
+        success: false,
+        message: "Hanya santri yang dapat melihat halaman nilai.",
+      });
+    }
+
+    const { data: santri, error: santriError } = await supabase
+      .from("santri")
+      .select("*")
+      .eq("user_id", userId)
+      .maybeSingle();
+
+    if (santriError || !santri) {
+      return res.status(404).json({
+        success: false,
+        message:
+          "Data santri tidak ditemukan. Pastikan akun user sudah terhubung dengan tabel santri.",
+        error: santriError?.message,
+      });
+    }
+
+    let nilaiQuery = supabase
+  .from("nilai")
+  .select(
+    `
+    id,
+    guru_id,
+    santri_id,
+    kelas_id,
+    mapel,
+    jenis_nilai,
+    nilai,
+    semester,
+    tahun_ajaran,
+    keterangan,
+    created_at,
+    updated_at
+  `
+  )
+  .eq("santri_id", santri.id);
+
+if (semester) {
+  nilaiQuery = nilaiQuery.eq("semester", semester);
+}
+
+if (tahun_ajaran) {
+  nilaiQuery = nilaiQuery.eq("tahun_ajaran", tahun_ajaran);
+}
+
+const { data: nilaiRaw, error: nilaiError } = await nilaiQuery.order(
+  "created_at",
+  { ascending: false }
+);
+
+    if (nilaiError) {
+      return res.status(500).json({
+        success: false,
+        message: "Gagal mengambil data nilai santri.",
+        error: nilaiError.message,
+      });
+    }
+
+    const guruIds = [
+      ...new Set((nilaiRaw || []).map((item) => item.guru_id).filter(Boolean)),
+    ];
+
+    const kelasIds = [
+      ...new Set((nilaiRaw || []).map((item) => item.kelas_id).filter(Boolean)),
+    ];
+
+    let guruRaw = [];
+    let kelasRaw = [];
+
+    if (guruIds.length > 0) {
+      const { data, error } = await supabase
+        .from("guru")
+        .select("id, nama, mapel")
+        .in("id", guruIds);
+
+      if (error) {
+        console.warn("SANTRI NILAI GURU ERROR:", error.message);
+      } else {
+        guruRaw = data || [];
+      }
+    }
+
+    if (kelasIds.length > 0) {
+      const { data, error } = await supabase
+        .from("kelas")
+        .select(
+          `
+          id,
+          nama_kelas,
+          jenjang,
+          tingkat,
+          jurusan,
+          semester,
+          tahun_ajaran
+        `
+        )
+        .in("id", kelasIds);
+
+      if (error) {
+        console.warn("SANTRI NILAI KELAS ERROR:", error.message);
+      } else {
+        kelasRaw = data || [];
+      }
+    }
+
+    const guruMap = new Map();
+    const kelasMap = new Map();
+
+    for (const guruItem of guruRaw || []) {
+      guruMap.set(guruItem.id, guruItem);
+    }
+
+    for (const kelasItem of kelasRaw || []) {
+      kelasMap.set(kelasItem.id, kelasItem);
+    }
+
+    const nilai = (nilaiRaw || []).map((item) => ({
+      ...item,
+      guru: guruMap.get(item.guru_id) || {
+        id: item.guru_id,
+        nama: "Guru belum tersedia",
+        mapel: item.mapel || "-",
+      },
+      kelas: kelasMap.get(item.kelas_id) || {
+        id: item.kelas_id,
+        nama_kelas: santri.kelas || "Kelas belum tersedia",
+        jenjang: santri.jenjang || "-",
+      },
+    }));
+
+    const totalNilai = nilai.length;
+
+    const rataRata =
+      totalNilai > 0
+        ? Math.round(
+            nilai.reduce((sum, item) => sum + Number(item.nilai || 0), 0) /
+              totalNilai
+          )
+        : 0;
+
+    const nilaiTertinggi =
+      totalNilai > 0
+        ? Math.max(...nilai.map((item) => Number(item.nilai || 0)))
+        : 0;
+
+    const mapelSet = new Set();
+
+    for (const item of nilai) {
+      if (item.mapel) {
+        mapelSet.add(item.mapel);
+      }
+    }
+
+    return res.json({
+      success: true,
+      message: "Data nilai santri berhasil diambil.",
+      data: {
+        user,
+        santri,
+        nilai,
+        ringkasan: {
+          totalNilai,
+          rataRata,
+          nilaiTertinggi,
+          totalMapel: mapelSet.size,
+        },
+      },
+    });
+  } catch (error) {
+    console.error("SANTRI NILAI ERROR:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Terjadi kesalahan saat mengambil nilai santri.",
+      error: error.message,
+    });
+  }
+});
+
 export default router;

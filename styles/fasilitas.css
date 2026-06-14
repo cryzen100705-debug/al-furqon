@@ -1,0 +1,357 @@
+:root {
+  --fac-vh: 100svh;
+  --fac-navbar-h: 88px;
+}
+
+html,
+body,
+#__next {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  height: auto !important;
+  min-height: 100% !important;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #041b15;
+  overscroll-behavior-y: auto !important;
+}
+
+img,
+video,
+canvas,
+svg {
+  max-width: 100%;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+::selection {
+  background: #facc15;
+  color: #064e3b;
+}
+
+.fac-page {
+  --fac-safe-top: calc(var(--fac-navbar-h) + clamp(10px, 1.8svh, 22px));
+  --fac-safe-bottom: clamp(22px, 4svh, 44px);
+  --fac-content-min: calc(
+    var(--fac-vh) - var(--fac-safe-top) - var(--fac-safe-bottom)
+  );
+}
+
+.fac-section {
+  min-height: var(--fac-vh);
+  height: auto;
+  max-height: none;
+  scroll-margin-top: 0;
+}
+
+.fac-container {
+  width: min(92vw, 1240px) !important;
+  max-width: min(92vw, 1240px) !important;
+  min-height: var(--fac-content-min);
+  height: auto;
+  max-height: none;
+  padding-top: var(--fac-safe-top);
+  padding-bottom: var(--fac-safe-bottom);
+  box-sizing: border-box;
+  overflow: visible;
+}
+
+.fac-hero-title {
+  font-size: clamp(1.75rem, min(3.7vw, 5.4svh), 3.9rem);
+}
+
+.fac-section-title {
+  font-size: clamp(1.35rem, min(2.55vw, 4svh), 2.45rem);
+}
+
+.fac-card-title {
+  font-size: clamp(1.5rem, min(3.25vw, 4.6svh), 2.8rem);
+}
+
+.fac-hero-preview {
+  height: clamp(210px, 31svh, 320px);
+}
+
+.fac-spotlight-image {
+  height: clamp(230px, 35svh, 360px);
+}
+
+.fac-explorer-image {
+  height: clamp(225px, 34svh, 350px);
+}
+
+.fac-cinematic-image {
+  height: clamp(250px, 42svh, 410px);
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.fac-section button,
+.fac-section a {
+  will-change: transform;
+}
+
+.fac-section img {
+  transform: translateZ(0);
+}
+
+@media (min-width: 1280px) and (max-height: 900px) {
+  .fac-page {
+    --fac-safe-top: calc(var(--fac-navbar-h) + 8px);
+    --fac-safe-bottom: clamp(14px, 2.4svh, 28px);
+  }
+
+  .fac-container {
+    width: min(91vw, 1180px) !important;
+    max-width: min(91vw, 1180px) !important;
+  }
+
+  .fac-hero-title {
+    font-size: clamp(1.55rem, min(3.2vw, 4.8svh), 3.35rem);
+  }
+
+  .fac-section-title {
+    font-size: clamp(1.2rem, min(2.15vw, 3.35svh), 2.1rem);
+  }
+
+  .fac-card-title {
+    font-size: clamp(1.3rem, min(2.7vw, 3.9svh), 2.35rem);
+  }
+
+  .fac-hero-preview {
+    height: clamp(185px, 27svh, 285px);
+  }
+
+  .fac-spotlight-image,
+  .fac-explorer-image {
+    height: clamp(205px, 31svh, 310px);
+  }
+
+  .fac-cinematic-image {
+    height: clamp(230px, 38svh, 370px);
+  }
+}
+
+@media (min-width: 1024px) and (max-height: 760px) {
+  .fac-page {
+    --fac-safe-top: calc(var(--fac-navbar-h) + 6px);
+    --fac-safe-bottom: 16px;
+  }
+
+  .fac-hero-title {
+    font-size: clamp(1.38rem, min(2.75vw, 4.1svh), 2.75rem);
+  }
+
+  .fac-section-title {
+    font-size: clamp(1.08rem, min(1.95vw, 3svh), 1.85rem);
+  }
+
+  .fac-card-title {
+    font-size: clamp(1.2rem, min(2.45vw, 3.45svh), 2.1rem);
+  }
+
+  .fac-hero-preview {
+    height: clamp(170px, 24svh, 250px);
+  }
+
+  .fac-spotlight-image,
+  .fac-explorer-image {
+    height: clamp(180px, 28svh, 280px);
+  }
+
+  .fac-cinematic-image {
+    height: clamp(210px, 34svh, 330px);
+  }
+}
+
+@media (max-width: 1023px) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .fac-page {
+    --fac-safe-top: calc(var(--fac-navbar-h) + clamp(14px, 2.4svh, 22px));
+    --fac-safe-bottom: clamp(28px, 5svh, 46px);
+  }
+
+  .fac-section {
+    min-height: var(--fac-vh);
+    height: auto;
+    max-height: none;
+  }
+
+  .fac-container {
+    width: min(92vw, 760px) !important;
+    max-width: min(92vw, 760px) !important;
+    min-height: auto;
+    overflow: visible;
+  }
+
+  .fac-section:first-of-type .fac-container {
+    min-height: var(--fac-content-min);
+  }
+
+  .fac-hero-title {
+    font-size: clamp(1.6rem, 7.4vw, 3rem);
+  }
+
+  .fac-section-title {
+    font-size: clamp(1.25rem, 5.8vw, 2.2rem);
+  }
+
+  .fac-card-title {
+    font-size: clamp(1.45rem, 6.5vw, 2.65rem);
+  }
+
+  .fac-hero-preview {
+    height: clamp(205px, 30svh, 300px);
+  }
+
+  .fac-spotlight-image,
+  .fac-explorer-image {
+    height: clamp(215px, 32svh, 315px);
+  }
+
+  .fac-cinematic-image {
+    height: clamp(235px, 38svh, 340px);
+  }
+}
+
+@media (max-width: 640px) {
+  .fac-page {
+    --fac-safe-top: calc(var(--fac-navbar-h) + 14px);
+    --fac-safe-bottom: 32px;
+  }
+
+  .fac-container {
+    width: 92vw !important;
+    max-width: 92vw !important;
+  }
+
+  .fac-hero-title {
+    font-size: clamp(1.38rem, 8vw, 2.28rem);
+    line-height: 0.96;
+  }
+
+  .fac-section-title {
+    font-size: clamp(1.1rem, 6vw, 1.78rem);
+    line-height: 1.05;
+  }
+
+  .fac-card-title {
+    font-size: clamp(1.3rem, 6.8vw, 2.15rem);
+    line-height: 1.02;
+  }
+
+  .fac-hero-preview {
+    height: clamp(185px, 27svh, 260px);
+  }
+
+  .fac-spotlight-image,
+  .fac-explorer-image {
+    height: clamp(195px, 29svh, 275px);
+  }
+
+  .fac-cinematic-image {
+    height: clamp(225px, 35svh, 310px);
+  }
+
+  .fac-section .grid {
+    gap: 1rem;
+  }
+
+  .fac-section p {
+    line-height: 1.65;
+  }
+}
+
+@media (max-width: 430px) {
+  .fac-page {
+    --fac-safe-top: calc(var(--fac-navbar-h) + 12px);
+    --fac-safe-bottom: 28px;
+  }
+
+  .fac-container {
+    width: 91vw !important;
+    max-width: 91vw !important;
+  }
+
+  .fac-hero-title {
+    font-size: clamp(1.22rem, 7.4vw, 1.92rem);
+  }
+
+  .fac-section-title {
+    font-size: clamp(1rem, 5.5vw, 1.5rem);
+  }
+
+  .fac-card-title {
+    font-size: clamp(1.15rem, 6.2vw, 1.9rem);
+  }
+
+  .fac-hero-preview {
+    height: 185px;
+  }
+
+  .fac-spotlight-image,
+  .fac-explorer-image {
+    height: 195px;
+  }
+
+  .fac-cinematic-image {
+    height: 230px;
+  }
+}
+
+@media (max-width: 360px) {
+  .fac-container {
+    width: 92vw !important;
+    max-width: 92vw !important;
+  }
+
+  .fac-hero-title {
+    font-size: 1.28rem;
+  }
+
+  .fac-section-title {
+    font-size: 1.12rem;
+  }
+
+  .fac-card-title {
+    font-size: 1.28rem;
+  }
+
+  .fac-spotlight-image,
+  .fac-explorer-image,
+  .fac-cinematic-image {
+    height: 190px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
+  }
+}

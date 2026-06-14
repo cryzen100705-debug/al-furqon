@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import { FaLayerGroup } from "react-icons/fa";
 
 import {
   FaBars,
@@ -20,6 +21,7 @@ import {
   FaUserShield,
   FaGem,
   FaChartBar,
+  FaChalkboardTeacher,
 } from "react-icons/fa";
 
 export default function SidebarAdmin({
@@ -46,6 +48,18 @@ export default function SidebarAdmin({
         href: "/admin/santri",
         icon: <FaUsers />,
         desc: "Data santri aktif",
+      },
+      {
+  name: "Kelas",
+  href: "/admin/kelas",
+  icon: <FaLayerGroup />,
+  desc: "Data kelas & jadwal",
+},
+      {
+        name: "Data Guru",
+        href: "/admin/guru",
+        icon: <FaChalkboardTeacher />,
+        desc: "Kelola akun guru",
       },
       {
         name: "Pembayaran",
@@ -91,16 +105,16 @@ export default function SidebarAdmin({
       {/* MOBILE TOPBAR */}
       <header className="fixed left-0 right-0 top-0 z-50 flex h-16 items-center justify-between border-b border-white/10 bg-[#062417]/95 px-4 text-white shadow-xl backdrop-blur-2xl md:hidden">
         <div className="flex min-w-0 items-center gap-3">
-<div className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white p-1 shadow-lg">
-  <img
-    src="/logo.png"
-    alt="Logo"
-    onError={(e) => {
-      e.currentTarget.style.display = "none";
-    }}
-    className="h-full w-full rounded-xl object-contain"
-  />
-</div>
+          <div className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white p-1 shadow-lg">
+            <img
+              src="/logo.png"
+              alt="Logo"
+              onError={(e) => {
+                e.currentTarget.style.display = "none";
+              }}
+              className="h-full w-full rounded-xl object-contain"
+            />
+          </div>
 
           <div className="min-w-0">
             <h1 className="truncate text-sm font-black leading-tight">
@@ -137,10 +151,8 @@ export default function SidebarAdmin({
           fixed left-0 top-0 z-50 flex h-screen flex-col overflow-hidden
           border-r border-white/10 bg-[#031A13] text-white shadow-2xl shadow-black/30
           transition-all duration-300
-
           ${collapsed ? "md:w-[92px]" : "md:w-[270px]"}
           w-[285px]
-
           ${open ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
         `}
       >
@@ -156,55 +168,56 @@ export default function SidebarAdmin({
           <div className="absolute left-1/2 top-32 h-20 w-20 -translate-x-1/2 rounded-full border border-white/10" />
         </div>
 
-        {/* ================= BRAND / TOP SIDEBAR ================= */}
-<div
-  className={`
-    relative z-10 flex h-[74px] shrink-0 items-center border-b border-white/10
-    ${collapsed ? "justify-center px-3" : "justify-between px-3.5"}
-  `}
->
-  {/* LOGO + TEXT HANYA MUNCUL SAAT SIDEBAR TERBUKA */}
-  {!collapsed && (
-    <div className="flex min-w-0 flex-1 items-center gap-3 overflow-hidden">
-      <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-[18px] bg-white p-1 shadow-xl shadow-black/20">
-        <img
-          src="/logo.png"
-          alt="Logo"
-          className="h-full w-full rounded-2xl object-contain"
-        />
-      </div>
+        {/* BRAND */}
+        <div
+          className={`
+            relative z-10 flex h-[74px] shrink-0 items-center border-b border-white/10
+            ${collapsed ? "justify-center px-3" : "justify-between px-3.5"}
+          `}
+        >
+          {!collapsed && (
+            <div className="flex min-w-0 flex-1 items-center gap-3 overflow-hidden">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-[18px] bg-white p-1 shadow-xl shadow-black/20">
+                <img
+                  src="/logo.png"
+                  alt="Logo"
+                  onError={(e) => {
+                    e.currentTarget.style.display = "none";
+                  }}
+                  className="h-full w-full rounded-2xl object-contain"
+                />
+              </div>
 
-      <div className="min-w-0 flex-1 overflow-hidden">
-        <h1 className="truncate text-[15px] font-black leading-tight text-white">
-          Admin Panel
-        </h1>
+              <div className="min-w-0 flex-1 overflow-hidden">
+                <h1 className="truncate text-[15px] font-black leading-tight text-white">
+                  Admin Panel
+                </h1>
 
-        <p className="truncate text-[10.5px] font-semibold text-green-200">
-          Pondok Pesantren Al-Furqon
-        </p>
-      </div>
-    </div>
-  )}
+                <p className="truncate text-[10.5px] font-semibold text-green-200">
+                  Pondok Pesantren Al-Furqon
+                </p>
+              </div>
+            </div>
+          )}
 
-  {/* TOMBOL HAMBURGER */}
-  <button
-    type="button"
-    onClick={() => setCollapsed(!collapsed)}
-    className={`
-      flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl
-      border border-white/10 shadow-lg transition-all duration-300
+          <button
+            type="button"
+            onClick={() => setCollapsed(!collapsed)}
+            className={`
+              flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl
+              border border-white/10 shadow-lg transition-all duration-300
+              ${
+                collapsed
+                  ? "bg-yellow-400 text-green-950 hover:bg-yellow-300"
+                  : "bg-white/10 text-white hover:bg-white/20"
+              }
+            `}
+            title={collapsed ? "Buka sidebar" : "Tutup sidebar"}
+          >
+            <FaBars />
+          </button>
+        </div>
 
-      ${
-        collapsed
-          ? "bg-yellow-400 text-green-950 hover:bg-yellow-300"
-          : "bg-white/10 text-white hover:bg-white/20"
-      }
-    `}
-    title={collapsed ? "Buka sidebar" : "Tutup sidebar"}
-  >
-    <FaBars />
-  </button>
-</div>
         {/* PROFILE MINI */}
         <div
           className={`

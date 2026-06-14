@@ -1,23 +1,22 @@
 "use client";
 
 import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
 import Link from "next/link";
 
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+
 import {
-  motion,
   AnimatePresence,
-  useScroll,
-  useSpring,
-  useTransform,
+  motion,
   useMotionValue,
   useReducedMotion,
+  useSpring,
 } from "framer-motion";
-
-import { useEffect, useState } from "react";
 
 import {
   FaArrowRight,
+  FaArrowUp,
+  FaArrowDown,
   FaRedo,
   FaMosque,
   FaQuran,
@@ -32,22 +31,14 @@ import {
   FaStar,
   FaCheckCircle,
   FaWrench,
-  FaKaaba,
   FaPlay,
-  FaChevronDown,
-  FaCompass,
+  FaWhatsapp,
   FaQuoteLeft,
-  FaSparkles,
 } from "react-icons/fa";
 
+const MotionLink = motion(Link);
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "";
-/* =========================================================
-   WHATSAPP ADMIN
-   Ganti nomor di bawah dengan nomor admin pesantren.
-   Format wajib: kode negara + nomor, tanpa 0, tanpa +, tanpa spasi.
-   Contoh:
-   0812-3456-7890 menjadi 6281234567890
-========================================================= */
 
 const ADMIN_WHATSAPP_NUMBER = "6283899601027";
 
@@ -58,6 +49,174 @@ const WHATSAPP_ADMIN_URL = `https://wa.me/${ADMIN_WHATSAPP_NUMBER}?text=${encode
   ADMIN_WHATSAPP_MESSAGE
 )}`;
 
+const EASE_PREMIUM = [0.22, 1, 0.36, 1];
+
+const CLIP_VISIBLE = "inset(0% 0% 0% 0%)";
+const CLIP_LEFT = "inset(0% 100% 0% 0%)";
+const CLIP_RIGHT = "inset(0% 0% 0% 100%)";
+
+function clipIn(direction) {
+  return direction > 0 ? CLIP_RIGHT : CLIP_LEFT;
+}
+
+function clipOut(direction) {
+  return direction > 0 ? CLIP_LEFT : CLIP_RIGHT;
+}
+
+const PRELOAD_ASSETS = ["/hero-santri.jpg", "/logo.png", "/pattern.png"];
+
+const DEFAULT_HERO = {
+  arabic: "وَقُلْ رَبِّ زِدْنِي عِلْمًا",
+  badge: "Islamic Boarding School",
+  title: "Pondok Pesantren",
+  highlight: "Al-Furqon",
+  desc: "Tempat santri tumbuh melalui ilmu, ibadah, adab, kemandirian, dan pembinaan yang terarah.",
+  image: "/hero-santri.jpg",
+};
+
+const DEFAULT_STATS = [
+  { value: "100+", label: "Santri" },
+  { value: "3+", label: "Program" },
+  { value: "24 Jam", label: "Pembinaan" },
+];
+
+const DEFAULT_VALUES = [
+  {
+    title: "Ibadah",
+    iconKey: "quran",
+    desc: "Membiasakan santri dekat dengan Al-Qur'an, shalat berjamaah, dan kegiatan keislaman.",
+  },
+  {
+    title: "Adab",
+    iconKey: "heart",
+    desc: "Membentuk karakter santri agar sopan, bertanggung jawab, dan menghargai sesama.",
+  },
+  {
+    title: "Ilmu",
+    iconKey: "book",
+    desc: "Menggabungkan pendidikan agama dan pendidikan formal untuk masa depan santri.",
+  },
+  {
+    title: "Mandiri",
+    iconKey: "home",
+    desc: "Kehidupan asrama melatih disiplin, kebersihan, kemandirian, dan tanggung jawab.",
+  },
+];
+
+const DEFAULT_STORY = [
+  {
+    number: "01",
+    label: "Datang",
+    title: "Santri datang membawa harapan.",
+    desc: "Di Al-Furqon, harapan itu dibina melalui ilmu, ibadah, adab, dan pembiasaan hidup yang terarah.",
+    image: "/hero-santri.jpg",
+  },
+  {
+    number: "02",
+    label: "Belajar",
+    title: "Ilmu menjadi bekal perjalanan.",
+    desc: "Santri belajar agama, akademik, kedisiplinan, dan kehidupan sosial dalam lingkungan pesantren.",
+    image: "/kegiatan-1.jpg",
+  },
+  {
+    number: "03",
+    label: "Dibina",
+    title: "Pembina mendampingi setiap proses.",
+    desc: "Santri tidak hanya belajar di kelas, tetapi dibimbing dalam ibadah, adab, dan rutinitas harian.",
+    image: "/kegiatan-2.jpg",
+  },
+  {
+    number: "04",
+    label: "Tumbuh",
+    title: "Santri tumbuh lebih siap.",
+    desc: "Dengan lingkungan yang baik, santri dibentuk agar lebih percaya diri, disiplin, dan berakhlak.",
+    image: "/masjid.jpg",
+  },
+];
+
+const DEFAULT_PROGRAMS = [
+  {
+    title: "Tahfidz Qur'an",
+    tag: "Keislaman",
+    desc: "Program pembiasaan membaca, menghafal, dan mencintai Al-Qur'an.",
+    image: "/kegiatan-1.jpg",
+    iconKey: "quran",
+  },
+  {
+    title: "Pendidikan Formal",
+    tag: "SMP / SMK",
+    desc: "Pendidikan formal yang mendukung akademik dan persiapan masa depan santri.",
+    image: "/kegiatan-2.jpg",
+    iconKey: "book",
+  },
+  {
+    title: "Asrama Santri",
+    tag: "Kemandirian",
+    desc: "Lingkungan asrama yang membentuk disiplin, tanggung jawab, dan kebersamaan.",
+    image: "/hero-santri.jpg",
+    iconKey: "camp",
+  },
+];
+
+const DEFAULT_PEMBINA = [
+  {
+    name: "Pembina Santri",
+    role: "Pembinaan Harian",
+    badge: "Pembina",
+    focus:
+      "Mendampingi adab, disiplin, ibadah, kebersihan, dan kehidupan santri sehari-hari.",
+    image: "/masjid.jpg",
+    iconKey: "teacher",
+  },
+];
+
+const PARTICLES = Array.from({ length: 12 }, (_, index) => ({
+  id: index,
+  left: `${(index * 17 + 11) % 100}%`,
+  top: `${(index * 29 + 19) % 100}%`,
+  size: 3 + (index % 3),
+  duration: 8 + (index % 6),
+  delay: index * 0.35,
+}));
+
+const screenVariants = {
+  enter: (direction) => ({
+    opacity: 0,
+    y: direction > 0 ? "4%" : "-4%",
+    scale: 0.992,
+    filter: "blur(7px)",
+  }),
+  center: {
+    opacity: 1,
+    y: "0%",
+    scale: 1,
+    filter: "blur(0px)",
+  },
+  exit: (direction) => ({
+    opacity: 0,
+    y: direction > 0 ? "-4%" : "4%",
+    scale: 0.992,
+    filter: "blur(7px)",
+  }),
+};
+
+const stepVariants = {
+  enter: (direction) => ({
+    opacity: 0,
+    y: direction > 0 ? 34 : -34,
+    filter: "blur(7px)",
+  }),
+  center: {
+    opacity: 1,
+    y: 0,
+    filter: "blur(0px)",
+  },
+  exit: (direction) => ({
+    opacity: 0,
+    y: direction > 0 ? -34 : 34,
+    filter: "blur(7px)",
+  }),
+};
 
 function getIcon(key) {
   const icons = {
@@ -77,598 +236,110 @@ function getIcon(key) {
   return icons[key] || <FaStar />;
 }
 
-function SafeImage({ src, alt, className = "", fallback = "/hero-santri.jpg" }) {
-  const [currentSrc, setCurrentSrc] = useState(src || fallback);
+const IMAGE_FALLBACK = "/hero-santri.jpg";
+
+const IMAGE_ALIASES = {
+  "/kegiatan-1.jpg": "/hero-santri.jpg",
+  "/kegiatan-2.jpg": "/hero-santri.jpg",
+  "/masjid.jpg": "/hero-santri.jpg",
+};
+
+function normalizeImage(src, fallback = IMAGE_FALLBACK) {
+  if (!src || typeof src !== "string") return fallback;
+
+  const clean = src.trim();
+
+  if (!clean) return fallback;
+
+  return IMAGE_ALIASES[clean] || clean;
+}
+
+function SafeImage({ src, alt, className = "", fallback = IMAGE_FALLBACK }) {
+  const safeFallback = normalizeImage(fallback, IMAGE_FALLBACK);
+
+  const [currentSrc, setCurrentSrc] = useState(() =>
+    normalizeImage(src, safeFallback)
+  );
 
   useEffect(() => {
-    setCurrentSrc(src || fallback);
-  }, [src, fallback]);
+    setCurrentSrc(normalizeImage(src, safeFallback));
+  }, [src, safeFallback]);
 
   return (
     <img
       src={currentSrc}
       alt={alt || "image"}
       className={className}
+      draggable={false}
+      loading="lazy"
       onError={() => {
-        if (currentSrc !== fallback) {
-          setCurrentSrc(fallback);
+        if (currentSrc !== safeFallback) {
+          setCurrentSrc(safeFallback);
         }
       }}
     />
   );
 }
 
-function ScrollProgress() {
-  const { scrollYProgress } = useScroll();
-
-  const scaleX = useSpring(scrollYProgress, {
-    stiffness: 120,
-    damping: 30,
-    restDelta: 0.001,
-  });
-
+function LoadingPage() {
   return (
-    <motion.div
-      style={{ scaleX }}
-      className="fixed left-0 top-0 z-[9999] h-1 w-full origin-left bg-gradient-to-r from-yellow-400 via-emerald-300 to-yellow-400"
-    />
-  );
-}
-
-function CursorGlow() {
-  const shouldReduceMotion = useReducedMotion();
-  const mouseX = useMotionValue(-100);
-  const mouseY = useMotionValue(-100);
-
-  const smoothX = useSpring(mouseX, { stiffness: 80, damping: 25 });
-  const smoothY = useSpring(mouseY, { stiffness: 80, damping: 25 });
-
-  useEffect(() => {
-    if (shouldReduceMotion) return;
-
-    const handleMouseMove = (e) => {
-      mouseX.set(e.clientX - 160);
-      mouseY.set(e.clientY - 160);
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, [mouseX, mouseY, shouldReduceMotion]);
-
-  if (shouldReduceMotion) return null;
-
-  return (
-    <motion.div
-      style={{
-        x: smoothX,
-        y: smoothY,
-      }}
-      className="pointer-events-none fixed left-0 top-0 z-[9998] hidden h-80 w-80 rounded-full bg-yellow-300/10 blur-3xl lg:block"
-    />
-  );
-}
-
-function IslamicBackground({ dark = false, intense = false }) {
-  return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden">
-      <div
-        className={`absolute inset-0 bg-[url('/pattern.png')] bg-repeat ${
-          intense ? "opacity-[0.09]" : "opacity-[0.055]"
-        }`}
-      />
-
-      <motion.div
-        animate={{
-          rotate: [0, 18, 0],
-          scale: [1, 1.08, 1],
-        }}
-        transition={{
-          duration: 14,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-        className={`absolute -left-32 top-20 h-72 w-72 rounded-full border ${
-          dark
-            ? "border-yellow-300/20 bg-yellow-300/5"
-            : "border-emerald-900/10 bg-emerald-300/20"
-        }`}
-      />
-
-      <motion.div
-        animate={{
-          rotate: [0, -18, 0],
-          scale: [1, 1.1, 1],
-        }}
-        transition={{
-          duration: 18,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-        className={`absolute -right-40 bottom-16 h-[30rem] w-[30rem] rounded-full border ${
-          dark
-            ? "border-emerald-300/20 bg-emerald-300/5"
-            : "border-yellow-600/10 bg-yellow-300/25"
-        }`}
-      />
-
-      <motion.div
-        animate={{
-          y: [0, -20, 0],
-          opacity: [0.45, 0.8, 0.45],
-        }}
-        transition={{
-          duration: 9,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-        className={`absolute left-1/2 top-1/2 h-[36rem] w-[36rem] -translate-x-1/2 -translate-y-1/2 rounded-full blur-3xl ${
-          dark ? "bg-emerald-400/10" : "bg-yellow-300/20"
-        }`}
-      />
-
-      <motion.div
-        animate={{
-          y: [0, 22, 0],
-          x: [0, 14, 0],
-        }}
-        transition={{
-          duration: 11,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-        className="absolute right-[12%] top-[18%] h-3 w-3 rounded-full bg-yellow-300/80 shadow-[0_0_35px_rgba(250,204,21,0.8)]"
-      />
-
-      <motion.div
-        animate={{
-          y: [0, -20, 0],
-          x: [0, -12, 0],
-        }}
-        transition={{
-          duration: 10,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-        className="absolute left-[10%] bottom-[24%] h-2 w-2 rounded-full bg-emerald-300/80 shadow-[0_0_35px_rgba(110,231,183,0.8)]"
-      />
-    </div>
-  );
-}
-
-function Badge({ children, light = false }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.25 }}
-      transition={{ duration: 0.55 }}
-      className={`inline-flex items-center gap-3 rounded-full border px-4 py-2 text-[10px] font-black uppercase tracking-[0.22em] sm:text-xs ${
-        light
-          ? "border-yellow-300/30 bg-yellow-300/10 text-yellow-300"
-          : "border-emerald-200 bg-white/85 text-emerald-800"
-      }`}
-    >
-      <span className="h-2 w-2 rounded-full bg-current" />
-      {children}
-    </motion.div>
-  );
-}
-
-function Section({
-  children,
-  dark = false,
-  className = "",
-  id = "",
-  scene = 0,
-  label = "",
-}) {
-  const { scrollY } = useScroll();
-
-  const start = scene * 900;
-
-  const bgY = useTransform(scrollY, [start - 700, start + 900], [-120, 120]);
-  const orbY = useTransform(scrollY, [start - 700, start + 900], [120, -120]);
-  const lineScale = useTransform(scrollY, [start - 500, start + 500], [0, 1]);
-
-  return (
-    <section
-      id={id}
-      className={`relative min-h-[100svh] w-full overflow-hidden ${
-        dark ? "bg-[#041b15] text-white" : "bg-[#f7f1df] text-slate-900"
-      } ${className}`}
-    >
-      {/* Scroll parallax glow */}
-      <motion.div
-        style={{ y: bgY }}
-        className={`pointer-events-none absolute -left-32 top-20 h-[30rem] w-[30rem] rounded-full blur-3xl ${
-          dark ? "bg-yellow-300/10" : "bg-emerald-300/20"
-        }`}
-      />
-
-      <motion.div
-        style={{ y: orbY }}
-        className={`pointer-events-none absolute -right-32 bottom-20 h-[34rem] w-[34rem] rounded-full blur-3xl ${
-          dark ? "bg-emerald-300/10" : "bg-yellow-300/25"
-        }`}
-      />
-
-      {/* Scene indicator kiri */}
-      {label && (
-        <div className="pointer-events-none absolute left-4 top-1/2 z-20 hidden -translate-y-1/2 xl:block">
-          <div className="flex items-center gap-4">
-            <div className="h-32 w-[2px] overflow-hidden rounded-full bg-white/10">
-              <motion.div
-                style={{ scaleY: lineScale }}
-                className="h-full w-full origin-top rounded-full bg-yellow-400"
-              />
-            </div>
-
-            <div
-              className={`rounded-full border px-4 py-2 text-[11px] font-black uppercase tracking-[0.28em] backdrop-blur-xl ${
-                dark
-                  ? "border-white/10 bg-white/10 text-yellow-300"
-                  : "border-emerald-200 bg-white/70 text-emerald-800"
-              }`}
-            >
-              {label}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {children}
-    </section>
-  );
-}
-
-function Container({ children, className = "", style }) {
-  return (
-    <motion.div
-      style={style}
-      className={`relative z-10 mx-auto w-[92vw] max-w-[1500px] py-24 will-change-transform sm:py-28 lg:py-32 ${className}`}
-    >
-      {children}
-    </motion.div>
-  );
-}
-
-function ResponsiveMotionContainer({ children, className = "", desktopStyle }) {
-  return (
-    <>
-      {/* MOBILE / TABLET: tanpa parallax agar tidak melebar */}
-      <div
-        className={`relative z-10 mx-auto w-[92vw] max-w-[1500px] py-20 sm:py-24 lg:hidden ${className}`}
-      >
-        {children}
-      </div>
-
-      {/* DESKTOP: pakai parallax */}
-      <motion.div
-        style={desktopStyle}
-        className={`relative z-10 mx-auto hidden w-[92vw] max-w-[1500px] py-28 will-change-transform lg:block ${className}`}
-      >
-        {children}
-      </motion.div>
-    </>
-  );
-}
-
-function ParallaxBlock({
-  children,
-  range = [0, 1000],
-  y = [0, 0],
-  x = [0, 0],
-  scale = [1, 1],
-  rotate = [0, 0],
-  opacity = [1, 1],
-  className = "",
-}) {
-  const { scrollY } = useScroll();
-
-  const motionY = useTransform(scrollY, range, y);
-  const motionX = useTransform(scrollY, range, x);
-  const motionScale = useTransform(scrollY, range, scale);
-  const motionRotate = useTransform(scrollY, range, rotate);
-  const motionOpacity = useTransform(scrollY, range, opacity);
-
-  return (
-    <motion.div
-      style={{
-        y: motionY,
-        x: motionX,
-        scale: motionScale,
-        rotate: motionRotate,
-        opacity: motionOpacity,
-      }}
-      className={`will-change-transform ${className}`}
-    >
-      {children}
-    </motion.div>
-  );
-}
-
-function Reveal({ children, delay = 0, className = "", type = "up" }) {
-  const variants = {
-    up: {
-      hidden: { opacity: 0, y: 45, filter: "blur(10px)" },
-      show: { opacity: 1, y: 0, filter: "blur(0px)" },
-    },
-    left: {
-      hidden: { opacity: 0, x: -45, filter: "blur(10px)" },
-      show: { opacity: 1, x: 0, filter: "blur(0px)" },
-    },
-    right: {
-      hidden: { opacity: 0, x: 45, filter: "blur(10px)" },
-      show: { opacity: 1, x: 0, filter: "blur(0px)" },
-    },
-    zoom: {
-      hidden: { opacity: 0, scale: 0.92, filter: "blur(10px)" },
-      show: { opacity: 1, scale: 1, filter: "blur(0px)" },
-    },
-  };
-
-  return (
-    <motion.div
-      variants={variants[type] || variants.up}
-      initial="hidden"
-      whileInView="show"
-      viewport={{ once: true, amount: 0.18 }}
-      transition={{
-        duration: 0.7,
-        delay,
-        ease: [0.22, 1, 0.36, 1],
-      }}
-      className={className}
-    >
-      {children}
-    </motion.div>
-  );
-}
-
-function SectionHeader({ badge, title, desc, light = false, align = "center" }) {
-  return (
-    <Reveal
-      className={`${
-        align === "center" ? "mx-auto text-center" : "text-left"
-      } max-w-5xl`}
-    >
-      {badge && (
-        <div className="mb-4">
-          <Badge light={light}>{badge}</Badge>
-        </div>
-      )}
-
-      <h2
-        className={`text-[clamp(2rem,5vw,5.4rem)] font-black leading-[0.95] tracking-[-0.06em] ${
-          light ? "text-white" : "text-emerald-950"
-        }`}
-      >
-        {title}
-      </h2>
-
-      {desc && (
-        <p
-          className={`mt-5 max-w-3xl text-sm leading-relaxed sm:text-base lg:text-lg ${
-            align === "center" ? "mx-auto" : ""
-          } ${light ? "text-emerald-100" : "text-slate-600"}`}
-        >
-          {desc}
-        </p>
-      )}
-    </Reveal>
-  );
-}
-
-function TiltCard({ children, className = "" }) {
-  const [rotate, setRotate] = useState({
-    x: 0,
-    y: 0,
-  });
-
-  const handleMouseMove = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    const rotateX = ((y / rect.height) - 0.5) * -8;
-    const rotateY = ((x / rect.width) - 0.5) * 8;
-
-    setRotate({
-      x: rotateX,
-      y: rotateY,
-    });
-  };
-
-  const reset = () => {
-    setRotate({
-      x: 0,
-      y: 0,
-    });
-  };
-
-  return (
-    <motion.div
-      onMouseMove={handleMouseMove}
-      onMouseLeave={reset}
-      animate={{
-        rotateX: rotate.x,
-        rotateY: rotate.y,
-      }}
-      whileHover={{
-        y: -8,
-        scale: 1.015,
-      }}
-      transition={{
-        type: "spring",
-        stiffness: 230,
-        damping: 22,
-      }}
-      style={{
-        transformStyle: "preserve-3d",
-      }}
-      className={`group ${className}`}
-    >
-      {children}
-    </motion.div>
-  );
-}
-
-function MagneticButton({ children, href, variant = "primary" }) {
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-
-  const springX = useSpring(x, { stiffness: 180, damping: 14 });
-  const springY = useSpring(y, { stiffness: 180, damping: 14 });
-
-  const handleMouseMove = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-
-    const moveX = e.clientX - rect.left - rect.width / 2;
-    const moveY = e.clientY - rect.top - rect.height / 2;
-
-    x.set(moveX * 0.18);
-    y.set(moveY * 0.18);
-  };
-
-  const handleMouseLeave = () => {
-    x.set(0);
-    y.set(0);
-  };
-
-  const className =
-    variant === "primary"
-      ? "bg-yellow-400 text-emerald-950 shadow-[0_0_50px_rgba(250,204,21,0.35)] hover:bg-yellow-300"
-      : "border border-white/25 bg-white/10 text-white backdrop-blur-xl hover:bg-white/20";
-
-  return (
-    <Link href={href}>
-      <motion.button
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        style={{
-          x: springX,
-          y: springY,
-        }}
-        whileTap={{ scale: 0.96 }}
-        className={`group inline-flex w-full items-center justify-center gap-3 rounded-full px-8 py-4 font-black transition hover:-translate-y-1 sm:w-auto ${className}`}
-      >
-        {children}
-      </motion.button>
-    </Link>
-  );
-}
-
-function SectionNavigator() {
-  const sections = [
-    { id: "hero", label: "Awal" },
-    { id: "values", label: "Nilai" },
-    { id: "story", label: "Cerita" },
-    { id: "program", label: "Program" },
-    { id: "pembina", label: "Pembina" },
-    { id: "cta", label: "Daftar" },
-  ];
-
-  return (
-    <div className="fixed right-5 top-1/2 z-[70] hidden -translate-y-1/2 flex-col gap-3 xl:flex">
-      {sections.map((item) => (
-        <a
-          key={item.id}
-          href={`#${item.id}`}
-          className="group flex items-center justify-end gap-3"
-        >
-          <span className="rounded-full bg-emerald-950/80 px-3 py-1 text-[11px] font-black text-yellow-300 opacity-0 shadow-lg backdrop-blur-xl transition group-hover:opacity-100">
-            {item.label}
-          </span>
-
-          <span className="h-3 w-3 rounded-full border border-black/60 bg-yellow-300/40 shadow-[0_0_20px_rgba(250,204,21,0.5)] transition group-hover:scale-150 group-hover:bg-yellow-300" />
-        </a>
-      ))}
-    </div>
-  );
-}
-
-function FloatingVerse() {
-  return (
-    <motion.div
-      animate={{
-        y: [0, -14, 0],
-      }}
-      transition={{
-        duration: 6,
-        repeat: Infinity,
-        ease: "easeInOut",
-      }}
-      className="absolute bottom-8 right-8 hidden rounded-[2rem] border border-white/10 bg-white/10 p-5 text-right text-white shadow-2xl backdrop-blur-xl lg:block"
-    >
-      <p className="text-xl leading-loose text-yellow-300">
-        وَقُلْ رَبِّ زِدْنِي عِلْمًا
-      </p>
-
-      <p className="mt-1 text-xs font-bold text-emerald-100">
-        “Ya Rabb, tambahkanlah ilmuku.”
-      </p>
-    </motion.div>
-  );
-}
-
-/* =========================================================
-   MAINTENANCE PAGE
-========================================================= */
-
-function MaintenancePage({ onRetry, checking }) {
-  return (
-    <main className="relative min-h-[100svh] overflow-hidden bg-[#041b15] text-white">
-<div className="absolute inset-0">
-  <ParallaxBlock
-    range={[0, 1000]}
-    y={[-30, 30]}
-    scale={[1.08, 1.02]}
-    className="h-full w-full"
-  >
-    <SafeImage
-      src="/hero-santri.jpg"
-      alt="Maintenance Al-Furqon"
-      className="h-full w-full object-cover"
-    />
-  </ParallaxBlock>
-
-  <div className="absolute inset-0 bg-gradient-to-r from-[#041b15] via-[#062d22]/95 to-[#041b15]" />
-  <div className="absolute inset-0 bg-black/65" />
-</div>
+    <main className="relative flex h-[100dvh] items-center justify-center overflow-hidden bg-[#041b15] text-white">
       <IslamicBackground dark intense />
 
       <motion.div
-        animate={{ rotate: [0, 360] }}
-        transition={{
-          duration: 38,
-          repeat: Infinity,
-          ease: "linear",
-        }}
-        className="absolute left-1/2 top-1/2 h-[560px] w-[560px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-yellow-300/10"
-      />
-
-      <motion.div
-        animate={{ rotate: [360, 0] }}
-        transition={{
-          duration: 48,
-          repeat: Infinity,
-          ease: "linear",
-        }}
-        className="absolute left-1/2 top-1/2 h-[420px] w-[420px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-emerald-300/10"
-      />
-
-      <div className="relative z-10 mx-auto flex min-h-[100svh] w-[92vw] max-w-5xl flex-col items-center justify-center py-20 text-center">
+        initial={{ opacity: 0, scale: 0.94 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.45, ease: EASE_PREMIUM }}
+        className="relative z-10 px-6 text-center"
+      >
         <motion.div
-          initial={{ opacity: 0, scale: 0.85, y: 30 }}
+          animate={{ rotate: 360 }}
+          transition={{
+            duration: 1.8,
+            repeat: Infinity,
+            ease: "linear",
+          }}
+          className="mx-auto mb-6 h-14 w-14 rounded-full border-4 border-yellow-300/20 border-t-yellow-300"
+        />
+
+        <p className="text-xs font-black uppercase tracking-[0.32em] text-yellow-300">
+          Menghubungkan ke Backend
+        </p>
+
+        <h1 className="mt-4 text-2xl font-black sm:text-4xl">
+          Mohon tunggu...
+        </h1>
+      </motion.div>
+    </main>
+  );
+}
+
+function MaintenancePage({ onRetry, checking }) {
+  return (
+    <main className="relative min-h-[100dvh] overflow-hidden bg-[#041b15] text-white">
+      <div className="absolute inset-0">
+        <SafeImage
+          src="/hero-santri.jpg"
+          alt="Maintenance Al-Furqon"
+          className="h-full w-full object-cover"
+        />
+
+        <div className="absolute inset-0 bg-gradient-to-r from-[#041b15] via-[#062d22]/95 to-[#041b15]" />
+        <div className="absolute inset-0 bg-black/65" />
+      </div>
+
+      <IslamicBackground dark intense />
+
+      <div className="relative z-10 mx-auto flex min-h-[100dvh] w-[92vw] max-w-5xl flex-col items-center justify-center py-16 text-center">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.85, y: 24 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
+          transition={{ duration: 0.65, ease: EASE_PREMIUM }}
           className="relative"
         >
           <div className="absolute inset-0 rounded-full bg-yellow-400/20 blur-3xl" />
 
-          <div className="relative mx-auto flex h-24 w-24 items-center justify-center rounded-[2rem] border border-yellow-300/30 bg-yellow-300/10 text-4xl text-yellow-300 shadow-[0_0_70px_rgba(250,204,21,0.25)] backdrop-blur-xl">
+          <div className="relative mx-auto flex h-20 w-20 items-center justify-center rounded-[1.7rem] border border-yellow-300/30 bg-yellow-300/10 text-3xl text-yellow-300 shadow-[0_0_60px_rgba(250,204,21,0.25)] backdrop-blur-xl">
             <motion.div
               animate={{ rotate: [0, -8, 8, 0] }}
               transition={{
@@ -683,44 +354,45 @@ function MaintenancePage({ onRetry, checking }) {
         </motion.div>
 
         <motion.p
-          initial={{ opacity: 0, y: 25 }}
+          initial={{ opacity: 0, y: 22 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.25, duration: 0.7 }}
-          className="mt-8 text-lg leading-loose text-yellow-300 sm:text-xl lg:text-2xl"
+          transition={{ delay: 0.18, duration: 0.55 }}
+          className="mt-7 text-lg leading-loose text-yellow-300 sm:text-xl"
         >
           إِنَّ مَعَ الْعُسْرِ يُسْرًا
         </motion.p>
 
         <motion.div
-          initial={{ opacity: 0, y: 35, filter: "blur(10px)" }}
+          initial={{ opacity: 0, y: 30, filter: "blur(8px)" }}
           animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-          transition={{ delay: 0.35, duration: 0.8 }}
+          transition={{ delay: 0.25, duration: 0.65 }}
         >
-          <Badge light>Website Maintenance</Badge>
+          <Badge dark>Website Maintenance</Badge>
 
-          <h1 className="mt-5 text-[clamp(2.4rem,8vw,6.5rem)] font-black leading-[0.92] tracking-[-0.065em]">
+          <h1 className="mt-5 text-[clamp(2.2rem,6vw,5.4rem)] font-black leading-[0.92] tracking-[-0.06em]">
             Sistem sedang
             <span className="block bg-gradient-to-r from-yellow-300 via-yellow-400 to-emerald-200 bg-clip-text text-transparent">
               dalam perawatan.
             </span>
           </h1>
 
-          <p className="mx-auto mt-6 max-w-3xl text-sm leading-relaxed text-emerald-100 sm:text-base lg:text-xl">
-  Assalamu’alaikum, Santri Al-Furqon. Informasi pondok sedang dipersiapkan
-  oleh sistem. Silakan tunggu sebentar atau coba kembali beberapa saat lagi.
-</p>
+          <p className="mx-auto mt-6 max-w-3xl text-sm leading-relaxed text-emerald-100 sm:text-base lg:text-lg">
+            Assalamu’alaikum, Santri Al-Furqon. Informasi pondok sedang
+            dipersiapkan oleh sistem. Silakan tunggu sebentar atau coba kembali
+            beberapa saat lagi.
+          </p>
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, y: 25 }}
+          initial={{ opacity: 0, y: 22 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.55, duration: 0.7 }}
+          transition={{ delay: 0.42, duration: 0.55 }}
           className="mt-8 flex flex-col gap-3 sm:flex-row"
         >
           <button
             onClick={onRetry}
             disabled={checking}
-            className="group inline-flex items-center justify-center gap-3 rounded-full bg-yellow-400 px-8 py-4 font-black text-emerald-950 shadow-[0_0_50px_rgba(250,204,21,0.35)] transition hover:-translate-y-1 hover:bg-yellow-300 disabled:cursor-not-allowed disabled:opacity-70"
+            className="group inline-flex items-center justify-center gap-3 rounded-full bg-yellow-400 px-7 py-3.5 text-sm font-black text-emerald-950 shadow-[0_0_45px_rgba(250,204,21,0.35)] transition hover:-translate-y-1 hover:bg-yellow-300 disabled:cursor-not-allowed disabled:opacity-70 sm:text-base"
           >
             <motion.span
               animate={checking ? { rotate: 360 } : { rotate: 0 }}
@@ -732,138 +404,1326 @@ function MaintenancePage({ onRetry, checking }) {
             >
               <FaRedo />
             </motion.span>
-            {checking ? "Sedang Memuat Informasi..." : "Coba Lagi"}
+            {checking ? "Sedang Memuat..." : "Coba Lagi"}
           </button>
 
           <a
-  href="https://wa.me/628999155698?text=Assalamu%27alaikum%20Admin%20Al-Furqon%2C%20saya%20ingin%20bertanya%20mengenai%20informasi%20Pondok%20Pesantren%20Al-Furqon."
-  target="_blank"
-  rel="noopener noreferrer"
-  className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 px-8 py-4 font-black text-white backdrop-blur transition hover:-translate-y-1 hover:bg-white/20"
->
-  Hubungi Admin
-</a>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.85 }}
-          className="mt-10 grid w-full max-w-3xl gap-3 text-left sm:grid-cols-3"
-        >
-          {[
-  {
-    title: "Website Sedang Diperbarui",
-    code: "Kami sedang meningkatkan layanan website agar lebih nyaman digunakan.",
-  },
-  {
-    title: "Akses Akan Segera Dibuka",
-    code: "Silakan coba kembali beberapa saat lagi.",
-  },
-  {
-    title: "Butuh Bantuan?",
-    code: "Hubungi admin pesantren melalui WhatsApp jika ada keperluan penting.",
-  },
-].map((item) => (
-            <div
-              key={item.title}
-              className="rounded-3xl border border-white/10 bg-white/10 p-4 backdrop-blur-xl"
-            >
-              <p className="text-xs font-black uppercase tracking-[0.2em] text-yellow-300">
-                {item.title}
-              </p>
-
-              <code className="mt-3 block rounded-2xl bg-black/30 px-4 py-3 text-sm text-emerald-100">
-                {item.code}
-              </code>
-            </div>
-          ))}
+            href={WHATSAPP_ADMIN_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 px-7 py-3.5 text-sm font-black text-white backdrop-blur transition hover:-translate-y-1 hover:bg-white/20 sm:text-base"
+          >
+            Hubungi Admin
+          </a>
         </motion.div>
       </div>
     </main>
   );
 }
 
-/* =========================================================
-   LOADING PAGE
-========================================================= */
+function CursorGlow() {
+  const reduce = useReducedMotion();
+  const mouseX = useMotionValue(-100);
+  const mouseY = useMotionValue(-100);
 
-function LoadingPage() {
+  const smoothX = useSpring(mouseX, { stiffness: 80, damping: 25 });
+  const smoothY = useSpring(mouseY, { stiffness: 80, damping: 25 });
+
+  useEffect(() => {
+    if (reduce) return;
+
+    const handleMouseMove = (e) => {
+      mouseX.set(e.clientX - 140);
+      mouseY.set(e.clientY - 140);
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, [mouseX, mouseY, reduce]);
+
+  if (reduce) return null;
+
   return (
-    <main className="relative flex min-h-[100svh] items-center justify-center overflow-hidden bg-[#041b15] text-white">
-      <IslamicBackground dark intense />
-
-      <motion.div
-        initial={{ opacity: 0, scale: 0.94 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="relative z-10 text-center"
-      >
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{
-            duration: 2.2,
-            repeat: Infinity,
-            ease: "linear",
-          }}
-          className="mx-auto mb-6 h-20 w-20 rounded-full border-4 border-yellow-300/20 border-t-yellow-300"
-        />
-
-        <p className="text-sm font-black uppercase tracking-[0.35em] text-yellow-300">
-          Menghubungkan ke Backend
-        </p>
-
-        <h1 className="mt-4 text-3xl font-black sm:text-5xl">
-          Mohon tunggu...
-        </h1>
-      </motion.div>
-    </main>
+    <motion.div
+      style={{ x: smoothX, y: smoothY }}
+      className="pointer-events-none fixed left-0 top-0 z-[9998] hidden h-64 w-64 rounded-full bg-yellow-300/10 blur-3xl lg:block"
+    />
   );
 }
 
-/* =========================================================
-   MAIN HOME
-========================================================= */
+function AmbientParticles({ light = false }) {
+  const reduce = useReducedMotion();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted || reduce) return null;
+
+  return (
+    <div className="pointer-events-none absolute inset-0 overflow-hidden">
+      {PARTICLES.map((particle) => (
+        <motion.span
+          key={particle.id}
+          initial={{ opacity: 0, y: 0, scale: 0.8 }}
+          animate={{
+            opacity: [0, light ? 0.2 : 0.16, 0],
+            y: [-8, -52],
+            scale: [0.8, 1.1, 0.85],
+          }}
+          transition={{
+            duration: particle.duration,
+            delay: particle.delay,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+          className={`absolute rounded-full ${
+            light ? "bg-emerald-800/35" : "bg-yellow-200/60"
+          }`}
+          style={{
+            left: particle.left,
+            top: particle.top,
+            width: particle.size,
+            height: particle.size,
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
+function IslamicBackground({ dark = false, intense = false }) {
+  const reduce = useReducedMotion();
+
+  return (
+    <div className="pointer-events-none absolute inset-0 overflow-hidden">
+      <div
+        className={`absolute inset-0 bg-[url('/pattern.png')] bg-repeat ${
+          intense ? "opacity-[0.07]" : "opacity-[0.04]"
+        }`}
+      />
+
+      <motion.div
+        animate={
+          reduce
+            ? undefined
+            : {
+                rotate: [0, 18, 0],
+                scale: [1, 1.08, 1],
+              }
+        }
+        transition={{
+          duration: 14,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        className={`absolute -left-32 top-20 h-64 w-64 rounded-full border ${
+          dark
+            ? "border-yellow-300/18 bg-yellow-300/5"
+            : "border-emerald-900/10 bg-emerald-300/16"
+        }`}
+      />
+
+      <motion.div
+        animate={
+          reduce
+            ? undefined
+            : {
+                rotate: [0, -18, 0],
+                scale: [1, 1.1, 1],
+              }
+        }
+        transition={{
+          duration: 18,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        className={`absolute -right-40 bottom-16 h-[24rem] w-[24rem] rounded-full border ${
+          dark
+            ? "border-emerald-300/18 bg-emerald-300/5"
+            : "border-yellow-600/10 bg-yellow-300/16"
+        }`}
+      />
+
+      <motion.div
+        animate={
+          reduce
+            ? undefined
+            : {
+                y: [0, -16, 0],
+                opacity: [0.35, 0.65, 0.35],
+              }
+        }
+        transition={{
+          duration: 9,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        className={`absolute left-1/2 top-1/2 h-[28rem] w-[28rem] -translate-x-1/2 -translate-y-1/2 rounded-full blur-3xl ${
+          dark ? "bg-emerald-400/8" : "bg-yellow-300/14"
+        }`}
+      />
+
+      <AmbientParticles light={!dark} />
+    </div>
+  );
+}
+
+function Badge({ children, dark = false }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 14, filter: "blur(6px)" }}
+      animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+      transition={{ duration: 0.45, ease: EASE_PREMIUM }}
+      className={`inline-flex max-w-full items-center gap-3 rounded-full border px-4 py-2 text-[9px] font-black uppercase tracking-[0.2em] sm:text-[10px] ${
+        dark
+          ? "border-yellow-300/30 bg-yellow-300/10 text-yellow-300"
+          : "border-emerald-200 bg-white/85 text-emerald-800"
+      }`}
+    >
+      <span className="h-2 w-2 shrink-0 rounded-full bg-current" />
+      <span className="truncate">{children}</span>
+    </motion.div>
+  );
+}
+
+function MagneticButton({
+  children,
+  href,
+  variant = "primary",
+  external = false,
+}) {
+  const reduce = useReducedMotion();
+
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  const springX = useSpring(x, { stiffness: 180, damping: 14 });
+  const springY = useSpring(y, { stiffness: 180, damping: 14 });
+
+  const handleMouseMove = (e) => {
+    if (reduce) return;
+
+    const rect = e.currentTarget.getBoundingClientRect();
+
+    const moveX = e.clientX - rect.left - rect.width / 2;
+    const moveY = e.clientY - rect.top - rect.height / 2;
+
+    x.set(moveX * 0.12);
+    y.set(moveY * 0.12);
+  };
+
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
+
+  const className =
+    variant === "primary"
+      ? "bg-yellow-400 text-emerald-950 shadow-[0_0_36px_rgba(250,204,21,0.25)] hover:bg-yellow-300"
+      : "border border-white/25 bg-white/10 text-white backdrop-blur-xl hover:bg-white/20";
+
+  const commonClass = `group inline-flex w-full items-center justify-center gap-3 rounded-full px-6 py-3 text-sm font-black transition hover:-translate-y-1 sm:w-auto ${className}`;
+
+  if (external) {
+    return (
+      <motion.a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        style={reduce ? undefined : { x: springX, y: springY }}
+        whileTap={{ scale: 0.96 }}
+        className={commonClass}
+      >
+        {children}
+      </motion.a>
+    );
+  }
+
+  return (
+    <MotionLink
+      href={href}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={reduce ? undefined : { x: springX, y: springY }}
+      whileTap={{ scale: 0.96 }}
+      className={commonClass}
+    >
+      {children}
+    </MotionLink>
+  );
+}
+
+function TiltCard({ children, className = "" }) {
+  const reduce = useReducedMotion();
+
+  const [rotate, setRotate] = useState({
+    x: 0,
+    y: 0,
+  });
+
+  const handleMouseMove = (e) => {
+    if (reduce) return;
+
+    const rect = e.currentTarget.getBoundingClientRect();
+
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    setRotate({
+      x: (y / rect.height - 0.5) * -4,
+      y: (x / rect.width - 0.5) * 4,
+    });
+  };
+
+  const reset = () => {
+    setRotate({ x: 0, y: 0 });
+  };
+
+  return (
+    <motion.div
+      onMouseMove={handleMouseMove}
+      onMouseLeave={reset}
+      animate={
+        reduce
+          ? undefined
+          : {
+              rotateX: rotate.x,
+              rotateY: rotate.y,
+            }
+      }
+      whileHover={
+        reduce
+          ? undefined
+          : {
+              y: -5,
+              scale: 1.008,
+            }
+      }
+      transition={{
+        type: "spring",
+        stiffness: 230,
+        damping: 22,
+      }}
+      style={{ transformStyle: "preserve-3d" }}
+      className={`group ${className}`}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+function ScreenShell({ children, light = false, sectionKey, direction }) {
+  const reduce = useReducedMotion();
+
+  return (
+    <motion.section
+      key={sectionKey}
+      custom={direction}
+      variants={
+        reduce
+          ? {
+              enter: { opacity: 0 },
+              center: { opacity: 1 },
+              exit: { opacity: 0 },
+            }
+          : screenVariants
+      }
+      initial="enter"
+      animate="center"
+      exit="exit"
+      transition={{
+        duration: reduce ? 0.22 : 0.56,
+        ease: EASE_PREMIUM,
+      }}
+      className={`fixed inset-0 h-[100dvh] overflow-hidden ${
+        light
+          ? "bg-gradient-to-br from-[#f7f1df] via-white to-emerald-50 text-emerald-950"
+          : "bg-[#041b15] text-white"
+      }`}
+    >
+      {children}
+    </motion.section>
+  );
+}
+
+function ProgressBar({ sections, activeSection, activeStep }) {
+  const totalSteps = sections.reduce((sum, item) => sum + item.total, 0);
+
+  const passed = sections
+    .slice(0, activeSection)
+    .reduce((sum, item) => sum + item.total, 0);
+
+  const progress = ((passed + activeStep + 1) / totalSteps) * 100;
+
+  return (
+    <div className="fixed left-0 top-0 z-[400] h-1 w-full bg-white/10">
+      <motion.div
+        animate={{ width: `${progress}%` }}
+        transition={{ duration: 0.38, ease: EASE_PREMIUM }}
+        className="h-full bg-yellow-400"
+      />
+    </div>
+  );
+}
+
+function SideDots({ sections, activeSection, activeStep, jumpToSection }) {
+  return (
+    <div className="fixed right-5 top-1/2 z-[260] hidden -translate-y-1/2 flex-col gap-3 xl:flex">
+      {sections.map((section, index) => (
+        <button
+          key={section.key}
+          onClick={() => jumpToSection(index)}
+          className="group flex items-center justify-end gap-3"
+        >
+          <span className="rounded-full bg-emerald-950/85 px-3 py-1 text-[11px] font-black text-yellow-300 opacity-0 shadow-xl backdrop-blur transition group-hover:opacity-100">
+            {section.label}
+            {activeSection === index && section.total > 1
+              ? ` ${activeStep + 1}/${section.total}`
+              : ""}
+          </span>
+
+          <span
+            className={`h-3 w-3 rounded-full border transition ${
+              activeSection === index
+                ? "scale-150 border-yellow-300 bg-yellow-300 shadow-[0_0_20px_rgba(250,204,21,0.8)]"
+                : "border-white/30 bg-white/20"
+            }`}
+          />
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function BottomControls({ onPrev, onNext, isFirst, isLast }) {
+  return (
+    <div className="home-bottom-controls fixed bottom-4 left-1/2 z-[280] flex -translate-x-1/2 items-center gap-3">
+      <button
+        onClick={onPrev}
+        disabled={isFirst}
+        className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white shadow-xl backdrop-blur-xl transition hover:-translate-y-1 hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-30"
+      >
+        <FaArrowUp />
+      </button>
+
+      <div className="hidden rounded-full border border-white/15 bg-white/10 px-5 py-3 text-[10px] font-black uppercase tracking-[0.22em] text-yellow-300 shadow-xl backdrop-blur-xl sm:block">
+        Scroll / Swipe
+      </div>
+
+      <button
+        onClick={onNext}
+        disabled={isLast}
+        className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-yellow-400 text-emerald-950 shadow-xl shadow-yellow-400/20 transition hover:-translate-y-1 hover:bg-yellow-300 disabled:cursor-not-allowed disabled:opacity-30"
+      >
+        <FaArrowDown />
+      </button>
+    </div>
+  );
+}
+
+function HeroScreen({ hero, stats, direction, handleDirection }) {
+  return (
+    <ScreenShell sectionKey="hero" direction={direction}>
+      <div className="absolute inset-0">
+        <motion.div
+          animate={{ scale: [1.03, 1.07, 1.03] }}
+          transition={{
+            duration: 12,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+          className="h-full w-full"
+        >
+          <SafeImage
+            src={hero.image}
+            alt="Pondok Pesantren Al-Furqon"
+            className="h-full w-full object-cover"
+          />
+        </motion.div>
+      </div>
+
+      <div className="absolute inset-0 bg-gradient-to-r from-[#041b15] via-[#062d22]/95 to-[#0d4f38]/45" />
+      <div className="absolute inset-0 bg-black/58" />
+
+      <IslamicBackground dark intense />
+
+      <div className="home-screen mx-auto grid items-center gap-6 lg:grid-cols-[1.05fr_0.95fr]">
+        <AnimatePresence mode="wait" custom={direction}>
+          <motion.div
+            key="hero-content"
+            custom={direction}
+            variants={stepVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{ duration: 0.5, ease: EASE_PREMIUM }}
+            className="max-w-4xl"
+          >
+            <motion.p
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.08, duration: 0.45 }}
+              className="mb-3 text-base leading-loose text-yellow-300 sm:text-lg lg:text-xl"
+            >
+              {hero.arabic}
+            </motion.p>
+
+            <Badge dark>{hero.badge}</Badge>
+
+            <motion.h1
+              initial={{ opacity: 0, y: 28, filter: "blur(7px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              transition={{ delay: 0.16, duration: 0.62, ease: EASE_PREMIUM }}
+              className="home-title mt-4 font-black leading-[0.94] tracking-[-0.055em]"
+            >
+              {hero.title}
+              <span className="block bg-gradient-to-r from-yellow-300 via-yellow-400 to-emerald-200 bg-clip-text text-transparent">
+                {hero.highlight}
+              </span>
+            </motion.h1>
+
+            <motion.p
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.24, duration: 0.45 }}
+              className="mt-4 max-w-3xl text-sm leading-relaxed text-emerald-50 sm:text-base"
+            >
+              {hero.desc}
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.32, duration: 0.45 }}
+              className="mt-6 flex flex-col gap-3 sm:flex-row"
+            >
+              <MagneticButton href="/pendaftaran">
+                Mulai Pendaftaran
+                <FaArrowRight className="transition group-hover:translate-x-1" />
+              </MagneticButton>
+
+              <button
+                onClick={() => handleDirection(1)}
+                className="inline-flex w-full items-center justify-center gap-3 rounded-full border border-white/25 bg-white/10 px-6 py-3 text-sm font-black text-white backdrop-blur-xl transition hover:-translate-y-1 hover:bg-white/20 sm:w-auto"
+              >
+                <FaPlay />
+                Lanjut Cerita
+              </button>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 22 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.45 }}
+              className="mt-6 grid max-w-2xl grid-cols-1 gap-3 sm:grid-cols-3"
+            >
+              {stats.map((item, index) => (
+                <TiltCard key={`${item.label}-${index}`}>
+                  <div className="rounded-3xl border border-white/10 bg-white/10 p-4 backdrop-blur-xl">
+                    <h3 className="text-2xl font-black text-yellow-300">
+                      {item.value}
+                    </h3>
+
+                    <p className="mt-1 text-xs font-bold text-emerald-100">
+                      {item.label}
+                    </p>
+                  </div>
+                </TiltCard>
+              ))}
+            </motion.div>
+          </motion.div>
+        </AnimatePresence>
+
+        <motion.div
+          initial={{ opacity: 0, scale: 0.94, rotate: -2 }}
+          animate={{ opacity: 1, scale: 1, rotate: 0 }}
+          transition={{ duration: 0.65, delay: 0.18 }}
+          className="hidden lg:block"
+        >
+          <TiltCard>
+            <div className="relative ml-auto max-w-md xl:max-w-lg">
+              <motion.div
+                animate={{ rotate: [0, 2, 0] }}
+                transition={{
+                  duration: 5,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+                className="absolute -left-4 -top-4 h-full w-full rounded-[2rem] border border-yellow-300/30"
+              />
+
+              <motion.div
+                animate={{ rotate: [0, -2, 0] }}
+                transition={{
+                  duration: 6,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+                className="absolute -bottom-4 -right-4 h-full w-full rounded-[2rem] border border-emerald-300/25"
+              />
+
+              <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-white/10 p-5 shadow-2xl backdrop-blur-xl">
+                <motion.div
+                  animate={{ y: [0, -8, 0] }}
+                  transition={{
+                    duration: 6,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                >
+                  <SafeImage
+                    src="/logo.png"
+                    alt="Logo Al-Furqon"
+                    className="mx-auto w-40 drop-shadow-[0_0_40px_rgba(255,255,255,0.35)] xl:w-48"
+                  />
+                </motion.div>
+
+                <div className="mt-5 rounded-3xl bg-emerald-950/80 p-5">
+                  <FaQuoteLeft className="mb-3 text-lg text-yellow-300" />
+
+                  <p className="text-sm leading-relaxed text-emerald-50">
+                    “Tempat belajar menemukan arah, bukan hanya mengejar nilai.”
+                  </p>
+                </div>
+              </div>
+            </div>
+          </TiltCard>
+        </motion.div>
+      </div>
+    </ScreenShell>
+  );
+}
+
+function ValuesScreen({ values, direction }) {
+  return (
+    <ScreenShell light sectionKey="values" direction={direction}>
+      <IslamicBackground />
+
+      <div className="home-screen flex flex-col justify-center">
+        <div className="mx-auto max-w-4xl text-center">
+          <Badge>Nilai Pendidikan</Badge>
+
+          <motion.h2
+            initial={{ opacity: 0, y: 28, filter: "blur(7px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            transition={{ delay: 0.1, duration: 0.55, ease: EASE_PREMIUM }}
+            className="home-heading mt-4 font-black leading-[0.98] tracking-[-0.05em] text-emerald-950"
+          >
+            Lingkungan pesantren membentuk kehidupan santri
+          </motion.h2>
+
+          <motion.p
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.18, duration: 0.45 }}
+            className="mx-auto mt-4 max-w-3xl text-sm leading-relaxed text-slate-600 sm:text-base"
+          >
+            Pendidikan di Al-Furqon tidak hanya mengajarkan ilmu, tetapi
+            membentuk ibadah, adab, disiplin, dan kemandirian.
+          </motion.p>
+        </div>
+
+        <div className="home-card-grid mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {values.map((item, index) => (
+            <motion.div
+              key={`${item.title}-${index}`}
+              initial={{ opacity: 0, y: 24, filter: "blur(7px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              transition={{
+                duration: 0.48,
+                delay: 0.24 + index * 0.06,
+                ease: EASE_PREMIUM,
+              }}
+            >
+              <TiltCard>
+                <div className="group relative overflow-hidden rounded-[1.5rem] border border-emerald-100 bg-white/85 p-4 shadow-xl backdrop-blur transition hover:bg-white xl:p-5">
+                  <div className="absolute -right-14 -top-14 h-32 w-32 rounded-full bg-yellow-300/20 blur-3xl transition group-hover:scale-125" />
+
+                  <div className="relative z-10">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-950 text-xl text-yellow-300 transition group-hover:scale-110 xl:h-12 xl:w-12">
+                      {getIcon(item.iconKey)}
+                    </div>
+
+                    <h3 className="mt-4 text-xl font-black text-emerald-950">
+                      {item.title}
+                    </h3>
+
+                    <p className="mt-2 text-sm leading-relaxed text-slate-600">
+                      {item.desc}
+                    </p>
+                  </div>
+                </div>
+              </TiltCard>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </ScreenShell>
+  );
+}
+
+function StoryScreen({ storyItems, step, direction, setStep }) {
+  const currentStory = storyItems[step] || storyItems[0];
+
+  return (
+    <ScreenShell sectionKey="story" direction={direction}>
+      <IslamicBackground dark intense />
+
+      <div className="home-screen grid items-center gap-6 lg:grid-cols-[0.9fr_1.1fr]">
+        <div className="hidden lg:block">
+          <div className="overflow-hidden rounded-[1.8rem] border border-white/10 bg-white/10 p-3 shadow-2xl backdrop-blur-xl">
+            <AnimatePresence mode="wait" custom={direction}>
+              <motion.div
+                key={step}
+                custom={direction}
+                initial={{
+                  opacity: 0,
+                  scale: 1.035,
+                  rotate: 1,
+                  clipPath: clipIn(direction),
+                }}
+                animate={{
+                  opacity: 1,
+                  scale: 1,
+                  rotate: 0,
+                  clipPath: CLIP_VISIBLE,
+                }}
+                exit={{
+                  opacity: 0,
+                  scale: 0.985,
+                  rotate: -1,
+                  clipPath: clipOut(direction),
+                }}
+                transition={{ duration: 0.52, ease: EASE_PREMIUM }}
+                className="relative overflow-hidden rounded-[1.4rem]"
+              >
+                <SafeImage
+                  src={currentStory.image}
+                  alt={currentStory.label}
+                  className="home-story-image w-full object-cover"
+                />
+
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent" />
+
+                <div className="absolute bottom-0 left-0 p-5">
+                  <p className="text-xs font-black tracking-[0.35em] text-yellow-300">
+                    BAB {currentStory.number}
+                  </p>
+
+                  <h3 className="mt-2 text-3xl font-black text-white xl:text-4xl">
+                    {currentStory.label}
+                  </h3>
+                </div>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+        </div>
+
+        <div>
+          <Badge dark>Bab Cerita</Badge>
+
+          <AnimatePresence mode="wait" custom={direction}>
+            <motion.div
+              key={step}
+              custom={direction}
+              variants={stepVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{ duration: 0.44, ease: EASE_PREMIUM }}
+            >
+              <p className="mt-5 text-xs font-black uppercase tracking-[0.3em] text-yellow-300">
+                BAB {currentStory.number} /{" "}
+                {String(storyItems.length).padStart(2, "0")}
+              </p>
+
+              <h2 className="home-heading mt-3 font-black leading-[0.98] tracking-[-0.05em] text-white">
+                {currentStory.title}
+              </h2>
+
+              <p className="mt-5 max-w-2xl text-sm leading-relaxed text-emerald-100 sm:text-base">
+                {currentStory.desc}
+              </p>
+            </motion.div>
+          </AnimatePresence>
+
+          <div className="story-step-grid mt-6 grid gap-2">
+            {storyItems.map((item, index) => (
+              <motion.button
+                key={`${item.number}-${index}`}
+                onClick={() => setStep(index)}
+                whileTap={{ scale: 0.96 }}
+                className={`relative overflow-hidden rounded-2xl border p-3 text-left transition ${
+                  step === index
+                    ? "border-yellow-300 bg-yellow-300 text-emerald-950"
+                    : "border-white/10 bg-white/10 text-white hover:bg-white/20"
+                }`}
+              >
+                {step === index && (
+                  <motion.div
+                    layoutId="story-active"
+                    className="absolute inset-0 bg-yellow-300"
+                    transition={{
+                      type: "spring",
+                      stiffness: 260,
+                      damping: 28,
+                    }}
+                  />
+                )}
+
+                <span className="relative z-10 block">
+                  <p className="text-xs font-black">{item.number}</p>
+                  <p className="mt-1 hidden text-sm font-black sm:block">
+                    {item.label}
+                  </p>
+                </span>
+              </motion.button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </ScreenShell>
+  );
+}
+
+function ProgramScreen({ programs, direction }) {
+  return (
+    <ScreenShell light sectionKey="program" direction={direction}>
+      <IslamicBackground />
+
+      <div className="home-screen flex flex-col justify-center">
+        <div className="mx-auto max-w-4xl text-center">
+          <Badge>Program Pembinaan</Badge>
+
+          <motion.h2
+            initial={{ opacity: 0, y: 28, filter: "blur(7px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            transition={{ delay: 0.1, duration: 0.55, ease: EASE_PREMIUM }}
+            className="home-heading mt-4 font-black leading-[0.98] tracking-[-0.05em] text-emerald-950"
+          >
+            Program santri yang aktif dan bermakna
+          </motion.h2>
+
+          <motion.p
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.18, duration: 0.45 }}
+            className="mx-auto mt-4 max-w-3xl text-sm leading-relaxed text-slate-600 sm:text-base"
+          >
+            Kegiatan pesantren menjadi bagian penting dari pembentukan karakter,
+            keberanian, dan kemandirian santri.
+          </motion.p>
+        </div>
+
+        <div className="mt-6 grid gap-4 lg:grid-cols-3">
+          {programs.map((item, index) => (
+            <motion.div
+              key={`${item.title}-${index}`}
+              initial={{ opacity: 0, y: 24, filter: "blur(7px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              transition={{
+                duration: 0.48,
+                delay: 0.24 + index * 0.06,
+                ease: EASE_PREMIUM,
+              }}
+            >
+              <TiltCard>
+                <div className="group overflow-hidden rounded-[1.6rem] border border-emerald-100 bg-white shadow-2xl">
+                  <div className="relative home-program-image overflow-hidden">
+                    <motion.div
+                      initial={{ clipPath: CLIP_LEFT }}
+                      animate={{ clipPath: CLIP_VISIBLE }}
+                      transition={{
+                        duration: 0.62,
+                        delay: index * 0.06,
+                        ease: EASE_PREMIUM,
+                      }}
+                      className="h-full w-full"
+                    >
+                      <SafeImage
+                        src={item.image}
+                        alt={item.title}
+                        className="h-full w-full object-cover transition duration-700 group-hover:scale-110"
+                      />
+                    </motion.div>
+
+                    <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/90 via-transparent to-transparent" />
+
+                    <motion.div
+                      animate={{ y: [0, -6, 0] }}
+                      transition={{
+                        duration: 5,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                        delay: index * 0.4,
+                      }}
+                      className="absolute bottom-4 left-4 right-4"
+                    >
+                      <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-2xl bg-yellow-400 text-xl text-emerald-950">
+                        {getIcon(item.iconKey)}
+                      </div>
+
+                      <p className="text-[10px] font-black uppercase tracking-[0.25em] text-yellow-300">
+                        {item.tag}
+                      </p>
+
+                      <h3 className="mt-2 text-2xl font-black text-white">
+                        {item.title}
+                      </h3>
+                    </motion.div>
+                  </div>
+
+                  <div className="p-5">
+                    <p className="text-sm leading-relaxed text-slate-600">
+                      {item.desc}
+                    </p>
+                  </div>
+                </div>
+              </TiltCard>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </ScreenShell>
+  );
+}
+
+function PembinaScreen({ pembinaItems, step, direction, setStep }) {
+  const currentPembina = pembinaItems[step] || pembinaItems[0];
+
+  const nextPembina = () => {
+    const nextIndex = step >= pembinaItems.length - 1 ? 0 : step + 1;
+    setStep(nextIndex);
+  };
+
+  const prevPembina = () => {
+    const prevIndex = step <= 0 ? pembinaItems.length - 1 : step - 1;
+    setStep(prevIndex);
+  };
+
+  return (
+    <ScreenShell sectionKey="pembina" direction={direction}>
+      <IslamicBackground dark intense />
+
+      <div data-allow-scroll="true" className="pembina-screen-v2">
+        <div className="pembina-content-v2">
+          {/* FOTO PEMBINA */}
+          <motion.div
+            initial={{ opacity: 0, x: -24, filter: "blur(7px)" }}
+            animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+            transition={{ delay: 0.14, duration: 0.5, ease: EASE_PREMIUM }}
+            className="pembina-photo-card-v2"
+          >
+            <div className="relative h-full overflow-hidden rounded-[1.55rem] border border-white/10 bg-white/10 p-3 shadow-2xl backdrop-blur-xl">
+              <div className="absolute -right-20 -top-20 h-56 w-56 rounded-full bg-yellow-300/10 blur-3xl" />
+              <div className="absolute -bottom-20 -left-20 h-56 w-56 rounded-full bg-emerald-300/10 blur-3xl" />
+
+              <AnimatePresence mode="wait" custom={direction}>
+                <motion.div
+                  key={step}
+                  custom={direction}
+                  initial={{
+                    opacity: 0,
+                    scale: 0.985,
+                    x: direction > 0 ? 22 : -22,
+                    clipPath: clipIn(direction),
+                  }}
+                  animate={{
+                    opacity: 1,
+                    scale: 1,
+                    x: 0,
+                    clipPath: CLIP_VISIBLE,
+                  }}
+                  exit={{
+                    opacity: 0,
+                    scale: 0.985,
+                    x: direction > 0 ? -22 : 22,
+                    clipPath: clipOut(direction),
+                  }}
+                  transition={{ duration: 0.46, ease: EASE_PREMIUM }}
+                  className="relative h-full overflow-hidden rounded-[1.3rem]"
+                >
+                  <div className="relative h-full overflow-hidden bg-emerald-950">
+                    <SafeImage
+                      src={currentPembina.image}
+                      alt={currentPembina.name}
+                      className="pembina-photo-v2 h-full w-full object-cover"
+                      fallback="/masjid.jpg"
+                    />
+
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/35 to-transparent" />
+
+                    <div className="absolute left-4 top-4 rounded-full bg-yellow-400 px-4 py-2 text-[10px] font-black uppercase tracking-[0.2em] text-emerald-950 shadow-lg">
+                      {currentPembina.badge || "Pembina"}
+                    </div>
+
+                    <div className="absolute bottom-0 left-0 right-0 p-5">
+                      <p className="text-[10px] font-black uppercase tracking-[0.24em] text-yellow-300">
+                        {currentPembina.role}
+                      </p>
+
+                      <h3 className="mt-2 line-clamp-2 text-2xl font-black leading-tight text-white lg:text-3xl">
+                        {currentPembina.name}
+                      </h3>
+
+                      <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-emerald-100">
+                        {currentPembina.focus}
+                      </p>
+                    </div>
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          </motion.div>
+
+          {/* PANEL KANAN */}
+          <motion.div
+            initial={{ opacity: 0, x: 24, filter: "blur(7px)" }}
+            animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+            transition={{ delay: 0.18, duration: 0.5, ease: EASE_PREMIUM }}
+            className="pembina-panel-v2"
+          >
+            <div className="flex h-full min-h-0 min-w-0 flex-col overflow-hidden rounded-[1.55rem] border border-white/10 bg-white/10 p-3 shadow-2xl backdrop-blur-xl sm:p-4">
+              {/* HEADER DALAM PANEL */}
+              <div className="shrink-0">
+                <Badge dark>Pembina Pesantren</Badge>
+
+                <h2 className="pembina-title-v2 mt-3 font-black leading-[0.98] tracking-[-0.05em] text-white">
+                  Santri tumbuh bersama
+                  <span className="block text-yellow-300">
+                    pembina yang mendampingi.
+                  </span>
+                </h2>
+
+                <p className="mt-3 max-w-3xl text-sm leading-relaxed text-emerald-100">
+                  Pembina pesantren mendampingi adab, disiplin, ibadah,
+                  kebersihan, dan kehidupan santri sehari-hari.
+                </p>
+              </div>
+
+              {/* DETAIL UTAMA */}
+              <AnimatePresence mode="wait" custom={direction}>
+                <motion.div
+                  key={`detail-${step}`}
+                  custom={direction}
+                  variants={stepVariants}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  transition={{ duration: 0.42, ease: EASE_PREMIUM }}
+                  className="pembina-focus-v2 relative mt-4 shrink-0 overflow-hidden rounded-[1.35rem] border border-white/10 bg-gradient-to-br from-white/15 via-white/10 to-yellow-300/10 p-4 sm:p-5"
+                >
+                  <div className="absolute -right-20 -top-20 h-56 w-56 rounded-full bg-yellow-300/10 blur-3xl" />
+
+                  <div className="relative z-10 grid gap-4 sm:grid-cols-[auto_1fr] sm:items-start">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-yellow-400 text-xl text-emerald-950 shadow-lg sm:h-12 sm:w-12">
+                      {getIcon(currentPembina.iconKey)}
+                    </div>
+
+                    <div className="min-w-0">
+                      <p className="text-[10px] font-black uppercase tracking-[0.22em] text-yellow-300">
+                        Fokus Pembinaan
+                      </p>
+
+                      <h3 className="mt-2 max-w-full break-words text-[clamp(1.2rem,2.15vw,1.85rem)] font-black leading-[1.08] tracking-[-0.04em] text-white">
+                        Membina santri dengan ilmu, adab, dan keteladanan.
+                      </h3>
+
+                      <p className="mt-3 line-clamp-2 text-sm leading-relaxed text-emerald-100">
+                        {currentPembina.focus}
+                      </p>
+                    </div>
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+
+              {/* MINI VALUE */}
+              <div className="mt-3 grid shrink-0 grid-cols-3 gap-2 sm:gap-3">
+                {[
+                  ["Adab", "Pembiasaan"],
+                  ["Ibadah", "Pendampingan"],
+                  ["Disiplin", "Rutinitas"],
+                ].map((item, index) => (
+                  <motion.div
+                    key={item[0]}
+                    initial={{ opacity: 0, y: 14 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{
+                      delay: 0.28 + index * 0.05,
+                      duration: 0.38,
+                      ease: EASE_PREMIUM,
+                    }}
+                    className="rounded-2xl border border-white/10 bg-white/10 p-3"
+                  >
+                    <p className="text-xs font-black text-yellow-300">
+                      {item[0]}
+                    </p>
+                    <p className="mt-1 truncate text-[11px] font-semibold text-emerald-100/80">
+                      {item[1]}
+                    </p>
+                  </motion.div>
+                ))}
+              </div>
+
+              {/* LIST PEMBINA */}
+              <div
+                data-allow-scroll="true"
+                className="mt-3 min-h-0 flex-1 overflow-hidden rounded-[1.35rem] border border-white/10 bg-black/10 p-2 sm:p-3"
+              >
+                <div
+                  data-allow-scroll="true"
+                  className="no-scrollbar h-full overflow-y-auto pr-1"
+                >
+                  <div className="grid gap-2">
+                    {pembinaItems.map((item, index) => (
+                      <motion.button
+                        key={`${item.name}-${index}`}
+                        onClick={() => setStep(index)}
+                        whileTap={{ scale: 0.97 }}
+                        whileHover={{ x: 5 }}
+                        className={`group flex min-w-0 items-center gap-3 rounded-2xl border p-3 text-left transition ${
+                          step === index
+                            ? "border-yellow-300 bg-yellow-400 text-emerald-950 shadow-lg shadow-yellow-950/20"
+                            : "border-white/10 bg-white/10 text-white hover:border-yellow-300/40 hover:bg-white/15"
+                        }`}
+                      >
+                        <div
+                          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-base transition ${
+                            step === index
+                              ? "bg-emerald-950 text-yellow-300"
+                              : "bg-white/10 text-yellow-300 group-hover:bg-yellow-300 group-hover:text-emerald-950"
+                          }`}
+                        >
+                          {getIcon(item.iconKey)}
+                        </div>
+
+                        <div className="min-w-0 flex-1">
+                          <p className="truncate text-sm font-black">
+                            {item.name}
+                          </p>
+
+                          <p
+                            className={`mt-1 truncate text-xs font-semibold ${
+                              step === index
+                                ? "text-emerald-900"
+                                : "text-emerald-100/75"
+                            }`}
+                          >
+                            {item.role}
+                          </p>
+                        </div>
+
+                        <span
+                          className={`hidden rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-[0.18em] sm:block ${
+                            step === index
+                              ? "bg-emerald-950 text-yellow-300"
+                              : "bg-white/10 text-yellow-300"
+                          }`}
+                        >
+                          {String(index + 1).padStart(2, "0")}
+                        </span>
+                      </motion.button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* CONTROL INTERNAL */}
+              <div className="mt-3 flex shrink-0 items-center justify-between gap-3">
+                <button
+                  onClick={prevPembina}
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white transition hover:-translate-y-1 hover:bg-white/20"
+                >
+                  <FaArrowUp />
+                </button>
+
+                <div className="rounded-full border border-white/10 bg-white/10 px-4 py-2 text-[10px] font-black uppercase tracking-[0.2em] text-yellow-300">
+                  {step + 1} / {pembinaItems.length}
+                </div>
+
+                <button
+                  onClick={nextPembina}
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-yellow-400 text-emerald-950 transition hover:-translate-y-1 hover:bg-yellow-300"
+                >
+                  <FaArrowDown />
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+    </ScreenShell>
+  );
+}
+function CtaScreen({ direction }) {
+  return (
+    <ScreenShell light sectionKey="cta" direction={direction}>
+      <IslamicBackground />
+
+      <div className="home-screen flex items-center justify-center text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 36, scale: 0.95, filter: "blur(7px)" }}
+          animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
+          exit={{ opacity: 0, y: -36, scale: 0.95, filter: "blur(7px)" }}
+          transition={{ duration: 0.52, ease: EASE_PREMIUM }}
+          className="relative mx-auto max-w-5xl overflow-hidden rounded-[2rem] bg-emerald-950 p-7 text-white shadow-2xl md:p-10"
+        >
+          <div className="absolute inset-0 bg-[url('/pattern.png')] opacity-[0.07]" />
+          <div className="absolute -right-24 -top-24 h-72 w-72 rounded-full bg-yellow-300/15 blur-3xl" />
+          <div className="absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-emerald-300/15 blur-3xl" />
+
+          <div className="relative z-10">
+            <motion.div
+              animate={{
+                rotate: [0, 8, -8, 0],
+                scale: [1, 1.05, 1],
+              }}
+              transition={{
+                duration: 4,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+              className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-3xl bg-yellow-400 text-xl text-emerald-950"
+            >
+              <FaCheckCircle />
+            </motion.div>
+
+            <p className="font-bold text-yellow-300">
+              Perjalanan dimulai dari keputusan kecil.
+            </p>
+
+            <h2 className="home-heading mt-4 font-black leading-[0.98] tracking-[-0.05em]">
+              Mulai perjalanan santri bersama Al-Furqon.
+            </h2>
+
+            <p className="mx-auto mt-5 max-w-3xl text-sm leading-relaxed text-emerald-100 sm:text-base">
+              Daftarkan calon santri dan jadikan Al-Furqon sebagai tempat
+              tumbuh ilmu, adab, ibadah, dan masa depan.
+            </p>
+
+            <div className="mt-7 flex flex-col justify-center gap-4 sm:flex-row">
+              <MagneticButton href="/pendaftaran">
+                Daftar Sekarang
+                <FaArrowRight />
+              </MagneticButton>
+
+              <MagneticButton
+                href={WHATSAPP_ADMIN_URL}
+                variant="secondary"
+                external
+              >
+                <FaWhatsapp />
+                Hubungi Admin
+              </MagneticButton>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </ScreenShell>
+  );
+}
+
+function isInteractiveElement(target) {
+  if (!target?.closest) return false;
+
+  return Boolean(
+    target.closest(
+      "button, a, input, textarea, select, [role='button'], [data-no-section-swipe='true']"
+    )
+  );
+}
+
+function getScrollableHomeScreen(target) {
+  if (!target?.closest) return null;
+
+  const candidates = [
+    target.closest("[data-allow-scroll='true']"),
+    target.closest(".pembina-screen-v2"),
+    target.closest(".home-screen"),
+  ].filter(Boolean);
+
+  return (
+    candidates.find(
+      (element) => element.scrollHeight > element.clientHeight + 4
+    ) || null
+  );
+}
+
+function canScrollElement(element, deltaY) {
+  if (!element) return false;
+
+  if (deltaY > 0) {
+    return element.scrollTop + element.clientHeight < element.scrollHeight - 4;
+  }
+
+  return element.scrollTop > 4;
+}
 
 export default function Home() {
+  const [mounted, setMounted] = useState(false);
+
   const [homeData, setHomeData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [maintenance, setMaintenance] = useState(false);
   const [checking, setChecking] = useState(false);
 
-  const [activeStory, setActiveStory] = useState(0);
-  const [activePembina, setActivePembina] = useState(0);
+  const [position, setPosition] = useState({
+    section: 0,
+    step: 0,
+    direction: 1,
+  });
 
-const { scrollY } = useScroll();
+  const cooldown = useRef(false);
+const touchStartY = useRef(0);
+const touchStartX = useRef(0);
+const touchStartTarget = useRef(null);
 
-const heroImageScale = useTransform(scrollY, [0, 900], [1, 1.28]);
-const heroTextY = useTransform(scrollY, [0, 900], [0, 180]);
-const heroOverlayOpacity = useTransform(scrollY, [0, 900], [0.38, 0.9]);
+const navbarRef = useRef(null);
+const [navbarHeight, setNavbarHeight] = useState(92);
 
-const valuesScene = {
-  y: useTransform(scrollY, [500, 1200, 1900], [160, 0, -120]),
-  scale: useTransform(scrollY, [500, 1200, 1900], [0.94, 1, 1.04]),
-  opacity: useTransform(scrollY, [500, 850, 1850], [0.35, 1, 0.8]),
-};
+  const hero = homeData?.hero || DEFAULT_HERO;
+  const stats = homeData?.heroStats?.length ? homeData.heroStats : DEFAULT_STATS;
+  const values = homeData?.values?.length ? homeData.values : DEFAULT_VALUES;
 
-const storyScene = {
-  y: useTransform(scrollY, [1400, 2300, 3200], [180, 0, -160]),
-  scale: useTransform(scrollY, [1400, 2300, 3200], [0.92, 1, 1.04]),
-};
+  const storyItems = homeData?.storyChapters?.length
+    ? homeData.storyChapters
+    : DEFAULT_STORY;
 
-const programScene = {
-  y: useTransform(scrollY, [2500, 3500, 4500], [160, 0, -130]),
-  scale: useTransform(scrollY, [2500, 3500, 4500], [0.94, 1, 1.03]),
-};
+  const programs = homeData?.programs?.length
+    ? homeData.programs
+    : DEFAULT_PROGRAMS;
 
-const pembinaScene = {
-  y: useTransform(scrollY, [3600, 4700, 5700], [180, 0, -150]),
-  scale: useTransform(scrollY, [3600, 4700, 5700], [0.93, 1, 1.04]),
-};
+  const pembinaItems = homeData?.pembina?.length
+    ? homeData.pembina
+    : DEFAULT_PEMBINA;
 
-const ctaScene = {
-  y: useTransform(scrollY, [5000, 6100], [160, 0]),
-  scale: useTransform(scrollY, [5000, 6100], [0.92, 1]),
-};
+  const sections = useMemo(
+    () => [
+      { key: "hero", label: "Home", total: 1 },
+      { key: "values", label: "Nilai", total: 1 },
+      { key: "story", label: "Cerita", total: storyItems.length || 1 },
+      { key: "program", label: "Program", total: 1 },
+      { key: "pembina", label: "Pembina", total: pembinaItems.length || 1 },
+      { key: "cta", label: "Daftar", total: 1 },
+    ],
+    [storyItems.length, pembinaItems.length]
+  );
+
+  const activeSection = position.section;
+  const activeStep = position.step;
+  const direction = position.direction;
+
+  const currentTotal = sections[activeSection]?.total || 1;
+
+  const isFirst = activeSection === 0 && activeStep === 0;
+
+  const isLast =
+    activeSection === sections.length - 1 && activeStep === currentTotal - 1;
 
   const fetchHomeData = async () => {
     try {
@@ -909,768 +1769,379 @@ const ctaScene = {
   };
 
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
     fetchHomeData();
   }, []);
 
   useEffect(() => {
-    if (!homeData?.storyChapters?.length) return;
+    PRELOAD_ASSETS.forEach((src) => {
+      const image = new window.Image();
+      image.src = src;
+    });
+  }, []);
 
-    const timer = setInterval(() => {
-      setActiveStory((prev) => (prev + 1) % homeData.storyChapters.length);
-    }, 4200);
+  const jumpToSection = useCallback(
+    (index) => {
+      cooldown.current = false;
 
-    return () => clearInterval(timer);
-  }, [homeData]);
+      setPosition((prev) => {
+        const safeIndex = Math.min(Math.max(index, 0), sections.length - 1);
+
+        return {
+          section: safeIndex,
+          step: 0,
+          direction: safeIndex >= prev.section ? 1 : -1,
+        };
+      });
+    },
+    [sections.length]
+  );
+
+  const handleDirection = useCallback(
+    (dir) => {
+      if (cooldown.current) return;
+
+      cooldown.current = true;
+
+      setPosition((prev) => {
+        const total = sections[prev.section]?.total || 1;
+
+        if (dir > 0) {
+          if (prev.step < total - 1) {
+            return {
+              section: prev.section,
+              step: prev.step + 1,
+              direction: 1,
+            };
+          }
+
+          if (prev.section < sections.length - 1) {
+            return {
+              section: prev.section + 1,
+              step: 0,
+              direction: 1,
+            };
+          }
+
+          return {
+            ...prev,
+            direction: 1,
+          };
+        }
+
+        if (prev.step > 0) {
+          return {
+            section: prev.section,
+            step: prev.step - 1,
+            direction: -1,
+          };
+        }
+
+        if (prev.section > 0) {
+          const previousSection = prev.section - 1;
+
+          return {
+            section: previousSection,
+            step: sections[previousSection].total - 1,
+            direction: -1,
+          };
+        }
+
+        return {
+          ...prev,
+          direction: -1,
+        };
+      });
+
+      window.setTimeout(() => {
+        cooldown.current = false;
+      }, 680);
+    },
+    [sections]
+  );
 
   useEffect(() => {
-    if (!homeData?.pembina?.length) return;
+  if (!mounted || loading || maintenance) return;
 
-    const timer = setInterval(() => {
-      setActivePembina((prev) => (prev + 1) % homeData.pembina.length);
-    }, 4200);
+  const oldHtmlOverflow = document.documentElement.style.overflow;
+  const oldBodyOverflow = document.body.style.overflow;
+  const oldHtmlHeight = document.documentElement.style.height;
+  const oldBodyHeight = document.body.style.height;
+  const oldBodyOverscroll = document.body.style.overscrollBehavior;
 
-    return () => clearInterval(timer);
-  }, [homeData]);
+  document.documentElement.style.overflow = "hidden";
+  document.body.style.overflow = "hidden";
+  document.documentElement.style.height = "100%";
+  document.body.style.height = "100%";
+  document.body.style.overscrollBehavior = "none";
+
+  const handleWheel = (event) => {
+    const scrollableScreen = getScrollableHomeScreen(event.target);
+
+    if (
+      scrollableScreen &&
+      canScrollElement(scrollableScreen, event.deltaY)
+    ) {
+      return;
+    }
+
+    event.preventDefault();
+
+    if (Math.abs(event.deltaY) < 18) return;
+
+    handleDirection(event.deltaY > 0 ? 1 : -1);
+  };
+
+  const handleKeyDown = (event) => {
+    if (
+      event.key === "ArrowDown" ||
+      event.key === "PageDown" ||
+      event.key === " "
+    ) {
+      event.preventDefault();
+      handleDirection(1);
+    }
+
+    if (event.key === "ArrowUp" || event.key === "PageUp") {
+      event.preventDefault();
+      handleDirection(-1);
+    }
+
+    if (event.key === "Home") {
+      event.preventDefault();
+      jumpToSection(0);
+    }
+
+    if (event.key === "End") {
+      event.preventDefault();
+      jumpToSection(sections.length - 1);
+    }
+  };
+
+  const handleTouchStart = (event) => {
+    touchStartY.current = event.touches[0].clientY;
+    touchStartX.current = event.touches[0].clientX;
+    touchStartTarget.current = event.target;
+  };
+
+  const handleTouchEnd = (event) => {
+    const target = touchStartTarget.current;
+
+    if (isInteractiveElement(target)) return;
+
+    const endY = event.changedTouches[0].clientY;
+    const endX = event.changedTouches[0].clientX;
+
+    const diffY = touchStartY.current - endY;
+    const diffX = touchStartX.current - endX;
+
+    if (Math.abs(diffY) < 44) return;
+    if (Math.abs(diffY) < Math.abs(diffX) * 1.15) return;
+
+    const scrollableScreen = getScrollableHomeScreen(target);
+
+    if (scrollableScreen && canScrollElement(scrollableScreen, diffY)) {
+      return;
+    }
+
+    handleDirection(diffY > 0 ? 1 : -1);
+  };
+
+  window.addEventListener("wheel", handleWheel, { passive: false });
+  window.addEventListener("keydown", handleKeyDown);
+  window.addEventListener("touchstart", handleTouchStart, { passive: true });
+  window.addEventListener("touchend", handleTouchEnd, { passive: true });
+
+  return () => {
+    document.documentElement.style.overflow = oldHtmlOverflow;
+    document.body.style.overflow = oldBodyOverflow;
+    document.documentElement.style.height = oldHtmlHeight;
+    document.body.style.height = oldBodyHeight;
+    document.body.style.overscrollBehavior = oldBodyOverscroll;
+
+    window.removeEventListener("wheel", handleWheel);
+    window.removeEventListener("keydown", handleKeyDown);
+    window.removeEventListener("touchstart", handleTouchStart);
+    window.removeEventListener("touchend", handleTouchEnd);
+  };
+}, [
+  mounted,
+  loading,
+  maintenance,
+  handleDirection,
+  jumpToSection,
+  sections.length,
+]);
+
+  const setCurrentStoryStep = (index) => {
+    setPosition({
+      section: 2,
+      step: index,
+      direction: index >= activeStep ? 1 : -1,
+    });
+  };
+
+  const setCurrentPembinaStep = (index) => {
+    setPosition({
+      section: 4,
+      step: index,
+      direction: index >= activeStep ? 1 : -1,
+    });
+  };
+
+  const renderScreen = () => {
+    const key = sections[activeSection]?.key;
+
+    if (key === "hero") {
+      return (
+        <HeroScreen
+          key="hero"
+          hero={hero}
+          stats={stats}
+          direction={direction}
+          handleDirection={handleDirection}
+        />
+      );
+    }
+
+    if (key === "values") {
+      return <ValuesScreen key="values" values={values} direction={direction} />;
+    }
+
+    if (key === "story") {
+      return (
+        <StoryScreen
+          key="story"
+          storyItems={storyItems}
+          step={activeStep}
+          direction={direction}
+          setStep={setCurrentStoryStep}
+        />
+      );
+    }
+
+    if (key === "program") {
+      return (
+        <ProgramScreen
+          key="program"
+          programs={programs}
+          direction={direction}
+        />
+      );
+    }
+
+    if (key === "pembina") {
+      return (
+        <PembinaScreen
+          key="pembina"
+          pembinaItems={pembinaItems}
+          step={activeStep}
+          direction={direction}
+          setStep={setCurrentPembinaStep}
+        />
+      );
+    }
+
+    return <CtaScreen key="cta" direction={direction} />;
+  };
+
+useEffect(() => {
+  if (!mounted) return;
+
+  const wrapper = navbarRef.current;
+  if (!wrapper) return;
+
+  const getRealNavbar = () => wrapper.querySelector("nav") || wrapper;
+
+  const updateNavbarHeight = () => {
+    const navbarElement = getRealNavbar();
+    if (!navbarElement) return;
+
+    const rect = navbarElement.getBoundingClientRect();
+    const height = Math.ceil(rect.height || navbarElement.offsetHeight || 86);
+
+    setNavbarHeight(Math.max(height, 64));
+  };
+
+  updateNavbarHeight();
+
+  const resizeObserver =
+    typeof ResizeObserver !== "undefined"
+      ? new ResizeObserver(updateNavbarHeight)
+      : null;
+
+  resizeObserver?.observe(getRealNavbar());
+  resizeObserver?.observe(wrapper);
+
+  window.addEventListener("resize", updateNavbarHeight);
+  window.addEventListener("orientationchange", updateNavbarHeight);
+
+  return () => {
+    resizeObserver?.disconnect();
+    window.removeEventListener("resize", updateNavbarHeight);
+    window.removeEventListener("orientationchange", updateNavbarHeight);
+  };
+}, [mounted]);
+
+  if (!mounted) {
+    return (
+      <main
+        suppressHydrationWarning
+        className="fixed inset-0 h-[100dvh] overflow-hidden bg-[#041b15]"
+      />
+    );
+  }
 
   if (loading) {
     return <LoadingPage />;
   }
 
-  if (maintenance || !homeData) {
+  if (maintenance) {
     return <MaintenancePage onRetry={fetchHomeData} checking={checking} />;
   }
 
-  const hero = homeData.hero;
-  const currentStory =
-    homeData.storyChapters[activeStory] || homeData.storyChapters[0];
-  const currentPembina = homeData.pembina[activePembina] || homeData.pembina[0];
-
   return (
-    <main className="overflow-x-hidden bg-[#f7f1df] text-slate-900">
-      <ScrollProgress />
-      <CursorGlow />
-      <SectionNavigator />
+  <main
+  style={{
+    "--home-nav-h": `${navbarHeight || 92}px`,
+    "--home-navbar-height": `${navbarHeight || 92}px`,
+  }}
+    className="fixed inset-0 h-[100dvh] overflow-hidden bg-[#041b15] text-white"
+  >
+    <CursorGlow />
+
+    <div ref={navbarRef} className="home-navbar-layer">
       <Navbar />
-
-      {/* HERO */}
-      <Section id="hero" dark scene={0} label="Awal">
-        <div className="absolute inset-0">
-          <motion.div style={{ scale: heroImageScale }} className="h-full w-full">
-            <SafeImage
-              src={hero.image}
-              alt="Pondok Pesantren Al-Furqon"
-              className="h-full w-full object-cover"
-            />
-          </motion.div>
-        </div>
-
-        <div className="absolute inset-0 bg-gradient-to-r from-[#041b15] via-[#062d22]/95 to-[#0d4f38]/45" />
-        <motion.div
-          style={{ opacity: heroOverlayOpacity }}
-          className="absolute inset-0 bg-black"
-        />
-
-        <IslamicBackground dark intense />
-        <FloatingVerse />
-
-        <Container className="flex min-h-[100svh] items-center">
-          <div className="grid w-full items-center gap-10 lg:grid-cols-[1.05fr_0.95fr]">
-            <motion.div
-              style={{ y: heroTextY }}
-              initial={{ opacity: 0, y: 45 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.85 }}
-              className="max-w-5xl"
-            >
-              <motion.p
-                initial={{ opacity: 0, y: 25 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.15, duration: 0.7 }}
-                className="mb-4 text-lg leading-loose text-yellow-300 sm:text-xl lg:text-2xl"
-              >
-                {hero.arabic}
-              </motion.p>
-
-              <Badge light>{hero.badge}</Badge>
-
-              <motion.h1
-                initial={{ opacity: 0, y: 35, filter: "blur(12px)" }}
-                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                transition={{ delay: 0.25, duration: 0.9 }}
-                className="mt-5 text-[clamp(2.6rem,7vw,7rem)] font-black leading-[0.92] tracking-[-0.065em]"
-              >
-                {hero.title}
-                <span className="block bg-gradient-to-r from-yellow-300 via-yellow-400 to-emerald-200 bg-clip-text text-transparent">
-                  {hero.highlight}
-                </span>
-              </motion.h1>
-
-              <motion.p
-                initial={{ opacity: 0, y: 25 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.38, duration: 0.7 }}
-                className="mt-6 max-w-4xl text-sm leading-relaxed text-emerald-50 sm:text-base lg:text-xl"
-              >
-                {hero.desc}
-              </motion.p>
-
-              <motion.div
-                initial={{ opacity: 0, y: 25 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5, duration: 0.7 }}
-                className="mt-8 flex flex-col gap-3 sm:flex-row"
-              >
-                <MagneticButton href="/pendaftaran">
-                  Mulai Pendaftaran
-                  <FaArrowRight className="transition group-hover:translate-x-1" />
-                </MagneticButton>
-
-                <MagneticButton href="/program" variant="secondary">
-                  <FaPlay />
-                  Lihat Program
-                </MagneticButton>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 35 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.65, duration: 0.7 }}
-                className="mt-9 grid max-w-3xl grid-cols-1 gap-3 sm:grid-cols-3"
-              >
-                {homeData.heroStats.map((item, index) => (
-                  <TiltCard key={item.label}>
-                    <motion.div
-                      initial={{ opacity: 0, y: 25 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.7 + index * 0.08 }}
-                      className="rounded-3xl border border-white/10 bg-white/10 p-5 backdrop-blur-xl"
-                    >
-                      <h3 className="text-3xl font-black text-yellow-300">
-                        {item.value}
-                      </h3>
-
-                      <p className="mt-1 text-xs font-bold text-emerald-100 sm:text-sm">
-                        {item.label}
-                      </p>
-                    </motion.div>
-                  </TiltCard>
-                ))}
-              </motion.div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, scale: 0.92, rotate: -3 }}
-              animate={{ opacity: 1, scale: 1, rotate: 0 }}
-              transition={{ duration: 0.9, delay: 0.2 }}
-              className="hidden lg:block"
-            >
-              <TiltCard>
-                <div className="relative ml-auto max-w-xl">
-                  <motion.div
-                    animate={{ rotate: [0, 2, 0] }}
-                    transition={{
-                      duration: 5,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
-                    className="absolute -left-6 -top-6 h-full w-full rounded-[2.5rem] border border-yellow-300/30"
-                  />
-
-                  <motion.div
-                    animate={{ rotate: [0, -2, 0] }}
-                    transition={{
-                      duration: 6,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
-                    className="absolute -bottom-6 -right-6 h-full w-full rounded-[2.5rem] border border-emerald-300/25"
-                  />
-
-                  <div className="relative overflow-hidden rounded-[2.5rem] border border-white/10 bg-white/10 p-6 shadow-2xl backdrop-blur-xl">
-                    <motion.div
-                      animate={{ y: [0, -10, 0] }}
-                      transition={{
-                        duration: 6,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                      }}
-                    >
-                      <SafeImage
-                        src="/logo.png"
-                        alt="Logo Al-Furqon"
-                        className="mx-auto w-64 drop-shadow-[0_0_40px_rgba(255,255,255,0.35)]"
-                      />
-                    </motion.div>
-
-                    <div className="mt-8 rounded-3xl bg-emerald-950/80 p-6">
-                      <FaQuoteLeft className="mb-4 text-2xl text-yellow-300" />
-                      <p className="text-base leading-relaxed text-emerald-50">
-                        “Tempat belajar menemukan arah, bukan hanya mengejar
-                        nilai.”
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </TiltCard>
-            </motion.div>
-          </div>
-
-          <motion.a
-            href="#values"
-            animate={{ y: [0, 12, 0] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute bottom-8 left-1/2 hidden -translate-x-1/2 items-center gap-2 rounded-full border border-white/10 bg-white/10 px-5 py-3 text-sm font-black text-white backdrop-blur-xl transition hover:bg-white/20 lg:inline-flex"
-          >
-            Scroll
-            <FaChevronDown className="text-yellow-300" />
-          </motion.a>
-        </Container>
-      </Section>
-
-      {/* VALUES */}
-<Section
-  id="values"
-  scene={1}
-  label="Nilai"
-  className="bg-gradient-to-br from-[#f7f1df] via-white to-emerald-50"
->
-        <IslamicBackground />
-        <Container
-  style={valuesScene}
-  className="flex min-h-[100svh] flex-col justify-center"
->
-          <SectionHeader
-            badge="Nilai Pendidikan"
-            title="Lingkungan pesantren membentuk kehidupan santri"
-            desc="Pendidikan di Al-Furqon tidak hanya mengajarkan ilmu, tetapi membentuk ibadah, adab, disiplin, dan kemandirian."
-          />
-
-          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {homeData.values.map((item, index) => (
-              <Reveal key={item.title} delay={index * 0.08}>
-                <TiltCard>
-                  <div className="group relative overflow-hidden rounded-[2rem] border border-emerald-100 bg-white/85 p-6 shadow-xl backdrop-blur transition hover:bg-white">
-                    <div className="absolute -right-14 -top-14 h-36 w-36 rounded-full bg-yellow-300/20 blur-3xl transition group-hover:scale-125" />
-
-                    <div className="relative z-10">
-                      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-950 text-2xl text-yellow-300 transition group-hover:scale-110">
-                        {getIcon(item.iconKey)}
-                      </div>
-
-                      <h3 className="mt-5 text-2xl font-black text-emerald-950">
-                        {item.title}
-                      </h3>
-
-                      <p className="mt-3 text-sm leading-relaxed text-slate-600">
-                        {item.desc}
-                      </p>
-                    </div>
-                  </div>
-                </TiltCard>
-              </Reveal>
-            ))}
-          </div>
-        </Container>
-      </Section>
-
-      {/* STORY */}
-      <Section id="story" dark scene={2} label="Cerita">
-        <IslamicBackground dark intense />
-
-        <Container className="flex min-h-[100svh] items-center">
-          <div className="grid w-full items-center gap-8 lg:grid-cols-[0.92fr_1.08fr]">
-            <ParallaxBlock
-  range={[1500, 3200]}
-  y={[160, -140]}
-  scale={[0.92, 1.05]}
-  rotate={[-3, 2]}
-  className="hidden lg:block"
->
-  <div className="overflow-hidden rounded-[2rem] border border-white/10 bg-white/10 p-3 shadow-2xl backdrop-blur-xl">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={activeStory}
-                    initial={{ opacity: 0, scale: 1.05, rotate: 2 }}
-                    animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                    exit={{ opacity: 0, scale: 0.96, rotate: -2 }}
-                    transition={{ duration: 0.5 }}
-                    className="relative overflow-hidden rounded-[1.6rem]"
-                  >
-                    <SafeImage
-                      src={currentStory.image}
-                      alt={currentStory.label}
-                      className="h-[62svh] w-full object-cover"
-                    />
-
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent"
-                    />
-
-                    <div className="absolute bottom-0 left-0 p-6">
-                      <p className="text-sm font-black tracking-[0.35em] text-yellow-300">
-                        BAB {currentStory.number}
-                      </p>
-
-                      <h3 className="mt-2 text-5xl font-black text-white">
-                        {currentStory.label}
-                      </h3>
-                    </div>
-                  </motion.div>
-                </AnimatePresence>
-              </div>
-            </ParallaxBlock>
-
-            <Reveal type="right">
-              <Badge light>Bab Cerita</Badge>
-
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={activeStory}
-                  initial={{ opacity: 0, y: 35, filter: "blur(10px)" }}
-                  animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                  exit={{ opacity: 0, y: -35, filter: "blur(10px)" }}
-                  transition={{ duration: 0.45 }}
-                >
-                  <p className="mt-6 text-xs font-black uppercase tracking-[0.35em] text-yellow-300">
-                    BAB {currentStory.number} / 04
-                  </p>
-
-                  <h2 className="mt-4 text-[clamp(2.1rem,6vw,5rem)] font-black leading-[0.95] tracking-[-0.06em] text-white">
-                    {currentStory.title}
-                  </h2>
-
-                  <p className="mt-6 max-w-2xl text-sm leading-relaxed text-emerald-100 sm:text-base lg:text-lg">
-                    {currentStory.desc}
-                  </p>
-                </motion.div>
-              </AnimatePresence>
-
-              <div className="mt-7 grid grid-cols-4 gap-2">
-                {homeData.storyChapters.map((item, index) => (
-                  <motion.button
-                    key={item.number}
-                    onClick={() => setActiveStory(index)}
-                    whileTap={{ scale: 0.96 }}
-                    className={`relative overflow-hidden rounded-2xl border p-3 text-left transition ${
-                      activeStory === index
-                        ? "border-yellow-300 bg-yellow-300 text-emerald-950"
-                        : "border-white/10 bg-white/10 text-white hover:bg-white/20"
-                    }`}
-                  >
-                    {activeStory === index && (
-                      <motion.div
-                        layoutId="story-active"
-                        className="absolute inset-0 bg-yellow-300"
-                        transition={{
-                          type: "spring",
-                          stiffness: 260,
-                          damping: 28,
-                        }}
-                      />
-                    )}
-
-                    <span className="relative z-10 block">
-                      <p className="text-xs font-black">{item.number}</p>
-                      <p className="mt-2 hidden text-sm font-black sm:block">
-                        {item.label}
-                      </p>
-                    </span>
-                  </motion.button>
-                ))}
-              </div>
-            </Reveal>
-          </div>
-        </Container>
-      </Section>
-
-      {/* PROGRAM */}
-      <Section id="program" scene={3} label="Program" className="bg-[#f7f1df]">
-        <IslamicBackground />
-
-<Container
-  style={programScene}
-  className="flex min-h-[100svh] flex-col justify-center"
->
-          <SectionHeader
-            badge="Program Pembinaan"
-            title="Program santri yang aktif dan bermakna"
-            desc="Kegiatan pesantren menjadi bagian penting dari pembentukan karakter, keberanian, dan kemandirian santri."
-          />
-
-          <div className="mt-10 grid gap-5 lg:grid-cols-3">
-            {homeData.programs.map((item, index) => (
-              <Reveal key={item.title} delay={index * 0.08}>
-                <TiltCard>
-                  <div className="group overflow-hidden rounded-[2rem] border border-emerald-100 bg-white shadow-2xl">
-                    <div className="relative h-[280px] overflow-hidden">
-                      <SafeImage
-                        src={item.image}
-                        alt={item.title}
-                        className="h-full w-full object-cover transition duration-700 group-hover:scale-110"
-                      />
-
-                      <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/90 via-transparent to-transparent" />
-
-                      <motion.div
-                        animate={{ y: [0, -8, 0] }}
-                        transition={{
-                          duration: 5,
-                          repeat: Infinity,
-                          ease: "easeInOut",
-                          delay: index * 0.4,
-                        }}
-                        className="absolute bottom-5 left-5 right-5"
-                      >
-                        <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-yellow-400 text-2xl text-emerald-950">
-                          {getIcon(item.iconKey)}
-                        </div>
-
-                        <p className="text-xs font-black uppercase tracking-[0.28em] text-yellow-300">
-                          {item.tag}
-                        </p>
-
-                        <h3 className="mt-2 text-3xl font-black text-white">
-                          {item.title}
-                        </h3>
-                      </motion.div>
-                    </div>
-
-                    <div className="p-6">
-                      <p className="text-sm leading-relaxed text-slate-600 sm:text-base">
-                        {item.desc}
-                      </p>
-                    </div>
-                  </div>
-                </TiltCard>
-              </Reveal>
-            ))}
-          </div>
-        </Container>
-      </Section>
-
-      {/* PEMBINA */}
-<Section id="pembina" dark scene={4} label="Pembina">
-  <IslamicBackground dark intense />
-
-<ResponsiveMotionContainer
-  desktopStyle={pembinaScene}
-  className="flex min-h-[100svh] items-center"
->
-    <div className="w-full max-w-full overflow-hidden">
-      {/* HEADER */}
-      <Reveal>
-        <div className="mx-auto max-w-5xl text-center">
-          <Badge light>Pembina Pesantren</Badge>
-
-          <h2 className="mt-5 text-[clamp(2rem,7vw,4.5rem)] font-black leading-[0.95] tracking-[-0.06em] text-white">
-            Santri tumbuh bersama
-            <span className="block text-yellow-300">
-              pembina yang mendampingi.
-            </span>
-          </h2>
-
-          <p className="mx-auto mt-5 max-w-3xl text-sm leading-relaxed text-emerald-100 sm:text-base lg:text-lg">
-            Pembina pesantren mendampingi adab, disiplin, ibadah, kebersihan,
-            dan kehidupan santri sehari-hari agar tumbuh lebih mandiri.
-          </p>
-        </div>
-      </Reveal>
-
-      {/* CONTENT */}
-      <div className="mt-8 grid w-full max-w-full grid-cols-1 gap-5 overflow-hidden lg:mt-10 xl:grid-cols-[0.85fr_1.15fr] xl:items-stretch">
-        {/* FOTO PEMBINA */}
-        <Reveal type="left">
-          <div className="relative overflow-hidden rounded-[1.8rem] border border-white/10 bg-white/10 p-3 shadow-2xl backdrop-blur-xl sm:rounded-[2rem]">
-            <div className="absolute -right-20 -top-20 h-60 w-60 rounded-full bg-yellow-300/10 blur-3xl" />
-            <div className="absolute -bottom-20 -left-20 h-60 w-60 rounded-full bg-emerald-300/10 blur-3xl" />
-
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activePembina}
-                initial={{ opacity: 0, scale: 0.96, y: 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.96, y: -20 }}
-                transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-                className="relative overflow-hidden rounded-[1.4rem]"
-              >
-                <div className="relative h-[360px] overflow-hidden sm:h-[460px] xl:h-[620px]">
-                  <SafeImage
-                    src={currentPembina.image}
-                    alt={currentPembina.name}
-                    className="h-full w-full object-cover"
-                  />
-
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/25 to-transparent" />
-
-                  <div className="absolute left-4 top-4 rounded-full bg-yellow-400 px-4 py-2 text-[10px] font-black uppercase tracking-[0.22em] text-emerald-950">
-                    {currentPembina.badge}
-                  </div>
-
-                  <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-7">
-                    <p className="text-xs font-black uppercase tracking-[0.25em] text-yellow-300">
-                      {currentPembina.role}
-                    </p>
-
-                    <h3 className="mt-2 line-clamp-2 text-2xl font-black leading-tight text-white sm:text-4xl">
-                      {currentPembina.name}
-                    </h3>
-
-                    <p className="mt-3 line-clamp-3 max-w-xl text-sm leading-relaxed text-emerald-100">
-                      {currentPembina.focus}
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
-            </AnimatePresence>
-          </div>
-        </Reveal>
-
-        {/* INFORMASI PEMBINA */}
-        <Reveal type="right">
-          <div className="flex h-full min-w-0 max-w-full flex-col overflow-hidden rounded-[1.8rem] border border-white/10 bg-white/10 p-4 shadow-2xl backdrop-blur-xl sm:rounded-[2rem] sm:p-5 lg:p-6">
-            <div className="relative overflow-hidden rounded-[1.5rem] border border-white/10 bg-gradient-to-br from-white/15 via-white/10 to-yellow-300/10 p-5 sm:p-6 lg:p-7">
-              <div className="absolute -right-20 -top-20 h-56 w-56 rounded-full bg-yellow-300/10 blur-3xl" />
-
-              <div className="relative z-10">
-                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-yellow-400 text-2xl text-emerald-950 shadow-lg">
-                  {getIcon(currentPembina.iconKey)}
-                </div>
-
-                <p className="mt-5 text-xs font-black uppercase tracking-[0.24em] text-yellow-300 sm:tracking-[0.28em]">
-                  Fokus Pembinaan
-                </p>
-
-                <h3 className="mt-3 max-w-full break-words text-[clamp(1.35rem,5.5vw,3.2rem)] font-black leading-[1.05] tracking-[-0.04em] text-white">
-  Membina santri dengan ilmu, adab, dan keteladanan.
-</h3>
-
-                <p className="mt-5 line-clamp-4 text-sm leading-relaxed text-emerald-100 sm:text-base">
-                  {currentPembina.focus}
-                </p>
-              </div>
-            </div>
-
-            {/* LIST DESKTOP / TABLET */}
-            <div className="mt-5 hidden gap-3 md:grid">
-              {homeData.pembina.map((item, index) => (
-                <motion.button
-                  key={item.name}
-                  onClick={() => setActivePembina(index)}
-                  whileTap={{ scale: 0.97 }}
-                  whileHover={{ x: 6 }}
-                  className={`group flex min-w-0 items-center gap-4 rounded-2xl border p-4 text-left transition ${
-                    activePembina === index
-                      ? "border-yellow-300 bg-yellow-400 text-emerald-950 shadow-lg shadow-yellow-950/20"
-                      : "border-white/10 bg-white/10 text-white hover:border-yellow-300/40 hover:bg-white/15"
-                  }`}
-                >
-                  <div
-                    className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-lg transition ${
-                      activePembina === index
-                        ? "bg-emerald-950 text-yellow-300"
-                        : "bg-white/10 text-yellow-300 group-hover:bg-yellow-300 group-hover:text-emerald-950"
-                    }`}
-                  >
-                    {getIcon(item.iconKey)}
-                  </div>
-
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate font-black">{item.name}</p>
-
-                    <p
-                      className={`mt-1 truncate text-xs font-semibold ${
-                        activePembina === index
-                          ? "text-emerald-900"
-                          : "text-emerald-100/75"
-                      }`}
-                    >
-                      {item.role}
-                    </p>
-                  </div>
-                </motion.button>
-              ))}
-            </div>
-
-            {/* LIST MOBILE */}
-<div className="no-scrollbar mt-5 flex w-full max-w-full gap-3 overflow-x-auto overscroll-x-contain pb-2 md:hidden">              {homeData.pembina.map((item, index) => (
-                <motion.button
-                  key={item.name}
-                  onClick={() => setActivePembina(index)}
-                  whileTap={{ scale: 0.95 }}
-className={`w-[190px] min-w-[190px] rounded-2xl border p-3 text-left transition sm:w-[220px] sm:min-w-[220px] sm:p-4 ${                    activePembina === index
-                      ? "border-yellow-300 bg-yellow-400 text-emerald-950"
-                      : "border-white/10 bg-white/10 text-white"
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <div
-                      className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${
-                        activePembina === index
-                          ? "bg-emerald-950 text-yellow-300"
-                          : "bg-white/10 text-yellow-300"
-                      }`}
-                    >
-                      {getIcon(item.iconKey)}
-                    </div>
-
-                    <div className="min-w-0">
-                      <p className="truncate text-sm font-black">
-                        {item.name}
-                      </p>
-
-                      <p
-                        className={`mt-1 truncate text-xs ${
-                          activePembina === index
-                            ? "text-emerald-900"
-                            : "text-emerald-100/75"
-                        }`}
-                      >
-                        {item.role}
-                      </p>
-                    </div>
-                  </div>
-                </motion.button>
-              ))}
-            </div>
-          </div>
-        </Reveal>
-      </div>
     </div>
-  </ResponsiveMotionContainer>
-</Section>
 
-      {/* CTA */}
-      <Section id="cta" scene={5} label="Daftar" className="bg-[#f7f1df]">
-        <IslamicBackground />
+    <ProgressBar
+      sections={sections}
+      activeSection={activeSection}
+      activeStep={activeStep}
+    />
 
-        <Container
-  style={ctaScene}
-  className="flex min-h-[100svh] items-center justify-center text-center">
-          <Reveal type="zoom">
-            <div className="relative mx-auto max-w-6xl overflow-hidden rounded-[2.5rem] bg-emerald-950 p-8 text-white shadow-2xl md:p-14">
-              <div className="absolute inset-0 bg-[url('/pattern.png')] opacity-[0.07]" />
-              <div className="absolute -right-24 -top-24 h-72 w-72 rounded-full bg-yellow-300/15 blur-3xl" />
-              <div className="absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-emerald-300/15 blur-3xl" />
+    <SideDots
+      sections={sections}
+      activeSection={activeSection}
+      activeStep={activeStep}
+      jumpToSection={jumpToSection}
+    />
 
-              <div className="relative z-10">
-                <motion.div
-                  animate={{
-                    rotate: [0, 8, -8, 0],
-                    scale: [1, 1.05, 1],
-                  }}
-                  transition={{
-                    duration: 4,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                  className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-3xl bg-yellow-400 text-2xl text-emerald-950"
-                >
-                  <FaCheckCircle />
-                </motion.div>
+    {sections[activeSection]?.key !== "pembina" && (
+      <BottomControls
+        onPrev={() => handleDirection(-1)}
+        onNext={() => handleDirection(1)}
+        isFirst={isFirst}
+        isLast={isLast}
+      />
+    )}
 
-                <p className="font-bold text-yellow-300">
-                  Perjalanan dimulai dari keputusan kecil.
-                </p>
-
-                <h2 className="mt-4 text-[clamp(2.2rem,5vw,5.6rem)] font-black leading-[0.95] tracking-[-0.06em]">
-                  Mulai perjalanan santri bersama Al-Furqon.
-                </h2>
-
-                <p className="mx-auto mt-6 max-w-3xl text-sm leading-relaxed text-emerald-100 sm:text-base lg:text-lg">
-                  Daftarkan calon santri dan jadikan Al-Furqon sebagai tempat
-                  tumbuh ilmu, adab, ibadah, dan masa depan.
-                </p>
-
-                <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
-                  <MagneticButton href="/pendaftaran">
-                    Daftar Sekarang
-                    <FaArrowRight />
-                  </MagneticButton>
-
-                  <MagneticButton href="/program" variant="secondary">
-                    Lihat Program
-                  </MagneticButton>
-                </div>
-              </div>
-            </div>
-          </Reveal>
-        </Container>
-      </Section>
-
-      <Footer />
-
-<style jsx global>{`
-  html {
-    scroll-behavior: smooth;
-  }
-
-  html,
-body {
-  max-width: 100%;
-  overflow-x: hidden;
-}
-
-  ::selection {
-    background: #facc15;
-    color: #064e3b;
-  }
-
-  body {
-    cursor: default;
-    background: #041b15;
-  }
-
-  .line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  .no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-  @media (prefers-reduced-motion: no-preference) {
-    section {
-      scroll-margin-top: 0px;
-    }
-
-    .storytelling-depth {
-      transform-style: preserve-3d;
-      perspective: 1200px;
-    }
-
-    .soft-cinematic-shadow {
-      box-shadow:
-        0 30px 80px rgba(4, 27, 20, 0.22),
-        0 0 80px rgba(250, 204, 21, 0.08);
-    }
-  }
-
-  @media (max-width: 1023px) {
-  #pembina {
-    overflow-x: hidden;
-  }
-
-  #pembina * {
-    max-width: 100%;
-  }
-}
-
-  @media (max-width: 768px) {
-    html {
-      scroll-behavior: auto;
-    }
-  }
-`}</style>
-    </main>
-  );
+    <AnimatePresence mode="wait" custom={direction}>
+      {renderScreen()}
+    </AnimatePresence>
+  </main>
+);
 }

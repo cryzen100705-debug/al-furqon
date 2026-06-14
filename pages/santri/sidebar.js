@@ -14,6 +14,7 @@ import {
   FaSignOutAlt,
   FaChevronRight,
   FaCog,
+  FaGraduationCap,
   FaBullhorn,
   FaExclamationTriangle,
 } from "react-icons/fa";
@@ -138,6 +139,11 @@ export default function SidebarSantri({
       icon: <FaBullhorn />,
       badge: unreadCount,
     },
+      {
+    name: "Nilai",
+    href: "/santri/nilai",
+    icon: <FaGraduationCap />,
+  },
     {
       name: "Dokumen",
       href: "/santri/dokumen",

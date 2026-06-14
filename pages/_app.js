@@ -1,4 +1,10 @@
 import "../styles/globals.css";
+import "../styles/home.css";
+import "../styles/program.css";
+import "../styles/pendidikan.css";
+import "../styles/fasilitas.css";
+
+
 import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/router";
 

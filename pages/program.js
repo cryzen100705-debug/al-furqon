@@ -3,76 +3,254 @@
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
 import {
-  motion,
   AnimatePresence,
+  motion,
+  useReducedMotion,
   useScroll,
   useSpring,
   useTransform,
 } from "framer-motion";
-import { useEffect, useMemo, useState } from "react";
-// ✅ Penggantinya
 import {
-  FaMosque,
-  FaKaaba,            // ← ganti FaKaaba (tidak ada di fa6)
-  FaCampground,
   FaArrowRight,
-  FaCircleCheck,
-  FaStar,
-  FaUsers,
   FaAward,
   FaBookOpen,
+  FaCampground,
+  FaCheckCircle,
   FaChevronDown,
-  FaPlay,
-  FaShield,
   FaGraduationCap,
   FaHandshake,
-  FaRotateRight,
-  FaWrench,
-  FaFilm,
-  FaListUl,           // ← ganti FaListUl & FaListUl (tidak ada di fa6)
-} from "react-icons/fa6";
+  FaHeart,
+  FaLayerGroup,
+  FaListUl,
+  FaMosque,
+  FaPlay,
+  FaQuran,
+  FaRedo,
+  FaShieldAlt,
+  FaStar,
+  FaUsers,
+  FaWhatsapp,
+} from "react-icons/fa";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "";
-const FALLBACK_IMAGE = "/smk.jpg";
+const API_URL =
+  process.env.NEXT_PUBLIC_API_URL ||
+  (typeof window !== "undefined" && window.location.hostname === "localhost"
+    ? "http://localhost:5000"
+    : "");
 
-/* =========================================================
-   WHATSAPP ADMIN
-   Ganti nomor di bawah dengan nomor admin pesantren.
-   Format wajib: kode negara + nomor, tanpa 0, tanpa +, tanpa spasi.
-   Contoh:
-   0812-3456-7890 menjadi 6281234567890
-========================================================= */
+const FALLBACK_IMAGE = "/hero-santri.jpg";
+const EASE = [0.22, 1, 0.36, 1];
 
 const ADMIN_WHATSAPP_NUMBER = "6283899601027";
-
 const ADMIN_WHATSAPP_MESSAGE =
-  "Assalamu'alaikum Admin Pesantren Al-Furqon, saya ingin bertanya mengenai pesantren.";
-
+  "Assalamu'alaikum Admin Pesantren Al-Furqon, saya ingin bertanya mengenai program pesantren.";
 const WHATSAPP_ADMIN_URL = `https://wa.me/${ADMIN_WHATSAPP_NUMBER}?text=${encodeURIComponent(
   ADMIN_WHATSAPP_MESSAGE
 )}`;
 
-
-/* =========================================================
-   HELPERS
-========================================================= */
+const DEFAULT_PROGRAM_PAGE = {
+  hero: {
+    badge: "Program Unggulan Pesantren",
+    title: "Bukan sekadar kegiatan.",
+    highlight: "Ini ruang tumbuh santri.",
+    desc: "Program pembinaan Al-Furqon dirancang untuk membangun keberanian, adab, kreativitas, kedisiplinan, dan kemandirian santri dalam lingkungan pesantren.",
+    arabic: "وَمَنْ يَتَّقِ اللَّهَ يَجْعَلْ لَهُ مَخْرَجًا",
+    source: "QS. At-Talaq: 2",
+    image: "/hero-santri.jpg",
+  },
+  stats: [
+    { value: "24 Jam", label: "Pembinaan", iconKey: "shield" },
+    { value: "4+", label: "Program Aktif", iconKey: "layer" },
+    { value: "100+", label: "Santri", iconKey: "users" },
+    { value: "Terarah", label: "Pendampingan", iconKey: "star" },
+  ],
+  programs: [
+    {
+      title: "Hadroh",
+      subtitle: "Seni Islami & Sholawat",
+      tag: "Program Unggulan",
+      desc: "Melatih kekompakan, keberanian tampil, dan kecintaan kepada sholawat.",
+      longDesc:
+        "Santri dilatih tampil percaya diri dalam kegiatan pesantren, acara keagamaan, dan perlombaan. Program ini membentuk disiplin, kekompakan, adab, serta keberanian di depan umum.",
+      image: "/hero-santri.jpg",
+      iconKey: "mosque",
+      features: ["Rebana", "Sholawat", "Kompak", "Percaya Diri"],
+    },
+    {
+      title: "MTQ",
+      subtitle: "Tilawah Qur'an",
+      tag: "Program Qur'an",
+      desc: "Membina bacaan Al-Qur'an, tajwid, makharijul huruf, dan irama.",
+      longDesc:
+        "Program MTQ membantu santri memperbaiki bacaan Al-Qur'an melalui pembinaan tajwid, makharijul huruf, irama tilawah, dan adab membaca Al-Qur'an.",
+      image: "/kegiatan-1.jpg",
+      iconKey: "quran",
+      features: ["Tajwid", "Tilawah", "Irama", "Makharijul Huruf"],
+    },
+    {
+      title: "Pramuka",
+      subtitle: "Mandiri & Disiplin",
+      tag: "Karakter Santri",
+      desc: "Membentuk santri yang mandiri, disiplin, berani, dan bertanggung jawab.",
+      longDesc:
+        "Pramuka menjadi ruang latihan karakter santri melalui kegiatan lapangan, kerja sama, kepemimpinan, kedisiplinan, dan keberanian menyelesaikan tantangan.",
+      image: "/kegiatan-2.jpg",
+      iconKey: "camp",
+      features: ["Disiplin", "Mandiri", "Tanggung Jawab", "Kerja Sama"],
+    },
+    {
+      title: "Tahfidz Qur'an",
+      subtitle: "Hafalan Qur'an",
+      tag: "Pembinaan Qur'an",
+      desc: "Membimbing santri membaca, menghafal, dan menjaga hafalan Al-Qur'an.",
+      longDesc:
+        "Tahfidz Qur'an membimbing santri untuk membangun kedekatan dengan Al-Qur'an melalui hafalan bertahap, murajaah, adab Qur'an, dan pembiasaan membaca setiap hari.",
+      image: "/masjid.jpg",
+      iconKey: "book",
+      features: ["Hafalan", "Murajaah", "Adab Qur'an", "Setoran"],
+    },
+  ],
+  timeline: [
+    {
+      number: "01",
+      title: "Masuk ke Lingkungan",
+      desc: "Santri dikenalkan dengan suasana pesantren, aturan, dan budaya kegiatan.",
+    },
+    {
+      number: "02",
+      title: "Mulai Pembiasaan",
+      desc: "Santri mengikuti latihan rutin agar terbentuk disiplin dan tanggung jawab.",
+    },
+    {
+      number: "03",
+      title: "Didampingi Pembina",
+      desc: "Pembina mengarahkan adab, kemampuan, keberanian, dan ketertiban santri.",
+    },
+    {
+      number: "04",
+      title: "Tumbuh Percaya Diri",
+      desc: "Santri mulai berani tampil, mandiri, dan aktif dalam kegiatan pesantren.",
+    },
+  ],
+  gallery: [
+    "/hero-santri.jpg",
+    "/kegiatan-1.jpg",
+    "/kegiatan-2.jpg",
+    "/masjid.jpg",
+    "/smk.jpg",
+    "/hero-santri.jpg",
+  ],
+  advantages: [
+    {
+      title: "Tidak Pasif",
+      desc: "Santri tidak hanya duduk belajar, tetapi ikut aktif membangun kemampuan diri.",
+      iconKey: "award",
+    },
+    {
+      title: "Dekat dengan Adab",
+      desc: "Setiap kegiatan tetap diarahkan agar sesuai dengan nilai pesantren.",
+      iconKey: "heart",
+    },
+    {
+      title: "Berani Tampil",
+      desc: "Program membantu santri percaya diri berbicara, tampil, dan bekerja sama.",
+      iconKey: "users",
+    },
+  ],
+  faq: [
+    {
+      q: "Apakah semua santri bisa ikut program?",
+      a: "Ya. Santri dapat mengikuti program sesuai jadwal, minat, kemampuan, dan arahan pembina.",
+    },
+    {
+      q: "Apakah program hanya kegiatan tambahan?",
+      a: "Tidak. Program juga menjadi bagian dari pembinaan karakter, adab, disiplin, dan keberanian santri.",
+    },
+    {
+      q: "Apakah program dibimbing pembina?",
+      a: "Ya. Setiap kegiatan tetap diarahkan oleh pembina agar berjalan tertib dan sesuai nilai pesantren.",
+    },
+  ],
+};
 
 function getIcon(key) {
   const icons = {
     mosque: <FaMosque />,
-    quran: <FaKaaba />,
+    quran: <FaQuran />,
+    camp: <FaCampground />,
     campground: <FaCampground />,
     users: <FaUsers />,
     book: <FaBookOpen />,
     award: <FaAward />,
     hands: <FaHandshake />,
-    shield: <FaShield />,
+    shield: <FaShieldAlt />,
     graduate: <FaGraduationCap />,
     star: <FaStar />,
+    heart: <FaHeart />,
+    layer: <FaLayerGroup />,
   };
 
   return icons[key] || <FaStar />;
+}
+
+function normalizeProgramPage(data) {
+  const source = data || {};
+  const fallbackPrograms = DEFAULT_PROGRAM_PAGE.programs;
+
+  const rawPrograms =
+    Array.isArray(source.programs) && source.programs.length
+      ? source.programs
+      : fallbackPrograms;
+
+  const programs = rawPrograms.map((item, index) => {
+    const fallback = fallbackPrograms[index % fallbackPrograms.length];
+
+    return {
+      ...fallback,
+      ...item,
+      title: item?.title || fallback.title,
+      subtitle: item?.subtitle || item?.tag || fallback.subtitle,
+      tag: item?.tag || fallback.tag,
+      desc: item?.desc || fallback.desc,
+      longDesc: item?.longDesc || item?.desc || fallback.longDesc,
+      image: item?.image || fallback.image,
+      iconKey: item?.iconKey || fallback.iconKey,
+      features:
+        Array.isArray(item?.features) && item.features.length
+          ? item.features
+          : fallback.features,
+    };
+  });
+
+  return {
+    hero: {
+      ...DEFAULT_PROGRAM_PAGE.hero,
+      ...(source.hero || {}),
+    },
+    stats:
+      Array.isArray(source.stats) && source.stats.length
+        ? source.stats
+        : DEFAULT_PROGRAM_PAGE.stats,
+    programs,
+    timeline:
+      Array.isArray(source.timeline) && source.timeline.length
+        ? source.timeline
+        : DEFAULT_PROGRAM_PAGE.timeline,
+    gallery:
+      Array.isArray(source.gallery) && source.gallery.length
+        ? source.gallery
+        : DEFAULT_PROGRAM_PAGE.gallery,
+    advantages:
+      Array.isArray(source.advantages) && source.advantages.length
+        ? source.advantages
+        : DEFAULT_PROGRAM_PAGE.advantages,
+    faq:
+      Array.isArray(source.faq) && source.faq.length
+        ? source.faq
+        : DEFAULT_PROGRAM_PAGE.faq,
+  };
 }
 
 function SafeImage({ src, alt, className = "", fallback = FALLBACK_IMAGE }) {
@@ -87,6 +265,8 @@ function SafeImage({ src, alt, className = "", fallback = FALLBACK_IMAGE }) {
       src={currentSrc}
       alt={alt || "image"}
       className={className}
+      draggable={false}
+      loading="lazy"
       onError={() => {
         if (currentSrc !== fallback) setCurrentSrc(fallback);
       }}
@@ -94,10 +274,116 @@ function SafeImage({ src, alt, className = "", fallback = FALLBACK_IMAGE }) {
   );
 }
 
-/* =========================================================
-   GLOBAL SCROLL PROGRESS
-   - progress bar seperti timeline video di bagian atas
-========================================================= */
+function BackgroundArt({ dark = false }) {
+  const reduce = useReducedMotion();
+
+  return (
+    <div className="pointer-events-none absolute inset-0 overflow-hidden">
+      <div className="absolute inset-0 bg-[url('/pattern.png')] bg-repeat opacity-[0.05]" />
+
+      <div
+        className={`absolute inset-0 ${
+          dark
+            ? "bg-[radial-gradient(circle_at_20%_15%,rgba(250,204,21,0.12),transparent_30%),radial-gradient(circle_at_80%_70%,rgba(16,185,129,0.12),transparent_32%)]"
+            : "bg-[radial-gradient(circle_at_15%_20%,rgba(16,185,129,0.14),transparent_30%),radial-gradient(circle_at_85%_70%,rgba(250,204,21,0.22),transparent_32%)]"
+        }`}
+      />
+
+      <motion.div
+        animate={
+          reduce
+            ? undefined
+            : {
+                rotate: [0, 12, 0],
+                scale: [1, 1.08, 1],
+              }
+        }
+        transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
+        className={`absolute -left-28 top-24 h-72 w-72 rounded-full border ${
+          dark
+            ? "border-yellow-300/15 bg-yellow-300/5"
+            : "border-emerald-900/10 bg-emerald-300/15"
+        }`}
+      />
+
+      <motion.div
+        animate={
+          reduce
+            ? undefined
+            : {
+                rotate: [0, -12, 0],
+                scale: [1, 1.07, 1],
+              }
+        }
+        transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
+        className={`absolute -right-32 bottom-16 h-[28rem] w-[28rem] rounded-full border ${
+          dark
+            ? "border-emerald-300/15 bg-emerald-300/5"
+            : "border-yellow-500/10 bg-yellow-300/15"
+        }`}
+      />
+    </div>
+  );
+}
+
+function LoadingPage() {
+  return (
+    <main className="relative flex min-h-[100svh] items-center justify-center overflow-hidden bg-[#041b15] text-white">
+      <BackgroundArt dark />
+
+      <motion.div
+        initial={{ opacity: 0, scale: 0.92, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ duration: 0.55, ease: EASE }}
+        className="relative z-10 px-6 text-center"
+      >
+        <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-[1.6rem] border border-yellow-300/25 bg-yellow-300/10 text-3xl text-yellow-300">
+          <FaListUl />
+        </div>
+
+        <p className="mt-7 text-xs font-black uppercase tracking-[0.34em] text-yellow-300">
+          Loading Program
+        </p>
+
+        <h1 className="mt-3 text-3xl font-black sm:text-5xl">
+          Memuat tampilan...
+        </h1>
+      </motion.div>
+    </main>
+  );
+}
+
+function MaintenancePage({ onRetry, checking }) {
+  return (
+    <main className="relative flex min-h-[100svh] items-center justify-center overflow-hidden bg-[#041b15] px-6 text-center text-white">
+      <BackgroundArt dark />
+
+      <div className="relative z-10 mx-auto max-w-2xl">
+        <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-[1.6rem] border border-yellow-300/25 bg-yellow-300/10 text-3xl text-yellow-300">
+          <FaRedo />
+        </div>
+
+        <h1 className="mt-6 text-3xl font-black text-yellow-300 sm:text-5xl">
+          Program belum dapat dimuat
+        </h1>
+
+        <p className="mt-4 text-sm leading-relaxed text-emerald-100 sm:text-base">
+          Data program belum berhasil dibaca dari backend. Tekan tombol di bawah
+          untuk mencoba kembali.
+        </p>
+
+        <button
+          onClick={onRetry}
+          disabled={checking}
+          className="mt-6 rounded-full bg-yellow-400 px-7 py-3.5 font-black text-emerald-950 transition hover:bg-yellow-300 disabled:opacity-60"
+        >
+          {checking ? "Mengecek..." : "Coba Lagi"}
+        </button>
+      </div>
+    </main>
+  );
+}
+
 function ScrollProgress() {
   const { scrollYProgress } = useScroll();
 
@@ -110,21 +396,17 @@ function ScrollProgress() {
   return (
     <motion.div
       style={{ scaleX }}
-      className="fixed left-0 top-0 z-[9999] h-1.5 w-full origin-left bg-gradient-to-r from-yellow-400 via-amber-300 to-emerald-300 shadow-[0_0_20px_rgba(250,204,21,0.45)]"
+      className="fixed left-0 top-0 z-[9999] h-1.5 w-full origin-left bg-gradient-to-r from-yellow-400 via-amber-300 to-emerald-300"
     />
   );
 }
 
-/* =========================================================
-   WRAPPERS
-========================================================= */
-
-function Section({ children, dark = false, className = "", id = "" }) {
+function Section({ children, dark = false, id = "", className = "" }) {
   return (
     <section
       id={id}
-      className={`relative min-h-[100svh] w-full overflow-hidden ${
-        dark ? "bg-[#071a15] text-white" : "bg-[#f6f1e4] text-slate-900"
+      className={`program-section relative w-full overflow-hidden ${
+        dark ? "bg-[#041b15] text-white" : "bg-[#f7f1df] text-emerald-950"
       } ${className}`}
     >
       {children}
@@ -136,117 +418,35 @@ function Container({ children, className = "", style }) {
   return (
     <motion.div
       style={style}
-      className={`relative z-10 mx-auto w-[92vw] max-w-[1500px] py-20 sm:py-24 lg:py-28 ${className}`}
+      className={`program-container relative z-10 mx-auto ${className}`}
     >
       {children}
     </motion.div>
   );
 }
 
-function IslamicBackground({ dark = false }) {
-  return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden">
-      <div className="absolute inset-0 bg-[url('/pattern.png')] bg-repeat opacity-[0.055]" />
-
-      <motion.div
-        animate={{ rotate: [0, 12, 0], scale: [1, 1.08, 1] }}
-        transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
-        className={`absolute -left-24 top-16 h-64 w-64 rounded-full border ${
-          dark
-            ? "border-yellow-300/15 bg-yellow-300/5"
-            : "border-emerald-900/10 bg-emerald-300/15"
-        }`}
-      />
-
-      <motion.div
-        animate={{ rotate: [0, -14, 0], scale: [1, 1.07, 1] }}
-        transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
-        className={`absolute -right-20 bottom-16 h-[26rem] w-[26rem] rounded-full border ${
-          dark
-            ? "border-emerald-300/15 bg-emerald-300/5"
-            : "border-yellow-400/10 bg-yellow-300/15"
-        }`}
-      />
-
-      <div
-        className={`absolute left-1/2 top-1/2 h-[30rem] w-[30rem] -translate-x-1/2 -translate-y-1/2 rounded-full blur-3xl ${
-          dark ? "bg-emerald-400/10" : "bg-yellow-300/15"
-        }`}
-      />
-    </div>
-  );
-}
-
-function Badge({ children, light = false }) {
+function Badge({ children, dark = false }) {
   return (
     <div
-      className={`inline-flex items-center gap-3 rounded-full border px-4 py-2 text-[10px] font-black uppercase tracking-[0.26em] sm:text-xs ${
-        light
+      className={`inline-flex max-w-full items-center gap-3 rounded-full border px-4 py-2 text-[10px] font-black uppercase tracking-[0.22em] sm:text-xs ${
+        dark
           ? "border-yellow-300/30 bg-yellow-300/10 text-yellow-300"
-          : "border-emerald-200 bg-white/85 text-emerald-800"
+          : "border-emerald-200 bg-white/85 text-emerald-800 shadow-sm"
       }`}
     >
-      <span className="h-2 w-2 rounded-full bg-current" />
-      {children}
+      <span className="h-2 w-2 shrink-0 rounded-full bg-current" />
+      <span className="truncate">{children}</span>
     </div>
   );
 }
 
-function SectionHeader({
-  badge,
-  title,
-  desc,
-  light = false,
-  align = "center",
-}) {
+function Reveal({ children, delay = 0, y = 28, className = "" }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 36 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.22 }}
-      transition={{ duration: 0.65 }}
-      className={`${
-        align === "center" ? "mx-auto text-center" : "text-left"
-      } max-w-5xl`}
-    >
-      {badge && (
-        <div className="mb-4">
-          <Badge light={light}>{badge}</Badge>
-        </div>
-      )}
-
-      <h2
-        className={`text-[clamp(2rem,5vw,5rem)] font-black leading-[0.94] tracking-[-0.06em] ${
-          light ? "text-white" : "text-emerald-950"
-        }`}
-      >
-        {title}
-      </h2>
-
-      {desc && (
-        <p
-          className={`mt-4 max-w-3xl text-sm leading-relaxed sm:text-base lg:text-lg ${
-            align === "center" ? "mx-auto" : ""
-          } ${light ? "text-emerald-100" : "text-slate-600"}`}
-        >
-          {desc}
-        </p>
-      )}
-    </motion.div>
-  );
-}
-
-/* =========================================================
-   REVEAL
-   - animasi fade-in + slide antar panel
-========================================================= */
-function Reveal({ children, delay = 0, y = 30, className = "" }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, y, filter: "blur(8px)" }}
+      whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
       viewport={{ once: true, amount: 0.18 }}
-      transition={{ duration: 0.65, delay }}
+      transition={{ duration: 0.6, delay, ease: EASE }}
       className={className}
     >
       {children}
@@ -254,219 +454,102 @@ function Reveal({ children, delay = 0, y = 30, className = "" }) {
   );
 }
 
-/* =========================================================
-   STORYBOARD PANEL
-   - panel utama dengan border tebal, nomor scene, label bawah
-========================================================= */
-function StoryPanel({
-  scene = "01",
-  title = "",
-  subtitle = "",
-  children,
-  dark = false,
-  footerLabel = "Story Panel",
-  className = "",
-}) {
+function ProgramHeader({ badge, title, desc, dark = false, align = "center" }) {
+  return (
+    <Reveal>
+      <div
+        className={`${
+          align === "center" ? "mx-auto text-center" : "text-left"
+        } max-w-5xl`}
+      >
+        <Badge dark={dark}>{badge}</Badge>
+
+        <h2
+          className={`program-section-title mt-5 font-black leading-[0.96] tracking-[-0.055em] ${
+            dark ? "text-white" : "text-emerald-950"
+          }`}
+        >
+          {title}
+        </h2>
+
+        {desc && (
+          <p
+            className={`mt-5 max-w-3xl text-sm leading-relaxed sm:text-base lg:text-lg ${
+              align === "center" ? "mx-auto" : ""
+            } ${dark ? "text-emerald-100" : "text-slate-600"}`}
+          >
+            {desc}
+          </p>
+        )}
+      </div>
+    </Reveal>
+  );
+}
+
+function GlassCard({ children, dark = false, className = "" }) {
   return (
     <div
-      className={`group relative overflow-hidden rounded-[1.8rem] border-[3px] ${
+      className={`group relative overflow-hidden rounded-[2rem] border shadow-[0_24px_70px_rgba(0,0,0,0.12)] backdrop-blur-xl ${
         dark
-  ? "border-white/15 bg-emerald-950 text-white"
-  : "border-[#173c32]/10 bg-white/90 text-slate-900"
-      } shadow-[0_20px_55px_rgba(0,0,0,0.12)] backdrop-blur-xl ${className}`}
+          ? "border-white/10 bg-white/10 text-white"
+          : "border-emerald-100 bg-white/85 text-emerald-950"
+      } ${className}`}
     >
-      {/* header storyboard */}
       <div
-        className={`flex items-center justify-between border-b-[3px] px-4 py-3 sm:px-5 ${
-          dark ? "border-white/10 bg-black/20" : "border-slate-200 bg-slate-50"
+        className={`absolute -right-20 -top-20 h-56 w-56 rounded-full blur-3xl transition duration-700 group-hover:scale-125 ${
+          dark ? "bg-yellow-300/10" : "bg-yellow-300/20"
         }`}
-      >
-        <div className="flex items-center gap-3">
-          <div className="rounded-full bg-yellow-400 px-3 py-1 text-[10px] font-black uppercase tracking-[0.24em] text-emerald-950">
-            Scene {scene}
-          </div>
+      />
+      <div
+        className={`absolute -bottom-24 -left-24 h-64 w-64 rounded-full blur-3xl ${
+          dark ? "bg-emerald-300/10" : "bg-emerald-300/20"
+        }`}
+      />
 
-          {subtitle && (
-            <p
-              className={`text-[10px] font-black uppercase tracking-[0.22em] ${
-                dark ? "text-emerald-100/70" : "text-slate-500"
-              }`}
+      <div className="relative z-10">{children}</div>
+    </div>
+  );
+}
+
+function ChapterRail() {
+  const items = [
+    ["01", "Hero", "#program-hero"],
+    ["02", "Lab", "#program-lab"],
+    ["03", "Peta", "#program-map"],
+    ["04", "Galeri", "#program-gallery"],
+    ["05", "FAQ", "#program-faq"],
+  ];
+
+  return (
+    <div className="pointer-events-none fixed right-5 top-1/2 z-40 hidden -translate-y-1/2 2xl:block">
+      <div className="pointer-events-auto rounded-[1.7rem] border border-white/10 bg-emerald-950/80 p-3 shadow-2xl backdrop-blur-xl">
+        <p className="mb-3 text-center text-[10px] font-black uppercase tracking-[0.26em] text-yellow-300">
+          Chapter
+        </p>
+
+        <div className="space-y-2">
+          {items.map(([number, label, href]) => (
+            <a
+              key={href}
+              href={href}
+              className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-3 py-2 transition hover:bg-white/15"
             >
-              {subtitle}
-            </p>
-          )}
+              <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-yellow-400 text-[10px] font-black text-emerald-950">
+                {number}
+              </span>
+              <span className="text-xs font-black text-white">{label}</span>
+            </a>
+          ))}
         </div>
-
-        <FaFilm className={dark ? "text-yellow-300" : "text-emerald-700"} />
-      </div>
-
-      {/* body */}
-      <div className="relative p-4 sm:p-5 lg:p-6">
-        {title && (
-          <h3
-            className={`mb-4 text-2xl font-black leading-tight sm:text-3xl ${
-              dark ? "text-white" : "text-emerald-950"
-            }`}
-          >
-            {title}
-          </h3>
-        )}
-
-        {children}
-      </div>
-
-      {/* footer storyboard */}
-      <div
-        className={`border-t-[3px] px-4 py-3 text-[11px] font-black uppercase tracking-[0.2em] sm:px-5 ${
-          dark ? "border-white/10 bg-black/20 text-yellow-300" : "border-slate-200 bg-slate-50 text-emerald-800"
-        }`}
-      >
-        {footerLabel}
       </div>
     </div>
   );
 }
 
-/* =========================================================
-   LOADING CLAPPERBOARD
-========================================================= */
-function LoadingPage() {
-  return (
-    <main className="relative flex min-h-[100svh] items-center justify-center overflow-hidden bg-[#071a15] text-white">
-      <IslamicBackground dark />
-
-      <div className="relative z-10 text-center">
-        {/* Animasi clapperboard */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.88 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="mx-auto mb-8 flex h-24 w-24 items-center justify-center rounded-[2rem] border border-yellow-300/30 bg-yellow-300/10 text-4xl text-yellow-300 shadow-[0_0_60px_rgba(250,204,21,0.18)]"
-        >
-          <motion.div
-            animate={{ rotate: [0, -12, 0, -12, 0] }}
-            transition={{ duration: 1.3, repeat: Infinity }}
-          >
-            <FaListUl />
-          </motion.div>
-        </motion.div>
-
-        <p className="text-sm font-black uppercase tracking-[0.34em] text-yellow-300">
-          Loading Storyboard
-        </p>
-
-        <h1 className="mt-4 text-3xl font-black sm:text-5xl">
-          Memuat Program...
-        </h1>
-
-        <div className="mx-auto mt-7 h-2 w-56 overflow-hidden rounded-full bg-white/10">
-          <motion.div
-            animate={{ x: ["-100%", "100%"] }}
-            transition={{ duration: 1.2, repeat: Infinity, ease: "linear" }}
-            className="h-full w-24 rounded-full bg-gradient-to-r from-yellow-300 to-emerald-300"
-          />
-        </div>
-      </div>
-    </main>
-  );
-}
-
-/* =========================================================
-   MAINTENANCE PAGE
-========================================================= */
-function ProgramMaintenance({ onRetry, checking }) {
-  return (
-    <main className="relative min-h-[100svh] overflow-hidden bg-[#071a15] text-white">
-      <div className="absolute inset-0">
-        <SafeImage
-          src="/hero-santri.jpg"
-          alt="Maintenance Program"
-          className="h-full w-full object-cover opacity-30"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#071a15] via-[#0b2f25]/95 to-[#071a15]" />
-        <div className="absolute inset-0 bg-black/55" />
-      </div>
-
-      <IslamicBackground dark />
-
-      <motion.div
-        animate={{ rotate: [0, 360] }}
-        transition={{ duration: 38, repeat: Infinity, ease: "linear" }}
-        className="absolute left-1/2 top-1/2 h-[560px] w-[560px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-yellow-300/10"
-      />
-
-      <div className="relative z-10 mx-auto flex min-h-[100svh] w-[92vw] max-w-5xl flex-col items-center justify-center py-20 text-center">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.88, y: 25 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-[2rem] border border-yellow-300/30 bg-yellow-300/10 text-4xl text-yellow-300 shadow-[0_0_70px_rgba(250,204,21,0.22)] backdrop-blur-xl">
-            <FaWrench />
-          </div>
-
-          <p className="mt-8 text-lg leading-loose text-yellow-300 sm:text-xl lg:text-2xl">
-            إِنَّ مَعَ الْعُسْرِ يُسْرًا
-          </p>
-
-          <div className="mt-3">
-            <Badge light>Program Maintenance</Badge>
-          </div>
-
-          <h1 className="mt-5 text-[clamp(2.4rem,8vw,6.5rem)] font-black leading-[0.92] tracking-[-0.065em]">
-            Data program sedang
-            <span className="block bg-gradient-to-r from-yellow-300 via-yellow-400 to-emerald-200 bg-clip-text text-transparent">
-              tidak tersedia.
-            </span>
-          </h1>
-
-          <p className="mx-auto mt-6 max-w-3xl text-sm leading-relaxed text-emerald-100 sm:text-base lg:text-xl">
-            Backend Express.js belum berjalan atau endpoint{" "}
-            <span className="font-black text-yellow-300">/api/program</span>{" "}
-            belum dapat dihubungi.
-          </p>
-        </motion.div>
-
-        <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-          <button
-            onClick={onRetry}
-            disabled={checking}
-            className="group inline-flex items-center justify-center gap-3 rounded-full bg-yellow-400 px-8 py-4 font-black text-emerald-950 shadow-[0_0_50px_rgba(250,204,21,0.35)] transition hover:-translate-y-1 hover:bg-yellow-300 disabled:opacity-70"
-          >
-            <motion.span
-              animate={checking ? { rotate: 360 } : { rotate: 0 }}
-              transition={{
-                repeat: checking ? Infinity : 0,
-                duration: 1,
-                ease: "linear",
-              }}
-            >
-              <FaRotateRight />
-            </motion.span>
-            {checking ? "Mengecek Backend..." : "Coba Lagi"}
-          </button>
-
-          <a
-  href="/api/fasilitas"
-  target="_blank"
-  rel="noopener noreferrer"
-  className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 px-8 py-4 font-black text-white backdrop-blur transition hover:-translate-y-1 hover:bg-white/20"
->
-  Cek API Fasilitas
-</a>
-        </div>
-      </div>
-    </main>
-  );
-}
-
-/* =========================================================
-   MAIN PAGE
-========================================================= */
-
 export default function Program() {
   const [programPage, setProgramPage] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [maintenance, setMaintenance] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [checking, setChecking] = useState(false);
 
   const [activeProgram, setActiveProgram] = useState(0);
@@ -475,43 +558,23 @@ export default function Program() {
 
   const { scrollY } = useScroll();
 
-  const sceneLinks = useMemo(
-    () => [
-      { number: "01", label: "Intro", href: "#hero" },
-      { number: "02", label: "Stats", href: "#stats" },
-      { number: "03", label: "Program", href: "#program-showcase" },
-      { number: "04", label: "Detail", href: "#detail-program" },
-      { number: "05", label: "Timeline", href: "#timeline-program" },
-      { number: "06", label: "Galeri", href: "#galeri" },
-      { number: "07", label: "FAQ", href: "#faq" },
-      { number: "08", label: "Ending", href: "#closing-scene" },
-    ],
-    []
-  );
-
-  /* ==========================================
-     HERO PARALLAX
-     - efek kamera bergerak / zoom cinematic
-  ========================================== */
-  const heroImageScale = useTransform(scrollY, [0, 900], [1, 1.18]);
-  const heroTextY = useTransform(scrollY, [0, 900], [0, 120]);
-  const heroOverlayOpacity = useTransform(scrollY, [0, 900], [0.38, 0.82]);
+  const heroImageScale = useTransform(scrollY, [0, 900], [1, 1.12]);
+  const heroTextY = useTransform(scrollY, [0, 900], [0, 55]);
+  const overlayOpacity = useTransform(scrollY, [0, 900], [0.42, 0.82]);
 
   const fetchProgramData = async () => {
     try {
       setChecking(true);
       setMaintenance(false);
 
-      if (!API_URL) {
-        throw new Error("NEXT_PUBLIC_API_URL belum diatur");
-      }
+      const endpoint = `${API_URL}/api/program`;
 
-      const response = await fetch(`${API_URL}/api/program`, {
+      const response = await fetch(endpoint, {
         cache: "no-store",
       });
 
       if (!response.ok) {
-        throw new Error("Gagal mengambil data program");
+        throw new Error(`Status: ${response.status}`);
       }
 
       const result = await response.json();
@@ -520,8 +583,7 @@ export default function Program() {
         throw new Error("Format data program tidak valid");
       }
 
-      setProgramPage(result.data);
-      setMaintenance(false);
+      setProgramPage(normalizeProgramPage(result.data));
       setActiveProgram(0);
       setCurrentGallery(0);
     } catch (error) {
@@ -535,662 +597,591 @@ export default function Program() {
   };
 
   useEffect(() => {
+    const html = document.documentElement;
+    const body = document.body;
+    const next = document.getElementById("__next");
+
+    html.style.setProperty("overflow", "auto", "important");
+    html.style.setProperty("height", "auto", "important");
+
+    body.style.setProperty("overflow", "auto", "important");
+    body.style.setProperty("height", "auto", "important");
+
+    if (next) {
+      next.style.setProperty("overflow", "visible", "important");
+      next.style.setProperty("height", "auto", "important");
+    }
+
+    return () => {
+      html.style.removeProperty("overflow");
+      html.style.removeProperty("height");
+
+      body.style.removeProperty("overflow");
+      body.style.removeProperty("height");
+
+      if (next) {
+        next.style.removeProperty("overflow");
+        next.style.removeProperty("height");
+      }
+    };
+  }, []);
+
+  useEffect(() => {
     fetchProgramData();
   }, []);
 
-  /* ==========================================
-     AUTO GALLERY
-     - pergantian scene otomatis seperti slideshow film
-  ========================================== */
-  useEffect(() => {
-    if (!programPage?.gallery?.length) return;
-
-    const interval = setInterval(() => {
-      setCurrentGallery((prev) => (prev + 1) % programPage.gallery.length);
-    }, 4200);
-
-    return () => clearInterval(interval);
-  }, [programPage]);
-
-  if (loading) return <LoadingPage />;
-  if (maintenance || !programPage) {
-    return <ProgramMaintenance onRetry={fetchProgramData} checking={checking} />;
-  }
-
-  const { hero, programs, stats, timeline, gallery, advantages, faq } =
-    programPage;
-
+  const data = useMemo(() => normalizeProgramPage(programPage), [programPage]);
+  const { hero, programs, stats, timeline, gallery, advantages, faq } = data;
   const active = programs[activeProgram] || programs[0];
 
+  useEffect(() => {
+    if (!gallery?.length) return;
+
+    const interval = setInterval(() => {
+      setCurrentGallery((prev) => (prev + 1) % gallery.length);
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, [gallery]);
+
+  if (loading) return <LoadingPage />;
+
+  if (maintenance || !programPage) {
+    return <MaintenancePage onRetry={fetchProgramData} checking={checking} />;
+  }
+
   return (
-    <main className="overflow-x-hidden bg-[#f6f1e4] text-slate-900">
+    <main className="program-page overflow-x-hidden bg-[#f7f1df] text-emerald-950">
       <ScrollProgress />
       <Navbar />
+      <ChapterRail />
 
-      {/* MINI STORYBOARD NAV */}
-      <div className="pointer-events-none fixed right-4 top-1/2 z-40 hidden -translate-y-1/2 xl:block">
-        <div className="pointer-events-auto rounded-[1.8rem] border-[3px] border-white/10 bg-[#071a15]/80 p-3 shadow-2xl backdrop-blur-xl">
-          <p className="mb-3 text-center text-[10px] font-black uppercase tracking-[0.3em] text-yellow-300">
-            Timeline
-          </p>
-
-          <div className="space-y-2">
-            {sceneLinks.map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 px-3 py-2 transition hover:bg-white/10"
-              >
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-yellow-400 text-[10px] font-black text-emerald-950">
-                  {item.number}
-                </div>
-                <span className="text-xs font-bold text-white">
-                  {item.label}
-                </span>
-              </a>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* ======================================================
-         HERO
-      ====================================================== */}
-      <Section id="hero" dark>
-        <div className="absolute inset-0 bg-gradient-to-r from-[#041b15] via-[#062d22]/95 to-[#0d4f38]/45" />
+      {/* HERO EDITORIAL */}
+      <Section id="program-hero" dark>
         <motion.div style={{ scale: heroImageScale }} className="absolute inset-0">
           <SafeImage
             src={hero.image}
-            alt="Background Program Pesantren"
+            alt="Program Pesantren Al-Furqon"
             className="h-full w-full object-cover"
           />
         </motion.div>
 
         <motion.div
-          style={{ opacity: heroOverlayOpacity }}
-          className="absolute inset-0 bg-gradient-to-r from-[#071a15] via-[#0b2c23]/90 to-[#0e553f]/35"
+          style={{ opacity: overlayOpacity }}
+          className="absolute inset-0 bg-gradient-to-r from-[#041b15] via-[#062d22]/95 to-[#0d4f38]/45"
         />
-        <div className="absolute inset-0 bg-black/45" />
+        <div className="absolute inset-0 bg-black/48" />
+        <BackgroundArt dark />
 
-        <IslamicBackground dark />
-
-        <Container className="flex min-h-[100svh] items-center">
-          <div className="grid w-full items-center gap-8 lg:grid-cols-[1.02fr_0.98fr]">
+        <Container
+          style={{ y: heroTextY }}
+          className="flex min-h-[100svh] items-center"
+        >
+          <div className="grid w-full items-center gap-8 lg:grid-cols-[0.95fr_1.05fr]">
             <motion.div
-              style={{ y: heroTextY }}
-              initial={{ opacity: 0, y: 46 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.85 }}
+              initial={{ opacity: 0, y: 44, filter: "blur(10px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              transition={{ duration: 0.75, ease: EASE }}
               className="max-w-5xl"
             >
-              <Badge light>{hero.badge}</Badge>
+              <Badge dark>{hero.badge}</Badge>
 
-              <h1 className="mt-5 font-mono text-[clamp(2.4rem,6vw,6rem)] font-black leading-[0.93] tracking-[-0.06em]">
+              <h1 className="program-hero-title mt-5 font-black leading-[0.92] tracking-[-0.065em] text-white">
                 {hero.title}
                 <span className="block bg-gradient-to-r from-yellow-300 via-yellow-400 to-emerald-200 bg-clip-text text-transparent">
                   {hero.highlight}
                 </span>
               </h1>
 
-              <p className="mt-5 max-w-4xl text-sm leading-relaxed text-emerald-50 sm:text-base lg:text-xl">
+              <p className="mt-6 max-w-3xl text-sm leading-relaxed text-emerald-50 sm:text-base lg:text-xl">
                 {hero.desc}
               </p>
 
-              <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-                <a href="#program-showcase">
-                  <button className="group inline-flex w-full items-center justify-center gap-3 rounded-full bg-yellow-400 px-7 py-3.5 font-black text-emerald-950 shadow-2xl transition hover:-translate-y-1 hover:bg-yellow-300 sm:w-auto">
-                    Jelajahi Scene Program
-                    <FaArrowRight className="transition group-hover:translate-x-1" />
-                  </button>
+              <div className="mt-8 grid gap-3 sm:grid-cols-2">
+                <a
+                  href="#program-lab"
+                  className="group inline-flex items-center justify-center gap-3 rounded-full bg-yellow-400 px-7 py-4 text-sm font-black text-emerald-950 shadow-[0_18px_50px_rgba(250,204,21,0.32)] transition hover:-translate-y-1 hover:bg-yellow-300"
+                >
+                  Masuk Program Lab
+                  <FaArrowRight className="transition group-hover:translate-x-1" />
                 </a>
 
-                <a href="#galeri">
-                  <button className="inline-flex w-full items-center justify-center gap-3 rounded-full border border-white/25 bg-white/10 px-7 py-3.5 font-bold text-white backdrop-blur transition hover:bg-white/20 sm:w-auto">
-                    <FaPlay />
-                    Lihat Galeri
-                  </button>
+                <a
+                  href="#program-gallery"
+                  className="inline-flex items-center justify-center gap-3 rounded-full border border-white/25 bg-white/10 px-7 py-4 text-sm font-black text-white backdrop-blur-xl transition hover:-translate-y-1 hover:bg-white/20"
+                >
+                  <FaPlay />
+                  Lihat Galeri
                 </a>
               </div>
 
-              <div className="mt-7 hidden border-l-4 border-yellow-400 pl-6 md:block">
-                <p className="text-xl leading-loose text-yellow-300 lg:text-2xl">
+              <div className="mt-8 rounded-[1.6rem] border border-white/10 bg-white/10 p-5 backdrop-blur-xl md:max-w-xl">
+                <p className="text-xl leading-loose text-yellow-300 sm:text-2xl">
                   {hero.arabic}
                 </p>
-                <p className="mt-1 text-xs font-bold uppercase tracking-[0.35em] text-emerald-100">
+                <p className="mt-2 text-[10px] font-black uppercase tracking-[0.28em] text-emerald-100">
                   {hero.source}
                 </p>
               </div>
             </motion.div>
 
-            {/* HERO STORYBOARD POSTER */}
-            <Reveal delay={0.15} className="hidden lg:block">
-              <StoryPanel
-                dark
-                scene="01"
-                subtitle="Opening Shot"
-                title="Program unggulan dalam satu frame."
-                footerLabel="Establishing Shot"
-                className="ml-auto max-w-xl"
-              >
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={currentGallery}
-                    initial={{ opacity: 0, scale: 1.08 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.96 }}
-                    transition={{ duration: 0.5 }}
-                    className="relative overflow-hidden rounded-[1.4rem]"
-                  >
+            <Reveal className="hidden lg:block">
+              <div className="program-poster relative ml-auto max-w-xl">
+                <div className="absolute -left-8 top-8 hidden h-[88%] w-10 rounded-full bg-yellow-400 xl:block" />
+
+                <GlassCard dark className="rotate-[1.2deg] p-4">
+                  <div className="relative overflow-hidden rounded-[1.7rem]">
                     <SafeImage
                       src={gallery[currentGallery]}
-                      alt="Galeri Program"
-                      className="h-[56svh] w-full object-cover"
+                      alt="Preview Program"
+                      className="program-hero-preview w-full object-cover"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
 
-                    <div className="absolute bottom-0 left-0 p-6">
-                      <p className="text-[10px] font-black uppercase tracking-[0.28em] text-yellow-300">
-                        Frame Preview
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/20 to-transparent" />
+
+                    <div className="absolute left-5 top-5 rounded-full bg-yellow-400 px-4 py-2 text-[10px] font-black uppercase tracking-[0.22em] text-emerald-950">
+                      Program Frame
+                    </div>
+
+                    <div className="absolute bottom-0 left-0 right-0 p-6">
+                      <p className="text-xs font-black uppercase tracking-[0.3em] text-yellow-300">
+                        Bukan layout biasa
                       </p>
-                      <h3 className="mt-2 text-3xl font-black text-white">
-                        Pembinaan hidup melalui kegiatan bermakna.
+                      <h3 className="mt-2 text-4xl font-black leading-tight text-white">
+                        Kegiatan santri dibuat seperti cerita perjalanan.
                       </h3>
                     </div>
-                  </motion.div>
-                </AnimatePresence>
-              </StoryPanel>
+                  </div>
+                </GlassCard>
+              </div>
             </Reveal>
           </div>
         </Container>
       </Section>
 
-      {/* ======================================================
-         STATS - STORYBOARD GRID
-      ====================================================== */}
-      <Section
-        id="stats"
-        className="bg-gradient-to-br from-[#f6f1e4] via-white to-emerald-50"
-      >
-        <IslamicBackground />
+      {/* STATS STRIP */}
+      <Section className="bg-gradient-to-br from-[#f7f1df] via-white to-emerald-50">
+        <BackgroundArt />
 
-        <Container className="flex min-h-[100svh] flex-col justify-center">
-          <SectionHeader
-            badge="Storyboard Metrics"
-            title="Program yang tumbuh bersama santri"
-            desc="Panel statistik ini disusun seperti frame storyboard untuk menampilkan gambaran besar pembinaan."
-          />
+        <Container className="flex min-h-[72svh] flex-col justify-center">
+          <div className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
+            <ProgramHeader
+              align="left"
+              badge="Ringkasan Program"
+              title="Setiap aktivitas punya tujuan pembinaan."
+              desc="Bukan hanya banyak kegiatan, tetapi kegiatan yang diarahkan untuk membentuk karakter santri."
+            />
 
-          <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            {stats.map((item, index) => (
-              <Reveal key={item.label} delay={index * 0.05}>
-                <StoryPanel
-                  scene={`0${index + 2}`}
-                  subtitle="Metric Panel"
-                  title=""
-                  footerLabel={item.label}
-                  className="h-full"
-                >
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-900 text-2xl text-yellow-300">
-                    {getIcon(item.iconKey)}
+            <div className="grid gap-3 sm:grid-cols-2">
+              {stats.map((item, index) => (
+                <Reveal key={`${item.label}-${index}`} delay={index * 0.05}>
+                  <div className="program-stat-card rounded-[1.7rem] border border-emerald-100 bg-white/80 p-5 shadow-xl backdrop-blur">
+                    <div className="flex items-center justify-between gap-4">
+                      <div>
+                        <p className="text-[10px] font-black uppercase tracking-[0.24em] text-emerald-700">
+                          {item.label}
+                        </p>
+                        <h3 className="mt-2 text-4xl font-black tracking-[-0.06em] text-emerald-950">
+                          {item.value}
+                        </h3>
+                      </div>
+
+                      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-950 text-2xl text-yellow-300">
+                        {getIcon(item.iconKey)}
+                      </div>
+                    </div>
                   </div>
-
-                  <h3 className="mt-5 text-[clamp(2.2rem,4vw,4rem)] font-black tracking-[-0.06em] text-emerald-950">
-                    {item.value}
-                  </h3>
-
-                  <p className="mt-2 text-sm font-semibold text-slate-600 sm:text-base">
-                    {item.label}
-                  </p>
-                </StoryPanel>
-              </Reveal>
-            ))}
+                </Reveal>
+              ))}
+            </div>
           </div>
         </Container>
       </Section>
 
-      {/* ======================================================
-         PROGRAM SHOWCASE
-      ====================================================== */}
-      <Section
-        id="program-showcase"
-        className="scroll-mt-24 bg-[#f6f1e4]"
-      >
-        <IslamicBackground />
+      {/* PROGRAM LAB */}
+      <Section id="program-lab" dark>
+        <BackgroundArt dark />
 
         <Container className="flex min-h-[100svh] items-center">
-          <div className="grid w-full items-start gap-6 xl:grid-cols-[0.78fr_1.22fr]">
+          <div className="grid w-full gap-7 xl:grid-cols-[0.72fr_1.28fr]">
             <div>
-              <SectionHeader
+              <ProgramHeader
+                dark
                 align="left"
-                badge="Scene Selector"
-                title="Pilih program dan lihat detail adegannya"
-                desc="Layout dibuat seperti panel storyboard. Klik salah satu scene program untuk melihat sorotan utamanya."
+                badge="Program Lab"
+                title="Pilih program, lihat sorotannya."
+                desc="Tampilan dibuat seperti ruang eksplorasi, bukan daftar card biasa."
               />
 
-              {/* MOBILE GRID SELECTOR */}
-              <div className="mt-5 grid grid-cols-2 gap-3 lg:hidden">
-                {programs.map((item, index) => (
-                  <button
-                    key={item.title}
-                    onClick={() => setActiveProgram(index)}
-                    className={`rounded-[1.4rem] border-[3px] p-3 text-left transition ${
-                      activeProgram === index
-                        ? "border-emerald-950 bg-emerald-950 text-white shadow-xl"
-                        : "border-[#173c32]/10 bg-white text-emerald-950 shadow-md"
-                    }`}
-                  >
-                    <div
-                      className={`mb-3 flex h-11 w-11 items-center justify-center rounded-xl text-xl ${
-                        activeProgram === index
-                          ? "bg-yellow-400 text-emerald-950"
-                          : "bg-emerald-100 text-emerald-800"
+              <div className="mt-7 grid gap-3">
+                {programs.map((item, index) => {
+                  const activeItem = activeProgram === index;
+
+                  return (
+                    <button
+                      key={`${item.title}-${index}`}
+                      onClick={() => setActiveProgram(index)}
+                      className={`group relative overflow-hidden rounded-[1.6rem] border p-4 text-left transition duration-500 ${
+                        activeItem
+                          ? "border-yellow-300 bg-yellow-400 text-emerald-950 shadow-[0_20px_60px_rgba(250,204,21,0.22)]"
+                          : "border-white/10 bg-white/10 text-white backdrop-blur-xl hover:-translate-y-1 hover:border-yellow-300/50 hover:bg-white/15"
                       }`}
                     >
-                      {getIcon(item.iconKey)}
-                    </div>
-
-                    <p className="text-[10px] font-black uppercase tracking-[0.22em] opacity-70">
-                      Scene {String(index + 1).padStart(2, "0")}
-                    </p>
-                    <p className="mt-1 text-sm font-black leading-tight">
-                      {item.title}
-                    </p>
-                  </button>
-                ))}
-              </div>
-
-              {/* DESKTOP SELECTOR */}
-              <div className="mt-6 hidden gap-3 lg:grid">
-                {programs.map((item, index) => (
-                  <button
-                    key={item.title}
-                    onClick={() => setActiveProgram(index)}
-                    className={`group rounded-[1.6rem] border-[3px] p-4 text-left transition ${
-                      activeProgram === index
-                        ? "border-yellow-300 bg-emerald-950 text-white shadow-2xl"
-                        : "border-[#173c32]/10 bg-white text-emerald-950 shadow-lg hover:-translate-y-1"
-                    }`}
-                  >
-                    <div className="flex items-center gap-4">
-                      <div
-                        className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl text-2xl transition ${
-                          activeProgram === index
-                            ? "bg-yellow-400 text-emerald-950"
-                            : "bg-emerald-100 text-emerald-800 group-hover:bg-emerald-900 group-hover:text-yellow-300"
-                        }`}
-                      >
-                        {getIcon(item.iconKey)}
-                      </div>
-
-                      <div>
-                        <p
-                          className={`text-[10px] font-black uppercase tracking-[0.22em] ${
-                            activeProgram === index
-                              ? "text-yellow-300"
-                              : "text-emerald-700"
+                      <div className="flex items-center gap-4">
+                        <div
+                          className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl text-2xl transition ${
+                            activeItem
+                              ? "bg-emerald-950 text-yellow-300"
+                              : "bg-white/10 text-yellow-300 group-hover:bg-yellow-400 group-hover:text-emerald-950"
                           }`}
                         >
-                          Scene {String(index + 1).padStart(2, "0")} •{" "}
-                          {item.subtitle}
-                        </p>
+                          {getIcon(item.iconKey)}
+                        </div>
 
-                        <h3 className="mt-1 text-xl font-black sm:text-2xl">
-                          {item.title}
-                        </h3>
+                        <div className="min-w-0 flex-1">
+                          <p
+                            className={`text-[10px] font-black uppercase tracking-[0.22em] ${
+                              activeItem
+                                ? "text-emerald-900"
+                                : "text-yellow-300"
+                            }`}
+                          >
+                            {String(index + 1).padStart(2, "0")} •{" "}
+                            {item.subtitle}
+                          </p>
+
+                          <h3 className="mt-1 truncate text-xl font-black sm:text-2xl">
+                            {item.title}
+                          </h3>
+                        </div>
+
+                        <FaArrowRight
+                          className={`hidden transition sm:block ${
+                            activeItem
+                              ? "translate-x-1"
+                              : "group-hover:translate-x-1"
+                          }`}
+                        />
                       </div>
-                    </div>
-                  </button>
-                ))}
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
-            {/* ACTIVE PROGRAM STORY PANEL */}
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeProgram}
-                initial={{ opacity: 0, x: 50, scale: 0.98 }}
+                initial={{ opacity: 0, x: 44, scale: 0.98 }}
                 animate={{ opacity: 1, x: 0, scale: 1 }}
-                exit={{ opacity: 0, x: -50, scale: 0.98 }}
-                transition={{ duration: 0.45 }}
+                exit={{ opacity: 0, x: -44, scale: 0.98 }}
+                transition={{ duration: 0.45, ease: EASE }}
               >
-                <StoryPanel
-                  dark
-                  scene={String(activeProgram + 1).padStart(2, "0")}
-                  subtitle={active.subtitle}
-                  title={active.title}
-                  footerLabel="Program Focus Scene"
-                >
-                  <div className="relative h-[260px] overflow-hidden rounded-[1.35rem] sm:h-[340px] lg:h-[48svh]">
-                    <motion.div
-                      whileHover={{ scale: 1.06 }}
-                      transition={{ duration: 0.7 }}
-                      className="h-full w-full"
-                    >
-                      <SafeImage
-                        src={active.image}
-                        alt={active.title}
-                        className="h-full w-full object-cover"
-                      />
-                    </motion.div>
+                <GlassCard dark className="p-4 sm:p-5">
+                  <div className="relative overflow-hidden rounded-[1.6rem]">
+                    <SafeImage
+                      src={active.image}
+                      alt={active.title}
+                      className="program-feature-image w-full object-cover"
+                    />
 
-                    <div className="absolute inset-0 bg-gradient-to-t from-emerald-950 via-emerald-950/20 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/25 to-transparent" />
 
-                    <div className="absolute bottom-0 left-0 p-4 sm:p-6">
-                      <p className="text-[10px] font-black uppercase tracking-[0.28em] text-yellow-300 sm:text-xs">
-                        Program Unggulan
+                    <div className="absolute left-4 top-4 rounded-full bg-yellow-400 px-4 py-2 text-[10px] font-black uppercase tracking-[0.24em] text-emerald-950 sm:left-6 sm:top-6">
+                      {active.tag}
+                    </div>
+
+                    <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-7">
+                      <p className="text-xs font-black uppercase tracking-[0.28em] text-yellow-300">
+                        {active.subtitle}
                       </p>
 
-                      <h3 className="mt-1 text-[clamp(2rem,8vw,5rem)] font-black tracking-[-0.06em] text-white">
+                      <h3 className="program-card-title mt-2 font-black leading-[0.92] tracking-[-0.06em] text-white">
                         {active.title}
                       </h3>
                     </div>
                   </div>
 
-                  <div className="mt-5 grid gap-4 md:grid-cols-[1.08fr_0.92fr]">
+                  <div className="mt-5 grid gap-5 lg:grid-cols-[1.08fr_0.92fr]">
                     <div>
-                      <p className="text-sm font-semibold leading-relaxed text-white sm:text-base">
-  {active.longDesc}
-</p>
+                      <p className="text-sm font-semibold leading-relaxed text-emerald-50 sm:text-base">
+                        {active.longDesc}
+                      </p>
 
-                      <Link href="/pendaftaran">
-                        <button className="mt-5 inline-flex items-center gap-3 rounded-full bg-yellow-400 px-5 py-3 text-sm font-black text-emerald-950 transition hover:bg-yellow-300 sm:px-6 sm:text-base">
+                      <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+                        <Link
+                          href="/pendaftaran"
+                          className="inline-flex items-center justify-center gap-3 rounded-full bg-yellow-400 px-6 py-3 text-sm font-black text-emerald-950 transition hover:-translate-y-1 hover:bg-yellow-300"
+                        >
                           Daftar Sekarang
                           <FaArrowRight />
-                        </button>
-                      </Link>
+                        </Link>
+
+                        <a
+                          href={WHATSAPP_ADMIN_URL}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center justify-center gap-3 rounded-full border border-white/20 bg-white/10 px-6 py-3 text-sm font-black text-white transition hover:-translate-y-1 hover:bg-white/20"
+                        >
+                          <FaWhatsapp />
+                          Tanya Admin
+                        </a>
+                      </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-2 sm:gap-3">
-                      {active.features.map((feature, idx) => (
+                    <div className="grid grid-cols-2 gap-3">
+                      {active.features.map((feature, index) => (
                         <div
-                          key={feature}
-                          className="rounded-2xl border-[2px] border-white/10 bg-white/10 p-3 text-center backdrop-blur"
+                          key={`${feature}-${index}`}
+                          className="rounded-2xl border border-white/10 bg-white/10 p-4 text-center"
                         >
-                          <FaCircleCheck className="mx-auto mb-2 text-yellow-300" />
-                          <p className="text-[11px] font-bold text-white sm:text-sm">
+                          <FaCheckCircle className="mx-auto text-xl text-yellow-300" />
+
+                          <p className="mt-2 text-sm font-black text-white">
                             {feature}
                           </p>
-                          <p className="mt-1 text-[9px] uppercase tracking-[0.18em] text-emerald-100/70">
-                            Beat {idx + 1}
+
+                          <p className="mt-1 text-[9px] font-black uppercase tracking-[0.18em] text-emerald-100/70">
+                            Fokus {index + 1}
                           </p>
                         </div>
                       ))}
                     </div>
                   </div>
-                </StoryPanel>
+                </GlassCard>
               </motion.div>
             </AnimatePresence>
           </div>
         </Container>
       </Section>
 
-      {/* ======================================================
-         DETAIL PROGRAM GRID - seperti storyboard comic grid
-      ====================================================== */}
-      <Section id="detail-program" dark>
-        <IslamicBackground dark />
+      {/* MAP */}
+      <Section id="program-map" className="bg-gradient-to-br from-[#f7f1df] via-white to-emerald-50">
+        <BackgroundArt />
 
         <Container className="flex min-h-[100svh] flex-col justify-center">
-          <SectionHeader
-            light
-            badge="Storyboard Grid"
-            title="Detail program dalam panel-panel adegan"
-            desc="Bagian ini menggunakan format grid seperti komik / storyboard agar informasi terasa lebih visual."
+          <ProgramHeader
+            badge="Peta Program"
+            title="Setiap program punya karakter berbeda."
+            desc="Bagian ini dibuat tidak simetris agar lebih terasa hidup dan tidak monoton seperti grid website biasa."
           />
 
-          <div className="mt-8 grid gap-4 lg:grid-cols-3">
+          <div className="program-mosaic mt-10 grid gap-5 lg:grid-cols-4">
             {programs.map((item, index) => (
-              <Reveal key={item.title} delay={index * 0.06}>
-                <StoryPanel
-                  dark
-                  scene={String(index + 1).padStart(2, "0")}
-                  subtitle={item.subtitle}
-                  title=""
-                  footerLabel={`Detail • ${item.title}`}
-                  className="h-full"
-                >
-                  <div className="grid grid-cols-[105px_1fr] gap-3 lg:block">
-                    <div className="relative h-full min-h-[150px] overflow-hidden rounded-[1.2rem] lg:h-[260px] xl:h-[320px]">
-                      <SafeImage
-                        src={item.image}
-                        alt={item.title}
-                        className="h-full w-full object-cover"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/15 to-transparent" />
+              <Reveal
+                key={`${item.title}-mosaic-${index}`}
+                delay={index * 0.06}
+                className={index === 0 ? "lg:col-span-2 lg:row-span-2" : ""}
+              >
+                <GlassCard className="h-full overflow-hidden transition duration-500 hover:-translate-y-2">
+                  <div
+                    className={`program-mosaic-image relative overflow-hidden ${
+                      index === 0 ? "program-mosaic-image-main" : ""
+                    }`}
+                  >
+                    <SafeImage
+                      src={item.image}
+                      alt={item.title}
+                      className="h-full w-full object-cover transition duration-700 group-hover:scale-110"
+                    />
 
-                      <div className="absolute bottom-3 left-3 flex h-10 w-10 items-center justify-center rounded-2xl bg-yellow-400 text-lg text-emerald-950 lg:h-12 lg:w-12">
-                        {getIcon(item.iconKey)}
-                      </div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-emerald-950 via-emerald-950/20 to-transparent" />
+
+                    <div className="absolute left-4 top-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-yellow-400 text-xl text-emerald-950">
+                      {getIcon(item.iconKey)}
                     </div>
 
-                    <div className="pt-1 lg:pt-4">
-                      <p className="text-[10px] font-black uppercase tracking-[0.22em] text-yellow-300">
+                    <div className="absolute bottom-0 left-0 right-0 p-5">
+                      <p className="text-[10px] font-black uppercase tracking-[0.24em] text-yellow-300">
                         {item.subtitle}
                       </p>
 
-                      <h3 className="mt-1 text-2xl font-black text-white lg:text-3xl">
+                      <h3 className="mt-2 text-3xl font-black leading-tight text-white">
                         {item.title}
                       </h3>
 
-                      <p className="mt-2 text-xs leading-relaxed text-emerald-100 sm:text-sm lg:text-base">
+                      <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-emerald-50">
                         {item.desc}
                       </p>
-
-                      <div className="mt-4 grid grid-cols-2 gap-2">
-                        {item.features.map((feature) => (
-                          <div
-                            key={feature}
-                            className="rounded-xl border border-white/10 bg-white/10 px-2 py-2 text-center text-[10px] font-bold text-white sm:text-xs"
-                          >
-                            {feature}
-                          </div>
-                        ))}
-                      </div>
                     </div>
                   </div>
-                </StoryPanel>
+                </GlassCard>
               </Reveal>
             ))}
           </div>
         </Container>
       </Section>
 
-      {/* ======================================================
-         TIMELINE
-      ====================================================== */}
-      <Section
-        id="timeline-program"
-        className="bg-gradient-to-br from-[#f6f1e4] via-white to-emerald-50"
-      >
-        <IslamicBackground />
+      {/* ROADMAP */}
+      <Section dark>
+        <BackgroundArt dark />
 
-        <Container className="flex min-h-[100svh] flex-col justify-center">
-          <SectionHeader
-            badge="Timeline Story"
-            title="Alur pembinaan seperti perjalanan cerita"
-            desc="Timeline ini berfungsi seperti urutan scene dalam film, dari awal pembinaan hingga pembentukan karakter."
+        <Container className="flex min-h-[90svh] flex-col justify-center">
+          <ProgramHeader
+            dark
+            badge="Roadmap Pembinaan"
+            title="Santri bergerak dari adaptasi menuju percaya diri."
+            desc="Alurnya dibuat seperti rute perjalanan, bukan timeline biasa."
           />
 
-          <div className="mt-10 grid gap-4 lg:grid-cols-2">
+          <div className="program-road mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
             {timeline.map((item, index) => (
-              <Reveal key={item.number} delay={index * 0.08}>
-                <StoryPanel
-                  scene={item.number}
-                  subtitle="Timeline Beat"
-                  title={item.title}
-                  footerLabel={`Step ${item.number}`}
-                >
-                  <div className="flex gap-4">
-                    <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-emerald-950 text-lg font-black text-yellow-300">
-                      {item.number}
-                    </div>
-
-                    <div>
-                      <p className="text-sm leading-relaxed text-slate-600 sm:text-base">
-                        {item.desc}
-                      </p>
-                    </div>
+              <Reveal key={item.number} delay={index * 0.07}>
+                <div className="relative h-full rounded-[1.8rem] border border-white/10 bg-white/10 p-5 backdrop-blur-xl">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-yellow-400 text-lg font-black text-emerald-950">
+                    {item.number}
                   </div>
-                </StoryPanel>
+
+                  <h3 className="mt-5 text-2xl font-black text-white">
+                    {item.title}
+                  </h3>
+
+                  <p className="mt-3 text-sm leading-relaxed text-emerald-100">
+                    {item.desc}
+                  </p>
+                </div>
               </Reveal>
             ))}
           </div>
         </Container>
       </Section>
 
-      {/* ======================================================
-         GALLERY
-      ====================================================== */}
-      <Section id="galeri" dark className="scroll-mt-24">
-        <IslamicBackground dark />
+      {/* GALLERY */}
+      <Section id="program-gallery" className="bg-[#f7f1df]">
+        <BackgroundArt />
 
-        <Container className="flex min-h-[100svh] items-center">
-          <div className="grid w-full items-start gap-6 lg:grid-cols-[0.88fr_1.12fr]">
-            <SectionHeader
-              light
+        <Container className="flex min-h-[92svh] items-center">
+          <div className="grid w-full gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
+            <ProgramHeader
               align="left"
-              badge="Gallery Frames"
-              title="Suasana pembinaan santri yang hidup"
-              desc="Galeri ini disusun seperti kumpulan frame sinematik agar pengunjung merasa sedang melihat potongan adegan."
+              badge="Galeri Program"
+              title="Potongan suasana yang terasa hidup."
+              desc="Galeri dibuat seperti film strip agar berbeda dari tampilan galeri standar."
             />
 
-            <div className="grid gap-4">
-              <StoryPanel
-                dark
-                scene="06"
-                subtitle="Gallery Scene"
-                title=""
-                footerLabel="Moving Frames"
-              >
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={currentGallery}
-                    initial={{ opacity: 0, scale: 1.06 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.96 }}
-                    transition={{ duration: 0.45 }}
-                    className="relative overflow-hidden rounded-[1.4rem]"
+            <GlassCard className="p-4 sm:p-5">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentGallery}
+                  initial={{ opacity: 0, scale: 1.06 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.96 }}
+                  transition={{ duration: 0.45, ease: EASE }}
+                  className="relative overflow-hidden rounded-[1.6rem]"
+                >
+                  <SafeImage
+                    src={gallery[currentGallery]}
+                    alt="Galeri Program"
+                    className="program-gallery-image w-full object-cover"
+                  />
+
+                  <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/90 via-transparent to-transparent" />
+
+                  <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-7">
+                    <p className="text-xs font-black uppercase tracking-[0.3em] text-yellow-300">
+                      Frame {String(currentGallery + 1).padStart(2, "0")}
+                    </p>
+
+                    <h3 className="mt-2 text-4xl font-black text-white sm:text-5xl">
+                      Kegiatan Santri
+                    </h3>
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+
+              <div className="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-6">
+                {gallery.map((img, index) => (
+                  <button
+                    key={`${img}-${index}`}
+                    onClick={() => setCurrentGallery(index)}
+                    className={`overflow-hidden rounded-2xl border-2 p-1 transition ${
+                      currentGallery === index
+                        ? "border-yellow-400 bg-yellow-400"
+                        : "border-emerald-100 bg-white hover:border-emerald-400"
+                    }`}
                   >
                     <SafeImage
-                      src={gallery[currentGallery]}
-                      alt="Galeri Program"
-                      className="h-[360px] w-full object-cover sm:h-[420px] lg:h-[54svh]"
+                      src={img}
+                      alt={`Thumbnail ${index + 1}`}
+                      className="h-16 w-full rounded-xl object-cover sm:h-20"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent" />
-
-                    <div className="absolute bottom-0 left-0 p-6">
-                      <p className="text-xs font-black uppercase tracking-[0.3em] text-yellow-300">
-                        Galeri Program
-                      </p>
-                      <h3 className="mt-2 text-3xl font-black text-white sm:text-5xl">
-                        Kegiatan Santri
-                      </h3>
-                    </div>
-                  </motion.div>
-                </AnimatePresence>
-
-                <div className="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-6">
-                  {gallery.map((img, index) => (
-                    <button
-                      key={index}
-                      onClick={() => setCurrentGallery(index)}
-                      className={`group overflow-hidden rounded-xl border-[2px] p-1 transition ${
-                        currentGallery === index
-                          ? "border-yellow-300 bg-yellow-300"
-                          : "border-white/10 bg-white/10 hover:bg-white/20"
-                      }`}
-                    >
-                      <SafeImage
-                        src={img}
-                        alt={`Thumbnail ${index + 1}`}
-                        className="h-14 w-full rounded-lg object-cover transition duration-500 group-hover:scale-105 sm:h-20"
-                      />
-                    </button>
-                  ))}
-                </div>
-              </StoryPanel>
-            </div>
+                  </button>
+                ))}
+              </div>
+            </GlassCard>
           </div>
         </Container>
       </Section>
 
-      {/* ======================================================
-         ADVANTAGES
-      ====================================================== */}
-      <Section className="bg-gradient-to-br from-[#f6f1e4] via-white to-emerald-50">
-        <IslamicBackground />
+      {/* ADVANTAGES */}
+      <Section className="bg-gradient-to-br from-[#f7f1df] via-white to-emerald-50">
+        <BackgroundArt />
 
-        <Container className="flex min-h-[100svh] flex-col justify-center">
-          <SectionHeader
-            badge="Highlights"
-            title="Mengapa program pembinaan ini penting?"
-            desc="Program bukan hanya aktivitas tambahan, tetapi bagian dari proses pembentukan karakter santri."
+        <Container className="flex min-h-[80svh] flex-col justify-center">
+          <ProgramHeader
+            badge="Kenapa Program Ini Berbeda?"
+            title="Program dirancang agar santri tidak hanya mengikuti, tapi ikut tumbuh."
+            desc="Bagian ini dibuat seperti highlight manifesto agar terasa berbeda dari section keunggulan biasa."
           />
 
-          <div className="mt-8 grid gap-5 md:grid-cols-3">
+          <div className="mt-10 grid gap-5 md:grid-cols-3">
             {advantages.map((item, index) => (
               <Reveal key={item.title} delay={index * 0.06}>
-                <StoryPanel
-                  scene={`A${index + 1}`}
-                  subtitle="Key Highlight"
-                  title={item.title}
-                  footerLabel="Highlight Panel"
-                  className="h-full"
-                >
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-900 text-2xl text-yellow-300">
+                <GlassCard className="h-full p-6">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-[1.4rem] bg-emerald-950 text-2xl text-yellow-300">
                     {getIcon(item.iconKey)}
                   </div>
 
-                  <p className="mt-5 text-sm leading-relaxed text-slate-600 sm:text-base">
+                  <h3 className="mt-6 text-2xl font-black text-emerald-950">
+                    {item.title}
+                  </h3>
+
+                  <p className="mt-3 text-sm leading-relaxed text-slate-600 sm:text-base">
                     {item.desc}
                   </p>
-                </StoryPanel>
+                </GlassCard>
               </Reveal>
             ))}
           </div>
         </Container>
       </Section>
 
-      {/* ======================================================
-         FAQ
-      ====================================================== */}
-      <Section id="faq" dark>
-        <IslamicBackground dark />
+      {/* FAQ */}
+      <Section id="program-faq" dark>
+        <BackgroundArt dark />
 
-        <Container className="flex min-h-[100svh] items-center">
-          <div className="mx-auto grid w-full max-w-7xl items-start gap-8 lg:grid-cols-[0.9fr_1.1fr]">
-            <SectionHeader
-              light
+        <Container className="flex min-h-[90svh] items-center">
+          <div className="grid w-full gap-8 lg:grid-cols-[0.9fr_1.1fr]">
+            <ProgramHeader
+              dark
               align="left"
-              badge="Frequently Asked Scenes"
-              title="Informasi yang sering ditanyakan"
-              desc="Bagian ini membantu calon santri dan orang tua memahami program pembinaan dengan lebih jelas."
+              badge="Pertanyaan Umum"
+              title="Jawaban singkat untuk orang tua dan calon santri."
+              desc="FAQ tetap dibuat simple, tetapi dengan panel gelap agar tidak terasa seperti FAQ default."
             />
 
-            <div className="space-y-3">
+            <div className="space-y-4">
               {faq.map((item, index) => {
-                const open = openFaq === index;
+                const isOpen = openFaq === index;
 
                 return (
-                  <div
-                    key={item.q}
-                    className="overflow-hidden rounded-[1.5rem] border-[3px] border-white/10 bg-white/10 backdrop-blur-xl"
-                  >
+                  <GlassCard key={item.q} dark>
                     <button
-                      onClick={() => setOpenFaq(open ? null : index)}
-                      className="flex w-full items-center justify-between gap-5 border-b-[3px] border-white/10 px-5 py-5 text-left"
+                      onClick={() => setOpenFaq(isOpen ? null : index)}
+                      className="flex w-full items-center justify-between gap-5 p-5 text-left sm:p-6"
                     >
                       <div>
-                        <p className="mb-1 text-[10px] font-black uppercase tracking-[0.22em] text-yellow-300">
-                          Scene Q{index + 1}
+                        <p className="mb-2 text-[10px] font-black uppercase tracking-[0.24em] text-yellow-300">
+                          Q{String(index + 1).padStart(2, "0")}
                         </p>
-                        <h3 className="text-base font-black text-white sm:text-lg">
+
+                        <h3 className="text-base font-black text-white sm:text-xl">
                           {item.q}
                         </h3>
                       </div>
 
                       <motion.div
-                        animate={{ rotate: open ? 180 : 0 }}
+                        animate={{ rotate: isOpen ? 180 : 0 }}
                         transition={{ duration: 0.25 }}
                         className="shrink-0 text-yellow-300"
                       >
@@ -1199,14 +1190,15 @@ export default function Program() {
                     </button>
 
                     <AnimatePresence>
-                      {open && (
+                      {isOpen && (
                         <motion.div
                           initial={{ height: 0, opacity: 0 }}
                           animate={{ height: "auto", opacity: 1 }}
                           exit={{ height: 0, opacity: 0 }}
-                          transition={{ duration: 0.3 }}
+                          transition={{ duration: 0.3, ease: EASE }}
+                          className="overflow-hidden"
                         >
-                          <div className="px-5 py-4">
+                          <div className="border-t border-white/10 px-5 pb-5 pt-4 sm:px-6 sm:pb-6">
                             <p className="text-sm leading-relaxed text-emerald-100 sm:text-base">
                               {item.a}
                             </p>
@@ -1214,7 +1206,7 @@ export default function Program() {
                         </motion.div>
                       )}
                     </AnimatePresence>
-                  </div>
+                  </GlassCard>
                 );
               })}
             </div>
@@ -1222,107 +1214,60 @@ export default function Program() {
         </Container>
       </Section>
 
-      {/* ======================================================
-   CTA / ENDING
-====================================================== */}
-<Section
-  id="closing-scene"
-  dark
-  className="bg-gradient-to-br from-[#f6f1e4] via-white to-emerald-50"
->
-  <IslamicBackground dark />
+      {/* CTA */}
+      <Section dark className="min-h-[78svh]">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#041b15] via-[#063226] to-[#041b15]" />
+        <BackgroundArt dark />
 
-  <Container className="flex min-h-[100svh] items-center justify-center text-center px-4">
-    <motion.div
-      initial={{ opacity: 0, y: 45, scale: 0.96 }}
-      whileInView={{ opacity: 1, y: 0, scale: 1 }}
-      viewport={{ once: true, amount: 0.25 }}
-      transition={{ duration: 0.7 }}
-      className="mx-auto w-full max-w-6xl"
-    >
-      <div className="rounded-[1.8rem] border-[3px] border-white/15 bg-emerald-950/95 text-white shadow-[0_25px_80px_rgba(0,0,0,0.35)] backdrop-blur-xl overflow-hidden">
-        {/* Header */}
-        <div className="flex items-center justify-between border-b-[3px] border-white/10 bg-black/20 px-4 py-3 sm:px-5">
-          <div className="flex items-center gap-3">
-            <div className="rounded-full bg-yellow-400 px-3 py-1 text-[10px] font-black uppercase tracking-[0.24em] text-emerald-950">
-              Scene 08
-            </div>
+        <Container className="flex min-h-[78svh] items-center justify-center text-center">
+          <Reveal className="mx-auto w-full max-w-6xl">
+            <GlassCard dark className="p-7 sm:p-10 lg:p-14">
+              <motion.div
+                animate={{ rotate: [0, 8, -8, 0], scale: [1, 1.05, 1] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-[1.4rem] bg-yellow-400 text-2xl text-emerald-950"
+              >
+                <FaCheckCircle />
+              </motion.div>
 
-            <p className="text-[10px] font-black uppercase tracking-[0.22em] text-emerald-100/80">
-              Final Scene
-            </p>
-          </div>
+              <p className="font-black text-yellow-300">
+                Perjalanan santri dimulai dari keputusan kecil.
+              </p>
 
-          <FaFilm className="text-yellow-300" />
-        </div>
+              <h2 className="program-section-title mx-auto mt-4 max-w-5xl font-black leading-[0.96] tracking-[-0.06em] text-white">
+                Mulai perjalanan santri bersama program Al-Furqon.
+              </h2>
 
-        {/* Body */}
-        <div className="relative px-5 py-10 sm:px-8 sm:py-14 lg:px-12 lg:py-16">
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-yellow-300/10 via-transparent to-emerald-300/10" />
+              <p className="mx-auto mt-5 max-w-3xl text-sm leading-relaxed text-emerald-100 sm:text-base lg:text-lg">
+                Daftarkan calon santri dan ikuti proses pendidikan yang membangun
+                ilmu, ibadah, adab, keberanian, dan kemandirian.
+              </p>
 
-          <div className="relative z-10">
-            <h2 className="mx-auto max-w-4xl text-[clamp(2rem,5vw,4.8rem)] font-black leading-[1.02] tracking-[-0.05em] text-white">
-              Mulai perjalanan santri melalui program yang aktif dan bermakna.
-            </h2>
-
-            <p className="mx-auto mt-6 max-w-3xl text-sm leading-relaxed text-emerald-50 sm:text-base lg:text-lg">
-              Daftarkan calon santri sekarang dan ikuti proses pendidikan yang
-              membangun ilmu, adab, keberanian, dan kemandirian.
-            </p>
-
-            <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
-              <Link href="/pendaftaran">
-                <button className="inline-flex w-full items-center justify-center gap-3 rounded-full bg-yellow-400 px-8 py-4 font-black text-emerald-950 shadow-[0_12px_35px_rgba(250,204,21,0.25)] transition hover:-translate-y-1 hover:bg-yellow-300 sm:w-auto">
+              <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
+                <Link
+                  href="/pendaftaran"
+                  className="inline-flex items-center justify-center gap-3 rounded-full bg-yellow-400 px-8 py-4 text-sm font-black text-emerald-950 shadow-[0_18px_45px_rgba(250,204,21,0.28)] transition hover:-translate-y-1 hover:bg-yellow-300"
+                >
                   Daftar Sekarang
                   <FaArrowRight />
-                </button>
-              </Link>
+                </Link>
 
-              <Link href="/pendidikan">
-                <button className="w-full rounded-full border border-white/30 bg-white/10 px-8 py-4 font-black text-white backdrop-blur transition hover:-translate-y-1 hover:bg-white/20 sm:w-auto">
-                  Lihat Pendidikan
-                </button>
-              </Link>
-            </div>
-          </div>
-        </div>
-
-        {/* Footer */}
-        <div className="border-t-[3px] border-white/10 bg-black/20 px-4 py-3 text-[11px] font-black uppercase tracking-[0.2em] text-yellow-300 sm:px-5">
-          Closing Scene
-        </div>
-      </div>
-    </motion.div>
-  </Container>
-</Section>
+                <a
+                  href={WHATSAPP_ADMIN_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-3 rounded-full border border-white/25 bg-white/10 px-8 py-4 text-sm font-black text-white backdrop-blur-xl transition hover:-translate-y-1 hover:bg-white/20"
+                >
+                  <FaWhatsapp />
+                  Hubungi Admin
+                </a>
+              </div>
+            </GlassCard>
+          </Reveal>
+        </Container>
+      </Section>
 
       <Footer />
-
-      {/* ======================================================
-         GLOBAL STYLE
-         - font feel kreatif / film
-         - smooth scroll
-         - utility kecil untuk cinematic feel
-      ====================================================== */}
-      <style jsx global>{`
-        html {
-          scroll-behavior: smooth;
-        }
-
-        body {
-          background: #f6f1e4;
-        }
-
-        ::selection {
-          background: #facc15;
-          color: #052e25;
-        }
-
-        .story-caption {
-          font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-            "Liberation Mono", "Courier New", monospace;
-        }
-      `}</style>
     </main>
   );
 }
