@@ -32,7 +32,7 @@ import {
   FaStar,
 } from "react-icons/fa";
 
-import { API_URL, formatRupiah, formatTanggal, isServerError } from "./helpers/helpers";
+import { API_URL, formatRupiah, formatTanggal, isServerError } from "../../lib/ownerHelpers";
 
 export default function OwnerDashboard() {
   const router = useRouter();

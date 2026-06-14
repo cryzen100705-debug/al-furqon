@@ -30,7 +30,7 @@ import {
   FaClipboardList,
 } from "react-icons/fa";
 
-import { API_URL, formatTanggal, isServerError } from "./helpers/helpers";
+import { API_URL, formatTanggal, isServerError } from "../../lib/ownerHelpers";
 
 export default function OwnerAktivitas() {
   const router = useRouter();
