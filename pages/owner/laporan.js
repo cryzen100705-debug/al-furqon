@@ -28,7 +28,7 @@ import {
   FaEye,
 } from "react-icons/fa";
 
-import { API_URL, formatRupiah, formatTanggal, isServerError } from "../../helpers/ownerHelpers";
+import { API_URL, formatRupiah, formatTanggal, isServerError } from "./helpers/helpers";
 
 export default function OwnerLaporan() {
   const router = useRouter();

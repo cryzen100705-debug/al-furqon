@@ -5,7 +5,7 @@ import {
   generatePassword,
   uploadToStorage,
   logAktivitasAdmin,
-} from "../helpers/ownerHelpers.js";
+} from "../helpers/helpers.js";
 
 const router = express.Router();
 
