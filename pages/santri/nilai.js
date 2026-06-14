@@ -196,9 +196,6 @@ const res = await fetch(
   `${API_URL}/api/santri/nilai/${currentUser.id}?${params.toString()}`,
   {
     method: "GET",
-    headers: {
-      "x-user-id": currentUser.id,
-    },
   }
 );
 
