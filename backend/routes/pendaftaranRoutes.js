@@ -1,7 +1,7 @@
 import express from "express";
 import { supabase } from "../config/supabase.js";
 import upload from "../middleware/upload.js";
-import { generatePassword, uploadToStorage } from "../helpers/helpers.js";
+import { generatePassword, uploadToStorage } from "../helpers/ownerHelpers.js";
 
 const router = express.Router();
 
