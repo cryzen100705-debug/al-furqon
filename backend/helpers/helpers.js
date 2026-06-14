@@ -1,27 +1,25 @@
 import { supabase } from "../config/supabase.js";
 
-export const generatePassword = (nama = "", tanggalLahir = "") => {
+export const generatePassword = (nama, tanggalLahir) => {
   const cleanName = String(nama || "")
-    .toLowerCase()
-    .replace(/[^a-z0-9]/g, "")
-    .slice(0, 6);
+    .replace(/\s/g, "")
+    .toLowerCase();
 
-  const cleanDate = String(tanggalLahir || "").replace(/[^0-9]/g, "");
-  const datePart = cleanDate.slice(-4) || "1234";
+  const tgl = tanggalLahir ? String(tanggalLahir).replaceAll("-", "") : "0000";
 
-  return `${cleanName || "santri"}${datePart}`;
+  return `${cleanName.slice(0, 4)}${tgl.slice(-4)}!`;
 };
 
-export const uploadToStorage = async (
-  bucketName,
-  file,
-  folderName = "uploads"
-) => {
+export const uploadToStorage = async (bucketName, file, folderName) => {
   if (!file) return null;
 
-  const fileExt = file.originalname?.split(".").pop() || "file";
-  const fileName = `${Date.now()}-${Math.round(Math.random() * 1e9)}.${fileExt}`;
-  const filePath = `${folderName}/${fileName}`;
+  const originalName = file.originalname || "file";
+
+  const safeName = originalName
+    .replace(/\s+/g, "-")
+    .replace(/[^\w.-]/g, "");
+
+  const filePath = `${folderName}/${Date.now()}-${safeName}`;
 
   const { error } = await supabase.storage
     .from(bucketName)
@@ -31,7 +29,7 @@ export const uploadToStorage = async (
     });
 
   if (error) {
-    throw new Error(error.message);
+    throw new Error(`Gagal upload ke bucket ${bucketName}: ${error.message}`);
   }
 
   const { data } = supabase.storage.from(bucketName).getPublicUrl(filePath);
@@ -39,43 +37,35 @@ export const uploadToStorage = async (
   return data.publicUrl;
 };
 
-export const formatRupiah = (value = 0) => {
-  const number = Number(value || 0);
-
-  return new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    maximumFractionDigits: 0,
-  }).format(number);
+export const getAdminInfo = (body = {}) => {
+  return {
+    admin_id: body.admin_id || null,
+    nama_admin: body.nama_admin || "Admin Pesantren",
+  };
 };
 
-export const toNumber = (value = 0) => {
-  const number = Number(value);
-  return Number.isNaN(number) ? 0 : number;
-};
-
-export const toSafeString = (value = "") => {
-  return String(value || "").trim();
-};
-
-export const isEmpty = (value) => {
-  return value === undefined || value === null || String(value).trim() === "";
-};
-
-export const normalizeStatus = (status = "") => {
-  const value = String(status || "").toLowerCase().trim();
-
-  if (["lunas", "paid", "success", "berhasil"].includes(value)) {
-    return "lunas";
+export const logAktivitasAdmin = async ({
+  admin_id = null,
+  nama_admin = "Admin Pesantren",
+  kategori = "sistem",
+  aktivitas = "Aktivitas Admin",
+  detail = "",
+  target_id = null,
+  target_nama = "",
+}) => {
+  try {
+    await supabase.from("aktivitas_admin").insert([
+      {
+        admin_id,
+        nama_admin,
+        kategori,
+        aktivitas,
+        detail,
+        target_id,
+        target_nama,
+      },
+    ]);
+  } catch (error) {
+    console.error("LOG AKTIVITAS ERROR:", error.message);
   }
-
-  if (["pending", "menunggu", "diproses", "menunggu verifikasi"].includes(value)) {
-    return "pending";
-  }
-
-  if (["ditolak", "gagal", "failed", "reject", "rejected"].includes(value)) {
-    return "ditolak";
-  }
-
-  return value || "pending";
 };
