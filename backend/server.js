@@ -27,31 +27,50 @@ const __dirname = path.dirname(__filename);
 
 const PORT = process.env.PORT || 5000;
 
+const normalizeOrigin = (origin = "") => {
+  return String(origin).trim().replace(/\/$/, "");
+};
+
+const envAllowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(",")
+      .map((origin) => normalizeOrigin(origin))
+      .filter(Boolean)
+  : [];
+
 const allowedOrigins = [
   "http://localhost:3000",
   "http://127.0.0.1:3000",
-  process.env.FRONTEND_URL,
-  process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null,
-].filter(Boolean);
+  process.env.FRONTEND_URL ? normalizeOrigin(process.env.FRONTEND_URL) : null,
+  process.env.VERCEL_URL
+    ? normalizeOrigin(`https://${process.env.VERCEL_URL}`)
+    : null,
+  ...envAllowedOrigins,
+]
+  .filter(Boolean)
+  .filter((origin, index, array) => array.indexOf(origin) === index);
 
 /* =========================================================
    CORS
 ========================================================= */
 
+const isVercelPreview = (origin = "") => {
+  return origin.endsWith(".vercel.app") && origin.includes("al-furqon");
+};
+
 const corsOptions = {
   origin(origin, callback) {
-    // Izinkan request tanpa origin:
-    // contoh: Postman, browser direct access, Render health check
     if (!origin) {
       return callback(null, true);
     }
 
-    if (allowedOrigins.includes(origin)) {
+    const cleanOrigin = normalizeOrigin(origin);
+
+    if (allowedOrigins.includes(cleanOrigin) || isVercelPreview(cleanOrigin)) {
       return callback(null, true);
     }
 
-    console.log("CORS BLOCKED ORIGIN:", origin);
-    return callback(new Error(`CORS tidak mengizinkan origin: ${origin}`));
+    console.log("CORS BLOCKED ORIGIN:", cleanOrigin);
+    return callback(new Error(`CORS tidak mengizinkan origin: ${cleanOrigin}`));
   },
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
@@ -94,6 +113,7 @@ app.get("/api/health", (req, res) => {
     environment: process.env.NODE_ENV || "development",
     frontend: process.env.FRONTEND_URL || "http://localhost:3000",
     allowedOrigins,
+    requestOrigin: req.headers.origin || null,
   });
 });
 
@@ -138,6 +158,8 @@ app.use((err, req, res, next) => {
       success: false,
       message: "Akses ditolak oleh CORS.",
       error: err.message,
+      origin: req.headers.origin || null,
+      allowedOrigins,
     });
   }
 
