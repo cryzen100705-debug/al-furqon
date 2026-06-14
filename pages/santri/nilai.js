@@ -3,16 +3,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import {
-  FaArrowLeft,
   FaAward,
   FaBookOpen,
-  FaCalendarAlt,
   FaChartLine,
-  FaCheckCircle,
   FaClipboardList,
   FaExclamationTriangle,
   FaFilter,
-  FaGraduationCap,
   FaLeaf,
   FaQuran,
   FaSearch,
@@ -138,9 +134,9 @@ export default function SantriNilaiPage() {
   const [filterMapel, setFilterMapel] = useState("");
   const [filterJenis, setFilterJenis] = useState("");
   const [filterSemester, setFilterSemester] = useState("Ganjil");
-const [filterTahunAjaran, setFilterTahunAjaran] = useState(
-  getDefaultTahunAjaran()
-);
+  const [filterTahunAjaran, setFilterTahunAjaran] = useState(
+    getDefaultTahunAjaran()
+  );
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -170,10 +166,11 @@ const [filterTahunAjaran, setFilterTahunAjaran] = useState(
   }, [router]);
 
   useEffect(() => {
-  if (user?.id) {
-    fetchNilai(user);
-  }
-}, [user, filterSemester, filterTahunAjaran]);
+    if (user?.id) {
+      fetchNilai(user);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, filterSemester, filterTahunAjaran]);
 
   const fetchNilai = async (currentUser = user) => {
     if (!currentUser?.id) return;
@@ -182,22 +179,26 @@ const [filterTahunAjaran, setFilterTahunAjaran] = useState(
       setLoading(true);
       setErrorMessage("");
 
-const params = new URLSearchParams();
+      const params = new URLSearchParams();
 
-if (filterSemester) {
-  params.append("semester", filterSemester);
-}
+      if (filterSemester) {
+        params.append("semester", filterSemester);
+      }
 
-if (filterTahunAjaran) {
-  params.append("tahun_ajaran", filterTahunAjaran);
-}
+      if (filterTahunAjaran) {
+        params.append("tahun_ajaran", filterTahunAjaran);
+      }
 
-const res = await fetch(
-  `${API_URL}/api/santri/nilai/${currentUser.id}?${params.toString()}`,
-  {
-    method: "GET",
-  }
-);
+      const res = await fetch(
+        `${API_URL}/api/santri/nilai/${currentUser.id}?${params.toString()}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "x-user-id": currentUser.id,
+          },
+        }
+      );
 
       const contentType = res.headers.get("content-type");
 
@@ -224,7 +225,7 @@ const res = await fetch(
         }
       );
     } catch (error) {
-      setErrorMessage(error.message);
+      setErrorMessage(error.message || "Gagal mengambil nilai santri.");
     } finally {
       setLoading(false);
     }
@@ -245,16 +246,6 @@ const res = await fetch(
 
     nilaiList.forEach((item) => {
       if (item.jenis_nilai) set.add(item.jenis_nilai);
-    });
-
-    return Array.from(set);
-  }, [nilaiList]);
-
-  const semesterOptions = useMemo(() => {
-    const set = new Set();
-
-    nilaiList.forEach((item) => {
-      if (item.semester) set.add(item.semester);
     });
 
     return Array.from(set);
@@ -342,7 +333,6 @@ const res = await fetch(
 
             <section className="mb-7 flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
               <div>
-
                 <div className="inline-flex items-center gap-3 rounded-full border border-yellow-400/30 bg-yellow-400/10 px-4 py-2 text-xs font-black uppercase tracking-[0.22em] text-yellow-300">
                   <FaLeaf />
                   Santri Grade Report
@@ -433,7 +423,7 @@ const res = await fetch(
 
                 <p className="mt-4 text-sm leading-relaxed text-emerald-100/70">
                   Rata-rata nilai pada semester {filterSemester} tahun ajaran{" "}
-{filterTahunAjaran || "-"}.
+                  {filterTahunAjaran || "-"}.
                 </p>
               </div>
             </section>
@@ -523,24 +513,24 @@ const res = await fetch(
                 </select>
 
                 <select
-  value={filterSemester}
-  onChange={(e) => setFilterSemester(e.target.value)}
-  className="rounded-2xl border border-white/10 bg-[#0B2A1B] px-4 py-4 text-sm font-bold text-white outline-none focus:border-yellow-400"
->
-  {SEMESTER_OPTIONS.map((semester) => (
-    <option key={semester} value={semester}>
-      Semester {semester}
-    </option>
-  ))}
-</select>
+                  value={filterSemester}
+                  onChange={(e) => setFilterSemester(e.target.value)}
+                  className="rounded-2xl border border-white/10 bg-[#0B2A1B] px-4 py-4 text-sm font-bold text-white outline-none focus:border-yellow-400"
+                >
+                  {SEMESTER_OPTIONS.map((semester) => (
+                    <option key={semester} value={semester}>
+                      Semester {semester}
+                    </option>
+                  ))}
+                </select>
 
-<input
-  type="text"
-  value={filterTahunAjaran}
-  onChange={(e) => setFilterTahunAjaran(e.target.value)}
-  className="rounded-2xl border border-white/10 bg-[#0B2A1B] px-4 py-4 text-sm font-bold text-white outline-none placeholder:text-emerald-100/40 focus:border-yellow-400"
-  placeholder="2025/2026"
-/>
+                <input
+                  type="text"
+                  value={filterTahunAjaran}
+                  onChange={(e) => setFilterTahunAjaran(e.target.value)}
+                  className="rounded-2xl border border-white/10 bg-[#0B2A1B] px-4 py-4 text-sm font-bold text-white outline-none placeholder:text-emerald-100/40 focus:border-yellow-400"
+                  placeholder="2025/2026"
+                />
               </div>
             </section>
 
@@ -551,8 +541,8 @@ const res = await fetch(
                     Daftar Nilai
                   </h2>
                   <p className="text-sm text-emerald-100/70">
-                    Menampilkan {filteredNilai.length} nilai semester {filterSemester} tahun ajaran{" "}
-{filterTahunAjaran || "-"}.
+                    Menampilkan {filteredNilai.length} nilai semester{" "}
+                    {filterSemester} tahun ajaran {filterTahunAjaran || "-"}.
                   </p>
                 </div>
 
