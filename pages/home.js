@@ -103,30 +103,6 @@ const DEFAULT_VALUES = [
   },
 ];
 
-const DEFAULT_PROGRAMS = [
-  {
-    title: "Tahfidz Qur'an",
-    tag: "Keislaman",
-    desc: "Program pembiasaan membaca, menghafal, dan mencintai Al-Qur'an.",
-    image: "/kegiatan-1.jpg",
-    iconKey: "quran",
-  },
-  {
-    title: "Pendidikan Formal",
-    tag: "SMP / SMK",
-    desc: "Pendidikan formal yang mendukung akademik dan persiapan masa depan santri.",
-    image: "/kegiatan-2.jpg",
-    iconKey: "book",
-  },
-  {
-    title: "Asrama Santri",
-    tag: "Kemandirian",
-    desc: "Lingkungan asrama yang membentuk disiplin, tanggung jawab, dan kebersamaan.",
-    image: "/hero-santri.jpg",
-    iconKey: "camp",
-  },
-];
-
 const DEFAULT_PEMBINA = [
   {
     name: "Pembina Santri",
@@ -1028,107 +1004,6 @@ function ValuesScreen({ values, direction }) {
     </ScreenShell>
   );
 }
-function ProgramScreen({ programs, direction }) {
-  return (
-    <ScreenShell light sectionKey="program" direction={direction}>
-      <IslamicBackground />
-
-      <div className="home-screen flex flex-col justify-center">
-        <div className="mx-auto max-w-4xl text-center">
-          <Badge>Program Pembinaan</Badge>
-
-          <motion.h2
-            initial={{ opacity: 0, y: 28, filter: "blur(7px)" }}
-            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            transition={{ delay: 0.1, duration: 0.55, ease: EASE_PREMIUM }}
-            className="home-heading mt-4 font-black leading-[0.98] tracking-[-0.05em] text-emerald-950"
-          >
-            Program santri yang aktif dan bermakna
-          </motion.h2>
-
-          <motion.p
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.18, duration: 0.45 }}
-            className="mx-auto mt-4 max-w-3xl text-sm leading-relaxed text-slate-600 sm:text-base"
-          >
-            Kegiatan pesantren menjadi bagian penting dari pembentukan karakter,
-            keberanian, dan kemandirian santri.
-          </motion.p>
-        </div>
-
-        <div className="mt-6 grid gap-4 lg:grid-cols-3">
-          {programs.map((item, index) => (
-            <motion.div
-              key={`${item.title}-${index}`}
-              initial={{ opacity: 0, y: 24, filter: "blur(7px)" }}
-              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-              transition={{
-                duration: 0.48,
-                delay: 0.24 + index * 0.06,
-                ease: EASE_PREMIUM,
-              }}
-            >
-              <TiltCard>
-                <div className="group overflow-hidden rounded-[1.6rem] border border-emerald-100 bg-white shadow-2xl">
-                  <div className="relative home-program-image overflow-hidden">
-                    <motion.div
-                      initial={{ clipPath: CLIP_LEFT }}
-                      animate={{ clipPath: CLIP_VISIBLE }}
-                      transition={{
-                        duration: 0.62,
-                        delay: index * 0.06,
-                        ease: EASE_PREMIUM,
-                      }}
-                      className="h-full w-full"
-                    >
-                      <SafeImage
-                        src={item.image}
-                        alt={item.title}
-                        className="h-full w-full object-cover transition duration-700 group-hover:scale-110"
-                      />
-                    </motion.div>
-
-                    <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/90 via-transparent to-transparent" />
-
-                    <motion.div
-                      animate={{ y: [0, -6, 0] }}
-                      transition={{
-                        duration: 5,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                        delay: index * 0.4,
-                      }}
-                      className="absolute bottom-4 left-4 right-4"
-                    >
-                      <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-2xl bg-yellow-400 text-xl text-emerald-950">
-                        {getIcon(item.iconKey)}
-                      </div>
-
-                      <p className="text-[10px] font-black uppercase tracking-[0.25em] text-yellow-300">
-                        {item.tag}
-                      </p>
-
-                      <h3 className="mt-2 text-2xl font-black text-white">
-                        {item.title}
-                      </h3>
-                    </motion.div>
-                  </div>
-
-                  <div className="p-5">
-                    <p className="text-sm leading-relaxed text-slate-600">
-                      {item.desc}
-                    </p>
-                  </div>
-                </div>
-              </TiltCard>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </ScreenShell>
-  );
-}
 
 function PembinaScreen({ pembinaItems, step, direction, setStep }) {
   const currentPembina = pembinaItems[step] || pembinaItems[0];
@@ -1527,10 +1402,6 @@ const [navbarHeight, setNavbarHeight] = useState(92);
   const stats = homeData?.heroStats?.length ? homeData.heroStats : DEFAULT_STATS;
   const values = homeData?.values?.length ? homeData.values : DEFAULT_VALUES;
 
-  const programs = homeData?.programs?.length
-    ? homeData.programs
-    : DEFAULT_PROGRAMS;
-
   const pembinaItems = homeData?.pembina?.length
     ? homeData.pembina
     : DEFAULT_PEMBINA;
@@ -1539,7 +1410,6 @@ const [navbarHeight, setNavbarHeight] = useState(92);
   () => [
     { key: "hero", label: "Home", total: 1 },
     { key: "values", label: "Nilai", total: 1 },
-    { key: "program", label: "Program", total: 1 },
     { key: "pembina", label: "Pembina", total: pembinaItems.length || 1 },
     { key: "cta", label: "Daftar", total: 1 },
   ],
@@ -1810,7 +1680,7 @@ const [navbarHeight, setNavbarHeight] = useState(92);
 
 const setCurrentPembinaStep = (index) => {
   setPosition({
-    section: 3,
+    section: 2,
     step: index,
     direction: index >= activeStep ? 1 : -1,
   });
@@ -1833,16 +1703,6 @@ const setCurrentPembinaStep = (index) => {
 
     if (key === "values") {
       return <ValuesScreen key="values" values={values} direction={direction} />;
-    }
-
-    if (key === "program") {
-      return (
-        <ProgramScreen
-          key="program"
-          programs={programs}
-          direction={direction}
-        />
-      );
     }
 
     if (key === "pembina") {
