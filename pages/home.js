@@ -1536,15 +1536,15 @@ const [navbarHeight, setNavbarHeight] = useState(92);
     : DEFAULT_PEMBINA;
 
   const sections = useMemo(
-    () => [
-      { key: "hero", label: "Home", total: 1 },
-      { key: "values", label: "Nilai", total: 1 },
-      { key: "program", label: "Program", total: 1 },
-      { key: "pembina", label: "Pembina", total: pembinaItems.length || 1 },
-      { key: "cta", label: "Daftar", total: 1 },
-    ],
-    [storyItems.length, pembinaItems.length]
-  );
+  () => [
+    { key: "hero", label: "Home", total: 1 },
+    { key: "values", label: "Nilai", total: 1 },
+    { key: "program", label: "Program", total: 1 },
+    { key: "pembina", label: "Pembina", total: pembinaItems.length || 1 },
+    { key: "cta", label: "Daftar", total: 1 },
+  ],
+  [pembinaItems.length]
+);
 
   const activeSection = position.section;
   const activeStep = position.step;
@@ -1808,21 +1808,13 @@ const [navbarHeight, setNavbarHeight] = useState(92);
   sections.length,
 ]);
 
-  const setCurrentStoryStep = (index) => {
-    setPosition({
-      section: 2,
-      step: index,
-      direction: index >= activeStep ? 1 : -1,
-    });
-  };
-
-  const setCurrentPembinaStep = (index) => {
-    setPosition({
-      section: 4,
-      step: index,
-      direction: index >= activeStep ? 1 : -1,
-    });
-  };
+const setCurrentPembinaStep = (index) => {
+  setPosition({
+    section: 3,
+    step: index,
+    direction: index >= activeStep ? 1 : -1,
+  });
+};
 
   const renderScreen = () => {
     const key = sections[activeSection]?.key;
