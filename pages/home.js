@@ -1777,7 +1777,7 @@ function GuideScreen({ guides, direction }) {
           </motion.p>
         </div>
 
-        <div className="mx-auto mt-8 grid max-w-6xl gap-5 lg:grid-cols-[0.8fr_1.2fr]">
+        <div className="mx-auto mt-8 grid max-w-6xl items-stretch gap-5 lg:grid-cols-[0.8fr_1.2fr]">
           <motion.div
             initial={{ opacity: 0, x: -24, filter: "blur(7px)" }}
             animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
@@ -1858,7 +1858,7 @@ function GuideScreen({ guides, direction }) {
   initial={{ opacity: 0, x: 24, filter: "blur(7px)" }}
   animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
   transition={{ delay: 0.28, duration: 0.5, ease: EASE_PREMIUM }}
-  className="rounded-[1.8rem] border border-white/10 bg-white/10 p-3 shadow-2xl backdrop-blur-xl"
+  className="flex h-full min-h-[560px] rounded-[1.8rem] border border-white/10 bg-white/10 p-3 shadow-2xl backdrop-blur-xl lg:min-h-[620px]"
 >
   <AnimatePresence mode="wait">
     <motion.div
@@ -1879,7 +1879,7 @@ function GuideScreen({ guides, direction }) {
         clipPath: CLIP_LEFT,
       }}
       transition={{ duration: 0.45, ease: EASE_PREMIUM }}
-      className="relative h-[420px] overflow-hidden rounded-[1.5rem] bg-emerald-950 sm:h-[480px] lg:h-[520px]"
+      className="relative h-full w-full overflow-hidden rounded-[1.5rem] bg-emerald-950"
     >
       <motion.div
         initial={{ scale: 1.08 }}
@@ -1894,18 +1894,18 @@ function GuideScreen({ guides, direction }) {
         />
       </motion.div>
 
-      <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/70 via-transparent to-emerald-950/20" />
+      <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/85 via-emerald-950/15 to-emerald-950/20" />
 
       <div className="absolute left-4 top-4 rounded-full bg-yellow-400 px-4 py-2 text-[10px] font-black uppercase tracking-[0.2em] text-emerald-950 shadow-xl">
         {currentGuide.badge}
       </div>
 
-      <div className="absolute bottom-0 left-0 right-0 p-5">
+      <div className="absolute bottom-0 left-0 right-0 p-6">
         <p className="text-[10px] font-black uppercase tracking-[0.24em] text-yellow-300">
           Panduan Pendaftaran
         </p>
 
-        <h3 className="mt-2 text-2xl font-black text-white sm:text-3xl">
+        <h3 className="mt-2 text-3xl font-black leading-tight text-white">
           {currentGuide.title}
         </h3>
       </div>
