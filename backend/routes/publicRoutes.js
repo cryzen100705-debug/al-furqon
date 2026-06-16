@@ -18,8 +18,8 @@ const homeData = {
 
   heroStats: [
     { value: "100+", label: "Santri" },
-    { value: "3", label: "Program" },
-    { value: "3+", label: "Jenjang" },
+  { value: "24 Jam", label: "Pembinaan" },
+  { value: "Aktif", label: "Kegiatan Santri" },
   ],
 
   storyChapters: [
