@@ -1530,11 +1530,6 @@ export default function Program() {
   const currentTotal = sections[activeSection]?.total || 1;
   const activeSectionKey = sections[activeSection]?.key || "hero";
 
-  const isFirst = activeSection === 0 && activeStep === 0;
-
-  const isLast =
-    activeSection === sections.length - 1 && activeStep === currentTotal - 1;
-
   const jumpToSection = useCallback(
     (index) => {
       cooldown.current = false;
@@ -1842,44 +1837,6 @@ export default function Program() {
         )}
       </AnimatePresence>
 
-      <SideDots
-        sections={sections}
-        activeSection={activeSection}
-        activeStep={activeStep}
-        jumpToSection={jumpToSection}
-      />
-
-      <ProgressBar
-        sections={sections}
-        activeSection={activeSection}
-        activeStep={activeStep}
-      />
-
-      <div className="program-bottom-control">
-        <button
-          type="button"
-          disabled={isFirst}
-          onClick={() => handleDirection(-1)}
-          className="rounded-full border border-white/20 bg-emerald-950/70 px-4 py-2 text-xs font-black text-white backdrop-blur transition hover:bg-emerald-900 disabled:cursor-not-allowed disabled:opacity-35"
-        >
-          <span className="inline-flex items-center gap-2">
-            <FaArrowUp />
-            Atas
-          </span>
-        </button>
-
-        <button
-          type="button"
-          disabled={isLast}
-          onClick={() => handleDirection(1)}
-          className="rounded-full bg-yellow-400 px-4 py-2 text-xs font-black text-emerald-950 shadow-xl transition hover:bg-yellow-300 disabled:cursor-not-allowed disabled:opacity-35"
-        >
-          <span className="inline-flex items-center gap-2">
-            Bawah
-            <FaArrowDown />
-          </span>
-        </button>
-      </div>
 <style jsx global>{`
 html,
 body,
@@ -1913,13 +1870,8 @@ body {
 .program-screen {
   --program-safe-bottom: max(env(safe-area-inset-bottom), 0px);
   --program-nav-space: var(--program-navbar-height, 92px);
-  --program-control-space: 70px;
-  --program-progress-space: 6px;
-  --program-top-space: calc(var(--program-nav-space) + 14px);
-  --program-bottom-space: calc(
-    var(--program-control-space) + var(--program-progress-space) +
-      var(--program-safe-bottom)
-  );
+  --program-top-space: calc(var(--program-nav-space) + 10px);
+  --program-bottom-space: calc(10px + var(--program-safe-bottom));
   --program-available-height: calc(
     100dvh - var(--program-top-space) - var(--program-bottom-space)
   );
@@ -4088,6 +4040,326 @@ body {
     width: 2.2rem;
     height: 2.2rem;
     font-size: 0.9rem;
+  }
+}
+
+/* =========================================================
+   REMOVE PROGRAM INDICATORS + FULL SCREEN PROGRAM SECTION
+========================================================= */
+
+.program-bottom-control,
+.program-root .fixed.bottom-0.left-0.z-\[260\],
+.program-root .fixed.right-5.top-1\/2.z-\[260\] {
+  display: none !important;
+}
+
+/* section daftar program memakai 100% layar setelah header */
+.program-new-scroll {
+  width: 100% !important;
+  height: var(--program-available-height) !important;
+  max-height: var(--program-available-height) !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  padding-bottom: max(12px, env(safe-area-inset-bottom)) !important;
+  scrollbar-width: none;
+}
+
+.program-new-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.program-new-page {
+  min-height: 100%;
+  width: 100%;
+  display: grid;
+  grid-template-rows: auto auto auto auto;
+  align-content: start;
+  gap: clamp(0.55rem, 1.15vh, 0.95rem);
+}
+
+/* desktop: lebih rapat agar 1 layar lebih lega */
+@media (min-width: 1025px) {
+  .program-screen {
+    --program-top-space: calc(var(--program-nav-space) + 12px);
+    --program-bottom-space: 12px;
+    width: min(96vw, 1440px);
+  }
+
+  .program-new-hero {
+    min-height: clamp(210px, 28vh, 310px);
+  }
+
+  .program-new-title {
+    font-size: clamp(2.2rem, min(3.2vw, 5.4vh), 4rem) !important;
+    line-height: 0.95 !important;
+  }
+
+  .program-new-featured {
+    min-height: 0 !important;
+  }
+}
+
+/* tablet */
+@media (max-width: 1024px) {
+  .program-screen {
+    --program-nav-space: var(--program-navbar-height, 84px);
+    --program-top-space: calc(var(--program-nav-space) + 10px);
+    --program-bottom-space: calc(10px + var(--program-safe-bottom));
+    width: min(95vw, 980px);
+  }
+
+  .program-new-page {
+    gap: 0.7rem;
+  }
+}
+
+/* HP: header + isi tetap 100% layar, tanpa tombol bawah */
+@media (max-width: 720px) {
+  .program-screen {
+    --program-nav-space: var(--program-navbar-height, 64px);
+    --program-top-space: calc(var(--program-nav-space) + 8px);
+    --program-bottom-space: calc(8px + var(--program-safe-bottom));
+    --program-available-height: calc(
+      100svh - var(--program-top-space) - var(--program-bottom-space)
+    );
+
+    width: 100%;
+    height: 100svh;
+    max-height: 100svh;
+    padding-inline: 10px;
+    padding-top: var(--program-top-space);
+    padding-bottom: var(--program-bottom-space);
+  }
+
+  .program-new-scroll {
+    height: var(--program-available-height) !important;
+    max-height: var(--program-available-height) !important;
+    padding-bottom: max(10px, env(safe-area-inset-bottom)) !important;
+  }
+
+  .program-new-page {
+    display: block;
+    min-height: 100%;
+  }
+
+  .program-new-hero {
+    grid-template-columns: 1fr;
+    gap: 0.45rem;
+  }
+
+  .program-new-title {
+    margin: 0.52rem 0 0.32rem !important;
+    font-size: clamp(1.35rem, 7vw, 2rem) !important;
+    line-height: 0.98 !important;
+  }
+
+  .program-new-hero-copy p {
+    font-size: clamp(0.72rem, 3.15vw, 0.86rem) !important;
+    line-height: 1.35 !important;
+  }
+
+  .program-new-main-btn {
+    min-height: 36px !important;
+    margin-top: 0.62rem !important;
+    padding: 0.62rem 0.85rem !important;
+    font-size: 0.76rem !important;
+  }
+
+  .program-new-hero-art {
+    min-height: 82px !important;
+  }
+
+  .program-new-stats {
+    margin-top: 0.58rem !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 0.4rem !important;
+  }
+
+  .program-new-stat-card {
+    display: block !important;
+    min-height: 58px !important;
+    padding: 0.42rem 0.3rem !important;
+    text-align: center !important;
+    border-radius: 0.82rem !important;
+  }
+
+  .program-new-stat-icon {
+    width: 1.9rem !important;
+    height: 1.9rem !important;
+    margin: 0 auto 0.22rem !important;
+    font-size: 0.76rem !important;
+  }
+
+  .program-new-stat-card h3 {
+    font-size: 0.64rem !important;
+    line-height: 1 !important;
+  }
+
+  .program-new-stat-card p {
+    font-size: 0.5rem !important;
+    line-height: 1.14 !important;
+  }
+
+  .program-new-featured {
+    margin-top: 0.62rem !important;
+    padding: 0.68rem !important;
+    border-radius: 1rem !important;
+  }
+
+  .program-new-featured-main {
+    grid-template-columns: 58px minmax(0, 1fr) !important;
+    gap: 0.58rem !important;
+    margin-top: 0.6rem !important;
+  }
+
+  .program-new-featured-icon {
+    width: 3.35rem !important;
+    height: 3.35rem !important;
+    font-size: 1.35rem !important;
+  }
+
+  .program-new-featured-copy h3 {
+    font-size: clamp(1.12rem, 5.8vw, 1.65rem) !important;
+    line-height: 0.98 !important;
+  }
+
+  .program-new-desc {
+    font-size: 0.64rem !important;
+    line-height: 1.26 !important;
+  }
+
+  .program-new-impact {
+    margin-top: 0.58rem !important;
+    padding: 0.58rem !important;
+    border-radius: 0.82rem !important;
+  }
+
+  .program-new-impact h4 {
+    font-size: 0.58rem !important;
+  }
+
+  .program-new-impact p {
+    font-size: 0.62rem !important;
+    line-height: 1.24 !important;
+  }
+
+  .program-new-all,
+  .program-new-reasons {
+    margin-top: 0.85rem !important;
+  }
+}
+
+/* HP pendek seperti Galaxy S8 */
+@media (max-width: 430px) and (max-height: 820px) {
+  .program-screen {
+    --program-top-space: calc(var(--program-nav-space) + 6px);
+    --program-bottom-space: calc(6px + var(--program-safe-bottom));
+    padding-inline: 8px;
+  }
+
+  .program-new-title {
+    font-size: clamp(1.18rem, 6.5vw, 1.62rem) !important;
+  }
+
+  .program-new-hero-copy p {
+    font-size: 0.66rem !important;
+    line-height: 1.25 !important;
+  }
+
+  .program-new-main-btn {
+    min-height: 32px !important;
+    padding: 0.5rem 0.72rem !important;
+    font-size: 0.68rem !important;
+  }
+
+  .program-new-hero-art {
+    min-height: 62px !important;
+  }
+
+  .program-new-mosque {
+    height: 64px !important;
+    width: 110px !important;
+  }
+
+  .program-new-dome {
+    width: 56px !important;
+    height: 28px !important;
+  }
+
+  .program-new-building {
+    width: 92px !important;
+    height: 38px !important;
+  }
+
+  .program-new-stats {
+    gap: 0.32rem !important;
+  }
+
+  .program-new-stat-card {
+    min-height: 50px !important;
+    padding: 0.32rem 0.24rem !important;
+  }
+
+  .program-new-stat-icon {
+    width: 1.55rem !important;
+    height: 1.55rem !important;
+    font-size: 0.62rem !important;
+  }
+
+  .program-new-stat-card h3 {
+    font-size: 0.54rem !important;
+  }
+
+  .program-new-stat-card p {
+    font-size: 0.42rem !important;
+  }
+
+  .program-new-featured {
+    padding: 0.55rem !important;
+  }
+
+  .program-new-featured-label {
+    font-size: 0.46rem !important;
+  }
+
+  .program-new-pill {
+    padding: 0.38rem 0.58rem !important;
+    font-size: 0.46rem !important;
+  }
+
+  .program-new-featured-main {
+    grid-template-columns: 48px minmax(0, 1fr) !important;
+  }
+
+  .program-new-featured-icon {
+    width: 2.75rem !important;
+    height: 2.75rem !important;
+    font-size: 1.1rem !important;
+  }
+
+  .program-new-accent {
+    font-size: 0.48rem !important;
+  }
+
+  .program-new-featured-copy h3 {
+    font-size: 1rem !important;
+  }
+
+  .program-new-desc {
+    font-size: 0.54rem !important;
+  }
+
+  .program-new-impact {
+    padding: 0.48rem !important;
+  }
+
+  .program-new-impact h4 {
+    font-size: 0.5rem !important;
+  }
+
+  .program-new-impact p {
+    font-size: 0.54rem !important;
   }
 }
 `}</style>
