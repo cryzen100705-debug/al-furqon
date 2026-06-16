@@ -3160,14 +3160,21 @@ body {
     display: none !important;
   }
 }
-
 /* =========================================================
-   NEW PROGRAM SECTION - STYLE MIRIP REFERENSI
+   NEW PROGRAM SECTION - RESPONSIVE 100% LAYAR
+   Khusus section Daftar Program
 ========================================================= */
 
 .program-new-scroll {
+  width: 100% !important;
+  height: var(--program-available-height) !important;
+  max-height: var(--program-available-height) !important;
+  min-height: 0 !important;
   overflow-y: auto !important;
+  overflow-x: hidden !important;
   scrollbar-width: none;
+  scroll-behavior: smooth;
+  padding-bottom: 0.6rem !important;
 }
 
 .program-new-scroll::-webkit-scrollbar {
@@ -3176,17 +3183,24 @@ body {
 
 .program-new-page {
   min-height: 100%;
-  padding-bottom: 1.2rem;
+  width: 100%;
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  gap: clamp(0.55rem, 1.1vh, 0.9rem);
 }
+
+/* ================= HERO ================= */
 
 .program-new-hero {
   position: relative;
+  z-index: 2;
+  min-height: 0;
   display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(220px, 0.75fr);
+  grid-template-columns: minmax(0, 1fr) minmax(210px, 0.52fr);
   align-items: center;
-  gap: clamp(1rem, 2vw, 2rem);
+  gap: clamp(0.8rem, 1.6vw, 1.6rem);
   overflow: hidden;
-  padding: clamp(0.6rem, 1.6vw, 1rem) 0;
+  padding: 0;
 }
 
 .program-new-hero-copy {
@@ -3197,35 +3211,36 @@ body {
 
 .program-new-title {
   max-width: 760px;
-  margin: 1rem 0 0.65rem;
+  margin: clamp(0.5rem, 1vh, 0.9rem) 0 clamp(0.32rem, 0.8vh, 0.55rem);
   color: #073b31;
-  font-size: clamp(2rem, min(4.2vw, 6vh), 4rem);
+  font-size: clamp(1.65rem, min(3.3vw, 5.1vh), 3.45rem);
   font-weight: 950;
-  line-height: 0.96;
+  line-height: 0.95;
   letter-spacing: -0.055em;
 }
 
 .program-new-hero-copy p {
-  max-width: 680px;
+  max-width: 700px;
   margin: 0;
   color: #244f45;
-  font-size: clamp(0.95rem, 1.25vw, 1.15rem);
-  font-weight: 600;
-  line-height: 1.6;
+  font-size: clamp(0.78rem, min(1.15vw, 1.8vh), 1.06rem);
+  font-weight: 650;
+  line-height: 1.45;
 }
 
 .program-new-main-btn {
-  margin-top: 1.3rem;
+  margin-top: clamp(0.55rem, 1.1vh, 0.95rem);
   display: inline-flex;
+  min-height: 42px;
   align-items: center;
   justify-content: center;
-  gap: 0.75rem;
+  gap: 0.65rem;
   border: 0;
   border-radius: 999px;
   background: #facc15;
   color: #052e22;
-  padding: 0.95rem 1.35rem;
-  font-size: 0.98rem;
+  padding: clamp(0.55rem, 1.1vh, 0.78rem) clamp(0.95rem, 1.8vw, 1.28rem);
+  font-size: clamp(0.72rem, 1vw, 0.92rem);
   font-weight: 950;
   cursor: pointer;
   box-shadow: 0 18px 35px rgba(250, 204, 21, 0.25);
@@ -3233,8 +3248,8 @@ body {
 
 .program-new-main-btn-icon {
   display: inline-flex;
-  width: 1.65rem;
-  height: 1.65rem;
+  width: clamp(1.35rem, 2vw, 1.62rem);
+  height: clamp(1.35rem, 2vw, 1.62rem);
   align-items: center;
   justify-content: center;
   border-radius: 0.55rem;
@@ -3243,7 +3258,7 @@ body {
 
 .program-new-hero-art {
   position: relative;
-  min-height: 250px;
+  min-height: clamp(120px, 22vh, 230px);
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -3253,18 +3268,22 @@ body {
   position: absolute;
   right: 0;
   bottom: 0;
-  width: min(100%, 360px);
+  width: min(100%, clamp(180px, 24vw, 340px));
   aspect-ratio: 1 / 1;
   border-radius: 999px;
-  background: radial-gradient(circle, rgba(250, 204, 21, 0.28), rgba(250, 204, 21, 0.08));
+  background: radial-gradient(
+    circle,
+    rgba(250, 204, 21, 0.28),
+    rgba(250, 204, 21, 0.08)
+  );
   border: 1px solid rgba(250, 204, 21, 0.18);
 }
 
 .program-new-mosque {
   position: relative;
   z-index: 2;
-  width: min(84%, 300px);
-  height: 190px;
+  width: min(82%, clamp(165px, 21vw, 280px));
+  height: clamp(105px, 18vh, 180px);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -3272,78 +3291,82 @@ body {
 }
 
 .program-new-dome {
-  width: 140px;
-  height: 74px;
+  width: clamp(82px, 10vw, 135px);
+  height: clamp(44px, 6vh, 70px);
   border-radius: 999px 999px 0 0;
   background: linear-gradient(180deg, #15946e, #075640);
   box-shadow: 0 18px 35px rgba(7, 59, 49, 0.2);
 }
 
 .program-new-building {
-  width: 230px;
-  height: 105px;
+  width: clamp(132px, 17vw, 220px);
+  height: clamp(62px, 10vh, 100px);
   margin-top: -4px;
   border-radius: 1rem 1rem 0 0;
   background: linear-gradient(180deg, #dcc68e, #b98c4c);
   box-shadow: inset 0 0 0 5px rgba(255, 255, 255, 0.22);
 }
 
+/* ================= STATS ================= */
+
 .program-new-stats {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.9rem;
-  margin-top: 0.35rem;
+  gap: clamp(0.55rem, 1vw, 0.9rem);
+  min-height: 0;
 }
 
 .program-new-stat-card {
+  min-width: 0;
   display: flex;
   align-items: center;
-  gap: 0.85rem;
-  min-width: 0;
+  gap: clamp(0.55rem, 1vw, 0.85rem);
   border: 1px solid rgba(5, 46, 34, 0.08);
-  border-radius: 1.35rem;
+  border-radius: clamp(0.9rem, 1.6vw, 1.35rem);
   background: rgba(255, 255, 255, 0.88);
-  padding: 1rem;
+  padding: clamp(0.62rem, 1.1vw, 1rem);
   box-shadow: 0 16px 45px rgba(5, 46, 34, 0.08);
 }
 
 .program-new-stat-icon {
   display: flex;
-  width: 3.2rem;
-  height: 3.2rem;
+  width: clamp(2.35rem, 3.6vw, 3.2rem);
+  height: clamp(2.35rem, 3.6vw, 3.2rem);
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
   border-radius: 999px;
   background: #faf0c2;
   color: #073b31;
-  font-size: 1.25rem;
+  font-size: clamp(0.95rem, 1.7vw, 1.25rem);
 }
 
 .program-new-stat-card h3 {
-  margin: 0 0 0.25rem;
+  margin: 0 0 0.18rem;
   color: #073b31;
-  font-size: 1.2rem;
+  font-size: clamp(0.88rem, 1.4vw, 1.18rem);
   font-weight: 950;
-  line-height: 1.1;
+  line-height: 1.05;
 }
 
 .program-new-stat-card p {
   margin: 0;
   color: #244f45;
-  font-size: 0.88rem;
+  font-size: clamp(0.66rem, 1vw, 0.86rem);
   font-weight: 650;
-  line-height: 1.35;
+  line-height: 1.25;
 }
 
+/* ================= FEATURED CARD ================= */
+
 .program-new-featured {
-  margin-top: 1rem;
+  min-height: 0;
   overflow: hidden;
-  border-radius: 1.8rem;
+  border-radius: clamp(1.1rem, 2vw, 1.8rem);
   background:
     radial-gradient(circle at 17% 35%, rgba(118, 203, 73, 0.18), transparent 24%),
     linear-gradient(135deg, #032e29, #075f45 48%, #032e29);
-  padding: 1.2rem;
+  padding: clamp(0.75rem, 1.5vw, 1.15rem);
   color: white;
   box-shadow: 0 25px 70px rgba(4, 54, 46, 0.22);
 }
@@ -3353,40 +3376,48 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
+  gap: 0.75rem;
 }
 
 .program-new-featured-label {
   display: inline-flex;
+  min-width: 0;
   align-items: center;
-  gap: 0.55rem;
+  gap: 0.48rem;
   color: #facc15;
-  font-size: 0.78rem;
+  font-size: clamp(0.56rem, 0.9vw, 0.76rem);
   font-weight: 950;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
+}
+
+.program-new-featured-label span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .program-new-pill {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
   border-radius: 999px;
   background: #facc15;
   color: #052e22;
-  padding: 0.75rem 1.15rem;
-  font-size: 0.72rem;
+  padding: clamp(0.46rem, 0.9vw, 0.7rem) clamp(0.75rem, 1.4vw, 1.05rem);
+  font-size: clamp(0.54rem, 0.9vw, 0.7rem);
   font-weight: 950;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.11em;
   text-transform: uppercase;
 }
 
 .program-new-featured-main {
   display: grid;
-  grid-template-columns: 135px minmax(0, 1fr);
-  gap: 1.1rem;
+  grid-template-columns: clamp(86px, 12vw, 130px) minmax(0, 1fr);
+  gap: clamp(0.7rem, 1.4vw, 1rem);
   align-items: center;
-  margin-top: 1rem;
+  margin-top: clamp(0.6rem, 1.1vh, 0.95rem);
 }
 
 .program-new-featured-icon-wrap {
@@ -3396,78 +3427,82 @@ body {
 
 .program-new-featured-icon {
   display: flex;
-  width: 7.2rem;
-  height: 7.2rem;
+  width: clamp(4.7rem, min(9vw, 14vh), 7rem);
+  height: clamp(4.7rem, min(9vw, 14vh), 7rem);
   align-items: center;
   justify-content: center;
   border-radius: 999px;
   background: radial-gradient(circle, #315f2e, #102f1e);
   color: #facc15;
-  font-size: 3rem;
+  font-size: clamp(1.9rem, min(3.6vw, 5.6vh), 2.85rem);
   box-shadow:
-    0 0 0 12px rgba(250, 204, 21, 0.08),
+    0 0 0 clamp(7px, 1.2vw, 12px) rgba(250, 204, 21, 0.08),
     0 18px 40px rgba(0, 0, 0, 0.22);
 }
 
 .program-new-accent {
-  margin: 0 0 0.45rem;
+  margin: 0 0 0.35rem;
   color: #facc15;
-  font-size: 0.95rem;
-  font-weight: 750;
-  line-height: 1.4;
+  font-size: clamp(0.62rem, min(1vw, 1.55vh), 0.9rem);
+  font-weight: 800;
+  line-height: 1.25;
 }
 
 .program-new-featured-copy h3 {
   margin: 0;
   color: white;
-  font-size: clamp(1.8rem, 3vw, 3rem);
+  font-size: clamp(1.35rem, min(2.8vw, 4.6vh), 2.8rem);
   font-weight: 950;
-  line-height: 1;
+  line-height: 0.98;
   letter-spacing: -0.045em;
 }
 
 .program-new-desc {
-  margin: 0.6rem 0 0;
+  margin: clamp(0.35rem, 0.8vh, 0.55rem) 0 0;
   max-width: 700px;
   color: rgba(255, 255, 255, 0.88);
-  font-size: 1rem;
+  font-size: clamp(0.68rem, min(1vw, 1.55vh), 0.95rem);
   font-weight: 550;
-  line-height: 1.55;
+  line-height: 1.38;
 }
 
 .program-new-impact {
-  margin-top: 1rem;
+  margin-top: clamp(0.6rem, 1.1vh, 0.9rem);
   border: 1px solid rgba(250, 204, 21, 0.18);
-  border-radius: 1.2rem;
-  background: linear-gradient(90deg, rgba(250, 204, 21, 0.12), rgba(255, 255, 255, 0.04));
-  padding: 1rem 1.15rem;
+  border-radius: clamp(0.85rem, 1.4vw, 1.15rem);
+  background: linear-gradient(
+    90deg,
+    rgba(250, 204, 21, 0.12),
+    rgba(255, 255, 255, 0.04)
+  );
+  padding: clamp(0.62rem, 1.2vw, 0.95rem);
 }
 
 .program-new-impact h4 {
-  margin: 0 0 0.45rem;
+  margin: 0 0 0.35rem;
   color: #facc15;
-  font-size: 0.92rem;
+  font-size: clamp(0.64rem, 1vw, 0.86rem);
   font-weight: 950;
 }
 
 .program-new-impact p {
   margin: 0;
   color: white;
-  font-size: 0.95rem;
+  font-size: clamp(0.66rem, 1vw, 0.9rem);
   font-weight: 600;
-  line-height: 1.45;
+  line-height: 1.32;
 }
 
 .program-new-dots {
   display: flex;
   justify-content: center;
-  gap: 0.55rem;
-  margin-top: 1rem;
+  gap: 0.45rem;
+  margin-top: clamp(0.55rem, 1vh, 0.85rem);
 }
 
 .program-new-dot {
-  width: 0.65rem;
-  height: 0.65rem;
+  width: 0.52rem;
+  height: 0.52rem;
   border: 0;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.35);
@@ -3475,19 +3510,21 @@ body {
 }
 
 .program-new-dot-active {
-  width: 1.7rem;
+  width: 1.45rem;
   background: #facc15;
 }
 
+/* ================= LIST PROGRAM & REASONS ================= */
+
 .program-new-all,
 .program-new-reasons {
-  margin-top: 1.35rem;
+  min-height: 0;
 }
 
 .program-new-section-head h3 {
   margin: 0;
   color: #073b31;
-  font-size: clamp(1.25rem, 2vw, 1.8rem);
+  font-size: clamp(1rem, 1.6vw, 1.55rem);
   font-weight: 950;
   letter-spacing: -0.035em;
 }
@@ -3495,28 +3532,28 @@ body {
 .program-new-section-head button {
   display: inline-flex;
   align-items: center;
-  gap: 0.55rem;
+  gap: 0.45rem;
   border: 0;
   background: transparent;
   color: #073b31;
-  font-size: 0.95rem;
-  font-weight: 800;
+  font-size: clamp(0.72rem, 1vw, 0.92rem);
+  font-weight: 850;
   cursor: pointer;
 }
 
 .program-new-card-row {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 0.85rem;
-  margin-top: 0.9rem;
+  gap: clamp(0.5rem, 1vw, 0.8rem);
+  margin-top: clamp(0.5rem, 1vh, 0.75rem);
 }
 
 .program-new-mini {
   min-width: 0;
   border: 1px solid rgba(5, 46, 34, 0.08);
-  border-radius: 1.2rem;
+  border-radius: clamp(0.85rem, 1.5vw, 1.15rem);
   background: rgba(255, 255, 255, 0.9);
-  padding: 1rem 0.8rem;
+  padding: clamp(0.62rem, 1.2vw, 0.95rem);
   text-align: center;
   color: #073b31;
   cursor: pointer;
@@ -3526,228 +3563,285 @@ body {
 
 .program-new-mini-active,
 .program-new-mini:hover {
-  transform: translateY(-4px);
+  transform: translateY(-3px);
   border-color: rgba(250, 204, 21, 0.75);
 }
 
 .program-new-mini-icon {
   display: flex;
-  width: 3.3rem;
-  height: 3.3rem;
-  margin: 0 auto 0.65rem;
+  width: clamp(2.25rem, 4.2vw, 3.15rem);
+  height: clamp(2.25rem, 4.2vw, 3.15rem);
+  margin: 0 auto clamp(0.42rem, 0.8vh, 0.6rem);
   align-items: center;
   justify-content: center;
   border-radius: 999px;
   background: #faf0c2;
   color: #073b31;
-  font-size: 1.35rem;
+  font-size: clamp(0.95rem, 1.9vw, 1.3rem);
 }
 
 .program-new-mini h4 {
   margin: 0;
   color: #073b31;
-  font-size: 0.95rem;
+  font-size: clamp(0.72rem, 1vw, 0.9rem);
   font-weight: 950;
-  line-height: 1.1;
+  line-height: 1.08;
 }
 
 .program-new-mini p {
-  margin: 0.45rem 0 0;
+  margin: 0.32rem 0 0;
   color: #31564d;
-  font-size: 0.82rem;
+  font-size: clamp(0.62rem, 0.9vw, 0.78rem);
   font-weight: 650;
-  line-height: 1.35;
+  line-height: 1.25;
 }
 
 .program-new-reason-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.85rem;
-  margin-top: 0.9rem;
+  gap: clamp(0.5rem, 1vw, 0.8rem);
+  margin-top: clamp(0.5rem, 1vh, 0.75rem);
 }
 
 .program-new-reason {
   display: flex;
-  gap: 0.8rem;
   min-width: 0;
+  gap: 0.65rem;
   border: 1px solid rgba(5, 46, 34, 0.08);
-  border-radius: 1.2rem;
+  border-radius: clamp(0.85rem, 1.5vw, 1.15rem);
   background: rgba(255, 255, 255, 0.9);
-  padding: 1rem;
+  padding: clamp(0.65rem, 1.2vw, 0.95rem);
   box-shadow: 0 14px 40px rgba(5, 46, 34, 0.06);
 }
 
 .program-new-reason-icon {
   display: flex;
-  width: 3rem;
-  height: 3rem;
+  width: clamp(2.25rem, 3.7vw, 2.9rem);
+  height: clamp(2.25rem, 3.7vw, 2.9rem);
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
   border-radius: 999px;
   background: #faf0c2;
   color: #073b31;
-  font-size: 1.2rem;
+  font-size: clamp(0.92rem, 1.5vw, 1.15rem);
 }
 
 .program-new-reason h4 {
   margin: 0;
   color: #073b31;
-  font-size: 0.95rem;
+  font-size: clamp(0.72rem, 1vw, 0.9rem);
   font-weight: 950;
-  line-height: 1.15;
+  line-height: 1.12;
 }
 
 .program-new-reason p {
-  margin: 0.45rem 0 0;
+  margin: 0.35rem 0 0;
   color: #31564d;
-  font-size: 0.82rem;
+  font-size: clamp(0.62rem, 0.9vw, 0.78rem);
   font-weight: 600;
-  line-height: 1.4;
+  line-height: 1.3;
 }
 
-/* MOBILE SECTION */
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 1024px) {
+  .program-new-page {
+    grid-template-rows: auto auto auto auto;
+  }
+
+  .program-new-hero {
+    grid-template-columns: minmax(0, 1fr) minmax(160px, 0.45fr);
+  }
+
+  .program-new-card-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .program-new-reason-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* =========================================================
+   HANDPHONE
+========================================================= */
+
 @media (max-width: 720px) {
   .program-new-scroll {
-    padding-top: calc(var(--program-navbar-height, 74px) + 8px) !important;
-    padding-bottom: 4.5rem !important;
+    height: var(--program-available-height) !important;
+    max-height: var(--program-available-height) !important;
+    padding: 0 0 3.8rem !important;
   }
 
   .program-new-page {
-    padding-bottom: 1rem;
+    min-height: 100%;
+    display: block;
   }
 
   .program-new-hero {
     grid-template-columns: 1fr;
-    gap: 0.7rem;
-    padding-top: 0.4rem;
+    gap: 0.55rem;
+    padding: 0;
   }
 
   .program-new-title {
-    margin: 0.75rem 0 0.45rem;
-    font-size: clamp(1.55rem, 8vw, 2.25rem);
+    margin: 0.58rem 0 0.35rem;
+    font-size: clamp(1.42rem, 7.2vw, 2.05rem);
     line-height: 0.98;
   }
 
   .program-new-hero-copy p {
-    font-size: 0.85rem;
-    line-height: 1.45;
+    font-size: clamp(0.76rem, 3.25vw, 0.88rem);
+    line-height: 1.38;
   }
 
   .program-new-main-btn {
     width: 100%;
-    margin-top: 0.9rem;
-    padding: 0.78rem 1rem;
-    font-size: 0.85rem;
+    min-height: 38px;
+    margin-top: 0.72rem;
+    padding: 0.68rem 0.9rem;
+    font-size: 0.78rem;
+  }
+
+  .program-new-main-btn-icon {
+    width: 1.35rem;
+    height: 1.35rem;
   }
 
   .program-new-hero-art {
-    min-height: 120px;
+    min-height: 104px;
     align-items: center;
   }
 
   .program-new-circle {
-    width: 210px;
-    right: -35px;
+    right: -40px;
+    width: 190px;
   }
 
   .program-new-mosque {
-    width: 170px;
-    height: 105px;
+    width: 150px;
+    height: 92px;
     margin-left: auto;
   }
 
   .program-new-dome {
-    width: 88px;
-    height: 46px;
+    width: 78px;
+    height: 40px;
   }
 
   .program-new-building {
-    width: 140px;
-    height: 65px;
+    width: 126px;
+    height: 56px;
   }
 
   .program-new-stats {
     grid-template-columns: 1fr;
-    gap: 0.6rem;
+    gap: 0.48rem;
+    margin-top: 0.6rem;
   }
 
   .program-new-stat-card {
-    padding: 0.78rem;
-    border-radius: 1rem;
+    min-height: 62px;
+    padding: 0.65rem;
+    border-radius: 0.95rem;
   }
 
   .program-new-stat-icon {
-    width: 2.6rem;
-    height: 2.6rem;
-    font-size: 1rem;
+    width: 2.45rem;
+    height: 2.45rem;
+    font-size: 0.95rem;
   }
 
   .program-new-stat-card h3 {
-    font-size: 1rem;
+    font-size: 0.95rem;
   }
 
   .program-new-stat-card p {
-    font-size: 0.76rem;
+    font-size: 0.72rem;
   }
 
   .program-new-featured {
-    border-radius: 1.35rem;
-    padding: 0.9rem;
+    margin-top: 0.65rem;
+    border-radius: 1.2rem;
+    padding: 0.78rem;
   }
 
   .program-new-featured-label {
-    font-size: 0.58rem;
-    letter-spacing: 0.13em;
+    font-size: 0.52rem;
+    letter-spacing: 0.12em;
   }
 
   .program-new-pill {
-    padding: 0.55rem 0.8rem;
-    font-size: 0.58rem;
+    padding: 0.48rem 0.7rem;
+    font-size: 0.52rem;
   }
 
   .program-new-featured-main {
-    grid-template-columns: 86px minmax(0, 1fr);
-    gap: 0.8rem;
+    grid-template-columns: 76px minmax(0, 1fr);
+    gap: 0.68rem;
+    margin-top: 0.72rem;
   }
 
   .program-new-featured-icon {
-    width: 4.8rem;
-    height: 4.8rem;
-    font-size: 2rem;
+    width: 4.25rem;
+    height: 4.25rem;
+    font-size: 1.75rem;
   }
 
   .program-new-accent {
-    font-size: 0.7rem;
+    font-size: 0.62rem;
+    line-height: 1.22;
   }
 
   .program-new-featured-copy h3 {
-    font-size: clamp(1.35rem, 7vw, 2rem);
+    font-size: clamp(1.22rem, 6.3vw, 1.75rem);
   }
 
   .program-new-desc {
-    font-size: 0.78rem;
-    line-height: 1.4;
+    font-size: 0.72rem;
+    line-height: 1.32;
   }
 
   .program-new-impact {
-    padding: 0.8rem;
-    border-radius: 1rem;
+    margin-top: 0.65rem;
+    padding: 0.72rem;
+    border-radius: 0.9rem;
   }
 
   .program-new-impact h4 {
-    font-size: 0.76rem;
+    font-size: 0.68rem;
   }
 
   .program-new-impact p {
-    font-size: 0.78rem;
+    font-size: 0.72rem;
+  }
+
+  .program-new-dots {
+    margin-top: 0.65rem;
+  }
+
+  .program-new-all,
+  .program-new-reasons {
+    margin-top: 1rem;
+  }
+
+  .program-new-section-head h3 {
+    font-size: 1.05rem;
+  }
+
+  .program-new-section-head button {
+    font-size: 0.74rem;
   }
 
   .program-new-card-row {
     display: flex;
-    gap: 0.7rem;
+    gap: 0.62rem;
     overflow-x: auto;
-    padding-bottom: 0.4rem;
+    padding-bottom: 0.38rem;
+    scroll-snap-type: x proximity;
     scrollbar-width: none;
   }
 
@@ -3756,47 +3850,244 @@ body {
   }
 
   .program-new-mini {
-    min-width: 132px;
-    padding: 0.85rem 0.75rem;
-    border-radius: 1rem;
+    min-width: 128px;
+    flex: 0 0 128px;
+    padding: 0.75rem 0.65rem;
+    border-radius: 0.95rem;
+    scroll-snap-align: start;
   }
 
   .program-new-mini-icon {
-    width: 2.8rem;
-    height: 2.8rem;
-    font-size: 1.1rem;
+    width: 2.55rem;
+    height: 2.55rem;
+    font-size: 1.05rem;
   }
 
   .program-new-mini h4 {
-    font-size: 0.85rem;
+    font-size: 0.78rem;
   }
 
   .program-new-mini p {
-    font-size: 0.72rem;
+    font-size: 0.68rem;
   }
 
   .program-new-reason-grid {
     grid-template-columns: 1fr;
-    gap: 0.65rem;
+    gap: 0.58rem;
   }
 
   .program-new-reason {
-    padding: 0.8rem;
-    border-radius: 1rem;
+    padding: 0.72rem;
+    border-radius: 0.95rem;
   }
 
   .program-new-reason-icon {
-    width: 2.5rem;
-    height: 2.5rem;
-    font-size: 1rem;
+    width: 2.35rem;
+    height: 2.35rem;
+    font-size: 0.95rem;
   }
 
   .program-new-reason h4 {
-    font-size: 0.86rem;
+    font-size: 0.78rem;
   }
 
   .program-new-reason p {
-    font-size: 0.74rem;
+    font-size: 0.68rem;
+  }
+}
+
+/* =========================================================
+   HANDPHONE PENDEK / GALAXY S8
+========================================================= */
+
+@media (max-width: 430px) and (max-height: 820px) {
+  .program-new-title {
+    font-size: clamp(1.24rem, 6.7vw, 1.72rem);
+  }
+
+  .program-new-hero-copy p {
+    font-size: 0.7rem;
+    line-height: 1.3;
+  }
+
+  .program-new-main-btn {
+    min-height: 34px;
+    padding: 0.56rem 0.75rem;
+    font-size: 0.7rem;
+  }
+
+  .program-new-hero-art {
+    min-height: 80px;
+  }
+
+  .program-new-mosque {
+    height: 78px;
+    width: 125px;
+  }
+
+  .program-new-dome {
+    width: 62px;
+    height: 32px;
+  }
+
+  .program-new-building {
+    width: 102px;
+    height: 48px;
+  }
+
+  .program-new-stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.35rem;
+  }
+
+  .program-new-stat-card {
+    min-height: 58px;
+    display: block;
+    text-align: center;
+    padding: 0.42rem 0.28rem;
+    border-radius: 0.78rem;
+  }
+
+  .program-new-stat-icon {
+    width: 1.85rem;
+    height: 1.85rem;
+    margin: 0 auto 0.22rem;
+    font-size: 0.72rem;
+  }
+
+  .program-new-stat-card h3 {
+    font-size: 0.62rem;
+  }
+
+  .program-new-stat-card p {
+    font-size: 0.48rem;
+    line-height: 1.15;
+  }
+
+  .program-new-featured {
+    padding: 0.62rem;
+  }
+
+  .program-new-featured-main {
+    grid-template-columns: 54px minmax(0, 1fr);
+    gap: 0.55rem;
+  }
+
+  .program-new-featured-icon {
+    width: 3.2rem;
+    height: 3.2rem;
+    font-size: 1.35rem;
+    box-shadow:
+      0 0 0 6px rgba(250, 204, 21, 0.08),
+      0 12px 28px rgba(0, 0, 0, 0.2);
+  }
+
+  .program-new-accent {
+    font-size: 0.5rem;
+  }
+
+  .program-new-featured-copy h3 {
+    font-size: 1.12rem;
+  }
+
+  .program-new-desc {
+    font-size: 0.6rem;
+    line-height: 1.22;
+  }
+
+  .program-new-impact {
+    padding: 0.55rem;
+  }
+
+  .program-new-impact h4 {
+    font-size: 0.56rem;
+  }
+
+  .program-new-impact p {
+    font-size: 0.6rem;
+    line-height: 1.22;
+  }
+}
+
+/* =========================================================
+   DESKTOP PENDEK / LAPTOP KECIL
+========================================================= */
+
+@media (min-width: 721px) and (max-height: 760px) {
+  .program-new-page {
+    gap: 0.48rem;
+  }
+
+  .program-new-title {
+    font-size: clamp(1.45rem, min(2.8vw, 4.8vh), 2.85rem);
+  }
+
+  .program-new-hero-copy p {
+    font-size: 0.78rem;
+    line-height: 1.32;
+  }
+
+  .program-new-main-btn {
+    min-height: 36px;
+    padding: 0.55rem 0.9rem;
+    font-size: 0.76rem;
+  }
+
+  .program-new-hero-art {
+    min-height: 130px;
+  }
+
+  .program-new-stats {
+    gap: 0.45rem;
+  }
+
+  .program-new-stat-card {
+    min-height: 58px;
+    padding: 0.5rem;
+  }
+
+  .program-new-featured {
+    padding: 0.72rem;
+  }
+
+  .program-new-featured-main {
+    grid-template-columns: 84px minmax(0, 1fr);
+  }
+
+  .program-new-featured-icon {
+    width: 4.4rem;
+    height: 4.4rem;
+    font-size: 1.8rem;
+  }
+
+  .program-new-featured-copy h3 {
+    font-size: clamp(1.35rem, min(2.4vw, 4vh), 2.3rem);
+  }
+
+  .program-new-desc {
+    font-size: 0.72rem;
+    line-height: 1.25;
+  }
+
+  .program-new-impact {
+    padding: 0.6rem;
+  }
+
+  .program-new-card-row,
+  .program-new-reason-grid {
+    gap: 0.45rem;
+  }
+
+  .program-new-mini,
+  .program-new-reason {
+    padding: 0.55rem;
+  }
+
+  .program-new-mini-icon,
+  .program-new-reason-icon {
+    width: 2.2rem;
+    height: 2.2rem;
+    font-size: 0.9rem;
   }
 }
 `}</style>
