@@ -1725,177 +1725,137 @@ function GuideScreen({ guides, direction }) {
     <ScreenShell sectionKey="guide" direction={direction}>
       <IslamicBackground dark intense />
 
-      <div data-allow-scroll="true" className="home-screen overflow-y-auto py-28">
-        <div className="mx-auto max-w-5xl text-center">
-          <Badge dark>Panduan Pendaftaran</Badge>
+      <div className="guide-screen-v2">
+        <div className="guide-inner-v2">
+          <div className="guide-header-v2 mx-auto text-center">
+            <Badge dark>Panduan Pendaftaran</Badge>
 
-          <motion.h2
-            initial={{ opacity: 0, y: 28, filter: "blur(7px)" }}
-            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            transition={{ delay: 0.1, duration: 0.55, ease: EASE_PREMIUM }}
-            className="home-heading mt-4 font-black leading-[0.98] tracking-[-0.05em] text-white"
-          >
-            Ikuti alur pendaftaran santri dengan mudah
-          </motion.h2>
+            <motion.h2
+              initial={{ opacity: 0, y: 22, filter: "blur(7px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              transition={{ delay: 0.1, duration: 0.5, ease: EASE_PREMIUM }}
+              className="guide-title-v2 font-black leading-[0.98] tracking-[-0.05em] text-white"
+            >
+              Ikuti alur pendaftaran santri dengan mudah
+            </motion.h2>
 
-          <motion.p
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.18, duration: 0.45 }}
-            className="mx-auto mt-4 max-w-3xl text-sm leading-relaxed text-emerald-100 sm:text-base"
-          >
-            Panduan ini membantu wali santri memahami tahapan pendaftaran dari
-            pengisian data santri sampai pendaftaran berhasil.
-          </motion.p>
-        </div>
+            <motion.p
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.16, duration: 0.42 }}
+              className="guide-desc-v2 mx-auto text-emerald-100"
+            >
+              Panduan ini membantu wali santri memahami tahapan pendaftaran dari
+              pengisian data santri sampai pendaftaran berhasil.
+            </motion.p>
+          </div>
 
-        <div className="mx-auto mt-6 grid max-w-6xl items-stretch gap-4 sm:mt-8 lg:grid-cols-[0.8fr_1.2fr] lg:gap-5">
-          <motion.div
-            initial={{ opacity: 0, x: -24, filter: "blur(7px)" }}
-            animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
-            transition={{ delay: 0.22, duration: 0.5, ease: EASE_PREMIUM }}
-            className="rounded-[1.4rem] border border-white/10 bg-white/10 p-4 shadow-2xl backdrop-blur-xl sm:rounded-[1.8rem] sm:p-5"
-          >
-            <p className="text-xs font-black uppercase tracking-[0.25em] text-yellow-300">
-              {currentGuide.badge}
-            </p>
+          <div className="guide-content-v2">
+            {/* PANEL KIRI */}
+            <motion.div
+              initial={{ opacity: 0, x: -22, filter: "blur(7px)" }}
+              animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+              transition={{ delay: 0.2, duration: 0.48, ease: EASE_PREMIUM }}
+              className="guide-panel-v2"
+            >
+              <div className="guide-current-v2">
+                <p className="guide-step-label-v2">{currentGuide.badge}</p>
 
-            <h3 className="mt-3 text-3xl font-black leading-tight text-white">
-              {currentGuide.title}
-            </h3>
+                <h3 className="guide-current-title-v2">
+                  {currentGuide.title}
+                </h3>
 
-            <p className="mt-4 text-sm leading-relaxed text-emerald-100">
-              {currentGuide.desc}
-            </p>
-
-            <div className="mt-6 grid gap-3">
-              {guides.map((item, index) => (
-                <button
-                  key={`${item.title}-${index}`}
-                  onClick={() => setGuideIndex(index)}
-                  className={`group flex items-center gap-3 rounded-2xl border p-3 text-left transition ${
-                    guideIndex === index
-                      ? "border-yellow-300 bg-yellow-400 text-emerald-950 shadow-lg shadow-yellow-950/20"
-                      : "border-white/10 bg-white/10 text-white hover:border-yellow-300/40 hover:bg-white/15"
-                  }`}
-                >
-                  <span
-                    className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-black ${
-                      guideIndex === index
-                        ? "bg-emerald-950 text-yellow-300"
-                        : "bg-white/10 text-yellow-300"
-                    }`}
-                  >
-                    {index + 1}
-                  </span>
-
-                  <div className="min-w-0">
-                    <p className="truncate text-sm font-black">{item.title}</p>
-                    <p
-                      className={`mt-1 text-xs font-semibold ${
-                        guideIndex === index
-                          ? "text-emerald-900"
-                          : "text-emerald-100/75"
-                      }`}
-                    >
-                      {item.badge}
-                    </p>
-                  </div>
-                </button>
-              ))}
-            </div>
-
-            <div className="mt-5 flex items-center justify-between">
-              <button
-                onClick={prevGuide}
-                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white transition hover:-translate-y-1 hover:bg-white/20"
-              >
-                <FaArrowUp />
-              </button>
-
-              <div className="rounded-full border border-white/10 bg-white/10 px-4 py-2 text-[10px] font-black uppercase tracking-[0.2em] text-yellow-300">
-                {guideIndex + 1} / {guides.length}
+                <p className="guide-current-desc-v2">
+                  {currentGuide.desc}
+                </p>
               </div>
 
-              <button
-                onClick={nextGuide}
-                className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-yellow-400 text-emerald-950 transition hover:-translate-y-1 hover:bg-yellow-300"
-              >
-                <FaArrowDown />
-              </button>
-            </div>
-          </motion.div>
+              <div className="guide-step-list-v2">
+                {guides.map((item, index) => (
+                  <button
+                    key={`${item.title}-${index}`}
+                    onClick={() => setGuideIndex(index)}
+                    className={`guide-step-button-v2 ${
+                      guideIndex === index ? "is-active" : ""
+                    }`}
+                  >
+                    <span className="guide-step-number-v2">{index + 1}</span>
 
-          <motion.div
-  initial={{ opacity: 0, x: 24, filter: "blur(7px)" }}
-  animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
-  transition={{ delay: 0.28, duration: 0.5, ease: EASE_PREMIUM }}
-  className="flex h-[260px] rounded-[1.2rem] border border-white/10 bg-white/10 p-2 shadow-2xl backdrop-blur-xl sm:h-[420px] sm:rounded-[1.8rem] sm:p-3 lg:h-full lg:min-h-[620px]"
->
-  <AnimatePresence mode="wait">
-    <motion.div
-      key={guideIndex}
-      initial={{
-        opacity: 0,
-        scale: 0.98,
-        clipPath: CLIP_RIGHT,
-      }}
-      animate={{
-        opacity: 1,
-        scale: 1,
-        clipPath: CLIP_VISIBLE,
-      }}
-      exit={{
-        opacity: 0,
-        scale: 0.98,
-        clipPath: CLIP_LEFT,
-      }}
-      transition={{ duration: 0.45, ease: EASE_PREMIUM }}
-      className="relative h-full w-full overflow-hidden rounded-[1.5rem] bg-emerald-950"
-    >
-      <motion.div
-        initial={{ scale: 1.08 }}
-        animate={{ scale: 1 }}
-        transition={{ duration: 0.9, ease: EASE_PREMIUM }}
-        className="h-full w-full"
-      >
-        <SafeImage
-          src={currentGuide.image}
-          alt={currentGuide.title}
-          className="h-full w-full object-cover"
-        />
-      </motion.div>
+                    <span className="min-w-0 flex-1">
+                      <span className="guide-step-title-v2">{item.title}</span>
+                      <span className="guide-step-badge-v2">{item.badge}</span>
+                    </span>
+                  </button>
+                ))}
+              </div>
 
-      <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/85 via-emerald-950/15 to-emerald-950/20" />
+              <div className="guide-controls-v2">
+                <button onClick={prevGuide} className="guide-control-btn-v2">
+                  <FaArrowUp />
+                </button>
 
-      <div className="absolute left-4 top-4 rounded-full bg-yellow-400 px-4 py-2 text-[10px] font-black uppercase tracking-[0.2em] text-emerald-950 shadow-xl">
-        {currentGuide.badge}
-      </div>
+                <div className="guide-count-v2">
+                  {guideIndex + 1} / {guides.length}
+                </div>
 
-      <div className="absolute bottom-0 left-0 right-0 p-6">
-        <p className="text-[10px] font-black uppercase tracking-[0.24em] text-yellow-300">
-          Panduan Pendaftaran
-        </p>
+                <button
+                  onClick={nextGuide}
+                  className="guide-control-btn-v2 is-next"
+                >
+                  <FaArrowDown />
+                </button>
+              </div>
+            </motion.div>
 
-        <h3 className="mt-2 text-3xl font-black leading-tight text-white">
-          {currentGuide.title}
-        </h3>
-      </div>
-    </motion.div>
-  </AnimatePresence>
-</motion.div>
-        </div>
+            {/* PANEL GAMBAR */}
+            <motion.div
+              initial={{ opacity: 0, x: 22, filter: "blur(7px)" }}
+              animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+              transition={{ delay: 0.26, duration: 0.48, ease: EASE_PREMIUM }}
+              className="guide-image-card-v2"
+            >
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={guideIndex}
+                  initial={{ opacity: 0, scale: 0.98, clipPath: CLIP_RIGHT }}
+                  animate={{ opacity: 1, scale: 1, clipPath: CLIP_VISIBLE }}
+                  exit={{ opacity: 0, scale: 0.98, clipPath: CLIP_LEFT }}
+                  transition={{ duration: 0.42, ease: EASE_PREMIUM }}
+                  className="guide-image-wrap-v2"
+                >
+                  <SafeImage
+                    src={currentGuide.image}
+                    alt={currentGuide.title}
+                    className="guide-image-v2"
+                  />
 
-        <div className="mx-auto mt-7 flex max-w-5xl flex-col items-center justify-center gap-3 rounded-[1.5rem] border border-yellow-300/30 bg-emerald-950/80 p-5 text-center backdrop-blur-xl sm:flex-row sm:justify-between sm:text-left">
-          <p className="max-w-2xl text-sm leading-relaxed text-emerald-100">
-            Setelah memahami panduan, wali santri dapat langsung membuka halaman
-            pendaftaran dan mengisi data sesuai langkah-langkah di atas.
-          </p>
+                  <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/90 via-emerald-950/20 to-emerald-950/20" />
 
-          <MagneticButton href="/pendaftaran">
-            Mulai Daftar
-            <FaArrowRight />
-          </MagneticButton>
+                  <div className="guide-image-badge-v2">
+                    {currentGuide.badge}
+                  </div>
+
+                  <div className="guide-image-caption-v2">
+                    <p>Panduan Pendaftaran</p>
+                    <h3>{currentGuide.title}</h3>
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+            </motion.div>
+          </div>
+
+          <div className="guide-footer-v2">
+            <p>
+              Setelah memahami panduan, wali santri dapat langsung membuka
+              halaman pendaftaran dan mengisi data sesuai langkah-langkah di
+              atas.
+            </p>
+
+            <MagneticButton href="/pendaftaran">
+              Mulai Daftar
+              <FaArrowRight />
+            </MagneticButton>
+          </div>
         </div>
       </div>
     </ScreenShell>
@@ -2471,7 +2431,372 @@ function HomeResponsiveStyles() {
         }
       }
 
+            /* ===============================
+         GUIDE / ALUR PENDAFTARAN 100% VIEWPORT
+         =============================== */
+
+      .guide-screen-v2 {
+        width: 100%;
+        height: 100dvh;
+        max-height: 100dvh;
+        box-sizing: border-box;
+        padding-left: clamp(18px, 3.2vw, 52px);
+        padding-right: clamp(18px, 3.2vw, 52px);
+        padding-top: calc(var(--home-navbar-height, 92px) + 10px);
+        padding-bottom: calc(22px + env(safe-area-inset-bottom));
+        overflow: hidden !important;
+      }
+
+      .guide-inner-v2 {
+        width: min(100%, 1360px);
+        height: calc(
+          100dvh - var(--home-navbar-height, 92px) - 32px - env(safe-area-inset-bottom)
+        );
+        margin-inline: auto;
+        display: grid;
+        grid-template-rows: auto minmax(0, 1fr) auto;
+        gap: clamp(10px, 1.5vh, 16px);
+        overflow: hidden !important;
+      }
+
+      .guide-header-v2 {
+        max-width: 900px;
+      }
+
+      .guide-title-v2 {
+        margin-top: clamp(0.5rem, 1vh, 0.9rem);
+        font-size: clamp(1.9rem, min(3.5vw, 5vh), 3.8rem);
+      }
+
+      .guide-desc-v2 {
+        margin-top: clamp(0.45rem, 1vh, 0.8rem);
+        max-width: 760px;
+        font-size: clamp(0.78rem, min(1vw, 1.8vh), 0.98rem);
+        line-height: 1.5;
+      }
+
+      .guide-content-v2 {
+        min-height: 0;
+        display: grid;
+        grid-template-columns: minmax(280px, 0.72fr) minmax(0, 1.28fr);
+        gap: clamp(12px, 1.5vw, 18px);
+        overflow: hidden !important;
+      }
+
+      .guide-panel-v2,
+      .guide-image-card-v2 {
+        min-width: 0;
+        min-height: 0;
+        height: 100%;
+        overflow: hidden;
+        border-radius: clamp(1.2rem, 1.6vw, 1.8rem);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(255, 255, 255, 0.1);
+        box-shadow: 0 24px 70px rgba(0, 0, 0, 0.22);
+        backdrop-filter: blur(18px);
+      }
+
+      .guide-panel-v2 {
+        padding: clamp(0.75rem, 1.3vw, 1.2rem);
+        display: flex;
+        flex-direction: column;
+      }
+
+      .guide-current-v2 {
+        flex-shrink: 0;
+      }
+
+      .guide-step-label-v2 {
+        font-size: clamp(0.55rem, 0.8vw, 0.75rem);
+        font-weight: 900;
+        letter-spacing: 0.24em;
+        text-transform: uppercase;
+        color: #fde047;
+      }
+
+      .guide-current-title-v2 {
+        margin-top: clamp(0.45rem, 1vh, 0.8rem);
+        font-size: clamp(1.25rem, min(2.2vw, 3.4vh), 2.25rem);
+        font-weight: 900;
+        line-height: 1.05;
+        color: white;
+      }
+
+      .guide-current-desc-v2 {
+        margin-top: clamp(0.45rem, 1vh, 0.75rem);
+        font-size: clamp(0.72rem, min(0.95vw, 1.65vh), 0.95rem);
+        line-height: 1.5;
+        color: rgba(209, 250, 229, 0.9);
+      }
+
+      .guide-step-list-v2 {
+        margin-top: clamp(0.65rem, 1.3vh, 1rem);
+        display: grid;
+        gap: clamp(0.4rem, 0.9vh, 0.65rem);
+        min-height: 0;
+        flex: 1;
+        overflow: hidden;
+      }
+
+      .guide-step-button-v2 {
+        display: flex;
+        align-items: center;
+        gap: clamp(0.45rem, 0.8vw, 0.75rem);
+        min-height: 0;
+        border-radius: clamp(0.85rem, 1.1vw, 1.15rem);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(255, 255, 255, 0.1);
+        padding: clamp(0.45rem, 0.9vh, 0.75rem);
+        text-align: left;
+        color: white;
+        transition: 0.25s ease;
+      }
+
+      .guide-step-button-v2.is-active {
+        border-color: #facc15;
+        background: #facc15;
+        color: #022c22;
+        box-shadow: 0 14px 36px rgba(250, 204, 21, 0.18);
+      }
+
+      .guide-step-number-v2 {
+        display: flex;
+        width: clamp(1.85rem, 2.6vw, 2.35rem);
+        height: clamp(1.85rem, 2.6vw, 2.35rem);
+        flex-shrink: 0;
+        align-items: center;
+        justify-content: center;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.12);
+        color: #fde047;
+        font-size: clamp(0.72rem, 0.9vw, 0.9rem);
+        font-weight: 900;
+      }
+
+      .guide-step-button-v2.is-active .guide-step-number-v2 {
+        background: #022c22;
+        color: #facc15;
+      }
+
+      .guide-step-title-v2 {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: clamp(0.75rem, min(0.95vw, 1.55vh), 0.95rem);
+        font-weight: 900;
+        line-height: 1.15;
+      }
+
+      .guide-step-badge-v2 {
+        display: block;
+        margin-top: 0.12rem;
+        font-size: clamp(0.62rem, 0.8vw, 0.78rem);
+        font-weight: 700;
+        color: rgba(209, 250, 229, 0.75);
+      }
+
+      .guide-step-button-v2.is-active .guide-step-badge-v2 {
+        color: rgba(2, 44, 34, 0.75);
+      }
+
+      .guide-controls-v2 {
+        margin-top: clamp(0.65rem, 1.2vh, 0.9rem);
+        display: flex;
+        flex-shrink: 0;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+      }
+
+      .guide-control-btn-v2 {
+        display: inline-flex;
+        width: clamp(2.15rem, 2.6vw, 2.5rem);
+        height: clamp(2.15rem, 2.6vw, 2.5rem);
+        align-items: center;
+        justify-content: center;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        transition: 0.25s ease;
+      }
+
+      .guide-control-btn-v2.is-next {
+        border-color: transparent;
+        background: #facc15;
+        color: #022c22;
+      }
+
+      .guide-count-v2 {
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(255, 255, 255, 0.1);
+        padding: 0.55rem 1rem;
+        font-size: 0.65rem;
+        font-weight: 900;
+        letter-spacing: 0.2em;
+        color: #fde047;
+      }
+
+      .guide-image-card-v2 {
+        padding: clamp(0.55rem, 1vw, 0.9rem);
+      }
+
+      .guide-image-wrap-v2 {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        border-radius: clamp(1rem, 1.35vw, 1.45rem);
+        background: #022c22;
+      }
+
+      .guide-image-v2 {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .guide-image-badge-v2 {
+        position: absolute;
+        left: clamp(0.75rem, 1.2vw, 1rem);
+        top: clamp(0.75rem, 1.2vw, 1rem);
+        border-radius: 999px;
+        background: #facc15;
+        padding: 0.55rem 1rem;
+        font-size: 0.62rem;
+        font-weight: 900;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: #022c22;
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.22);
+      }
+
+      .guide-image-caption-v2 {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        padding: clamp(1rem, 2vw, 1.5rem);
+      }
+
+      .guide-image-caption-v2 p {
+        font-size: 0.65rem;
+        font-weight: 900;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: #fde047;
+      }
+
+      .guide-image-caption-v2 h3 {
+        margin-top: 0.45rem;
+        font-size: clamp(1.35rem, min(2.8vw, 4vh), 2.8rem);
+        font-weight: 900;
+        line-height: 1;
+        color: white;
+      }
+
+      .guide-footer-v2 {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        border-radius: clamp(1rem, 1.5vw, 1.5rem);
+        border: 1px solid rgba(250, 204, 21, 0.28);
+        background: rgba(2, 44, 34, 0.82);
+        padding: clamp(0.65rem, 1.1vw, 1rem);
+        backdrop-filter: blur(16px);
+      }
+
+      .guide-footer-v2 p {
+        max-width: 720px;
+        font-size: clamp(0.72rem, min(0.9vw, 1.55vh), 0.9rem);
+        line-height: 1.45;
+        color: rgba(209, 250, 229, 0.92);
+      }
+
+      @media (max-height: 860px) and (min-width: 1025px) {
+        .guide-screen-v2 {
+          padding-top: calc(var(--home-navbar-height, 92px) + 8px);
+          padding-bottom: calc(16px + env(safe-area-inset-bottom));
+        }
+
+        .guide-inner-v2 {
+          height: calc(
+            100dvh - var(--home-navbar-height, 92px) - 24px - env(safe-area-inset-bottom)
+          );
+          gap: 9px;
+        }
+
+        .guide-title-v2 {
+          font-size: clamp(1.55rem, min(3vw, 4.2vh), 3rem);
+        }
+
+        .guide-desc-v2 {
+          font-size: 0.82rem;
+          line-height: 1.4;
+        }
+
+        .guide-panel-v2 {
+          padding: 0.7rem;
+        }
+
+        .guide-current-title-v2 {
+          font-size: clamp(1.15rem, min(1.8vw, 3vh), 1.75rem);
+        }
+
+        .guide-current-desc-v2 {
+          font-size: 0.76rem;
+          line-height: 1.35;
+        }
+
+        .guide-step-button-v2 {
+          padding: 0.48rem;
+        }
+
+        .guide-footer-v2 {
+          padding: 0.6rem 0.8rem;
+        }
+      }
+
       @media (max-width: 820px) {
+
+              .guide-screen-v2 {
+          padding-left: 18px;
+          padding-right: 18px;
+          padding-top: calc(var(--home-navbar-height, 86px) + 10px);
+          padding-bottom: calc(18px + env(safe-area-inset-bottom));
+        }
+
+        .guide-inner-v2 {
+          height: calc(
+            100dvh - var(--home-navbar-height, 86px) - 28px - env(safe-area-inset-bottom)
+          );
+        }
+
+        .guide-content-v2 {
+          grid-template-columns: 1fr;
+          grid-template-rows: auto minmax(0, 1fr);
+        }
+
+        .guide-panel-v2 {
+          height: auto;
+        }
+
+        .guide-step-list-v2 {
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          gap: 0.5rem;
+        }
+
+        .guide-step-button-v2 {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .guide-current-desc-v2 {
+          display: none;
+        }
 
               .requirements-screen-v2 {
           padding-left: 18px;
@@ -2554,6 +2879,94 @@ function HomeResponsiveStyles() {
       }
 
       @media (max-width: 640px) {
+
+              .guide-screen-v2 {
+          padding-left: 14px;
+          padding-right: 14px;
+          padding-top: calc(var(--home-navbar-height, 78px) + 8px);
+          padding-bottom: calc(16px + env(safe-area-inset-bottom));
+        }
+
+        .guide-inner-v2 {
+          height: calc(
+            100dvh - var(--home-navbar-height, 78px) - 24px - env(safe-area-inset-bottom)
+          );
+          gap: 8px;
+        }
+
+        .guide-title-v2 {
+          font-size: clamp(1.35rem, min(7.5vw, 4.2vh), 2.15rem);
+        }
+
+        .guide-desc-v2 {
+          display: none;
+        }
+
+        .guide-content-v2 {
+          gap: 8px;
+        }
+
+        .guide-panel-v2 {
+          padding: 0.65rem;
+          border-radius: 1rem;
+        }
+
+        .guide-current-title-v2 {
+          font-size: 1.15rem;
+        }
+
+        .guide-step-list-v2 {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 0.42rem;
+        }
+
+        .guide-step-button-v2 {
+          padding: 0.45rem;
+          border-radius: 0.8rem;
+        }
+
+        .guide-step-number-v2 {
+          width: 1.7rem;
+          height: 1.7rem;
+          font-size: 0.72rem;
+        }
+
+        .guide-step-title-v2 {
+          font-size: 0.68rem;
+        }
+
+        .guide-step-badge-v2 {
+          font-size: 0.56rem;
+        }
+
+        .guide-controls-v2 {
+          margin-top: 0.5rem;
+        }
+
+        .guide-image-card-v2 {
+          padding: 0.45rem;
+          border-radius: 1rem;
+        }
+
+        .guide-image-caption-v2 {
+          padding: 0.85rem;
+        }
+
+        .guide-image-caption-v2 h3 {
+          font-size: 1.25rem;
+        }
+
+        .guide-footer-v2 {
+          padding: 0.55rem;
+        }
+
+        .guide-footer-v2 p {
+          display: none;
+        }
+
+        .guide-footer-v2 a {
+          width: 100%;
+        }
 
               .requirements-screen-v2 {
           padding-left: 14px;
@@ -2819,6 +3232,57 @@ function HomeResponsiveStyles() {
       }
 
       @media (max-width: 420px) {
+
+              .guide-screen-v2 {
+          padding-left: 10px;
+          padding-right: 10px;
+          padding-top: calc(var(--home-navbar-height, 74px) + 6px);
+          padding-bottom: calc(14px + env(safe-area-inset-bottom));
+        }
+
+        .guide-inner-v2 {
+          height: calc(
+            100dvh - var(--home-navbar-height, 74px) - 20px - env(safe-area-inset-bottom)
+          );
+          gap: 6px;
+        }
+
+        .guide-title-v2 {
+          font-size: clamp(1.15rem, min(7vw, 3.8vh), 1.7rem);
+        }
+
+        .guide-panel-v2 {
+          padding: 0.5rem;
+        }
+
+        .guide-current-title-v2 {
+          font-size: 1rem;
+        }
+
+        .guide-step-list-v2 {
+          gap: 0.35rem;
+        }
+
+        .guide-step-button-v2 {
+          padding: 0.36rem;
+        }
+
+        .guide-step-title-v2 {
+          font-size: 0.62rem;
+        }
+
+        .guide-step-badge-v2 {
+          display: none;
+        }
+
+        .guide-image-badge-v2 {
+          padding: 0.42rem 0.75rem;
+          font-size: 0.52rem;
+        }
+
+        .guide-image-caption-v2 h3 {
+          font-size: 1.05rem;
+        }
 
               .requirements-screen-v2 {
           padding-left: 10px;
