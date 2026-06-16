@@ -1784,8 +1784,6 @@ const [navbarHeight, setNavbarHeight] = useState(92);
   ? homeData.requirements
   : DEFAULT_REQUIREMENTS;
 
-  const requirements = homeData?.requirements?.length
-
 
 const sections = useMemo(
   () => [
