@@ -113,6 +113,53 @@ const DEFAULT_PEMBINA = [
   },
 ];
 
+const DEFAULT_REQUIREMENTS = [
+  {
+    title: "Dokumen Pendaftaran",
+    iconKey: "book",
+    items: [
+      "Fotokopi ijazah terakhir legalisir 3 lembar",
+      "Fotokopi SKL 3 lembar",
+      "Fotokopi NISN 3 lembar",
+      "Fotokopi akta kelahiran 3 lembar",
+      "Fotokopi KTP orang tua 3 lembar",
+      "Fotokopi Kartu Keluarga 3 lembar",
+      "Pas foto 3x4 background biru 3 lembar",
+      "SKCK / surat kelakuan baik dari sekolah",
+    ],
+  },
+  {
+    title: "Syarat Calon Santri",
+    iconKey: "users",
+    items: [
+      "Mengisi formulir pendaftaran dengan data yang benar",
+      "Bersedia mengikuti tata tertib pesantren",
+      "Bersedia tinggal di lingkungan pesantren/asrama",
+      "Sehat jasmani dan rohani",
+      "Mendapat izin dari orang tua/wali",
+    ],
+  },
+  {
+    title: "Ketentuan Pesantren",
+    iconKey: "shield",
+    items: [
+      "Santri wajib mengikuti kegiatan ibadah dan pembinaan",
+      "Santri wajib menjaga adab, kebersihan, dan kedisiplinan",
+      "Barang bawaan pribadi menjadi tanggung jawab masing-masing",
+      "Santri wajib mematuhi arahan pengurus dan pembina",
+      "Informasi pembayaran dan administrasi mengikuti ketentuan pesantren",
+    ],
+  },
+  {
+    title: "Khusus Yatim / Piatu",
+    iconKey: "heart",
+    items: [
+      "Melampirkan surat keterangan kematian orang tua",
+      "Melampirkan data wali yang bertanggung jawab",
+    ],
+  },
+];
+
 const PARTICLES = Array.from({ length: 12 }, (_, index) => ({
   id: index,
   left: `${(index * 17 + 11) % 100}%`,
@@ -1282,6 +1329,121 @@ function PembinaScreen({ pembinaItems, step, direction, setStep }) {
     </ScreenShell>
   );
 }
+
+function RequirementsScreen({ requirements, direction }) {
+  return (
+    <ScreenShell light sectionKey="requirements" direction={direction}>
+      <IslamicBackground />
+
+      <div data-allow-scroll="true" className="home-screen overflow-y-auto py-28">
+        <div className="mx-auto max-w-5xl text-center">
+          <Badge>Syarat & Ketentuan</Badge>
+
+          <motion.h2
+            initial={{ opacity: 0, y: 28, filter: "blur(7px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            transition={{ delay: 0.1, duration: 0.55, ease: EASE_PREMIUM }}
+            className="home-heading mt-4 font-black leading-[0.98] tracking-[-0.05em] text-emerald-950"
+          >
+            Persiapkan dokumen dan pahami ketentuan pesantren
+          </motion.h2>
+
+          <motion.p
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.18, duration: 0.45 }}
+            className="mx-auto mt-4 max-w-3xl text-sm leading-relaxed text-slate-600 sm:text-base"
+          >
+            Calon santri dan wali santri diharapkan membaca persyaratan berikut
+            sebelum melakukan pendaftaran agar proses administrasi berjalan
+            lebih mudah.
+          </motion.p>
+        </div>
+
+        <div className="mx-auto mt-7 grid max-w-6xl gap-4 md:grid-cols-2">
+          {requirements.map((group, index) => (
+            <motion.div
+              key={`${group.title}-${index}`}
+              initial={{ opacity: 0, y: 24, filter: "blur(7px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              transition={{
+                duration: 0.48,
+                delay: 0.24 + index * 0.06,
+                ease: EASE_PREMIUM,
+              }}
+            >
+              <TiltCard>
+                <div className="relative h-full overflow-hidden rounded-[1.6rem] border border-emerald-100 bg-white/90 p-5 text-left shadow-xl backdrop-blur transition hover:bg-white">
+                  <div className="absolute -right-16 -top-16 h-36 w-36 rounded-full bg-yellow-300/20 blur-3xl" />
+
+                  <div className="relative z-10">
+                    <div className="flex items-start gap-4">
+                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-emerald-950 text-xl text-yellow-300">
+                        {getIcon(group.iconKey)}
+                      </div>
+
+                      <div>
+                        <h3 className="text-xl font-black leading-tight text-emerald-950">
+                          {group.title}
+                        </h3>
+
+                        <p className="mt-1 text-xs font-bold uppercase tracking-[0.18em] text-emerald-700/70">
+                          {group.items.length} poin penting
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="mt-5 space-y-3">
+                      {group.items.map((item, itemIndex) => (
+                        <div
+                          key={`${item}-${itemIndex}`}
+                          className="flex gap-3 rounded-2xl border border-emerald-100 bg-emerald-50/70 p-3"
+                        >
+                          <div className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-950 text-[10px] text-yellow-300">
+                            <FaCheckCircle />
+                          </div>
+
+                          <p className="text-sm font-semibold leading-relaxed text-slate-700">
+                            {item}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </TiltCard>
+            </motion.div>
+          ))}
+        </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.42, duration: 0.45 }}
+          className="mx-auto mt-7 max-w-5xl rounded-[1.5rem] border border-yellow-300/30 bg-emerald-950 p-5 text-center text-white shadow-2xl"
+        >
+          <p className="text-sm leading-relaxed text-emerald-100">
+            Catatan: Persyaratan dapat berubah sesuai kebijakan pesantren.
+            Untuk memastikan informasi terbaru, silakan hubungi admin
+            pesantren.
+          </p>
+
+          <div className="mt-4 flex justify-center">
+            <MagneticButton
+              href={WHATSAPP_ADMIN_URL}
+              variant="secondary"
+              external
+            >
+              <FaWhatsapp />
+              Tanya Admin
+            </MagneticButton>
+          </div>
+        </motion.div>
+      </div>
+    </ScreenShell>
+  );
+}
+
 function CtaScreen({ direction }) {
   return (
     <ScreenShell light sectionKey="cta" direction={direction}>
@@ -1416,11 +1578,16 @@ const [navbarHeight, setNavbarHeight] = useState(92);
     ? homeData.pembina
     : DEFAULT_PEMBINA;
 
+    const requirements = homeData?.requirements?.length
+  ? homeData.requirements
+  : DEFAULT_REQUIREMENTS;
+
   const sections = useMemo(
   () => [
     { key: "hero", label: "Home", total: 1 },
     { key: "values", label: "Nilai", total: 1 },
     { key: "pembina", label: "Pembina", total: pembinaItems.length || 1 },
+    { key: "requirements", label: "Syarat", total: 1 },
     { key: "cta", label: "Daftar", total: 1 },
   ],
   [pembinaItems.length]
@@ -1702,18 +1869,28 @@ const setCurrentPembinaStep = (index) => {
     }
 
     if (key === "pembina") {
-      return (
-        <PembinaScreen
-          key="pembina"
-          pembinaItems={pembinaItems}
-          step={activeStep}
-          direction={direction}
-          setStep={setCurrentPembinaStep}
-        />
-      );
-    }
+  return (
+    <PembinaScreen
+      key="pembina"
+      pembinaItems={pembinaItems}
+      step={activeStep}
+      direction={direction}
+      setStep={setCurrentPembinaStep}
+    />
+  );
+}
 
-    return <CtaScreen key="cta" direction={direction} />;
+if (key === "requirements") {
+  return (
+    <RequirementsScreen
+      key="requirements"
+      requirements={requirements}
+      direction={direction}
+    />
+  );
+}
+
+return <CtaScreen key="cta" direction={direction} />;
   };
 
 useEffect(() => {
