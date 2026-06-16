@@ -1844,13 +1844,13 @@ body {
 }
 
 /* =========================================================
-   GLOBAL SCREEN SYSTEM
+   GLOBAL SECTION SYSTEM
 ========================================================= */
 
 .program-screen {
   --program-safe-bottom: max(env(safe-area-inset-bottom), 0px);
   --program-nav-space: var(--program-navbar-height, 92px);
-  --program-control-space: 72px;
+  --program-control-space: 70px;
   --program-progress-space: 6px;
   --program-top-space: calc(var(--program-nav-space) + 14px);
   --program-bottom-space: calc(
@@ -1885,21 +1885,33 @@ body {
 }
 
 .program-hero-screen,
-.program-cta-screen,
-.program-focus-screen {
+.program-focus-screen,
+.program-cta-screen {
   display: flex;
   align-items: center;
 }
 
+.program-title {
+  font-size: clamp(2.25rem, min(5.8vw, 9.2vh), 5.55rem);
+  line-height: 0.92;
+  letter-spacing: -0.06em;
+}
+
+.program-heading {
+  font-size: clamp(1.9rem, min(4.6vw, 7vh), 4.2rem);
+  line-height: 0.96;
+  letter-spacing: -0.055em;
+}
+
 /* =========================================================
-   HERO
+   HERO DESKTOP
 ========================================================= */
 
 .program-hero-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.02fr) minmax(280px, 0.78fr);
   align-items: center;
-  gap: clamp(0.8rem, 2vw, 2.4rem);
+  gap: clamp(1rem, 2.4vw, 2.7rem);
 }
 
 .program-hero-copy {
@@ -1907,24 +1919,12 @@ body {
   min-height: 0;
 }
 
-.program-title {
-  font-size: clamp(2rem, min(5.8vw, 9.4vh), 5.55rem);
-  line-height: 0.92;
-  letter-spacing: -0.06em;
-}
-
-.program-heading {
-  font-size: clamp(1.8rem, min(4.6vw, 7.2vh), 4.2rem);
-  line-height: 0.96;
-  letter-spacing: -0.055em;
-}
-
 .program-hero-copy p {
-  max-width: 760px;
+  max-width: 780px;
 }
 
 .program-stats {
-  max-height: 138px;
+  max-height: 145px;
   overflow: hidden;
 }
 
@@ -1949,22 +1949,22 @@ body {
 }
 
 /* =========================================================
-   PROGRAM LIST
+   PROGRAM LIST DESKTOP
 ========================================================= */
 
 .program-list-layout {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
-  gap: clamp(0.7rem, 1.4vh, 1.1rem);
+  gap: clamp(0.75rem, 1.4vh, 1.15rem);
 }
 
 .program-list-header {
-  max-width: 930px;
+  max-width: 940px;
   min-height: 0;
 }
 
 .program-list-header .program-heading {
-  font-size: clamp(1.9rem, min(4.4vw, 6.2vh), 4rem);
+  font-size: clamp(1.9rem, min(4.3vw, 6.2vh), 4rem);
 }
 
 .program-list-header p {
@@ -1972,17 +1972,17 @@ body {
 }
 
 .program-list-grid {
+  height: 100%;
+  min-height: 0;
   display: grid;
   grid-template-columns: minmax(260px, 0.82fr) minmax(0, 1.18fr);
   gap: 1rem;
-  min-height: 0;
-  height: 100%;
   overflow: hidden;
 }
 
 .program-buttons-grid {
-  min-height: 0;
   height: 100%;
+  min-height: 0;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   grid-auto-rows: minmax(68px, 1fr);
@@ -1996,6 +1996,7 @@ body {
   display: flex;
   align-items: center;
   gap: 0.7rem;
+  overflow: hidden;
   border-radius: 1.25rem;
   border: 1px solid rgba(6, 95, 70, 0.1);
   background: rgba(255, 255, 255, 0.78);
@@ -2003,12 +2004,11 @@ body {
   color: #064e3b;
   box-shadow: 0 16px 45px rgba(0, 0, 0, 0.07);
   transition: 0.28s ease;
-  overflow: hidden;
 }
 
 .program-mini-card-active {
   background: #052e22;
-  color: white;
+  color: #ffffff;
   border-color: rgba(250, 204, 21, 0.4);
   box-shadow: 0 24px 70px rgba(4, 120, 87, 0.22);
 }
@@ -2041,8 +2041,8 @@ body {
 
 .program-detail-card > .relative {
   height: 100%;
-  display: flex;
   min-height: 0;
+  display: flex;
   flex-direction: column;
 }
 
@@ -2079,7 +2079,7 @@ body {
 }
 
 .program-detail-card .mt-7 {
-  margin-top: 1.15rem !important;
+  margin-top: 1.1rem !important;
 }
 
 .program-detail-card .mt-6 {
@@ -2115,11 +2115,7 @@ body {
   gap: clamp(0.9rem, 2.3vw, 2.6rem);
 }
 
-.program-focus-left {
-  min-width: 0;
-  min-height: 0;
-}
-
+.program-focus-left,
 .program-focus-card-wrap {
   min-width: 0;
   min-height: 0;
@@ -2346,7 +2342,7 @@ body {
 @media (max-width: 1024px) {
   .program-screen {
     --program-nav-space: var(--program-navbar-height, 84px);
-    --program-control-space: 68px;
+    --program-control-space: 64px;
     width: min(94vw, 980px);
   }
 
@@ -2361,34 +2357,18 @@ body {
     display: none !important;
   }
 
-  .program-list-layout {
-    grid-template-rows: auto minmax(0, 1fr);
-  }
-
-  .program-list-grid {
-    gap: 0.75rem;
-  }
-
   .program-buttons-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     grid-auto-rows: minmax(62px, 1fr);
   }
 
-  .program-detail-card h3 {
-    font-size: clamp(1.8rem, min(5vw, 5.8vh), 3.4rem) !important;
-  }
-
   .program-flow-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .program-faq-layout {
-    align-content: center;
   }
 }
 
 /* =========================================================
-   PHONE FINAL FIX
+   PHONE ROMBAK LAYOUT
 ========================================================= */
 
 @media (max-width: 720px) {
@@ -2400,7 +2380,7 @@ body {
 
   .program-screen {
     --program-nav-space: var(--program-navbar-height, 64px);
-    --program-control-space: 42px;
+    --program-control-space: 38px;
     --program-progress-space: 5px;
     --program-top-space: calc(var(--program-nav-space) + 5px);
     --program-bottom-space: calc(
@@ -2414,7 +2394,7 @@ body {
     width: 100%;
     height: 100svh;
     max-height: 100svh;
-    padding-inline: 10px;
+    padding-inline: 9px;
     padding-top: var(--program-top-space);
     padding-bottom: var(--program-bottom-space);
     overflow: hidden;
@@ -2442,8 +2422,8 @@ body {
   .program-hero-grid {
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
-    gap: 0.46rem;
+    justify-content: center;
+    gap: 0.42rem;
   }
 
   .program-hero-copy {
@@ -2456,44 +2436,44 @@ body {
   }
 
   .program-hero-copy > p:first-child {
-    margin-bottom: 0.25rem !important;
-    font-size: 0.68rem !important;
-    line-height: 1.1 !important;
+    margin-bottom: 0.22rem !important;
+    font-size: clamp(0.62rem, 3vw, 0.76rem) !important;
+    line-height: 1.08 !important;
   }
 
   .program-title {
-    margin-top: 0.42rem !important;
-    font-size: clamp(1.45rem, 7.2vw, 1.9rem) !important;
+    margin-top: 0.4rem !important;
+    font-size: clamp(1.38rem, 7.1vw, 1.9rem) !important;
     line-height: 0.9 !important;
     letter-spacing: -0.06em !important;
   }
 
   .program-heading {
-    font-size: clamp(1.15rem, 5.8vw, 1.75rem) !important;
-    line-height: 0.95 !important;
+    font-size: clamp(1rem, 5.4vw, 1.55rem) !important;
+    line-height: 0.94 !important;
     letter-spacing: -0.055em !important;
   }
 
   .program-hero-copy > p.mt-4 {
-    margin-top: 0.45rem !important;
+    margin-top: 0.42rem !important;
     max-width: 100%;
-    font-size: 0.58rem !important;
-    line-height: 1.22 !important;
+    font-size: clamp(0.52rem, 2.45vw, 0.62rem) !important;
+    line-height: 1.2 !important;
   }
 
   .program-hero-copy .mt-6 {
-    margin-top: 0.5rem !important;
-    gap: 0.38rem !important;
+    margin-top: 0.45rem !important;
+    gap: 0.35rem !important;
   }
 
   .program-hero-copy a {
-    min-height: 32px !important;
-    padding: 0.46rem 0.7rem !important;
-    font-size: 0.58rem !important;
+    min-height: 30px !important;
+    padding: 0.42rem 0.65rem !important;
+    font-size: 0.54rem !important;
   }
 
   .program-hero-copy a svg {
-    font-size: 0.65rem !important;
+    font-size: 0.62rem !important;
   }
 
   .program-hero-copy .inline-flex,
@@ -2503,10 +2483,10 @@ body {
   .program-faq-left .inline-flex,
   .program-cta-card .inline-flex {
     max-width: 100%;
-    padding: 0.34rem 0.52rem !important;
-    gap: 0.34rem !important;
-    font-size: 0.45rem !important;
-    letter-spacing: 0.12em !important;
+    padding: 0.32rem 0.5rem !important;
+    gap: 0.32rem !important;
+    font-size: 0.43rem !important;
+    letter-spacing: 0.11em !important;
   }
 
   .program-hero-copy .inline-flex span:last-child,
@@ -2521,11 +2501,11 @@ body {
   }
 
   .program-stats {
-    margin-top: 0.5rem !important;
+    margin-top: 0.45rem !important;
     display: grid !important;
     grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-    gap: 0.3rem !important;
-    max-height: 48px !important;
+    gap: 0.26rem !important;
+    max-height: 40px !important;
     overflow: hidden !important;
   }
 
@@ -2535,37 +2515,34 @@ body {
   }
 
   .program-stats > div > div {
-    height: 48px !important;
-    min-height: 48px !important;
-    padding: 0.32rem 0.2rem !important;
-    border-radius: 0.72rem !important;
+    height: 40px !important;
+    min-height: 40px !important;
+    padding: 0.26rem 0.16rem !important;
+    border-radius: 0.65rem !important;
     overflow: hidden;
   }
 
   .program-stats .mx-auto {
-    width: 1.45rem !important;
-    height: 1.45rem !important;
-    margin-bottom: 0.14rem !important;
-    border-radius: 0.52rem !important;
-    font-size: 0.58rem !important;
-  }
-
-  .program-stats h3 {
+    width: 1.22rem !important;
+    height: 1.22rem !important;
+    margin-bottom: 0 !important;
+    border-radius: 0.45rem !important;
     font-size: 0.5rem !important;
-    line-height: 1 !important;
-    white-space: nowrap;
   }
 
+  .program-stats h3,
   .program-stats p {
     display: none !important;
   }
 
-  /* ================= PROGRAM LIST PHONE ================= */
+  /* =========================
+     DAFTAR PROGRAM MOBILE BARU
+  ========================= */
 
   .program-list-layout {
     display: grid;
     grid-template-rows: auto minmax(0, 1fr);
-    gap: 0.4rem !important;
+    gap: 0.34rem !important;
   }
 
   .program-list-header {
@@ -2573,9 +2550,10 @@ body {
   }
 
   .program-list-header .program-heading {
-    margin-top: 0.48rem !important;
-    font-size: clamp(1.05rem, 5.5vw, 1.55rem) !important;
-    line-height: 0.94 !important;
+    margin-top: 0.42rem !important;
+    max-width: 100%;
+    font-size: clamp(1rem, 5.3vw, 1.42rem) !important;
+    line-height: 0.9 !important;
   }
 
   .program-list-header p {
@@ -2583,50 +2561,53 @@ body {
   }
 
   .program-list-grid {
+    height: 100%;
+    min-height: 0;
     display: grid !important;
     grid-template-columns: 1fr !important;
-    grid-template-rows: auto minmax(0, 1fr) !important;
-    gap: 0.38rem !important;
-    height: 100%;
+    grid-template-rows: auto auto !important;
+    align-content: start;
+    gap: 0.34rem !important;
     overflow: hidden;
   }
 
   .program-buttons-grid {
+    width: 100%;
+    height: auto !important;
+    max-height: none !important;
+    min-height: 0 !important;
     display: grid !important;
     grid-auto-flow: row !important;
     grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-    grid-template-rows: repeat(3, 38px) !important;
+    grid-template-rows: repeat(3, 31px) !important;
     grid-auto-columns: unset !important;
     grid-auto-rows: unset !important;
-    gap: 0.32rem !important;
-    max-height: 120px !important;
-    height: auto !important;
+    gap: 0.24rem !important;
     overflow: hidden !important;
     padding: 0 !important;
   }
 
-  .program-buttons-grid::-webkit-scrollbar {
-    display: none;
-  }
-
   .program-mini-card {
-    min-height: 38px !important;
-    height: 38px !important;
-    padding: 0.28rem 0.32rem !important;
-    border-radius: 0.68rem !important;
-    gap: 0.28rem !important;
+    width: 100%;
+    height: 31px !important;
+    min-height: 31px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.22rem !important;
+    padding: 0.2rem 0.24rem !important;
+    border-radius: 0.55rem !important;
     scroll-snap-align: unset !important;
   }
 
   .program-mini-icon {
-    width: 1.35rem !important;
-    height: 1.35rem !important;
-    border-radius: 0.48rem !important;
-    font-size: 0.54rem !important;
+    width: 1.08rem !important;
+    height: 1.08rem !important;
+    border-radius: 0.38rem !important;
+    font-size: 0.42rem !important;
   }
 
   .program-mini-card .text-sm {
-    font-size: 0.52rem !important;
+    font-size: 0.42rem !important;
     line-height: 1.05 !important;
     white-space: normal !important;
     display: -webkit-box !important;
@@ -2640,47 +2621,59 @@ body {
   }
 
   .program-detail-card {
-    height: 100% !important;
+    height: auto !important;
     min-height: 0 !important;
-    padding: 0.58rem !important;
-    border-radius: 0.9rem !important;
+    max-height: calc(var(--program-available-height) - 170px) !important;
+    overflow: hidden !important;
+    padding: 0.52rem !important;
+    border-radius: 0.82rem !important;
+  }
+
+  .program-detail-card > .relative {
+    height: auto !important;
+    min-height: 0 !important;
+  }
+
+  .program-detail-card .flex.flex-wrap.items-start.justify-between {
+    align-items: center !important;
+    gap: 0.35rem !important;
   }
 
   .program-detail-icon {
-    width: 2.05rem !important;
-    height: 2.05rem !important;
-    border-radius: 0.64rem !important;
-    font-size: 0.88rem !important;
+    width: 1.75rem !important;
+    height: 1.75rem !important;
+    border-radius: 0.55rem !important;
+    font-size: 0.75rem !important;
   }
 
   .program-detail-card .rounded-full.bg-yellow-400 {
-    padding: 0.42rem 0.72rem !important;
-    font-size: 0.52rem !important;
-    letter-spacing: 0.12em !important;
+    padding: 0.32rem 0.55rem !important;
+    font-size: 0.42rem !important;
+    letter-spacing: 0.1em !important;
   }
 
   .program-detail-card .text-xs,
   .program-detail-card .text-\\[10px\\] {
-    font-size: 0.48rem !important;
-    letter-spacing: 0.14em !important;
+    font-size: 0.42rem !important;
+    letter-spacing: 0.12em !important;
   }
 
   .program-detail-card h3 {
-    margin-top: 0.35rem !important;
-    font-size: clamp(1.05rem, 5.5vw, 1.5rem) !important;
+    margin-top: 0.28rem !important;
+    font-size: clamp(0.95rem, 5vw, 1.28rem) !important;
     line-height: 0.95 !important;
   }
 
   .program-detail-card p {
-    font-size: 0.56rem !important;
-    line-height: 1.25 !important;
+    font-size: 0.48rem !important;
+    line-height: 1.18 !important;
   }
 
   .program-detail-card .mt-7,
   .program-detail-card .mt-6,
   .program-detail-card .mt-5,
   .program-detail-card .mt-3 {
-    margin-top: 0.36rem !important;
+    margin-top: 0.3rem !important;
   }
 
   .program-detail-card .grid {
@@ -2688,131 +2681,137 @@ body {
   }
 
   .program-detail-card .rounded-\\[1\\.5rem\\] {
-    padding: 0.5rem !important;
-    border-radius: 0.72rem !important;
+    padding: 0.44rem !important;
+    border-radius: 0.65rem !important;
   }
 
   .program-detail-card .rounded-\\[1\\.5rem\\] p:first-child {
-    font-size: 0.48rem !important;
-    letter-spacing: 0.14em !important;
+    font-size: 0.4rem !important;
+    letter-spacing: 0.12em !important;
   }
 
   .program-detail-card .rounded-\\[1\\.5rem\\] p:last-child {
-    font-size: 0.56rem !important;
-    line-height: 1.25 !important;
+    font-size: 0.47rem !important;
+    line-height: 1.18 !important;
   }
 
-  /* ================= FOCUS PHONE ================= */
+  /* =========================
+     FOCUS MOBILE
+  ========================= */
 
   .program-focus-layout {
     grid-template-columns: 1fr;
     grid-template-rows: auto minmax(0, 1fr);
-    gap: 0.48rem;
+    gap: 0.38rem;
   }
 
   .program-focus-left .program-heading {
-    margin-top: 0.5rem !important;
-    font-size: clamp(1.05rem, 5.5vw, 1.55rem) !important;
+    margin-top: 0.42rem !important;
+    font-size: clamp(1rem, 5.3vw, 1.42rem) !important;
   }
 
   .program-focus-left p {
-    margin-top: 0.42rem !important;
-    font-size: 0.58rem !important;
-    line-height: 1.25 !important;
+    margin-top: 0.36rem !important;
+    font-size: 0.52rem !important;
+    line-height: 1.18 !important;
   }
 
   .program-focus-left .mt-6 {
-    margin-top: 0.42rem !important;
+    margin-top: 0.35rem !important;
   }
 
   .program-focus-left .gap-2 {
-    gap: 0.28rem !important;
+    gap: 0.24rem !important;
   }
 
   .program-focus-left .gap-2 span {
-    padding: 0.26rem 0.42rem !important;
-    font-size: 0.48rem !important;
+    padding: 0.24rem 0.38rem !important;
+    font-size: 0.42rem !important;
   }
 
   .program-focus-card {
     height: 100%;
     min-height: 0;
-    padding: 0.58rem !important;
-    border-radius: 0.9rem !important;
+    padding: 0.52rem !important;
+    border-radius: 0.82rem !important;
   }
 
   .program-focus-card .h-32 {
-    width: 3.35rem !important;
-    height: 3.35rem !important;
-    border-radius: 0.8rem !important;
-    font-size: 1.45rem !important;
+    width: 3rem !important;
+    height: 3rem !important;
+    border-radius: 0.72rem !important;
+    font-size: 1.3rem !important;
   }
 
   .program-focus-card h3 {
-    margin-top: 0.55rem !important;
-    font-size: 0.84rem !important;
-    line-height: 1.18 !important;
+    margin-top: 0.48rem !important;
+    font-size: 0.78rem !important;
+    line-height: 1.16 !important;
   }
 
-  /* ================= FLOW PHONE ================= */
+  /* =========================
+     FLOW MOBILE
+  ========================= */
 
   .program-flow-layout {
-    gap: 0.4rem;
+    gap: 0.34rem;
   }
 
   .program-flow-layout .program-heading {
-    margin-top: 0.48rem !important;
-    font-size: clamp(1.05rem, 5.5vw, 1.55rem) !important;
+    margin-top: 0.42rem !important;
+    font-size: clamp(1rem, 5.3vw, 1.42rem) !important;
   }
 
   .program-flow-layout p {
-    margin-top: 0.42rem !important;
-    font-size: 0.56rem !important;
-    line-height: 1.24 !important;
+    margin-top: 0.36rem !important;
+    font-size: 0.5rem !important;
+    line-height: 1.18 !important;
   }
 
   .program-flow-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     grid-auto-rows: minmax(0, 1fr) !important;
-    gap: 0.3rem !important;
+    gap: 0.28rem !important;
   }
 
   .program-flow-card {
     height: 100%;
-    padding: 0.48rem !important;
-    border-radius: 0.72rem !important;
+    padding: 0.42rem !important;
+    border-radius: 0.68rem !important;
   }
 
   .program-flow-number {
-    width: 1.58rem !important;
-    height: 1.58rem !important;
-    border-radius: 0.5rem !important;
-    font-size: 0.48rem !important;
+    width: 1.45rem !important;
+    height: 1.45rem !important;
+    border-radius: 0.45rem !important;
+    font-size: 0.43rem !important;
   }
 
   .program-flow-card h3 {
-    margin-top: 0.35rem !important;
-    font-size: 0.58rem !important;
-    line-height: 1.06 !important;
+    margin-top: 0.3rem !important;
+    font-size: 0.52rem !important;
+    line-height: 1.05 !important;
   }
 
   .program-flow-card p {
-    margin-top: 0.22rem !important;
-    font-size: 0.46rem !important;
-    line-height: 1.18 !important;
+    margin-top: 0.18rem !important;
+    font-size: 0.4rem !important;
+    line-height: 1.15 !important;
   }
 
-  /* ================= FAQ PHONE ================= */
+  /* =========================
+     FAQ MOBILE
+  ========================= */
 
   .program-faq-layout {
     grid-template-columns: 1fr;
     grid-template-rows: auto minmax(0, 1fr);
-    gap: 0.4rem;
+    gap: 0.34rem;
   }
 
   .program-faq-left .program-heading {
-    margin-top: 0.48rem !important;
-    font-size: clamp(1.05rem, 5.5vw, 1.55rem) !important;
+    margin-top: 0.42rem !important;
+    font-size: clamp(1rem, 5.3vw, 1.42rem) !important;
   }
 
   .program-faq-left p {
@@ -2820,10 +2819,10 @@ body {
   }
 
   .program-faq-list {
-    gap: 0.32rem !important;
+    gap: 0.28rem !important;
     min-height: 0;
     overflow-y: auto;
-    padding-bottom: 0.22rem;
+    padding-bottom: 0.2rem;
     scrollbar-width: none;
   }
 
@@ -2832,213 +2831,156 @@ body {
   }
 
   .program-faq-item {
-    padding: 0.5rem !important;
-    border-radius: 0.7rem !important;
+    padding: 0.44rem !important;
+    border-radius: 0.65rem !important;
   }
 
   .program-faq-item h3 {
-    font-size: 0.58rem !important;
-    line-height: 1.16 !important;
+    font-size: 0.52rem !important;
+    line-height: 1.15 !important;
   }
 
   .program-faq-item p {
-    font-size: 0.52rem !important;
-    line-height: 1.24 !important;
+    font-size: 0.47rem !important;
+    line-height: 1.2 !important;
   }
 
   .program-faq-item .h-8 {
-    width: 1.2rem !important;
-    height: 1.2rem !important;
-    font-size: 0.6rem !important;
+    width: 1.1rem !important;
+    height: 1.1rem !important;
+    font-size: 0.55rem !important;
   }
 
-  /* ================= CTA PHONE ================= */
-
-  .program-cta-screen {
-    align-items: center;
-  }
+  /* =========================
+     CTA MOBILE
+  ========================= */
 
   .program-cta-card {
     max-height: var(--program-available-height);
-    padding: 0.75rem !important;
-    border-radius: 0.9rem !important;
+    padding: 0.68rem !important;
+    border-radius: 0.82rem !important;
   }
 
   .program-cta-icon {
-    width: 2.55rem !important;
-    height: 2.55rem !important;
-    margin-bottom: 0.5rem !important;
-    border-radius: 0.7rem !important;
-    font-size: 0.92rem !important;
+    width: 2.35rem !important;
+    height: 2.35rem !important;
+    margin-bottom: 0.42rem !important;
+    border-radius: 0.65rem !important;
+    font-size: 0.85rem !important;
   }
 
   .program-cta-card .program-heading {
-    margin-top: 0.5rem !important;
-    font-size: clamp(1.05rem, 5.5vw, 1.55rem) !important;
+    margin-top: 0.45rem !important;
+    font-size: clamp(1rem, 5.3vw, 1.42rem) !important;
   }
 
   .program-cta-card p {
-    margin-top: 0.5rem !important;
-    font-size: 0.58rem !important;
-    line-height: 1.24 !important;
+    margin-top: 0.45rem !important;
+    font-size: 0.52rem !important;
+    line-height: 1.18 !important;
   }
 
   .program-cta-card .mt-7 {
-    margin-top: 0.62rem !important;
-    gap: 0.38rem !important;
+    margin-top: 0.55rem !important;
+    gap: 0.35rem !important;
   }
 
   .program-cta-card a {
-    min-height: 32px !important;
-    padding: 0.46rem 0.7rem !important;
-    font-size: 0.58rem !important;
+    min-height: 30px !important;
+    padding: 0.42rem 0.65rem !important;
+    font-size: 0.54rem !important;
   }
 
   .program-bottom-control {
-    bottom: max(0.34rem, env(safe-area-inset-bottom)) !important;
-    gap: 0.3rem !important;
+    bottom: max(0.28rem, env(safe-area-inset-bottom)) !important;
+    gap: 0.28rem !important;
   }
 
   .program-bottom-control button {
-    padding: 0.32rem 0.52rem !important;
-    font-size: 0.5rem !important;
+    padding: 0.28rem 0.48rem !important;
+    font-size: 0.46rem !important;
     border-radius: 999px !important;
   }
 }
 
 /* =========================================================
-   SMALL PHONE 360px - 430px
+   SMALL PHONE / PIXEL 7 / GALAXY S8
 ========================================================= */
 
 @media (max-width: 430px) {
   .program-screen {
-    padding-inline: 9px;
+    padding-inline: 8px;
   }
 
   .program-title {
-    font-size: clamp(1.35rem, 7vw, 1.75rem) !important;
+    font-size: clamp(1.28rem, 6.8vw, 1.68rem) !important;
   }
 
   .program-heading {
-    font-size: clamp(1rem, 5.4vw, 1.4rem) !important;
+    font-size: clamp(0.95rem, 5vw, 1.32rem) !important;
   }
 
   .program-hero-copy > p.mt-4 {
-    font-size: 0.54rem !important;
-    line-height: 1.2 !important;
+    font-size: 0.5rem !important;
+    line-height: 1.16 !important;
   }
 
-  .program-stats {
-    max-height: 42px !important;
-  }
-
-  .program-stats > div > div {
-    height: 42px !important;
-    min-height: 42px !important;
-  }
-
-  .program-stats .mx-auto {
-    width: 1.28rem !important;
-    height: 1.28rem !important;
-    margin-bottom: 0 !important;
-    font-size: 0.52rem !important;
-  }
-
-  .program-stats h3 {
-    display: none !important;
-  }
-
-  .program-stats p {
-    display: none !important;
+  .program-list-header .program-heading {
+    font-size: clamp(0.95rem, 5vw, 1.28rem) !important;
   }
 
   .program-buttons-grid {
-    grid-template-rows: repeat(3, 34px) !important;
-    max-height: 106px !important;
-    gap: 0.28rem !important;
+    grid-template-rows: repeat(3, 29px) !important;
+    gap: 0.22rem !important;
   }
 
   .program-mini-card {
-    height: 34px !important;
-    min-height: 34px !important;
-    padding: 0.24rem 0.28rem !important;
+    height: 29px !important;
+    min-height: 29px !important;
+    padding: 0.18rem 0.22rem !important;
   }
 
   .program-mini-icon {
-    width: 1.18rem !important;
-    height: 1.18rem !important;
-    font-size: 0.46rem !important;
+    width: 1rem !important;
+    height: 1rem !important;
+    border-radius: 0.35rem !important;
+    font-size: 0.38rem !important;
   }
 
   .program-mini-card .text-sm {
-    font-size: 0.47rem !important;
+    font-size: 0.39rem !important;
+  }
+
+  .program-detail-card {
+    max-height: calc(var(--program-available-height) - 158px) !important;
+    padding: 0.48rem !important;
   }
 
   .program-detail-card h3 {
-    font-size: clamp(0.95rem, 5.2vw, 1.35rem) !important;
+    font-size: clamp(0.9rem, 4.8vw, 1.18rem) !important;
   }
 
   .program-detail-card p {
-    font-size: 0.5rem !important;
+    font-size: 0.45rem !important;
   }
 
-  .program-flow-card h3 {
-    font-size: 0.54rem !important;
+  .program-detail-card .rounded-\\[1\\.5rem\\] {
+    padding: 0.38rem !important;
   }
 
-  .program-flow-card p {
-    font-size: 0.42rem !important;
-  }
-
-  .program-faq-item h3 {
-    font-size: 0.54rem !important;
+  .program-detail-card .rounded-\\[1\\.5rem\\] p:last-child {
+    font-size: 0.43rem !important;
   }
 }
 
-/* =========================================================
-   SHORT HEIGHT DEVICE
-========================================================= */
-
-@media (max-height: 780px) {
+@media (max-width: 390px) and (max-height: 780px) {
   .program-screen {
-    --program-control-space: 42px;
-    padding-top: calc(var(--program-nav-space) + 5px);
+    --program-control-space: 34px;
+    --program-top-space: calc(var(--program-nav-space) + 4px);
   }
 
   .program-title {
-    font-size: clamp(1.35rem, min(4.6vw, 7vh), 3.2rem);
-  }
-
-  .program-heading {
-    font-size: clamp(1.1rem, min(3.8vw, 5.6vh), 2.6rem);
-  }
-
-  .program-hero-copy p {
-    line-height: 1.25;
-  }
-
-  .program-list-header p {
-    display: none !important;
-  }
-
-  .program-detail-card .mt-7 {
-    margin-top: 0.5rem !important;
-  }
-
-  .program-detail-card .mt-5,
-  .program-detail-card .mt-6 {
-    margin-top: 0.5rem !important;
-  }
-
-  .program-detail-card .grid {
-    display: none !important;
-  }
-}
-
-@media (max-height: 760px) and (max-width: 720px) {
-  .program-screen {
-    --program-control-space: 38px;
-    --program-top-space: calc(var(--program-nav-space) + 4px);
+    font-size: clamp(1.2rem, 6.5vw, 1.55rem) !important;
   }
 
   .program-hero-copy {
@@ -3046,37 +2988,87 @@ body {
   }
 
   .program-hero-copy > p:first-child {
-    font-size: 0.62rem !important;
-    line-height: 1.1 !important;
-  }
-
-  .program-title {
-    font-size: clamp(1.3rem, 6.8vw, 1.65rem) !important;
+    font-size: 0.58rem !important;
   }
 
   .program-hero-copy > p.mt-4 {
-    font-size: 0.52rem !important;
-    line-height: 1.16 !important;
-  }
-
-  .program-hero-copy .mt-6 {
-    margin-top: 0.38rem !important;
+    font-size: 0.47rem !important;
+    line-height: 1.12 !important;
   }
 
   .program-hero-copy a {
-    min-height: 30px !important;
-    padding: 0.42rem 0.65rem !important;
-    font-size: 0.54rem !important;
+    min-height: 28px !important;
+    padding: 0.38rem 0.58rem !important;
+    font-size: 0.5rem !important;
   }
 
   .program-stats {
-    margin-top: 0.38rem !important;
-    max-height: 40px !important;
+    max-height: 34px !important;
   }
 
   .program-stats > div > div {
-    height: 40px !important;
-    min-height: 40px !important;
+    height: 34px !important;
+    min-height: 34px !important;
+  }
+
+  .program-stats .mx-auto {
+    width: 1rem !important;
+    height: 1rem !important;
+    font-size: 0.38rem !important;
+  }
+
+  .program-buttons-grid {
+    grid-template-rows: repeat(3, 27px) !important;
+  }
+
+  .program-mini-card {
+    height: 27px !important;
+    min-height: 27px !important;
+  }
+
+  .program-mini-card .text-sm {
+    font-size: 0.36rem !important;
+  }
+
+  .program-detail-card {
+    max-height: calc(var(--program-available-height) - 150px) !important;
+  }
+}
+
+/* =========================================================
+   SHORT HEIGHT
+========================================================= */
+
+@media (max-height: 760px) and (max-width: 720px) {
+  .program-screen {
+    --program-control-space: 34px;
+    --program-top-space: calc(var(--program-nav-space) + 4px);
+  }
+
+  .program-hero-copy {
+    justify-content: flex-start;
+  }
+
+  .program-title {
+    font-size: clamp(1.18rem, 6.5vw, 1.55rem) !important;
+  }
+
+  .program-hero-copy .mt-6 {
+    margin-top: 0.34rem !important;
+  }
+
+  .program-hero-copy a {
+    min-height: 28px !important;
+  }
+
+  .program-stats {
+    margin-top: 0.34rem !important;
+    max-height: 34px !important;
+  }
+
+  .program-stats > div > div {
+    height: 34px !important;
+    min-height: 34px !important;
   }
 
   .program-list-header .program-heading,
@@ -3084,17 +3076,11 @@ body {
   .program-flow-layout .program-heading,
   .program-faq-left .program-heading,
   .program-cta-card .program-heading {
-    font-size: clamp(1rem, 5.2vw, 1.35rem) !important;
+    font-size: clamp(0.95rem, 5vw, 1.28rem) !important;
   }
 
-  .program-buttons-grid {
-    grid-template-rows: repeat(3, 32px) !important;
-    max-height: 100px !important;
-  }
-
-  .program-mini-card {
-    height: 32px !important;
-    min-height: 32px !important;
+  .program-detail-card .grid {
+    display: none !important;
   }
 }
 
@@ -3103,16 +3089,8 @@ body {
     display: none !important;
   }
 
-  .program-title {
-    font-size: clamp(1.25rem, min(4.6vw, 6.8vh), 2.8rem) !important;
-  }
-
   .program-screen {
-    --program-control-space: 36px;
-  }
-
-  .program-list-header .program-heading {
-    font-size: clamp(1rem, min(3.8vw, 5.2vh), 2.2rem);
+    --program-control-space: 32px;
   }
 
   .program-detail-card .grid {
