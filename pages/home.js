@@ -1620,110 +1620,89 @@ function RequirementsScreen({ requirements, direction }) {
     <ScreenShell light sectionKey="requirements" direction={direction}>
       <IslamicBackground />
 
-      <div data-allow-scroll="true" className="home-screen overflow-y-auto py-28">
-        <div className="mx-auto max-w-5xl text-center">
-          <Badge>Syarat & Ketentuan</Badge>
+      <div className="requirements-screen-v2">
+        <div className="requirements-inner-v2">
+          <div className="requirements-header-v2 mx-auto text-center">
+            <Badge>Syarat & Ketentuan</Badge>
 
-          <motion.h2
-            initial={{ opacity: 0, y: 28, filter: "blur(7px)" }}
-            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            transition={{ delay: 0.1, duration: 0.55, ease: EASE_PREMIUM }}
-            className="home-heading mt-4 font-black leading-[0.98] tracking-[-0.05em] text-emerald-950"
-          >
-            Persiapkan dokumen dan pahami ketentuan pesantren
-          </motion.h2>
-
-          <motion.p
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.18, duration: 0.45 }}
-            className="mx-auto mt-4 max-w-3xl text-sm leading-relaxed text-slate-600 sm:text-base"
-          >
-            Calon santri dan wali santri diharapkan membaca persyaratan berikut
-            sebelum melakukan pendaftaran agar proses administrasi berjalan
-            lebih mudah.
-          </motion.p>
-        </div>
-
-        <div className="mx-auto mt-7 grid max-w-6xl gap-4 md:grid-cols-2">
-          {requirements.map((group, index) => (
-            <motion.div
-              key={`${group.title}-${index}`}
-              initial={{ opacity: 0, y: 24, filter: "blur(7px)" }}
+            <motion.h2
+              initial={{ opacity: 0, y: 22, filter: "blur(7px)" }}
               animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-              transition={{
-                duration: 0.48,
-                delay: 0.24 + index * 0.06,
-                ease: EASE_PREMIUM,
-              }}
+              transition={{ delay: 0.1, duration: 0.5, ease: EASE_PREMIUM }}
+              className="requirements-title-v2 font-black leading-[0.98] tracking-[-0.05em] text-emerald-950"
             >
-              <TiltCard>
-                <div className="relative h-full overflow-hidden rounded-[1.6rem] border border-emerald-100 bg-white/90 p-5 text-left shadow-xl backdrop-blur transition hover:bg-white">
-                  <div className="absolute -right-16 -top-16 h-36 w-36 rounded-full bg-yellow-300/20 blur-3xl" />
+              Persiapkan dokumen dan pahami ketentuan pesantren
+            </motion.h2>
 
-                  <div className="relative z-10">
-                    <div className="flex items-start gap-4">
-                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-emerald-950 text-xl text-yellow-300">
-                        {getIcon(group.iconKey)}
-                      </div>
+            <motion.p
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.16, duration: 0.42 }}
+              className="requirements-desc-v2 mx-auto text-slate-600"
+            >
+              Calon santri dan wali santri diharapkan membaca persyaratan berikut
+              sebelum melakukan pendaftaran agar proses administrasi berjalan
+              lebih mudah.
+            </motion.p>
+          </div>
 
-                      <div>
-                        <h3 className="text-xl font-black leading-tight text-emerald-950">
-                          {group.title}
-                        </h3>
+          <div className="requirements-grid-v2">
+            {requirements.map((group, index) => (
+              <motion.div
+                key={`${group.title}-${index}`}
+                initial={{ opacity: 0, y: 20, filter: "blur(7px)" }}
+                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                transition={{
+                  duration: 0.44,
+                  delay: 0.22 + index * 0.05,
+                  ease: EASE_PREMIUM,
+                }}
+                className="min-h-0"
+              >
+                <TiltCard className="h-full">
+                  <div className="requirements-card-v2">
+                    <div className="absolute -right-12 -top-12 h-32 w-32 rounded-full bg-yellow-300/20 blur-3xl" />
 
-                        <p className="mt-1 text-xs font-bold uppercase tracking-[0.18em] text-emerald-700/70">
-                          {group.items.length} poin penting
-                        </p>
-                      </div>
-                    </div>
+                    <div className="relative z-10 flex min-h-0 h-full flex-col">
+                      <div className="requirements-card-head-v2">
+                        <div className="requirements-icon-v2">
+                          {getIcon(group.iconKey)}
+                        </div>
 
-                    <div className="mt-5 space-y-3">
-                      {group.items.map((item, itemIndex) => (
-                        <div
-                          key={`${item}-${itemIndex}`}
-                          className="flex gap-3 rounded-2xl border border-emerald-100 bg-emerald-50/70 p-3"
-                        >
-                          <div className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-950 text-[10px] text-yellow-300">
-                            <FaCheckCircle />
-                          </div>
+                        <div className="min-w-0">
+                          <h3 className="requirements-card-title-v2">
+                            {group.title}
+                          </h3>
 
-                          <p className="text-sm font-semibold leading-relaxed text-slate-700">
-                            {item}
+                          <p className="requirements-count-v2">
+                            {group.items.length} poin penting
                           </p>
                         </div>
-                      ))}
+                      </div>
+
+                      <div data-allow-scroll="true" className="requirements-items-v2">
+                        {group.items.map((item, itemIndex) => (
+                          <div
+                            key={`${item}-${itemIndex}`}
+                            className="requirements-item-v2"
+                          >
+                            <div className="requirements-check-v2">
+                              <FaCheckCircle />
+                            </div>
+
+                            <p className="requirements-item-text-v2">
+                              {item}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
-                </div>
-              </TiltCard>
-            </motion.div>
-          ))}
-        </div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.42, duration: 0.45 }}
-          className="mx-auto mt-7 max-w-5xl rounded-[1.5rem] border border-yellow-300/30 bg-emerald-950 p-5 text-center text-white shadow-2xl"
-        >
-          <p className="text-sm leading-relaxed text-emerald-100">
-            Catatan: Persyaratan dapat berubah sesuai kebijakan pesantren.
-            Untuk memastikan informasi terbaru, silakan hubungi admin
-            pesantren.
-          </p>
-
-          <div className="mt-4 flex justify-center">
-            <MagneticButton
-              href={WHATSAPP_ADMIN_URL}
-              variant="secondary"
-              external
-            >
-              <FaWhatsapp />
-              Tanya Admin
-            </MagneticButton>
+                </TiltCard>
+              </motion.div>
+            ))}
           </div>
-        </motion.div>
+        </div>
       </div>
     </ScreenShell>
   );
@@ -2302,7 +2281,218 @@ function HomeResponsiveStyles() {
         }
       }
 
+            /* ===============================
+         REQUIREMENTS 100% VIEWPORT
+         =============================== */
+
+      .requirements-screen-v2 {
+        width: 100%;
+        height: 100dvh;
+        max-height: 100dvh;
+        box-sizing: border-box;
+        padding-left: clamp(18px, 3.2vw, 52px);
+        padding-right: clamp(18px, 3.2vw, 52px);
+        padding-top: calc(var(--home-navbar-height, 92px) + 10px);
+        padding-bottom: calc(22px + env(safe-area-inset-bottom));
+        overflow: hidden !important;
+      }
+
+      .requirements-inner-v2 {
+        width: min(100%, 1360px);
+        height: calc(
+          100dvh - var(--home-navbar-height, 92px) - 32px - env(safe-area-inset-bottom)
+        );
+        margin-inline: auto;
+        display: grid;
+        grid-template-rows: auto minmax(0, 1fr);
+        gap: clamp(12px, 1.6vh, 18px);
+        overflow: hidden !important;
+      }
+
+      .requirements-header-v2 {
+        max-width: 980px;
+      }
+
+      .requirements-title-v2 {
+        margin-top: clamp(0.55rem, 1vh, 0.9rem);
+        font-size: clamp(1.9rem, min(3.6vw, 5.2vh), 4rem);
+      }
+
+      .requirements-desc-v2 {
+        margin-top: clamp(0.45rem, 1vh, 0.8rem);
+        max-width: 760px;
+        font-size: clamp(0.78rem, min(1vw, 1.8vh), 0.98rem);
+        line-height: 1.5;
+      }
+
+      .requirements-grid-v2 {
+        min-height: 0;
+        height: 100%;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: clamp(10px, 1.2vw, 16px);
+        overflow: hidden !important;
+      }
+
+      .requirements-card-v2 {
+        position: relative;
+        height: 100%;
+        min-height: 0;
+        overflow: hidden;
+        border-radius: clamp(1.1rem, 1.5vw, 1.6rem);
+        border: 1px solid rgba(16, 185, 129, 0.18);
+        background: rgba(255, 255, 255, 0.9);
+        padding: clamp(0.75rem, 1.2vw, 1.15rem);
+        text-align: left;
+        box-shadow: 0 24px 70px rgba(2, 44, 34, 0.13);
+        backdrop-filter: blur(18px);
+      }
+
+      .requirements-card-head-v2 {
+        display: flex;
+        align-items: flex-start;
+        gap: clamp(0.55rem, 0.9vw, 0.9rem);
+        flex-shrink: 0;
+      }
+
+      .requirements-icon-v2 {
+        display: flex;
+        width: clamp(2.2rem, 3vw, 3rem);
+        height: clamp(2.2rem, 3vw, 3rem);
+        flex-shrink: 0;
+        align-items: center;
+        justify-content: center;
+        border-radius: clamp(0.75rem, 1vw, 1rem);
+        background: #022c22;
+        color: #facc15;
+        font-size: clamp(1rem, 1.25vw, 1.25rem);
+      }
+
+      .requirements-card-title-v2 {
+        font-size: clamp(0.95rem, min(1.35vw, 2.25vh), 1.35rem);
+        font-weight: 900;
+        line-height: 1.08;
+        color: #022c22;
+      }
+
+      .requirements-count-v2 {
+        margin-top: 0.25rem;
+        font-size: clamp(0.58rem, 0.75vw, 0.72rem);
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 0.16em;
+        color: rgba(4, 120, 87, 0.72);
+      }
+
+      .requirements-items-v2 {
+        margin-top: clamp(0.6rem, 1vh, 0.9rem);
+        display: grid;
+        gap: clamp(0.38rem, 0.8vh, 0.6rem);
+        min-height: 0;
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding-right: 2px;
+        scrollbar-width: none;
+      }
+
+      .requirements-items-v2::-webkit-scrollbar {
+        display: none;
+      }
+
+      .requirements-item-v2 {
+        display: flex;
+        align-items: flex-start;
+        gap: clamp(0.45rem, 0.7vw, 0.65rem);
+        border-radius: clamp(0.75rem, 1vw, 1rem);
+        border: 1px solid rgba(16, 185, 129, 0.13);
+        background: rgba(236, 253, 245, 0.72);
+        padding: clamp(0.45rem, 0.8vh, 0.65rem);
+      }
+
+      .requirements-check-v2 {
+        margin-top: 0.08rem;
+        display: flex;
+        width: clamp(1.25rem, 1.7vw, 1.55rem);
+        height: clamp(1.25rem, 1.7vw, 1.55rem);
+        flex-shrink: 0;
+        align-items: center;
+        justify-content: center;
+        border-radius: 999px;
+        background: #022c22;
+        color: #facc15;
+        font-size: clamp(0.55rem, 0.75vw, 0.7rem);
+      }
+
+      .requirements-item-text-v2 {
+        font-size: clamp(0.68rem, min(0.88vw, 1.55vh), 0.88rem);
+        font-weight: 700;
+        line-height: 1.32;
+        color: #334155;
+      }
+
+      @media (max-height: 860px) and (min-width: 1025px) {
+        .requirements-screen-v2 {
+          padding-top: calc(var(--home-navbar-height, 92px) + 8px);
+          padding-bottom: calc(16px + env(safe-area-inset-bottom));
+        }
+
+        .requirements-inner-v2 {
+          height: calc(
+            100dvh - var(--home-navbar-height, 92px) - 24px - env(safe-area-inset-bottom)
+          );
+          gap: 10px;
+        }
+
+        .requirements-title-v2 {
+          font-size: clamp(1.55rem, min(3vw, 4.2vh), 3rem);
+        }
+
+        .requirements-desc-v2 {
+          font-size: 0.82rem;
+          line-height: 1.4;
+        }
+
+        .requirements-card-v2 {
+          padding: 0.75rem;
+        }
+
+        .requirements-items-v2 {
+          gap: 0.34rem;
+          margin-top: 0.55rem;
+        }
+
+        .requirements-item-v2 {
+          padding: 0.42rem;
+        }
+
+        .requirements-item-text-v2 {
+          font-size: 0.72rem;
+          line-height: 1.25;
+        }
+      }
+
       @media (max-width: 820px) {
+
+              .requirements-screen-v2 {
+          padding-left: 18px;
+          padding-right: 18px;
+          padding-top: calc(var(--home-navbar-height, 86px) + 10px);
+          padding-bottom: calc(18px + env(safe-area-inset-bottom));
+        }
+
+        .requirements-inner-v2 {
+          height: calc(
+            100dvh - var(--home-navbar-height, 86px) - 28px - env(safe-area-inset-bottom)
+          );
+        }
+
+        .requirements-grid-v2 {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .requirements-title-v2 {
+          font-size: clamp(1.65rem, min(5.5vw, 4.6vh), 3rem);
+        }
 
         .home-hero-screen {
           padding-inline: 20px;
@@ -2364,6 +2554,80 @@ function HomeResponsiveStyles() {
       }
 
       @media (max-width: 640px) {
+
+              .requirements-screen-v2 {
+          padding-left: 14px;
+          padding-right: 14px;
+          padding-top: calc(var(--home-navbar-height, 78px) + 8px);
+          padding-bottom: calc(16px + env(safe-area-inset-bottom));
+        }
+
+        .requirements-inner-v2 {
+          height: calc(
+            100dvh - var(--home-navbar-height, 78px) - 24px - env(safe-area-inset-bottom)
+          );
+          gap: 8px;
+        }
+
+        .requirements-title-v2 {
+          font-size: clamp(1.35rem, min(7.5vw, 4.2vh), 2.2rem);
+        }
+
+        .requirements-desc-v2 {
+          display: none;
+        }
+
+        .requirements-grid-v2 {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 8px;
+        }
+
+        .requirements-card-v2 {
+          padding: 0.62rem;
+          border-radius: 1rem;
+        }
+
+        .requirements-card-head-v2 {
+          gap: 0.45rem;
+        }
+
+        .requirements-icon-v2 {
+          width: 2rem;
+          height: 2rem;
+          border-radius: 0.75rem;
+          font-size: 0.9rem;
+        }
+
+        .requirements-card-title-v2 {
+          font-size: 0.78rem;
+        }
+
+        .requirements-count-v2 {
+          font-size: 0.5rem;
+          letter-spacing: 0.12em;
+        }
+
+        .requirements-items-v2 {
+          margin-top: 0.45rem;
+          gap: 0.3rem;
+        }
+
+        .requirements-item-v2 {
+          gap: 0.35rem;
+          padding: 0.34rem;
+          border-radius: 0.72rem;
+        }
+
+        .requirements-check-v2 {
+          width: 1rem;
+          height: 1rem;
+          font-size: 0.45rem;
+        }
+
+        .requirements-item-text-v2 {
+          font-size: 0.58rem;
+          line-height: 1.22;
+        }
 
               .home-hero-screen {
           padding-inline: 15px;
@@ -2555,6 +2819,35 @@ function HomeResponsiveStyles() {
       }
 
       @media (max-width: 420px) {
+
+              .requirements-screen-v2 {
+          padding-left: 10px;
+          padding-right: 10px;
+          padding-top: calc(var(--home-navbar-height, 74px) + 6px);
+          padding-bottom: calc(14px + env(safe-area-inset-bottom));
+        }
+
+        .requirements-inner-v2 {
+          height: calc(
+            100dvh - var(--home-navbar-height, 74px) - 20px - env(safe-area-inset-bottom)
+          );
+        }
+
+        .requirements-title-v2 {
+          font-size: clamp(1.15rem, min(7vw, 3.8vh), 1.75rem);
+        }
+
+        .requirements-grid-v2 {
+          gap: 6px;
+        }
+
+        .requirements-card-v2 {
+          padding: 0.5rem;
+        }
+
+        .requirements-item-text-v2 {
+          font-size: 0.54rem;
+        }
 
               .home-hero-screen {
           padding-inline: 12px;
