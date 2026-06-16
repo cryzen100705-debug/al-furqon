@@ -1091,7 +1091,8 @@ function ProfileScreen({ profile, direction }) {
     <ScreenShell light sectionKey="profile" direction={direction}>
       <IslamicBackground />
 
-      <div data-allow-scroll="true" className="home-screen overflow-y-auto py-28">
+      <div data-allow-scroll="true" 
+      className="home-screen overflow-y-auto py-20 sm:py-28">
         <div className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
           {/* KIRI: PENDAHULUAN */}
           <motion.div
@@ -1777,12 +1778,12 @@ function GuideScreen({ guides, direction }) {
           </motion.p>
         </div>
 
-        <div className="mx-auto mt-8 grid max-w-6xl items-stretch gap-5 lg:grid-cols-[0.8fr_1.2fr]">
+        <div className="mx-auto mt-6 grid max-w-6xl items-stretch gap-4 sm:mt-8 lg:grid-cols-[0.8fr_1.2fr] lg:gap-5">
           <motion.div
             initial={{ opacity: 0, x: -24, filter: "blur(7px)" }}
             animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
             transition={{ delay: 0.22, duration: 0.5, ease: EASE_PREMIUM }}
-            className="rounded-[1.8rem] border border-white/10 bg-white/10 p-5 shadow-2xl backdrop-blur-xl"
+            className="rounded-[1.4rem] border border-white/10 bg-white/10 p-4 shadow-2xl backdrop-blur-xl sm:rounded-[1.8rem] sm:p-5"
           >
             <p className="text-xs font-black uppercase tracking-[0.25em] text-yellow-300">
               {currentGuide.badge}
@@ -1858,7 +1859,7 @@ function GuideScreen({ guides, direction }) {
   initial={{ opacity: 0, x: 24, filter: "blur(7px)" }}
   animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
   transition={{ delay: 0.28, duration: 0.5, ease: EASE_PREMIUM }}
-  className="flex h-full min-h-[560px] rounded-[1.8rem] border border-white/10 bg-white/10 p-3 shadow-2xl backdrop-blur-xl lg:min-h-[620px]"
+  className="flex h-full min-h-[260px] rounded-[1.4rem] border border-white/10 bg-white/10 p-2 shadow-2xl backdrop-blur-xl sm:min-h-[420px] sm:rounded-[1.8rem] sm:p-3 lg:min-h-[620px]"
 >
   <AnimatePresence mode="wait">
     <motion.div
@@ -2032,6 +2033,181 @@ function canScrollElement(element, deltaY) {
   }
 
   return element.scrollTop > 4;
+}
+
+function HomeResponsiveStyles() {
+  return (
+    <style jsx global>{`
+      .home-screen {
+        width: min(92vw, 1240px);
+        height: 100dvh;
+        margin-inline: auto;
+        box-sizing: border-box;
+        padding-top: calc(var(--home-navbar-height, 92px) + 28px);
+        padding-bottom: max(86px, env(safe-area-inset-bottom));
+        overflow-y: auto;
+        overflow-x: hidden;
+        overscroll-behavior: contain;
+        scrollbar-width: none;
+      }
+
+      .home-screen::-webkit-scrollbar,
+      .pembina-screen-v2::-webkit-scrollbar {
+        display: none;
+      }
+
+      .home-title {
+        font-size: clamp(3.2rem, 8vw, 7.4rem);
+      }
+
+      .home-heading {
+        font-size: clamp(2.3rem, 5vw, 5.2rem);
+      }
+
+      .home-card-grid {
+        min-height: 0;
+      }
+
+      .pembina-screen-v2 {
+        width: min(92vw, 1240px);
+        height: 100dvh;
+        margin-inline: auto;
+        box-sizing: border-box;
+        padding-top: calc(var(--home-navbar-height, 92px) + 22px);
+        padding-bottom: max(82px, env(safe-area-inset-bottom));
+        overflow-y: auto;
+        overflow-x: hidden;
+        overscroll-behavior: contain;
+      }
+
+      .pembina-content-v2 {
+        min-height: calc(
+          100dvh - var(--home-navbar-height, 92px) - 110px
+        );
+        display: grid;
+        grid-template-columns: minmax(280px, 0.72fr) minmax(0, 1.28fr);
+        gap: 1rem;
+      }
+
+      .pembina-photo-card-v2,
+      .pembina-panel-v2 {
+        min-width: 0;
+        min-height: 0;
+      }
+
+      .pembina-title-v2 {
+        font-size: clamp(2rem, 4.2vw, 4.7rem);
+      }
+
+      .pembina-photo-v2 {
+        min-height: 100%;
+      }
+
+      @media (max-width: 1024px) {
+        .home-screen {
+          width: min(92vw, 760px);
+          padding-top: calc(var(--home-navbar-height, 88px) + 22px);
+          padding-bottom: max(90px, env(safe-area-inset-bottom));
+        }
+
+        .home-title {
+          font-size: clamp(3rem, 10vw, 5.5rem);
+        }
+
+        .home-heading {
+          font-size: clamp(2.1rem, 7vw, 4.2rem);
+        }
+
+        .pembina-content-v2 {
+          grid-template-columns: 1fr;
+          height: auto;
+        }
+
+        .pembina-photo-card-v2 {
+          min-height: 420px;
+        }
+
+        .pembina-panel-v2 {
+          min-height: 620px;
+        }
+      }
+
+      @media (max-width: 640px) {
+        .home-screen {
+          width: min(92vw, 430px);
+          padding-top: calc(var(--home-navbar-height, 82px) + 18px);
+          padding-bottom: max(82px, env(safe-area-inset-bottom));
+        }
+
+        .home-title {
+          font-size: clamp(2.35rem, 13vw, 4rem);
+          line-height: 0.96;
+          letter-spacing: -0.055em;
+        }
+
+        .home-heading {
+          font-size: clamp(1.85rem, 9vw, 3rem);
+          line-height: 1;
+          letter-spacing: -0.045em;
+        }
+
+        .home-card-grid {
+          grid-template-columns: 1fr !important;
+          gap: 0.85rem !important;
+        }
+
+        .home-bottom-controls {
+          bottom: 18px !important;
+          gap: 0.55rem !important;
+          transform: translateX(-50%) scale(0.92);
+        }
+
+        .home-bottom-controls > div {
+          display: none !important;
+        }
+
+        .pembina-screen-v2 {
+          width: min(92vw, 430px);
+          padding-top: calc(var(--home-navbar-height, 82px) + 18px);
+          padding-bottom: max(84px, env(safe-area-inset-bottom));
+        }
+
+        .pembina-content-v2 {
+          grid-template-columns: 1fr;
+          gap: 0.85rem;
+          min-height: auto;
+        }
+
+        .pembina-photo-card-v2 {
+          min-height: 320px;
+        }
+
+        .pembina-panel-v2 {
+          min-height: 560px;
+        }
+
+        .pembina-title-v2 {
+          font-size: clamp(1.85rem, 9vw, 3rem);
+        }
+      }
+
+      @media (max-width: 390px) {
+        .home-screen,
+        .pembina-screen-v2 {
+          width: 93vw;
+          padding-top: calc(var(--home-navbar-height, 78px) + 14px);
+        }
+
+        .home-title {
+          font-size: clamp(2.05rem, 12vw, 3.2rem);
+        }
+
+        .home-heading {
+          font-size: clamp(1.65rem, 8.5vw, 2.4rem);
+        }
+      }
+    `}</style>
+  );
 }
 
 export default function Home() {
@@ -2474,6 +2650,7 @@ useEffect(() => {
     <CursorGlow />
 
     <div ref={navbarRef} className="home-navbar-layer">
+      <HomeResponsiveStyles />
       <Navbar />
     </div>
 
@@ -2490,14 +2667,16 @@ useEffect(() => {
       jumpToSection={jumpToSection}
     />
 
-    {sections[activeSection]?.key !== "pembina" && (
-      <BottomControls
-        onPrev={() => handleDirection(-1)}
-        onNext={() => handleDirection(1)}
-        isFirst={isFirst}
-        isLast={isLast}
-      />
-    )}
+    {!["profile", "pembina", "requirements", "guide"].includes(
+  sections[activeSection]?.key
+) && (
+  <BottomControls
+    onPrev={() => handleDirection(-1)}
+    onNext={() => handleDirection(1)}
+    isFirst={isFirst}
+    isLast={isLast}
+  />
+)}
 
     <AnimatePresence mode="wait" custom={direction}>
       {renderScreen()}
