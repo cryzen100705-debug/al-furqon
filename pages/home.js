@@ -103,37 +103,6 @@ const DEFAULT_VALUES = [
   },
 ];
 
-const DEFAULT_STORY = [
-  {
-    number: "01",
-    label: "Datang",
-    title: "Santri datang membawa harapan.",
-    desc: "Di Al-Furqon, harapan itu dibina melalui ilmu, ibadah, adab, dan pembiasaan hidup yang terarah.",
-    image: "/hero-santri.jpg",
-  },
-  {
-    number: "02",
-    label: "Belajar",
-    title: "Ilmu menjadi bekal perjalanan.",
-    desc: "Santri belajar agama, akademik, kedisiplinan, dan kehidupan sosial dalam lingkungan pesantren.",
-    image: "/kegiatan-1.jpg",
-  },
-  {
-    number: "03",
-    label: "Dibina",
-    title: "Pembina mendampingi setiap proses.",
-    desc: "Santri tidak hanya belajar di kelas, tetapi dibimbing dalam ibadah, adab, dan rutinitas harian.",
-    image: "/kegiatan-2.jpg",
-  },
-  {
-    number: "04",
-    label: "Tumbuh",
-    title: "Santri tumbuh lebih siap.",
-    desc: "Dengan lingkungan yang baik, santri dibentuk agar lebih percaya diri, disiplin, dan berakhlak.",
-    image: "/masjid.jpg",
-  },
-];
-
 const DEFAULT_PROGRAMS = [
   {
     title: "Tahfidz Qur'an",
@@ -907,13 +876,6 @@ function HeroScreen({ hero, stats, direction, handleDirection }) {
                 <FaArrowRight className="transition group-hover:translate-x-1" />
               </MagneticButton>
 
-              <button
-                onClick={() => handleDirection(1)}
-                className="inline-flex w-full items-center justify-center gap-3 rounded-full border border-white/25 bg-white/10 px-6 py-3 text-sm font-black text-white backdrop-blur-xl transition hover:-translate-y-1 hover:bg-white/20 sm:w-auto"
-              >
-                <FaPlay />
-                Lanjut Cerita
-              </button>
             </motion.div>
 
             <motion.div
@@ -1066,131 +1028,6 @@ function ValuesScreen({ values, direction }) {
     </ScreenShell>
   );
 }
-
-function StoryScreen({ storyItems, step, direction, setStep }) {
-  const currentStory = storyItems[step] || storyItems[0];
-
-  return (
-    <ScreenShell sectionKey="story" direction={direction}>
-      <IslamicBackground dark intense />
-
-      <div className="home-screen grid items-center gap-6 lg:grid-cols-[0.9fr_1.1fr]">
-        <div className="hidden lg:block">
-          <div className="overflow-hidden rounded-[1.8rem] border border-white/10 bg-white/10 p-3 shadow-2xl backdrop-blur-xl">
-            <AnimatePresence mode="wait" custom={direction}>
-              <motion.div
-                key={step}
-                custom={direction}
-                initial={{
-                  opacity: 0,
-                  scale: 1.035,
-                  rotate: 1,
-                  clipPath: clipIn(direction),
-                }}
-                animate={{
-                  opacity: 1,
-                  scale: 1,
-                  rotate: 0,
-                  clipPath: CLIP_VISIBLE,
-                }}
-                exit={{
-                  opacity: 0,
-                  scale: 0.985,
-                  rotate: -1,
-                  clipPath: clipOut(direction),
-                }}
-                transition={{ duration: 0.52, ease: EASE_PREMIUM }}
-                className="relative overflow-hidden rounded-[1.4rem]"
-              >
-                <SafeImage
-                  src={currentStory.image}
-                  alt={currentStory.label}
-                  className="home-story-image w-full object-cover"
-                />
-
-                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent" />
-
-                <div className="absolute bottom-0 left-0 p-5">
-                  <p className="text-xs font-black tracking-[0.35em] text-yellow-300">
-                    BAB {currentStory.number}
-                  </p>
-
-                  <h3 className="mt-2 text-3xl font-black text-white xl:text-4xl">
-                    {currentStory.label}
-                  </h3>
-                </div>
-              </motion.div>
-            </AnimatePresence>
-          </div>
-        </div>
-
-        <div>
-          <Badge dark>Bab Cerita</Badge>
-
-          <AnimatePresence mode="wait" custom={direction}>
-            <motion.div
-              key={step}
-              custom={direction}
-              variants={stepVariants}
-              initial="enter"
-              animate="center"
-              exit="exit"
-              transition={{ duration: 0.44, ease: EASE_PREMIUM }}
-            >
-              <p className="mt-5 text-xs font-black uppercase tracking-[0.3em] text-yellow-300">
-                BAB {currentStory.number} /{" "}
-                {String(storyItems.length).padStart(2, "0")}
-              </p>
-
-              <h2 className="home-heading mt-3 font-black leading-[0.98] tracking-[-0.05em] text-white">
-                {currentStory.title}
-              </h2>
-
-              <p className="mt-5 max-w-2xl text-sm leading-relaxed text-emerald-100 sm:text-base">
-                {currentStory.desc}
-              </p>
-            </motion.div>
-          </AnimatePresence>
-
-          <div className="story-step-grid mt-6 grid gap-2">
-            {storyItems.map((item, index) => (
-              <motion.button
-                key={`${item.number}-${index}`}
-                onClick={() => setStep(index)}
-                whileTap={{ scale: 0.96 }}
-                className={`relative overflow-hidden rounded-2xl border p-3 text-left transition ${
-                  step === index
-                    ? "border-yellow-300 bg-yellow-300 text-emerald-950"
-                    : "border-white/10 bg-white/10 text-white hover:bg-white/20"
-                }`}
-              >
-                {step === index && (
-                  <motion.div
-                    layoutId="story-active"
-                    className="absolute inset-0 bg-yellow-300"
-                    transition={{
-                      type: "spring",
-                      stiffness: 260,
-                      damping: 28,
-                    }}
-                  />
-                )}
-
-                <span className="relative z-10 block">
-                  <p className="text-xs font-black">{item.number}</p>
-                  <p className="mt-1 hidden text-sm font-black sm:block">
-                    {item.label}
-                  </p>
-                </span>
-              </motion.button>
-            ))}
-          </div>
-        </div>
-      </div>
-    </ScreenShell>
-  );
-}
-
 function ProgramScreen({ programs, direction }) {
   return (
     <ScreenShell light sectionKey="program" direction={direction}>
@@ -1706,7 +1543,6 @@ const [navbarHeight, setNavbarHeight] = useState(92);
     () => [
       { key: "hero", label: "Home", total: 1 },
       { key: "values", label: "Nilai", total: 1 },
-      { key: "story", label: "Cerita", total: storyItems.length || 1 },
       { key: "program", label: "Program", total: 1 },
       { key: "pembina", label: "Pembina", total: pembinaItems.length || 1 },
       { key: "cta", label: "Daftar", total: 1 },
@@ -2009,18 +1845,6 @@ const [navbarHeight, setNavbarHeight] = useState(92);
 
     if (key === "values") {
       return <ValuesScreen key="values" values={values} direction={direction} />;
-    }
-
-    if (key === "story") {
-      return (
-        <StoryScreen
-          key="story"
-          storyItems={storyItems}
-          step={activeStep}
-          direction={direction}
-          setStep={setCurrentStoryStep}
-        />
-      );
     }
 
     if (key === "program") {
