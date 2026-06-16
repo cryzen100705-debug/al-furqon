@@ -2104,31 +2104,39 @@ function HomeResponsiveStyles() {
         min-height: 100%;
       }
 
-            .home-hero-screen {
+      .home-hero-screen .mt-6 {
+        margin-top: 1rem !important;
+      }
+
+      .home-hero-screen .mt-4 {
+        margin-top: 0.75rem !important;
+      }
+
+            /* ===============================
+         HERO RESPONSIVE FIX
+         =============================== */
+
+      .home-hero-screen {
         width: 100%;
         height: 100dvh;
         max-height: 100dvh;
         box-sizing: border-box;
-        padding-left: clamp(28px, 4vw, 72px);
-        padding-right: clamp(28px, 4vw, 72px);
-        padding-top: calc(var(--home-navbar-height, 92px) + 10px);
-        padding-bottom: calc(56px + env(safe-area-inset-bottom));
+        padding-inline: clamp(22px, 3.8vw, 64px);
+        padding-top: calc(var(--home-navbar-height, 92px) + 14px);
+        padding-bottom: calc(28px + env(safe-area-inset-bottom));
         overflow: hidden !important;
       }
 
       .home-hero-screen .hero-shell {
         width: min(100%, 1360px);
         height: calc(
-          100dvh - var(--home-navbar-height, 92px) - 66px - env(safe-area-inset-bottom)
-        );
-        max-height: calc(
-          100dvh - var(--home-navbar-height, 92px) - 66px - env(safe-area-inset-bottom)
+          100dvh - var(--home-navbar-height, 92px) - 42px - env(safe-area-inset-bottom)
         );
         margin-inline: auto;
         display: grid;
-        grid-template-columns: minmax(0, 1.02fr) minmax(320px, 0.82fr);
+        grid-template-columns: minmax(0, 1.05fr) minmax(280px, 0.78fr);
         align-items: center;
-        gap: clamp(18px, 2.6vw, 42px);
+        gap: clamp(18px, 2.4vw, 38px);
         overflow: hidden !important;
       }
 
@@ -2138,53 +2146,98 @@ function HomeResponsiveStyles() {
         min-width: 0;
       }
 
+      .home-hero-screen .hero-copy {
+        max-height: 100%;
+        overflow: hidden;
+      }
+
       .home-hero-screen .home-title {
-        font-size: clamp(2.8rem, 5.4vw, 5.9rem) !important;
-        line-height: 0.9 !important;
-        letter-spacing: -0.06em !important;
-        margin-top: 0.75rem !important;
+        font-size: clamp(2.8rem, min(4.8vw, 9vh), 5.15rem) !important;
+        line-height: 0.92 !important;
+        letter-spacing: -0.058em !important;
+        margin-top: clamp(0.45rem, 1vh, 0.8rem) !important;
       }
 
       .home-hero-screen p {
-        max-width: 720px;
+        max-width: 760px;
       }
 
-      .home-hero-screen .mt-6 {
-        margin-top: 1rem !important;
+      .home-hero-screen .hero-copy > p:first-child {
+        margin-bottom: clamp(0.35rem, 0.8vh, 0.75rem) !important;
+        font-size: clamp(0.92rem, min(1.2vw, 2.2vh), 1.2rem) !important;
+        line-height: 1.55 !important;
       }
 
-      .home-hero-screen .mt-4 {
-        margin-top: 0.75rem !important;
+      .home-hero-screen .hero-copy > p:not(:first-child) {
+        margin-top: clamp(0.55rem, 1vh, 0.9rem) !important;
+        font-size: clamp(0.86rem, min(1vw, 1.9vh), 1rem) !important;
+        line-height: 1.55 !important;
+      }
+
+      .home-hero-screen .hero-copy .mt-6 {
+        margin-top: clamp(0.75rem, 1.4vh, 1rem) !important;
+      }
+
+      .home-hero-screen .hero-copy .mt-4 {
+        margin-top: clamp(0.55rem, 1vh, 0.8rem) !important;
+      }
+
+      .home-hero-screen .hero-stats {
+        margin-top: clamp(0.75rem, 1.6vh, 1rem) !important;
+        max-width: 760px !important;
+      }
+
+      .home-hero-screen .hero-stats > div > div {
+        padding: clamp(0.65rem, 1.4vh, 0.95rem) !important;
+        border-radius: clamp(1rem, 1.6vw, 1.5rem) !important;
+      }
+
+      .home-hero-screen .hero-stats h3 {
+        font-size: clamp(1.1rem, min(1.7vw, 3vh), 1.65rem) !important;
+        line-height: 1 !important;
+      }
+
+      .home-hero-screen .hero-stats p {
+        font-size: clamp(0.65rem, 1vw, 0.78rem) !important;
+      }
+
+      .home-hero-screen .hero-visual {
+        max-height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        overflow: hidden;
       }
 
       .home-hero-screen .hero-visual > div {
-        max-width: 390px !important;
+        width: min(100%, 420px) !important;
+        max-width: min(100%, 420px) !important;
+        transform: scale(clamp(0.78, min(1vw, 1vh), 1));
+        transform-origin: center right;
+      }
+
+      .home-hero-screen .hero-visual img {
+        max-height: clamp(110px, 18vh, 170px);
+        object-fit: contain;
       }
 
       @media (max-width: 820px) {
 
-        .home-hero-screen {
-          width: 100%;
-          height: 100dvh;
-          max-height: 100dvh;
-          padding-left: 22px;
-          padding-right: 22px;
-          padding-top: calc(var(--home-navbar-height, 86px) + 8px);
-          padding-bottom: calc(48px + env(safe-area-inset-bottom));
-          overflow: hidden !important;
+              .home-hero-screen {
+          padding-inline: 20px;
+          padding-top: calc(var(--home-navbar-height, 86px) + 10px);
+          padding-bottom: calc(24px + env(safe-area-inset-bottom));
         }
 
         .home-hero-screen .hero-shell {
           height: calc(
-            100dvh - var(--home-navbar-height, 86px) - 56px - env(safe-area-inset-bottom)
-          );
-          max-height: calc(
-            100dvh - var(--home-navbar-height, 86px) - 56px - env(safe-area-inset-bottom)
+            100dvh - var(--home-navbar-height, 86px) - 34px - env(safe-area-inset-bottom)
           );
           display: flex;
           flex-direction: column;
           justify-content: center;
-          overflow: hidden !important;
+          align-items: stretch;
+          gap: 0.8rem;
         }
 
         .home-hero-screen .hero-visual {
@@ -2192,7 +2245,7 @@ function HomeResponsiveStyles() {
         }
 
         .home-hero-screen .home-title {
-          font-size: clamp(2.3rem, 8.4vw, 4.6rem) !important;
+          font-size: clamp(2.25rem, min(8.4vw, 8.5vh), 4.1rem) !important;
         }
 
         .home-screen {
@@ -2227,33 +2280,48 @@ function HomeResponsiveStyles() {
       @media (max-width: 640px) {
 
               .home-hero-screen {
-          padding-left: 16px;
-          padding-right: 16px;
-          padding-top: calc(var(--home-navbar-height, 78px) + 6px);
-          padding-bottom: calc(42px + env(safe-area-inset-bottom));
+          padding-inline: 15px;
+          padding-top: calc(var(--home-navbar-height, 78px) + 8px);
+          padding-bottom: calc(20px + env(safe-area-inset-bottom));
         }
 
         .home-hero-screen .hero-shell {
           height: calc(
-            100dvh - var(--home-navbar-height, 78px) - 48px - env(safe-area-inset-bottom)
+            100dvh - var(--home-navbar-height, 78px) - 28px - env(safe-area-inset-bottom)
           );
-          max-height: calc(
-            100dvh - var(--home-navbar-height, 78px) - 48px - env(safe-area-inset-bottom)
-          );
+          justify-content: center;
         }
 
         .home-hero-screen .home-title {
-          font-size: clamp(1.95rem, 10.4vw, 3.1rem) !important;
-          line-height: 0.94 !important;
+          font-size: clamp(1.8rem, min(10vw, 7.8vh), 3rem) !important;
+          line-height: 0.95 !important;
         }
 
-        .home-hero-screen p {
-          font-size: 0.82rem !important;
+        .home-hero-screen .hero-copy > p:first-child {
+          font-size: 0.88rem !important;
+          line-height: 1.45 !important;
+        }
+
+        .home-hero-screen .hero-copy > p:not(:first-child) {
+          font-size: 0.8rem !important;
           line-height: 1.45 !important;
         }
 
         .home-hero-screen .hero-stats {
-          margin-top: 0.75rem !important;
+          grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+          gap: 0.45rem !important;
+        }
+
+        .home-hero-screen .hero-stats > div > div {
+          padding: 0.55rem !important;
+        }
+
+        .home-hero-screen .hero-stats h3 {
+          font-size: 1rem !important;
+        }
+
+        .home-hero-screen .hero-stats p {
+          font-size: 0.62rem !important;
         }
 
         .home-screen {
@@ -2402,24 +2470,20 @@ function HomeResponsiveStyles() {
 
       @media (max-width: 420px) {
 
-        .home-hero-screen {
-          padding-left: 13px;
-          padding-right: 13px;
-          padding-top: calc(var(--home-navbar-height, 74px) + 4px);
-          padding-bottom: calc(38px + env(safe-area-inset-bottom));
+              .home-hero-screen {
+          padding-inline: 12px;
+          padding-top: calc(var(--home-navbar-height, 74px) + 6px);
+          padding-bottom: calc(18px + env(safe-area-inset-bottom));
         }
 
         .home-hero-screen .hero-shell {
           height: calc(
-            100dvh - var(--home-navbar-height, 74px) - 42px - env(safe-area-inset-bottom)
-          );
-          max-height: calc(
-            100dvh - var(--home-navbar-height, 74px) - 42px - env(safe-area-inset-bottom)
+            100dvh - var(--home-navbar-height, 74px) - 24px - env(safe-area-inset-bottom)
           );
         }
 
         .home-hero-screen .home-title {
-          font-size: clamp(1.75rem, 10vw, 2.75rem) !important;
+          font-size: clamp(1.65rem, min(9.6vw, 7.2vh), 2.55rem) !important;
         }
 
         .home-screen,
