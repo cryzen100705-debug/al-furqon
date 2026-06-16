@@ -4362,6 +4362,243 @@ body {
     font-size: 0.54rem !important;
   }
 }
+
+/* =========================================================
+   FIX PUTIH KOSONG DI BAWAH SECTION DAFTAR PROGRAM
+   Membuat section program penuh 100% layar dan featured card
+   mengisi sisa ruang bawah.
+========================================================= */
+
+.program-new-scroll {
+  background:
+    radial-gradient(circle at 15% 20%, rgba(16, 185, 129, 0.12), transparent 30%),
+    radial-gradient(circle at 88% 72%, rgba(250, 204, 21, 0.2), transparent 34%),
+    linear-gradient(180deg, #f8f4e8 0%, #f7f1df 42%, #064e3b 42%, #052e22 100%) !important;
+}
+
+.program-new-page {
+  height: 100% !important;
+  min-height: 100% !important;
+  display: grid !important;
+  grid-template-rows: auto auto minmax(0, 1fr) !important;
+  align-content: stretch !important;
+  gap: clamp(0.55rem, 1vh, 0.85rem) !important;
+}
+
+.program-new-featured {
+  height: 100% !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-start !important;
+  overflow: hidden !important;
+  margin-top: 0 !important;
+}
+
+.program-new-featured-main {
+  flex-shrink: 0 !important;
+}
+
+.program-new-impact {
+  flex-shrink: 0 !important;
+}
+
+.program-new-dots {
+  flex-shrink: 0 !important;
+}
+
+/* bagian bawah yang bikin putih panjang di desktop disembunyikan dari 1 layar */
+.program-new-all,
+.program-new-reasons {
+  display: none !important;
+}
+
+/* Desktop besar: featured card jadi area bawah penuh */
+@media (min-width: 1025px) {
+  .program-screen {
+    width: min(96vw, 1480px) !important;
+    --program-top-space: calc(var(--program-nav-space) + 10px) !important;
+    --program-bottom-space: 0px !important;
+  }
+
+  .program-new-scroll {
+    height: var(--program-available-height) !important;
+    max-height: var(--program-available-height) !important;
+    padding-bottom: 0 !important;
+  }
+
+  .program-new-hero {
+    min-height: 210px !important;
+    max-height: 260px !important;
+  }
+
+  .program-new-title {
+    font-size: clamp(2.15rem, 3vw, 3.8rem) !important;
+    line-height: 0.94 !important;
+  }
+
+  .program-new-stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 0.75rem !important;
+  }
+
+  .program-new-stat-card {
+    min-height: 78px !important;
+    padding: 0.85rem !important;
+  }
+
+  .program-new-featured {
+    border-radius: 1.6rem 1.6rem 0 0 !important;
+    padding: 1.15rem !important;
+  }
+
+  .program-new-featured-main {
+    grid-template-columns: 130px minmax(0, 1fr) !important;
+    gap: 1rem !important;
+  }
+
+  .program-new-featured-icon {
+    width: 6.8rem !important;
+    height: 6.8rem !important;
+    font-size: 2.75rem !important;
+  }
+
+  .program-new-featured-copy h3 {
+    font-size: clamp(2rem, 2.8vw, 3rem) !important;
+  }
+
+  .program-new-desc {
+    font-size: 0.95rem !important;
+    line-height: 1.42 !important;
+  }
+}
+
+/* Laptop pendek: rapatkan agar tidak ada putih kosong */
+@media (min-width: 721px) and (max-height: 820px) {
+  .program-new-page {
+    grid-template-rows: auto auto minmax(0, 1fr) !important;
+    gap: 0.55rem !important;
+  }
+
+  .program-new-hero {
+    min-height: 170px !important;
+    max-height: 220px !important;
+  }
+
+  .program-new-title {
+    margin: 0.55rem 0 0.35rem !important;
+    font-size: clamp(1.75rem, 2.7vw, 3rem) !important;
+  }
+
+  .program-new-hero-copy p {
+    font-size: 0.82rem !important;
+    line-height: 1.3 !important;
+  }
+
+  .program-new-main-btn {
+    min-height: 38px !important;
+    margin-top: 0.55rem !important;
+    padding: 0.55rem 0.95rem !important;
+    font-size: 0.78rem !important;
+  }
+
+  .program-new-hero-art {
+    min-height: 145px !important;
+  }
+
+  .program-new-stats {
+    gap: 0.5rem !important;
+  }
+
+  .program-new-stat-card {
+    min-height: 64px !important;
+    padding: 0.58rem 0.75rem !important;
+  }
+
+  .program-new-stat-icon {
+    width: 2.4rem !important;
+    height: 2.4rem !important;
+    font-size: 0.95rem !important;
+  }
+
+  .program-new-stat-card h3 {
+    font-size: 1rem !important;
+  }
+
+  .program-new-stat-card p {
+    font-size: 0.72rem !important;
+  }
+
+  .program-new-featured {
+    padding: 0.85rem !important;
+  }
+
+  .program-new-featured-main {
+    grid-template-columns: 90px minmax(0, 1fr) !important;
+    gap: 0.8rem !important;
+    margin-top: 0.7rem !important;
+  }
+
+  .program-new-featured-icon {
+    width: 4.9rem !important;
+    height: 4.9rem !important;
+    font-size: 2rem !important;
+  }
+
+  .program-new-accent {
+    font-size: 0.68rem !important;
+  }
+
+  .program-new-featured-copy h3 {
+    font-size: clamp(1.45rem, 2.4vw, 2.4rem) !important;
+  }
+
+  .program-new-desc {
+    font-size: 0.72rem !important;
+    line-height: 1.28 !important;
+  }
+
+  .program-new-impact {
+    margin-top: 0.65rem !important;
+    padding: 0.65rem !important;
+  }
+
+  .program-new-impact h4 {
+    font-size: 0.64rem !important;
+  }
+
+  .program-new-impact p {
+    font-size: 0.68rem !important;
+    line-height: 1.25 !important;
+  }
+}
+
+/* HP tetap scroll internal, tapi tidak ada blok putih kosong */
+@media (max-width: 720px) {
+  .program-new-scroll {
+    background:
+      radial-gradient(circle at 15% 16%, rgba(16, 185, 129, 0.12), transparent 32%),
+      radial-gradient(circle at 88% 72%, rgba(250, 204, 21, 0.18), transparent 34%),
+      linear-gradient(180deg, #f8f4e8 0%, #f7f1df 50%, #064e3b 50%, #052e22 100%) !important;
+  }
+
+  .program-new-page {
+    display: grid !important;
+    grid-template-rows: auto auto minmax(0, 1fr) !important;
+    height: 100% !important;
+  }
+
+  .program-new-featured {
+    height: 100% !important;
+    border-radius: 1rem 1rem 0 0 !important;
+  }
+
+  .program-new-all,
+  .program-new-reasons {
+    display: none !important;
+  }
+}
 `}</style>
           </main>
   );
