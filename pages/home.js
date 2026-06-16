@@ -38,7 +38,7 @@ const MotionLink = motion(Link);
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "";
 
-const ADMIN_WHATSAPP_NUMBER = "6283899601027";
+const ADMIN_WHATSAPP_NUMBER = "628999155698";
 
 const ADMIN_WHATSAPP_MESSAGE =
   "Assalamu'alaikum Admin Pesantren Al-Furqon, saya ingin bertanya mengenai pesantren.";
@@ -118,14 +118,17 @@ const DEFAULT_REQUIREMENTS = [
     title: "Dokumen Pendaftaran",
     iconKey: "book",
     items: [
-      "Fotokopi ijazah terakhir legalisir 3 lembar",
-      "Fotokopi SKL 3 lembar",
-      "Fotokopi NISN 3 lembar",
-      "Fotokopi akta kelahiran 3 lembar",
-      "Fotokopi KTP orang tua 3 lembar",
-      "Fotokopi Kartu Keluarga 3 lembar",
-      "Pas foto 3x4 background biru 3 lembar",
-      "SKCK / surat kelakuan baik dari sekolah",
+      "Membayar Uang Pendaftaran / Formulir",
+      "Mengisi Formulir Pendaftaran",
+      "Mengisi Surat Pernyataan Pesantren",
+      "3 Lembar Fotokopi Ijazah telah dilegalisir",
+      "3 Lembar Fotokopi Surat Keterangan Lulus",
+      "3 Lembar Fotokopi NISN",
+      "3 Lembar Fotokopi Akta Kelahiran",
+      "3 Lembar Fotokopi Ktp Orang Tua / Wali",
+      "3 Lembar Fotokopi Kartu Keluarga",
+      "3 Lembar Foto 3x4 background biru (SMK)",
+      "Fotokopi Surat Kelakuan Baik dari Sekolah",
     ],
   },
   {
