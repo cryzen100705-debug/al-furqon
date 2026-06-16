@@ -529,7 +529,7 @@ export default function Login() {
                 className="login-logo-box mx-auto flex items-center justify-center border border-yellow-300/25 bg-yellow-400/15 shadow-[0_0_45px_rgba(250,204,21,0.22)]"
               >
                 <img
-                  src="/logo.png"
+                  src="/Logo.png"
                   alt="Logo Al-Furqon"
                   className="login-logo-img object-contain"
                 />
