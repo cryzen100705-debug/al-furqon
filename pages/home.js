@@ -2744,7 +2744,7 @@ function HomeResponsiveStyles() {
         }
       }
 
-            /* ===============================
+        /* ===============================
          VALUES / NILAI PENDIDIKAN 100% VIEWPORT
          =============================== */
 
@@ -2982,8 +2982,8 @@ function HomeResponsiveStyles() {
         }
       }
 
-            /* ===============================
-         PROFILE PESANTREN 100% VIEWPORT
+      /* ===============================
+         PROFILE PESANTREN FIX COMPACT
          =============================== */
 
       .profile-screen-v2 {
@@ -2991,22 +2991,22 @@ function HomeResponsiveStyles() {
         height: 100dvh;
         max-height: 100dvh;
         box-sizing: border-box;
-        padding-left: clamp(18px, 3.2vw, 52px);
-        padding-right: clamp(18px, 3.2vw, 52px);
-        padding-top: calc(var(--home-navbar-height, 92px) + 10px);
-        padding-bottom: calc(22px + env(safe-area-inset-bottom));
+        padding-left: clamp(18px, 3vw, 48px);
+        padding-right: clamp(18px, 3vw, 48px);
+        padding-top: calc(var(--home-navbar-height, 92px) + 6px);
+        padding-bottom: calc(14px + env(safe-area-inset-bottom));
         overflow: hidden !important;
       }
 
       .profile-inner-v2 {
         width: min(100%, 1360px);
         height: calc(
-          100dvh - var(--home-navbar-height, 92px) - 32px - env(safe-area-inset-bottom)
+          100dvh - var(--home-navbar-height, 92px) - 20px - env(safe-area-inset-bottom)
         );
         margin-inline: auto;
         display: grid;
         grid-template-rows: auto minmax(0, 1fr);
-        gap: clamp(12px, 1.6vh, 18px);
+        gap: 8px;
         overflow: hidden !important;
       }
 
@@ -3015,23 +3015,24 @@ function HomeResponsiveStyles() {
       }
 
       .profile-title-v2 {
-        margin-top: clamp(0.55rem, 1vh, 0.9rem);
-        font-size: clamp(1.55rem, min(3vw, 4.3vh), 3.2rem);
+        margin-top: 0.45rem;
+        font-size: clamp(1.45rem, min(2.8vw, 4vh), 2.85rem);
+        line-height: 0.98;
       }
 
       .profile-desc-v2 {
-        margin-top: clamp(0.45rem, 1vh, 0.8rem);
+        margin-top: 0.35rem;
         max-width: 760px;
-        font-size: clamp(0.78rem, min(1vw, 1.8vh), 0.98rem);
-        line-height: 1.5;
+        font-size: clamp(0.72rem, min(0.9vw, 1.45vh), 0.88rem);
+        line-height: 1.35;
       }
 
       .profile-content-v2 {
         min-height: 0;
         height: 100%;
         display: grid;
-        grid-template-columns: minmax(300px, 0.86fr) minmax(0, 1.14fr);
-        gap: clamp(12px, 1.5vw, 18px);
+        grid-template-columns: minmax(300px, 0.78fr) minmax(0, 1.22fr);
+        gap: 12px;
         overflow: hidden !important;
       }
 
@@ -3042,16 +3043,16 @@ function HomeResponsiveStyles() {
         position: relative;
         overflow: hidden;
         border: 1px solid rgba(16, 185, 129, 0.16);
-        background: rgba(255, 255, 255, 0.9);
-        box-shadow: 0 24px 70px rgba(2, 44, 34, 0.12);
+        background: rgba(255, 255, 255, 0.92);
+        box-shadow: 0 18px 48px rgba(2, 44, 34, 0.11);
         backdrop-filter: blur(18px);
       }
 
       .profile-main-card-v2 {
         height: 100%;
         min-height: 0;
-        border-radius: clamp(1.2rem, 1.7vw, 1.9rem);
-        padding: clamp(0.9rem, 1.5vw, 1.45rem);
+        border-radius: 1.35rem;
+        padding: 0.82rem;
       }
 
       .profile-main-glow-v2 {
@@ -3078,43 +3079,45 @@ function HomeResponsiveStyles() {
       }
 
       .profile-main-icon-v2 {
-        width: clamp(3rem, 4.4vw, 4.4rem);
-        height: clamp(3rem, 4.4vw, 4.4rem);
-        border-radius: clamp(1rem, 1.3vw, 1.3rem);
-        font-size: clamp(1.25rem, 1.8vw, 1.9rem);
+        width: 3rem;
+        height: 3rem;
+        border-radius: 0.95rem;
+        font-size: 1.2rem;
       }
 
       .profile-kicker-v2 {
-        margin-top: clamp(0.75rem, 1.4vh, 1rem);
-        font-size: clamp(0.56rem, 0.8vw, 0.72rem);
+        margin-top: 0.55rem;
+        font-size: 0.58rem;
         font-weight: 900;
-        letter-spacing: 0.22em;
+        letter-spacing: 0.2em;
         text-transform: uppercase;
         color: #047857;
       }
 
       .profile-main-title-v2 {
-        margin-top: clamp(0.45rem, 1vh, 0.75rem);
-        font-size: clamp(1.25rem, min(2.35vw, 3.8vh), 2.5rem);
+        margin-top: 0.35rem;
+        font-size: clamp(1.05rem, min(1.8vw, 2.8vh), 1.8rem);
         font-weight: 900;
         line-height: 1.02;
-        letter-spacing: -0.045em;
+        letter-spacing: -0.04em;
         color: #022c22;
       }
 
       .profile-main-desc-v2 {
-        margin-top: clamp(0.55rem, 1vh, 0.85rem);
-        font-size: clamp(0.72rem, min(0.95vw, 1.7vh), 0.95rem);
-        line-height: 1.5;
+        margin-top: 0.45rem;
+        font-size: clamp(0.68rem, min(0.82vw, 1.35vh), 0.82rem);
+        line-height: 1.35;
         color: #475569;
       }
 
       .profile-points-v2 {
-        margin-top: clamp(0.65rem, 1.2vh, 1rem);
+        margin-top: 0.55rem;
         display: grid;
-        gap: clamp(0.38rem, 0.8vh, 0.62rem);
+        gap: 0.34rem;
         min-height: 0;
+        flex: 1;
         overflow-y: auto;
+        overflow-x: hidden;
         scrollbar-width: none;
         padding-right: 2px;
       }
@@ -3126,32 +3129,32 @@ function HomeResponsiveStyles() {
 
       .profile-point-v2 {
         display: flex;
-        align-items: flex-start;
-        gap: 0.6rem;
-        border-radius: 1rem;
+        align-items: center;
+        gap: 0.5rem;
+        border-radius: 0.85rem;
         border: 1px solid rgba(16, 185, 129, 0.13);
         background: rgba(236, 253, 245, 0.78);
-        padding: clamp(0.45rem, 0.8vh, 0.65rem);
+        padding: 0.36rem 0.45rem;
       }
 
       .profile-point-number-v2 {
         display: flex;
-        width: 1.45rem;
-        height: 1.45rem;
+        width: 1.35rem;
+        height: 1.35rem;
         flex-shrink: 0;
         align-items: center;
         justify-content: center;
         border-radius: 999px;
         background: #022c22;
         color: #facc15;
-        font-size: 0.65rem;
+        font-size: 0.6rem;
         font-weight: 900;
       }
 
       .profile-point-v2 p {
-        font-size: clamp(0.68rem, min(0.85vw, 1.45vh), 0.85rem);
-        font-weight: 700;
-        line-height: 1.35;
+        font-size: clamp(0.62rem, min(0.78vw, 1.25vh), 0.78rem);
+        font-weight: 800;
+        line-height: 1.22;
         color: #334155;
       }
 
@@ -3159,27 +3162,27 @@ function HomeResponsiveStyles() {
         min-height: 0;
         height: 100%;
         display: grid;
-        grid-template-rows: auto minmax(0, 0.82fr) minmax(0, 1.18fr);
-        gap: clamp(8px, 1vh, 12px);
+        grid-template-rows: auto minmax(0, 0.58fr) minmax(0, 1.42fr);
+        gap: 8px;
         overflow: hidden !important;
       }
 
       .profile-foundation-v2 {
         display: flex;
-        gap: clamp(0.7rem, 1vw, 1rem);
-        border-radius: clamp(1.05rem, 1.5vw, 1.6rem);
+        gap: 0.65rem;
+        border-radius: 1.2rem;
         background: #022c22;
         color: white;
-        padding: clamp(0.75rem, 1.2vw, 1.15rem);
+        padding: 0.68rem;
       }
 
       .profile-side-icon-v2 {
-        width: clamp(2.6rem, 3.4vw, 3.4rem);
-        height: clamp(2.6rem, 3.4vw, 3.4rem);
-        border-radius: 1rem;
+        width: 2.45rem;
+        height: 2.45rem;
+        border-radius: 0.85rem;
         background: #facc15;
         color: #022c22;
-        font-size: clamp(1.1rem, 1.5vw, 1.4rem);
+        font-size: 1rem;
       }
 
       .profile-foundation-v2 .profile-kicker-v2 {
@@ -3188,124 +3191,136 @@ function HomeResponsiveStyles() {
       }
 
       .profile-side-title-v2 {
-        margin-top: 0.25rem;
-        font-size: clamp(1rem, min(1.5vw, 2.4vh), 1.45rem);
+        margin-top: 0.18rem;
+        font-size: clamp(0.95rem, min(1.25vw, 2vh), 1.25rem);
         font-weight: 900;
         color: white;
       }
 
       .profile-foundation-text-v2 {
-        margin-top: 0.35rem;
-        font-size: clamp(0.68rem, min(0.88vw, 1.5vh), 0.86rem);
-        line-height: 1.42;
+        margin-top: 0.28rem;
+        font-size: clamp(0.6rem, min(0.78vw, 1.22vh), 0.76rem);
+        line-height: 1.28;
         color: rgba(209, 250, 229, 0.92);
       }
 
       .profile-mini-grid-v2 {
+        min-height: 0;
+        height: 100%;
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: clamp(10px, 1.2vw, 14px);
-        min-height: 0;
+        gap: 8px;
+        overflow: hidden;
       }
 
       .profile-mini-card-v2 {
-        border-radius: clamp(1.05rem, 1.5vw, 1.55rem);
-        padding: clamp(0.75rem, 1.15vw, 1rem);
         min-height: 0;
+        height: 100%;
+        border-radius: 1.15rem;
+        padding: 0.62rem;
       }
 
       .profile-mini-icon-v2 {
-        width: 2.45rem;
-        height: 2.45rem;
-        border-radius: 0.9rem;
-        font-size: 1rem;
+        width: 2rem;
+        height: 2rem;
+        border-radius: 0.7rem;
+        font-size: 0.85rem;
       }
 
       .profile-mini-label-v2 {
-        margin-top: 0.55rem;
-        font-size: 0.6rem;
+        margin-top: 0.42rem;
+        font-size: 0.52rem;
         font-weight: 900;
-        letter-spacing: 0.2em;
+        letter-spacing: 0.18em;
         text-transform: uppercase;
         color: #047857;
       }
 
       .profile-mini-title-v2 {
-        margin-top: 0.25rem;
-        font-size: clamp(0.95rem, min(1.5vw, 2.4vh), 1.45rem);
+        margin-top: 0.22rem;
+        font-size: clamp(0.82rem, min(1.15vw, 1.85vh), 1.15rem);
         font-weight: 900;
-        line-height: 1.08;
+        line-height: 1.06;
         color: #022c22;
       }
 
       .profile-mission-list-v2 {
-        margin-top: 0.35rem;
+        margin-top: 0.3rem;
         display: grid;
-        gap: 0.35rem;
+        gap: 0.26rem;
+        min-height: 0;
+        max-height: calc(100% - 2.9rem);
+        overflow-y: auto;
+        scrollbar-width: none;
+      }
+
+      .profile-mission-list-v2::-webkit-scrollbar {
+        display: none;
       }
 
       .profile-mission-v2 {
         display: flex;
-        gap: 0.45rem;
+        gap: 0.38rem;
       }
 
       .profile-mission-v2 span {
         display: flex;
-        width: 1.25rem;
-        height: 1.25rem;
+        width: 1.12rem;
+        height: 1.12rem;
         flex-shrink: 0;
         align-items: center;
         justify-content: center;
         border-radius: 999px;
         background: #facc15;
         color: #022c22;
-        font-size: 0.58rem;
+        font-size: 0.52rem;
         font-weight: 900;
       }
 
       .profile-mission-v2 p {
-        font-size: clamp(0.62rem, min(0.78vw, 1.35vh), 0.78rem);
-        font-weight: 700;
-        line-height: 1.28;
+        font-size: clamp(0.54rem, min(0.7vw, 1.12vh), 0.68rem);
+        font-weight: 800;
+        line-height: 1.2;
         color: #475569;
       }
 
-            .profile-programs-v2 {
+      .profile-programs-v2 {
         min-height: 0;
         height: 100%;
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: clamp(8px, 1vw, 12px);
+        gap: 8px;
         overflow: hidden !important;
       }
 
-            .profile-program-card-v2 {
+      .profile-program-card-v2 {
         min-height: 0;
         height: 100%;
         display: flex;
         flex-direction: column;
         overflow: hidden;
-        border-radius: clamp(1rem, 1.35vw, 1.4rem);
-        padding: clamp(0.58rem, 0.85vw, 0.78rem);
+        border-radius: 1.15rem;
+        padding: 0.55rem;
       }
 
       .profile-program-head-v2 {
         display: flex;
         align-items: center;
-        gap: 0.65rem;
+        gap: 0.48rem;
+        flex-shrink: 0;
       }
 
       .profile-program-icon-v2 {
-        width: 2.35rem;
-        height: 2.35rem;
-        border-radius: 0.85rem;
-        font-size: 1rem;
+        width: 1.95rem;
+        height: 1.95rem;
+        border-radius: 0.68rem;
+        font-size: 0.85rem;
       }
 
       .profile-program-head-v2 p {
-        font-size: 0.55rem;
+        font-size: 0.48rem;
         font-weight: 900;
-        letter-spacing: 0.18em;
+        letter-spacing: 0.16em;
         text-transform: uppercase;
         color: #047857;
       }
@@ -3314,15 +3329,15 @@ function HomeResponsiveStyles() {
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-        font-size: clamp(0.85rem, min(1.2vw, 2vh), 1.15rem);
+        font-size: clamp(0.72rem, min(1vw, 1.6vh), 1rem);
         font-weight: 900;
         color: #022c22;
       }
 
-            .profile-program-items-v2 {
-        margin-top: 0.45rem;
+      .profile-program-items-v2 {
+        margin-top: 0.38rem;
         display: grid;
-        gap: 0.28rem;
+        gap: 0.26rem;
         min-height: 0;
         flex: 1;
         overflow-y: auto;
@@ -3331,15 +3346,137 @@ function HomeResponsiveStyles() {
         padding-right: 2px;
       }
 
-            .profile-program-item-v2 {
+      .profile-program-item-v2 {
         display: flex;
         align-items: center;
-        gap: 0.4rem;
-        border-radius: 0.68rem;
+        gap: 0.36rem;
+        border-radius: 0.62rem;
         background: rgba(236, 253, 245, 0.82);
-        padding: 0.32rem 0.38rem;
+        padding: 0.25rem 0.32rem;
       }
 
+      .profile-program-item-v2 span {
+        display: flex;
+        width: 1.1rem;
+        height: 1.1rem;
+        flex-shrink: 0;
+        align-items: center;
+        justify-content: center;
+        border-radius: 999px;
+        background: #022c22;
+        color: #facc15;
+        font-size: 0.48rem;
+        font-weight: 900;
+      }
+
+      .profile-program-item-v2 p {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: clamp(0.54rem, min(0.72vw, 1.15vh), 0.7rem);
+        font-weight: 800;
+        color: #334155;
+      }
+
+      @media (max-height: 860px) and (min-width: 1025px) {
+        .profile-screen-v2 {
+          padding-top: calc(var(--home-navbar-height, 92px) + 4px);
+          padding-bottom: calc(10px + env(safe-area-inset-bottom));
+        }
+
+        .profile-inner-v2 {
+          height: calc(
+            100dvh - var(--home-navbar-height, 92px) - 14px - env(safe-area-inset-bottom)
+          );
+          gap: 6px;
+        }
+
+        .profile-title-v2 {
+          font-size: clamp(1.25rem, min(2.4vw, 3.5vh), 2.45rem);
+        }
+
+        .profile-desc-v2 {
+          font-size: 0.72rem;
+          line-height: 1.25;
+        }
+
+        .profile-content-v2 {
+          gap: 8px;
+        }
+
+        .profile-main-card-v2,
+        .profile-foundation-v2,
+        .profile-mini-card-v2,
+        .profile-program-card-v2 {
+          padding: 0.48rem !important;
+        }
+
+        .profile-main-icon-v2 {
+          width: 2.3rem;
+          height: 2.3rem;
+        }
+
+        .profile-main-title-v2 {
+          font-size: clamp(0.95rem, min(1.55vw, 2.45vh), 1.45rem);
+        }
+
+        .profile-main-desc-v2 {
+          font-size: 0.64rem;
+          line-height: 1.22;
+        }
+
+        .profile-point-v2 {
+          padding: 0.26rem 0.34rem;
+        }
+
+        .profile-point-v2 p,
+        .profile-foundation-text-v2,
+        .profile-program-item-v2 p {
+          font-size: 0.58rem;
+          line-height: 1.15;
+        }
+
+        .profile-side-v2 {
+          grid-template-rows: auto minmax(0, 0.5fr) minmax(0, 1.5fr);
+          gap: 6px;
+        }
+
+        .profile-mini-card-v2 {
+          padding: 0.45rem !important;
+        }
+
+        .profile-mini-icon-v2 {
+          width: 1.75rem;
+          height: 1.75rem;
+        }
+
+        .profile-mini-title-v2 {
+          font-size: 0.76rem;
+        }
+
+        .profile-mission-v2 p {
+          font-size: 0.52rem;
+          line-height: 1.12;
+        }
+
+        .profile-program-card-v2 {
+          padding: 0.42rem !important;
+        }
+
+        .profile-program-icon-v2 {
+          width: 1.65rem !important;
+          height: 1.65rem !important;
+        }
+
+        .profile-program-items-v2 {
+          margin-top: 0.26rem;
+          gap: 0.18rem;
+        }
+
+        .profile-program-item-v2 {
+          padding: 0.2rem 0.28rem;
+        }
+      }
       .profile-program-item-v2 span {
         display: flex;
         width: 1.25rem;
