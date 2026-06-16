@@ -1527,10 +1527,6 @@ const [navbarHeight, setNavbarHeight] = useState(92);
   const stats = homeData?.heroStats?.length ? homeData.heroStats : DEFAULT_STATS;
   const values = homeData?.values?.length ? homeData.values : DEFAULT_VALUES;
 
-  const storyItems = homeData?.storyChapters?.length
-    ? homeData.storyChapters
-    : DEFAULT_STORY;
-
   const programs = homeData?.programs?.length
     ? homeData.programs
     : DEFAULT_PROGRAMS;
