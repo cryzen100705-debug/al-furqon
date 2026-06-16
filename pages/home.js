@@ -2249,7 +2249,7 @@ function HomeResponsiveStyles() {
         margin-inline: auto;
         display: grid;
         grid-template-rows: auto minmax(0, 1fr);
-        gap: clamp(12px, 1.6vh, 18px);
+        gap: clamp(8px, 1.1vh, 12px);
         overflow: hidden !important;
       }
 
@@ -3016,7 +3016,7 @@ function HomeResponsiveStyles() {
 
       .profile-title-v2 {
         margin-top: clamp(0.55rem, 1vh, 0.9rem);
-        font-size: clamp(1.85rem, min(3.5vw, 5vh), 3.9rem);
+        font-size: clamp(1.55rem, min(3vw, 4.3vh), 3.2rem);
       }
 
       .profile-desc-v2 {
@@ -3159,8 +3159,8 @@ function HomeResponsiveStyles() {
         min-height: 0;
         height: 100%;
         display: grid;
-        grid-template-rows: auto auto minmax(0, 1fr);
-        gap: clamp(10px, 1.2vh, 14px);
+        grid-template-rows: auto minmax(0, 0.82fr) minmax(0, 1.18fr);
+        gap: clamp(8px, 1vh, 12px);
         overflow: hidden !important;
       }
 
@@ -3270,20 +3270,23 @@ function HomeResponsiveStyles() {
         color: #475569;
       }
 
-      .profile-programs-v2 {
+            .profile-programs-v2 {
         min-height: 0;
         height: 100%;
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: clamp(10px, 1.2vw, 14px);
+        gap: clamp(8px, 1vw, 12px);
         overflow: hidden !important;
       }
 
-      .profile-program-card-v2 {
+            .profile-program-card-v2 {
         min-height: 0;
         height: 100%;
-        border-radius: clamp(1.05rem, 1.5vw, 1.55rem);
-        padding: clamp(0.7rem, 1vw, 0.95rem);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        border-radius: clamp(1rem, 1.35vw, 1.4rem);
+        padding: clamp(0.58rem, 0.85vw, 0.78rem);
       }
 
       .profile-program-head-v2 {
@@ -3316,22 +3319,25 @@ function HomeResponsiveStyles() {
         color: #022c22;
       }
 
-      .profile-program-items-v2 {
-        margin-top: 0.55rem;
+            .profile-program-items-v2 {
+        margin-top: 0.45rem;
         display: grid;
-        gap: 0.35rem;
-        max-height: calc(100% - 3rem);
+        gap: 0.28rem;
+        min-height: 0;
+        flex: 1;
         overflow-y: auto;
+        overflow-x: hidden;
         scrollbar-width: none;
+        padding-right: 2px;
       }
 
-      .profile-program-item-v2 {
+            .profile-program-item-v2 {
         display: flex;
         align-items: center;
-        gap: 0.45rem;
-        border-radius: 0.75rem;
+        gap: 0.4rem;
+        border-radius: 0.68rem;
         background: rgba(236, 253, 245, 0.82);
-        padding: 0.42rem;
+        padding: 0.32rem 0.38rem;
       }
 
       .profile-program-item-v2 span {
@@ -3358,6 +3364,39 @@ function HomeResponsiveStyles() {
       }
 
       @media (max-height: 860px) and (min-width: 1025px) {
+
+        .profile-side-v2 {
+          grid-template-rows: auto minmax(0, 0.72fr) minmax(0, 1.28fr);
+          gap: 8px;
+        }
+
+        .profile-mini-card-v2 {
+          padding: 0.58rem !important;
+        }
+
+        .profile-program-card-v2 {
+          padding: 0.5rem !important;
+        }
+
+        .profile-program-head-v2 {
+          gap: 0.45rem;
+        }
+
+        .profile-program-icon-v2 {
+          width: 1.9rem !important;
+          height: 1.9rem !important;
+          border-radius: 0.65rem !important;
+        }
+
+        .profile-program-items-v2 {
+          margin-top: 0.35rem;
+          gap: 0.24rem;
+        }
+
+        .profile-program-item-v2 {
+          padding: 0.26rem 0.32rem;
+        }
+
         .profile-screen-v2 {
           padding-top: calc(var(--home-navbar-height, 92px) + 8px);
           padding-bottom: calc(16px + env(safe-area-inset-bottom));
