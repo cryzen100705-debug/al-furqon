@@ -1294,63 +1294,103 @@ function ValuesScreen({ values, direction }) {
     <ScreenShell light sectionKey="values" direction={direction}>
       <IslamicBackground />
 
-      <div className="home-screen flex flex-col justify-center">
-        <div className="mx-auto max-w-4xl text-center">
-          <Badge>Nilai Pendidikan</Badge>
+      <div className="values-screen-v2">
+        <div className="values-inner-v2">
+          <div className="values-header-v2 mx-auto text-center">
+            <Badge>Nilai Pendidikan</Badge>
 
-          <motion.h2
-            initial={{ opacity: 0, y: 28, filter: "blur(7px)" }}
-            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            transition={{ delay: 0.1, duration: 0.55, ease: EASE_PREMIUM }}
-            className="home-heading mt-4 font-black leading-[0.98] tracking-[-0.05em] text-emerald-950"
-          >
-            Lingkungan pesantren membentuk kehidupan santri
-          </motion.h2>
-
-          <motion.p
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.18, duration: 0.45 }}
-            className="mx-auto mt-4 max-w-3xl text-sm leading-relaxed text-slate-600 sm:text-base"
-          >
-            Pendidikan di Al-Furqon tidak hanya mengajarkan ilmu, tetapi
-            membentuk ibadah, adab, disiplin, dan kemandirian.
-          </motion.p>
-        </div>
-
-        <div className="home-card-grid mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {values.map((item, index) => (
-            <motion.div
-              key={`${item.title}-${index}`}
-              initial={{ opacity: 0, y: 24, filter: "blur(7px)" }}
+            <motion.h2
+              initial={{ opacity: 0, y: 22, filter: "blur(7px)" }}
               animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-              transition={{
-                duration: 0.48,
-                delay: 0.24 + index * 0.06,
-                ease: EASE_PREMIUM,
-              }}
+              transition={{ delay: 0.1, duration: 0.5, ease: EASE_PREMIUM }}
+              className="values-title-v2 font-black leading-[0.98] tracking-[-0.05em] text-emerald-950"
             >
-              <TiltCard>
-                <div className="group relative overflow-hidden rounded-[1.5rem] border border-emerald-100 bg-white/85 p-4 shadow-xl backdrop-blur transition hover:bg-white xl:p-5">
-                  <div className="absolute -right-14 -top-14 h-32 w-32 rounded-full bg-yellow-300/20 blur-3xl transition group-hover:scale-125" />
+              Lingkungan pesantren membentuk kehidupan santri
+            </motion.h2>
 
-                  <div className="relative z-10">
-                    <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-950 text-xl text-yellow-300 transition group-hover:scale-110 xl:h-12 xl:w-12">
-                      {getIcon(item.iconKey)}
-                    </div>
+            <motion.p
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.16, duration: 0.42 }}
+              className="values-desc-v2 mx-auto text-slate-600"
+            >
+              Pendidikan di Al-Furqon tidak hanya mengajarkan ilmu, tetapi
+              membentuk ibadah, adab, disiplin, dan kemandirian.
+            </motion.p>
+          </div>
 
-                    <h3 className="mt-4 text-xl font-black text-emerald-950">
-                      {item.title}
-                    </h3>
+          <div className="values-layout-v2">
+            <motion.div
+              initial={{ opacity: 0, x: -24, filter: "blur(7px)" }}
+              animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+              transition={{ delay: 0.2, duration: 0.48, ease: EASE_PREMIUM }}
+              className="values-feature-v2"
+            >
+              <div className="values-feature-glow-v2" />
 
-                    <p className="mt-2 text-sm leading-relaxed text-slate-600">
-                      {item.desc}
-                    </p>
-                  </div>
+              <div className="relative z-10">
+                <div className="values-feature-icon-v2">
+                  <FaQuran />
                 </div>
-              </TiltCard>
+
+                <p className="values-feature-kicker-v2">
+                  Karakter Santri
+                </p>
+
+                <h3 className="values-feature-title-v2">
+                  Ilmu, adab, ibadah, dan kemandirian berjalan bersama.
+                </h3>
+
+                <p className="values-feature-desc-v2">
+                  Setiap aktivitas santri diarahkan agar terbiasa hidup disiplin,
+                  menghormati guru, menjaga ibadah, serta bertanggung jawab dalam
+                  kehidupan sehari-hari.
+                </p>
+              </div>
             </motion.div>
-          ))}
+
+            <div className="values-grid-v2">
+              {values.map((item, index) => (
+                <motion.div
+                  key={`${item.title}-${index}`}
+                  initial={{ opacity: 0, y: 20, filter: "blur(7px)" }}
+                  animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                  transition={{
+                    duration: 0.44,
+                    delay: 0.24 + index * 0.06,
+                    ease: EASE_PREMIUM,
+                  }}
+                  className="min-h-0"
+                >
+                  <TiltCard className="h-full">
+                    <div className="values-card-v2">
+                      <div className="values-card-orb-v2" />
+
+                      <div className="relative z-10 flex h-full min-h-0 flex-col">
+                        <div className="values-card-icon-v2">
+                          {getIcon(item.iconKey)}
+                        </div>
+
+                        <div className="mt-auto">
+                          <p className="values-card-number-v2">
+                            {String(index + 1).padStart(2, "0")}
+                          </p>
+
+                          <h3 className="values-card-title-v2">
+                            {item.title}
+                          </h3>
+
+                          <p className="values-card-desc-v2">
+                            {item.desc}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </TiltCard>
+                </motion.div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </ScreenShell>
@@ -1844,18 +1884,6 @@ function GuideScreen({ guides, direction }) {
             </motion.div>
           </div>
 
-          <div className="guide-footer-v2">
-            <p>
-              Setelah memahami panduan, wali santri dapat langsung membuka
-              halaman pendaftaran dan mengisi data sesuai langkah-langkah di
-              atas.
-            </p>
-
-            <MagneticButton href="/pendaftaran">
-              Mulai Daftar
-              <FaArrowRight />
-            </MagneticButton>
-          </div>
         </div>
       </div>
     </ScreenShell>
@@ -2760,7 +2788,279 @@ function HomeResponsiveStyles() {
         }
       }
 
+            /* ===============================
+         VALUES / NILAI PENDIDIKAN 100% VIEWPORT
+         =============================== */
+
+      .values-screen-v2 {
+        width: 100%;
+        height: 100dvh;
+        max-height: 100dvh;
+        box-sizing: border-box;
+        padding-left: clamp(18px, 3.2vw, 52px);
+        padding-right: clamp(18px, 3.2vw, 52px);
+        padding-top: calc(var(--home-navbar-height, 92px) + 10px);
+        padding-bottom: calc(22px + env(safe-area-inset-bottom));
+        overflow: hidden !important;
+      }
+
+      .values-inner-v2 {
+        width: min(100%, 1360px);
+        height: calc(
+          100dvh - var(--home-navbar-height, 92px) - 32px - env(safe-area-inset-bottom)
+        );
+        margin-inline: auto;
+        display: grid;
+        grid-template-rows: auto minmax(0, 1fr);
+        gap: clamp(12px, 1.7vh, 20px);
+        overflow: hidden !important;
+      }
+
+      .values-header-v2 {
+        max-width: 920px;
+      }
+
+      .values-title-v2 {
+        margin-top: clamp(0.55rem, 1vh, 0.9rem);
+        font-size: clamp(1.9rem, min(3.8vw, 5.3vh), 4.2rem);
+      }
+
+      .values-desc-v2 {
+        margin-top: clamp(0.45rem, 1vh, 0.8rem);
+        max-width: 760px;
+        font-size: clamp(0.78rem, min(1vw, 1.8vh), 0.98rem);
+        line-height: 1.5;
+      }
+
+      .values-layout-v2 {
+        min-height: 0;
+        height: 100%;
+        display: grid;
+        grid-template-columns: minmax(280px, 0.78fr) minmax(0, 1.22fr);
+        gap: clamp(12px, 1.5vw, 18px);
+        overflow: hidden !important;
+      }
+
+      .values-feature-v2 {
+        position: relative;
+        min-width: 0;
+        min-height: 0;
+        height: 100%;
+        overflow: hidden;
+        border-radius: clamp(1.2rem, 1.7vw, 1.9rem);
+        border: 1px solid rgba(4, 120, 87, 0.16);
+        background:
+          linear-gradient(135deg, rgba(2, 44, 34, 0.96), rgba(6, 78, 59, 0.88)),
+          url('/pattern.png');
+        background-size: auto;
+        padding: clamp(1rem, 1.6vw, 1.6rem);
+        box-shadow: 0 28px 80px rgba(2, 44, 34, 0.18);
+        color: white;
+      }
+
+      .values-feature-glow-v2 {
+        position: absolute;
+        right: -20%;
+        top: -15%;
+        width: 65%;
+        aspect-ratio: 1;
+        border-radius: 999px;
+        background: rgba(250, 204, 21, 0.18);
+        filter: blur(55px);
+      }
+
+      .values-feature-icon-v2 {
+        display: flex;
+        width: clamp(3rem, 4.5vw, 4.6rem);
+        height: clamp(3rem, 4.5vw, 4.6rem);
+        align-items: center;
+        justify-content: center;
+        border-radius: clamp(1rem, 1.4vw, 1.35rem);
+        background: #facc15;
+        color: #022c22;
+        font-size: clamp(1.35rem, 2vw, 2rem);
+        box-shadow: 0 22px 50px rgba(250, 204, 21, 0.22);
+      }
+
+      .values-feature-kicker-v2 {
+        margin-top: clamp(1rem, 2vh, 1.6rem);
+        font-size: clamp(0.58rem, 0.8vw, 0.72rem);
+        font-weight: 900;
+        letter-spacing: 0.24em;
+        text-transform: uppercase;
+        color: #fde047;
+      }
+
+      .values-feature-title-v2 {
+        margin-top: clamp(0.55rem, 1vh, 0.85rem);
+        font-size: clamp(1.35rem, min(2.6vw, 4.2vh), 2.7rem);
+        font-weight: 900;
+        line-height: 1.02;
+        letter-spacing: -0.045em;
+      }
+
+      .values-feature-desc-v2 {
+        margin-top: clamp(0.65rem, 1.3vh, 1rem);
+        font-size: clamp(0.75rem, min(0.95vw, 1.7vh), 0.95rem);
+        line-height: 1.55;
+        color: rgba(209, 250, 229, 0.9);
+      }
+
+      .values-grid-v2 {
+        min-height: 0;
+        height: 100%;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: clamp(10px, 1.2vw, 16px);
+        overflow: hidden !important;
+      }
+
+      .values-card-v2 {
+        position: relative;
+        height: 100%;
+        min-height: 0;
+        overflow: hidden;
+        border-radius: clamp(1.05rem, 1.5vw, 1.65rem);
+        border: 1px solid rgba(16, 185, 129, 0.18);
+        background: rgba(255, 255, 255, 0.9);
+        padding: clamp(0.85rem, 1.3vw, 1.3rem);
+        box-shadow: 0 22px 65px rgba(2, 44, 34, 0.12);
+        backdrop-filter: blur(18px);
+      }
+
+      .values-card-orb-v2 {
+        position: absolute;
+        right: -2.5rem;
+        top: -2.5rem;
+        width: 8rem;
+        height: 8rem;
+        border-radius: 999px;
+        background: rgba(250, 204, 21, 0.22);
+        filter: blur(28px);
+        transition: transform 0.35s ease;
+      }
+
+      .values-card-v2:hover .values-card-orb-v2 {
+        transform: scale(1.2);
+      }
+
+      .values-card-icon-v2 {
+        display: flex;
+        width: clamp(2.35rem, 3vw, 3rem);
+        height: clamp(2.35rem, 3vw, 3rem);
+        flex-shrink: 0;
+        align-items: center;
+        justify-content: center;
+        border-radius: clamp(0.8rem, 1.1vw, 1.1rem);
+        background: #022c22;
+        color: #facc15;
+        font-size: clamp(1rem, 1.35vw, 1.3rem);
+      }
+
+      .values-card-number-v2 {
+        font-size: clamp(0.55rem, 0.75vw, 0.72rem);
+        font-weight: 900;
+        letter-spacing: 0.22em;
+        color: rgba(4, 120, 87, 0.62);
+      }
+
+      .values-card-title-v2 {
+        margin-top: 0.25rem;
+        font-size: clamp(1.1rem, min(1.8vw, 3vh), 1.8rem);
+        font-weight: 900;
+        line-height: 1.02;
+        color: #022c22;
+      }
+
+      .values-card-desc-v2 {
+        margin-top: clamp(0.35rem, 0.8vh, 0.65rem);
+        font-size: clamp(0.7rem, min(0.9vw, 1.55vh), 0.9rem);
+        font-weight: 600;
+        line-height: 1.42;
+        color: #475569;
+      }
+
+      @media (max-height: 860px) and (min-width: 1025px) {
+        .values-screen-v2 {
+          padding-top: calc(var(--home-navbar-height, 92px) + 8px);
+          padding-bottom: calc(16px + env(safe-area-inset-bottom));
+        }
+
+        .values-inner-v2 {
+          height: calc(
+            100dvh - var(--home-navbar-height, 92px) - 24px - env(safe-area-inset-bottom)
+          );
+          gap: 10px;
+        }
+
+        .values-title-v2 {
+          font-size: clamp(1.55rem, min(3vw, 4.2vh), 3rem);
+        }
+
+        .values-desc-v2 {
+          font-size: 0.82rem;
+          line-height: 1.4;
+        }
+
+        .values-feature-v2,
+        .values-card-v2 {
+          padding: 0.8rem;
+        }
+
+        .values-feature-title-v2 {
+          font-size: clamp(1.2rem, min(2vw, 3.3vh), 2rem);
+        }
+
+        .values-feature-desc-v2 {
+          font-size: 0.78rem;
+          line-height: 1.42;
+        }
+
+        .values-card-title-v2 {
+          font-size: clamp(1rem, min(1.45vw, 2.4vh), 1.45rem);
+        }
+
+        .values-card-desc-v2 {
+          font-size: 0.74rem;
+          line-height: 1.32;
+        }
+      }
+
       @media (max-width: 820px) {
+
+              .values-screen-v2 {
+          padding-left: 18px;
+          padding-right: 18px;
+          padding-top: calc(var(--home-navbar-height, 86px) + 10px);
+          padding-bottom: calc(18px + env(safe-area-inset-bottom));
+        }
+
+        .values-inner-v2 {
+          height: calc(
+            100dvh - var(--home-navbar-height, 86px) - 28px - env(safe-area-inset-bottom)
+          );
+        }
+
+        .values-layout-v2 {
+          grid-template-columns: 1fr;
+          grid-template-rows: auto minmax(0, 1fr);
+        }
+
+        .values-feature-v2 {
+          height: auto;
+        }
+
+        .values-feature-desc-v2 {
+          display: none;
+        }
+
+        .values-grid-v2 {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .values-title-v2 {
+          font-size: clamp(1.65rem, min(5.5vw, 4.6vh), 3rem);
+        }
 
               .guide-screen-v2 {
           padding-left: 18px;
@@ -2879,6 +3179,83 @@ function HomeResponsiveStyles() {
       }
 
       @media (max-width: 640px) {
+
+              .values-screen-v2 {
+          padding-left: 14px;
+          padding-right: 14px;
+          padding-top: calc(var(--home-navbar-height, 78px) + 8px);
+          padding-bottom: calc(16px + env(safe-area-inset-bottom));
+        }
+
+        .values-inner-v2 {
+          height: calc(
+            100dvh - var(--home-navbar-height, 78px) - 24px - env(safe-area-inset-bottom)
+          );
+          gap: 8px;
+        }
+
+        .values-title-v2 {
+          font-size: clamp(1.35rem, min(7.5vw, 4.2vh), 2.15rem);
+        }
+
+        .values-desc-v2 {
+          display: none;
+        }
+
+        .values-layout-v2 {
+          gap: 8px;
+        }
+
+        .values-feature-v2 {
+          padding: 0.75rem;
+          border-radius: 1rem;
+        }
+
+        .values-feature-icon-v2 {
+          width: 2.4rem;
+          height: 2.4rem;
+          font-size: 1.1rem;
+          border-radius: 0.85rem;
+        }
+
+        .values-feature-kicker-v2 {
+          margin-top: 0.7rem;
+          font-size: 0.52rem;
+        }
+
+        .values-feature-title-v2 {
+          font-size: 1.15rem;
+          line-height: 1.05;
+        }
+
+        .values-grid-v2 {
+          gap: 8px;
+        }
+
+        .values-card-v2 {
+          padding: 0.65rem;
+          border-radius: 1rem;
+        }
+
+        .values-card-icon-v2 {
+          width: 2rem;
+          height: 2rem;
+          font-size: 0.9rem;
+          border-radius: 0.75rem;
+        }
+
+        .values-card-number-v2 {
+          font-size: 0.5rem;
+        }
+
+        .values-card-title-v2 {
+          font-size: 0.95rem;
+        }
+
+        .values-card-desc-v2 {
+          font-size: 0.62rem;
+          line-height: 1.28;
+        }
 
               .guide-screen-v2 {
           padding-left: 14px;
@@ -3232,6 +3609,44 @@ function HomeResponsiveStyles() {
       }
 
       @media (max-width: 420px) {
+
+              .values-screen-v2 {
+          padding-left: 10px;
+          padding-right: 10px;
+          padding-top: calc(var(--home-navbar-height, 74px) + 6px);
+          padding-bottom: calc(14px + env(safe-area-inset-bottom));
+        }
+
+        .values-inner-v2 {
+          height: calc(
+            100dvh - var(--home-navbar-height, 74px) - 20px - env(safe-area-inset-bottom)
+          );
+          gap: 6px;
+        }
+
+        .values-title-v2 {
+          font-size: clamp(1.15rem, min(7vw, 3.8vh), 1.7rem);
+        }
+
+        .values-feature-v2 {
+          padding: 0.58rem;
+        }
+
+        .values-feature-title-v2 {
+          font-size: 1rem;
+        }
+
+        .values-card-v2 {
+          padding: 0.5rem;
+        }
+
+        .values-card-title-v2 {
+          font-size: 0.82rem;
+        }
+
+        .values-card-desc-v2 {
+          font-size: 0.56rem;
+        }
 
               .guide-screen-v2 {
           padding-left: 10px;
