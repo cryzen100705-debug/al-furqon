@@ -9,10 +9,14 @@ import {
   FaArrowRight,
   FaArrowUp,
   FaBookOpen,
+  FaCalendarAlt,
   FaCheckCircle,
+  FaClipboardList,
   FaDumbbell,
   FaFeatherAlt,
+  FaHeart,
   FaLayerGroup,
+  FaLightbulb,
   FaMicrophone,
   FaMoon,
   FaMosque,
@@ -25,7 +29,6 @@ import {
   FaWhatsapp,
 } from "react-icons/fa";
 const MotionLink = motion(Link);
-
 const API_URL =
   process.env.NEXT_PUBLIC_API_URL ||
   (typeof window !== "undefined" && window.location.hostname === "localhost"
@@ -33,7 +36,6 @@ const API_URL =
     : "");
 
 const EASE = [0.22, 1, 0.36, 1];
-
 const ADMIN_WHATSAPP_NUMBER = "628999155698";
 const ADMIN_WHATSAPP_MESSAGE =
   "Assalamu'alaikum Admin Pesantren Al-Furqon, saya ingin bertanya mengenai program non formal pesantren.";
@@ -960,140 +962,210 @@ function ProgramsScreen({
 }) {
   const active = programs[activeProgram] || programs[0];
 
+  const featuredStats = [
+    {
+      title: "8+",
+      desc: "Program Pembinaan",
+      icon: <FaBookOpen />,
+    },
+    {
+      title: "Setiap Hari",
+      desc: "Kegiatan Terjadwal",
+      icon: <FaCalendarAlt />,
+    },
+    {
+      title: "Aktif & Terbimbing",
+      desc: "Bersama Pembina",
+      icon: <FaUsers />,
+    },
+  ];
+
+  const reasons = [
+    {
+      title: "Membentuk Karakter Qur’ani",
+      desc: "Santri terbiasa dengan nilai Al-Qur’an dalam kehidupan sehari-hari.",
+      icon: <FaHeart />,
+    },
+    {
+      title: "Menambah Ilmu & Wawasan",
+      desc: "Ilmu agama dan adab diperkuat melalui pembinaan terarah.",
+      icon: <FaLightbulb />,
+    },
+    {
+      title: "Membiasakan Hidup Disiplin",
+      desc: "Jadwal terstruktur membentuk kebiasaan positif santri.",
+      icon: <FaClipboardList />,
+    },
+  ];
+
   return (
     <ScreenShell light sectionKey="program-list" direction={direction}>
       <IslamicBackground />
 
-      <div className="program-screen">
-        <div className="program-list-layout">
-          <motion.div
+      <div data-allow-scroll="true" className="program-screen program-new-scroll">
+        <div className="program-new-page">
+          <motion.section
             initial={{ opacity: 0, y: 24, filter: "blur(8px)" }}
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             transition={{ duration: 0.55, ease: EASE }}
-            className="program-list-header"
+            className="program-new-hero"
           >
-            <Badge>Daftar Program</Badge>
+            <div className="program-new-hero-copy">
+              <Badge>Daftar Program</Badge>
 
-            <h2 className="program-heading mt-4 font-black leading-[0.96] tracking-[-0.055em] text-emerald-950">
-              Non formal pesantren yang membentuk kebiasaan santri
-            </h2>
+              <h2 className="program-new-title">
+                Non formal pesantren yang membentuk kebiasaan santri
+              </h2>
 
-            <p className="mt-4 max-w-3xl text-sm leading-relaxed text-slate-600 sm:text-base">
-              Pilih salah satu program untuk melihat fokus pembinaan dan
-              dampaknya bagi santri.
-            </p>
-          </motion.div>
+              <p>
+                Program pembinaan harian untuk membentuk karakter Qur’ani,
+                berilmu, berakhlak, dan sehat jasmani.
+              </p>
 
-          <div className="program-list-grid">
-            <div className="program-buttons-grid">
-              {programs.map((program, index) => {
-                const activeItem = index === activeProgram;
-
-                return (
-                  <motion.button
-                    key={`${program.title}-${index}`}
-                    type="button"
-                    onClick={() => setActiveProgram(index)}
-                    initial={{ opacity: 0, y: 20, filter: "blur(8px)" }}
-                    animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                    transition={{
-                      duration: 0.44,
-                      delay: index * 0.035,
-                      ease: EASE,
-                    }}
-                    whileHover={{ y: -4, scale: 1.01 }}
-                    whileTap={{ scale: 0.97 }}
-                    className={`program-mini-card ${
-                      activeItem ? "program-mini-card-active" : ""
-                    }`}
-                  >
-                    <span className="program-mini-icon">
-                      {getIcon(program.iconKey)}
-                    </span>
-
-                    <span className="min-w-0 text-left">
-                      <span className="block truncate text-sm font-black">
-                        {program.title}
-                      </span>
-                      <span className="mt-1 block truncate text-[11px] font-bold opacity-70">
-                        {program.tag}
-                      </span>
-                    </span>
-                  </motion.button>
-                );
-              })}
+              <button
+                type="button"
+                onClick={() => setActiveProgram(0)}
+                className="program-new-main-btn"
+              >
+                <span className="program-new-main-btn-icon">
+                  <FaClipboardList />
+                </span>
+                Daftar Program
+                <FaArrowRight />
+              </button>
             </div>
 
-            <AnimatePresence mode="wait">
+            <div className="program-new-hero-art">
+              <div className="program-new-circle" />
+              <div className="program-new-mosque">
+                <div className="program-new-dome" />
+                <div className="program-new-building" />
+              </div>
+            </div>
+          </motion.section>
+
+          <div className="program-new-stats">
+            {featuredStats.map((item, index) => (
               <motion.div
-                key={activeProgram}
-                initial={{ opacity: 0, x: 32, filter: "blur(10px)" }}
-                animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
-                exit={{ opacity: 0, x: -32, filter: "blur(10px)" }}
-                transition={{ duration: 0.45, ease: EASE }}
+                key={`${item.title}-${index}`}
+                initial={{ opacity: 0, y: 18 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.08 + index * 0.05, duration: 0.35 }}
+                className="program-new-stat-card"
               >
-                <TiltCard className="h-full">
-                  <div className="program-detail-card">
-                    <div className="program-detail-glow" />
+                <div className="program-new-stat-icon">{item.icon}</div>
 
-                    <div className="relative z-10">
-                      <div className="flex flex-wrap items-start justify-between gap-4">
-                        <div className="program-detail-icon">
-                          {getIcon(active.iconKey)}
-                        </div>
-
-                        <span className="rounded-full bg-yellow-400 px-4 py-2 text-[10px] font-black uppercase tracking-[0.2em] text-emerald-950">
-                          {active.tag}
-                        </span>
-                      </div>
-
-                      <p className="mt-7 text-xs font-black uppercase tracking-[0.28em] text-yellow-300">
-                        {active.subtitle}
-                      </p>
-
-                      <h3 className="mt-3 text-[clamp(2rem,4vw,4.3rem)] font-black leading-[0.95] tracking-[-0.055em] text-white">
-                        {active.title}
-                      </h3>
-
-                      <p className="mt-5 text-sm leading-relaxed text-emerald-100 sm:text-base">
-                        {active.desc}
-                      </p>
-
-                      <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                        {active.focus.map((item, index) => (
-                          <motion.div
-                            key={`${item}-${index}`}
-                            initial={{ opacity: 0, y: 16 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{
-                              delay: 0.08 + index * 0.06,
-                              duration: 0.35,
-                            }}
-                            className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/10 p-3 text-sm font-black text-white"
-                          >
-                            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-yellow-400 text-[10px] text-emerald-950">
-                              <FaCheckCircle />
-                            </span>
-                            {item}
-                          </motion.div>
-                        ))}
-                      </div>
-
-                      <div className="mt-6 rounded-[1.5rem] border border-yellow-300/20 bg-yellow-300/10 p-5">
-                        <p className="text-[10px] font-black uppercase tracking-[0.25em] text-yellow-300">
-                          Dampak Pembinaan
-                        </p>
-
-                        <p className="mt-2 text-sm font-semibold leading-relaxed text-emerald-50">
-                          {active.impact}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </TiltCard>
+                <div>
+                  <h3>{item.title}</h3>
+                  <p>{item.desc}</p>
+                </div>
               </motion.div>
-            </AnimatePresence>
+            ))}
           </div>
+
+          <AnimatePresence mode="wait">
+            <motion.section
+              key={activeProgram}
+              initial={{ opacity: 0, y: 22, filter: "blur(8px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              exit={{ opacity: 0, y: -18, filter: "blur(8px)" }}
+              transition={{ duration: 0.42, ease: EASE }}
+              className="program-new-featured"
+            >
+              <div className="program-new-featured-top">
+                <div className="program-new-featured-label">
+                  <FaStar />
+                  <span>Program Unggulan</span>
+                </div>
+
+                <span className="program-new-pill">{active.tag}</span>
+              </div>
+
+              <div className="program-new-featured-main">
+                <div className="program-new-featured-icon-wrap">
+                  <div className="program-new-featured-icon">
+                    {getIcon(active.iconKey)}
+                  </div>
+                </div>
+
+                <div className="program-new-featured-copy">
+                  <p className="program-new-accent">{active.subtitle}</p>
+
+                  <h3>{active.title}</h3>
+
+                  <p className="program-new-desc">{active.desc}</p>
+                </div>
+              </div>
+
+              <div className="program-new-impact">
+                <h4>Dampak Pembinaan</h4>
+                <p>{active.impact}</p>
+              </div>
+
+              <div className="program-new-dots">
+                {programs.slice(0, 5).map((program, index) => (
+                  <button
+                    key={`${program.title}-dot-${index}`}
+                    type="button"
+                    onClick={() => setActiveProgram(index)}
+                    className={`program-new-dot ${
+                      activeProgram === index ? "program-new-dot-active" : ""
+                    }`}
+                  />
+                ))}
+              </div>
+            </motion.section>
+          </AnimatePresence>
+
+          <section className="program-new-all">
+            <div className="program-new-section-head">
+              <h3>Semua Program Pembinaan</h3>
+
+              <button type="button">
+                Lihat Semua
+                <FaArrowRight />
+              </button>
+            </div>
+
+            <div className="program-new-card-row">
+              {programs.map((program, index) => (
+                <button
+                  key={`${program.title}-${index}`}
+                  type="button"
+                  onClick={() => setActiveProgram(index)}
+                  className={`program-new-mini ${
+                    activeProgram === index ? "program-new-mini-active" : ""
+                  }`}
+                >
+                  <div className="program-new-mini-icon">
+                    {getIcon(program.iconKey)}
+                  </div>
+
+                  <h4>{program.tag}</h4>
+                  <p>{program.title}</p>
+                </button>
+              ))}
+            </div>
+          </section>
+
+          <section className="program-new-reasons">
+            <div className="program-new-section-head">
+              <h3>Kenapa Program Ini Penting?</h3>
+            </div>
+
+            <div className="program-new-reason-grid">
+              {reasons.map((item, index) => (
+                <div key={`${item.title}-${index}`} className="program-new-reason">
+                  <div className="program-new-reason-icon">{item.icon}</div>
+
+                  <div>
+                    <h4>{item.title}</h4>
+                    <p>{item.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
         </div>
       </div>
     </ScreenShell>
@@ -3088,6 +3160,7 @@ body {
     display: none !important;
   }
 }
+
 `}</style>
           </main>
   );
