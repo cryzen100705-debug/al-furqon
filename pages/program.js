@@ -2390,241 +2390,392 @@ body,
 @media (max-width: 720px) {
   .program-screen {
     --program-nav-space: var(--program-navbar-height, 74px);
-    --program-control-space: 62px;
+    --program-control-space: 58px;
     width: 100%;
-    padding-inline: 14px;
-    padding-top: calc(var(--program-nav-space) + 10px);
+    padding-inline: 12px;
+    padding-top: calc(var(--program-nav-space) + 8px);
     padding-bottom: calc(
       var(--program-control-space) + var(--program-progress-space) +
         var(--program-safe-bottom)
     );
   }
 
+  /* =========================
+     HERO MOBILE
+  ========================= */
   .program-hero-grid {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 0.7rem;
+    gap: 0.65rem;
   }
 
   .program-title {
-    font-size: clamp(1.85rem, min(11vw, 8.2vh), 3.15rem);
+    font-size: clamp(1.85rem, min(10.4vw, 7.8vh), 3rem);
     line-height: 0.94;
   }
 
   .program-heading {
-    font-size: clamp(1.45rem, min(8.6vw, 6.5vh), 2.55rem);
+    font-size: clamp(1.42rem, min(8vw, 6vh), 2.4rem);
+    line-height: 0.98;
   }
 
   .program-hero-copy p {
-    font-size: clamp(0.78rem, 3.3vw, 0.94rem);
-    line-height: 1.5;
+    font-size: 0.8rem;
+    line-height: 1.48;
+  }
+
+  .program-hero-copy .mt-6 {
+    margin-top: 0.85rem !important;
   }
 
   .program-stats {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    max-height: 145px;
-    gap: 0.5rem !important;
+    max-height: 132px;
+    gap: 0.45rem !important;
   }
 
   .program-stats > div > div {
-    padding: 0.58rem !important;
-    border-radius: 1.1rem !important;
+    padding: 0.52rem !important;
+    border-radius: 1rem !important;
+  }
+
+  .program-stats .mx-auto {
+    width: 1.85rem !important;
+    height: 1.85rem !important;
+    margin-bottom: 0.25rem !important;
+    border-radius: 0.7rem !important;
   }
 
   .program-stats h3 {
-    font-size: 0.9rem !important;
+    font-size: 0.82rem !important;
   }
 
   .program-stats p {
-    font-size: 0.66rem !important;
+    font-size: 0.62rem !important;
+    line-height: 1.25 !important;
   }
 
+  /* =========================
+     PROGRAM LIST MOBILE
+  ========================= */
   .program-list-layout {
-    gap: 0.65rem;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 0.6rem;
+  }
+
+  .program-list-header {
+    max-width: 100%;
   }
 
   .program-list-header .program-heading {
-    font-size: clamp(1.4rem, min(8vw, 5.8vh), 2.35rem);
+    font-size: clamp(1.45rem, min(7.4vw, 5.4vh), 2.2rem);
+    line-height: 0.95;
   }
 
   .program-list-header p {
-    font-size: 0.82rem;
-    line-height: 1.45;
+    margin-top: 0.45rem !important;
+    font-size: 0.74rem;
+    line-height: 1.38;
   }
 
   .program-list-grid {
-    grid-template-rows: minmax(0, 0.85fr) minmax(0, 1.15fr);
-    gap: 0.65rem;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 0.6rem;
+    overflow: hidden;
   }
 
+  /* daftar program jadi swipe horizontal 2 baris */
   .program-buttons-grid {
-    grid-template-columns: 1fr;
-    grid-auto-rows: minmax(54px, 1fr);
-    gap: 0.5rem;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(150px, 72%);
+    grid-template-columns: none;
+    grid-template-rows: repeat(2, minmax(48px, 1fr));
+    gap: 0.45rem;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 0.15rem;
+    padding-right: 0;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .program-buttons-grid::-webkit-scrollbar {
+    display: none;
   }
 
   .program-mini-card {
-    padding: 0.58rem;
-    border-radius: 1rem;
+    min-height: 48px;
+    padding: 0.5rem 0.58rem;
+    border-radius: 0.95rem;
+    gap: 0.55rem;
+    scroll-snap-align: start;
   }
 
   .program-mini-icon {
-    height: 2.15rem;
-    width: 2.15rem;
-    border-radius: 0.8rem;
-    font-size: 0.86rem;
+    height: 1.95rem;
+    width: 1.95rem;
+    border-radius: 0.72rem;
+    font-size: 0.76rem;
   }
 
   .program-mini-card .text-sm {
-    font-size: 0.8rem !important;
+    font-size: 0.75rem !important;
+    line-height: 1.1;
+  }
+
+  .program-mini-card .text-\[11px\] {
+    font-size: 0.6rem !important;
+    margin-top: 0.12rem !important;
   }
 
   .program-detail-card {
-    padding: 0.9rem;
-    border-radius: 1.35rem;
+    padding: 0.82rem;
+    border-radius: 1.2rem;
   }
 
   .program-detail-icon {
-    height: 3.1rem;
-    width: 3.1rem;
-    border-radius: 0.95rem;
-    font-size: 1.42rem;
+    height: 2.8rem;
+    width: 2.8rem;
+    border-radius: 0.9rem;
+    font-size: 1.2rem;
+  }
+
+  .program-detail-card .text-\[10px\] {
+    font-size: 0.58rem !important;
+    letter-spacing: 0.16em !important;
+  }
+
+  .program-detail-card .text-xs {
+    font-size: 0.58rem !important;
+    letter-spacing: 0.18em !important;
   }
 
   .program-detail-card h3 {
-    font-size: clamp(1.55rem, min(8.5vw, 5.7vh), 2.65rem) !important;
+    font-size: clamp(1.5rem, min(8.2vw, 5.2vh), 2.35rem) !important;
+    line-height: 0.96 !important;
   }
 
   .program-detail-card p {
-    font-size: 0.78rem !important;
-    line-height: 1.45;
+    font-size: 0.74rem !important;
+    line-height: 1.4 !important;
+  }
+
+  .program-detail-card .mt-7 {
+    margin-top: 0.7rem !important;
+  }
+
+  .program-detail-card .mt-5,
+  .program-detail-card .mt-6 {
+    margin-top: 0.58rem !important;
   }
 
   .program-detail-card .grid {
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    gap: 0.45rem !important;
+    gap: 0.4rem !important;
   }
 
   .program-detail-card .grid > div {
-    padding: 0.5rem !important;
-    font-size: 0.68rem !important;
-    border-radius: 0.85rem !important;
+    padding: 0.42rem !important;
+    border-radius: 0.72rem !important;
+    font-size: 0.62rem !important;
+    gap: 0.35rem !important;
+  }
+
+  .program-detail-card .grid > div span:first-child {
+    width: 1.2rem !important;
+    height: 1.2rem !important;
+    font-size: 0.48rem !important;
   }
 
   .program-detail-card .rounded-\[1\.5rem\] {
-    padding: 0.72rem !important;
-    border-radius: 1rem !important;
+    padding: 0.65rem !important;
+    border-radius: 0.9rem !important;
   }
 
+  /* =========================
+     FOCUS MOBILE
+  ========================= */
   .program-focus-layout {
+    grid-template-columns: 1fr;
     grid-template-rows: auto minmax(0, 1fr);
     gap: 0.7rem;
   }
 
+  .program-focus-left .program-heading {
+    font-size: clamp(1.45rem, min(8vw, 5.8vh), 2.2rem);
+  }
+
   .program-focus-left p {
-    font-size: 0.82rem;
-    line-height: 1.45;
+    font-size: 0.8rem;
+    line-height: 1.42;
   }
 
   .program-focus-left .mt-6 {
-    margin-top: 1rem !important;
+    margin-top: 0.8rem !important;
+  }
+
+  .program-focus-left .gap-2 {
+    gap: 0.35rem !important;
+  }
+
+  .program-focus-left .gap-2 span {
+    padding: 0.4rem 0.58rem !important;
+    font-size: 0.62rem !important;
   }
 
   .program-focus-card {
     height: 100%;
-    border-radius: 1.45rem;
-    padding: 1rem;
+    border-radius: 1.35rem;
+    padding: 0.85rem;
   }
 
   .program-focus-card .h-32 {
-    width: 5rem !important;
-    height: 5rem !important;
-    border-radius: 1.45rem !important;
-    font-size: 2.6rem !important;
+    width: 4.6rem !important;
+    height: 4.6rem !important;
+    border-radius: 1.15rem !important;
+    font-size: 2.15rem !important;
   }
 
+  .program-focus-card h3 {
+    margin-top: 0.85rem !important;
+    font-size: 1.08rem !important;
+    line-height: 1.28 !important;
+  }
+
+  /* =========================
+     FLOW MOBILE
+  ========================= */
   .program-flow-layout {
-    gap: 0.7rem;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 0.6rem;
+  }
+
+  .program-flow-layout .program-heading {
+    font-size: clamp(1.45rem, min(7.8vw, 5.8vh), 2.2rem);
   }
 
   .program-flow-layout p {
-    font-size: 0.82rem;
-    line-height: 1.45;
+    font-size: 0.76rem;
+    line-height: 1.38;
   }
 
+  /* penting: di HP jadi 2x2, bukan 1 kolom */
   .program-flow-grid {
-    grid-template-columns: 1fr;
-    gap: 0.5rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-rows: minmax(0, 1fr);
+    gap: 0.45rem;
   }
 
   .program-flow-card {
-    padding: 0.85rem;
-    border-radius: 1.25rem;
-  }
-
-  .program-flow-number {
-    height: 2.7rem;
-    width: 2.7rem;
-    border-radius: 0.9rem;
-    font-size: 0.78rem;
-  }
-
-  .program-flow-card h3 {
-    margin-top: 0.65rem !important;
-    font-size: 1rem !important;
-  }
-
-  .program-flow-card p {
-    font-size: 0.76rem !important;
-  }
-
-  .program-faq-layout {
-    gap: 0.8rem;
-  }
-
-  .program-faq-left p {
-    font-size: 0.82rem;
-    line-height: 1.45;
-  }
-
-  .program-faq-list {
-    gap: 0.55rem;
-  }
-
-  .program-faq-item {
-    padding: 0.75rem;
+    padding: 0.72rem;
     border-radius: 1rem;
   }
 
+  .program-flow-number {
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 0.72rem;
+    font-size: 0.68rem;
+  }
+
+  .program-flow-card h3 {
+    margin-top: 0.55rem !important;
+    font-size: 0.84rem !important;
+    line-height: 1.12;
+  }
+
+  .program-flow-card p {
+    margin-top: 0.35rem !important;
+    font-size: 0.64rem !important;
+    line-height: 1.32;
+  }
+
+  /* =========================
+     FAQ MOBILE
+  ========================= */
+  .program-faq-layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 0.65rem;
+  }
+
+  .program-faq-left .program-heading {
+    font-size: clamp(1.45rem, min(7.8vw, 5.8vh), 2.2rem);
+  }
+
+  .program-faq-left p {
+    font-size: 0.76rem;
+    line-height: 1.4;
+  }
+
+  .program-faq-list {
+    gap: 0.45rem;
+  }
+
+  .program-faq-item {
+    padding: 0.72rem;
+    border-radius: 0.95rem;
+  }
+
   .program-faq-item h3 {
-    font-size: 0.88rem !important;
+    font-size: 0.78rem !important;
+    line-height: 1.25;
   }
 
   .program-faq-item p {
-    font-size: 0.78rem !important;
+    font-size: 0.68rem !important;
+    line-height: 1.38;
   }
 
+  .program-faq-item .h-8 {
+    width: 1.6rem !important;
+    height: 1.6rem !important;
+    font-size: 0.8rem !important;
+  }
+
+  /* =========================
+     CTA MOBILE
+  ========================= */
   .program-cta-card {
-    border-radius: 1.45rem;
-    padding: 1.1rem;
+    border-radius: 1.35rem;
+    padding: 1rem;
   }
 
   .program-cta-icon {
-    height: 3.7rem;
-    width: 3.7rem;
-    border-radius: 1.15rem;
-    font-size: 1.45rem;
+    height: 3.5rem;
+    width: 3.5rem;
+    border-radius: 1rem;
+    font-size: 1.3rem;
   }
 
+  .program-cta-card .program-heading {
+    font-size: clamp(1.45rem, min(7.8vw, 5.8vh), 2.2rem);
+  }
+
+  .program-cta-card p {
+    font-size: 0.78rem !important;
+    line-height: 1.42 !important;
+  }
+
+  /* =========================
+     CONTROL MOBILE
+  ========================= */
   .program-bottom-control {
-    bottom: max(0.75rem, env(safe-area-inset-bottom));
-    gap: 0.5rem;
+    bottom: max(0.65rem, env(safe-area-inset-bottom));
+    gap: 0.4rem;
   }
 
   .program-bottom-control button {
-    padding: 0.5rem 0.78rem !important;
-    font-size: 0.66rem !important;
+    padding: 0.44rem 0.72rem !important;
+    font-size: 0.62rem !important;
+    border-radius: 999px !important;
   }
 }
 
@@ -2638,28 +2789,49 @@ body,
   }
 
   .program-title {
-    font-size: clamp(1.6rem, min(10.5vw, 7.5vh), 2.55rem);
+    font-size: clamp(1.55rem, min(10vw, 7.2vh), 2.45rem);
   }
 
   .program-heading {
-    font-size: clamp(1.32rem, min(8.2vw, 6vh), 2.05rem);
+    font-size: clamp(1.28rem, min(7.8vw, 5.7vh), 1.95rem);
+  }
+
+  .program-hero-copy p,
+  .program-list-header p,
+  .program-flow-layout p,
+  .program-faq-left p,
+  .program-cta-card p {
+    font-size: 0.72rem !important;
   }
 
   .program-stats {
-    max-height: 120px;
+    max-height: 116px;
   }
 
   .program-stats > div > div {
-    padding: 0.5rem !important;
+    padding: 0.46rem !important;
   }
 
-  .program-list-header p,
-  .program-flow-layout p,
-  .program-faq-left p {
-    font-size: 0.76rem;
+  .program-buttons-grid {
+    grid-auto-columns: minmax(140px, 78%);
+  }
+
+  .program-detail-card h3 {
+    font-size: clamp(1.38rem, min(7.8vw, 5vh), 2.15rem) !important;
+  }
+
+  .program-flow-card h3 {
+    font-size: 0.78rem !important;
+  }
+
+  .program-flow-card p {
+    font-size: 0.6rem !important;
+  }
+
+  .program-faq-item h3 {
+    font-size: 0.74rem !important;
   }
 }
-
 /* =========================================================
    SHORT HEIGHT DEVICE
 ========================================================= */
