@@ -398,7 +398,7 @@ function MaintenancePage({ onRetry, checking }) {
         <SafeImage
           src="/hero-santri.jpg"
           alt="Maintenance Al-Furqon"
-          className="h-full w-full object-cover"
+          className="h-full w-full object-contain"
         />
 
         <div className="absolute inset-0 bg-gradient-to-r from-[#041b15] via-[#062d22]/95 to-[#041b15]" />
@@ -1855,44 +1855,63 @@ function GuideScreen({ guides, direction }) {
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, x: 24, filter: "blur(7px)" }}
-            animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
-            transition={{ delay: 0.28, duration: 0.5, ease: EASE_PREMIUM }}
-            className="rounded-[1.8rem] border border-white/10 bg-white/10 p-3 shadow-2xl backdrop-blur-xl"
-          >
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={guideIndex}
-                initial={{
-                  opacity: 0,
-                  scale: 0.98,
-                  clipPath: CLIP_RIGHT,
-                }}
-                animate={{
-                  opacity: 1,
-                  scale: 1,
-                  clipPath: CLIP_VISIBLE,
-                }}
-                exit={{
-                  opacity: 0,
-                  scale: 0.98,
-                  clipPath: CLIP_LEFT,
-                }}
-                transition={{ duration: 0.45, ease: EASE_PREMIUM }}
-                className="relative overflow-hidden rounded-[1.5rem] bg-emerald-950"
-              >
-                <SafeImage
-                  src={currentGuide.image}
-                  alt={currentGuide.title}
-                  className="h-full max-h-[520px] w-full object-contain"
-                />
+  initial={{ opacity: 0, x: 24, filter: "blur(7px)" }}
+  animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+  transition={{ delay: 0.28, duration: 0.5, ease: EASE_PREMIUM }}
+  className="rounded-[1.8rem] border border-white/10 bg-white/10 p-3 shadow-2xl backdrop-blur-xl"
+>
+  <AnimatePresence mode="wait">
+    <motion.div
+      key={guideIndex}
+      initial={{
+        opacity: 0,
+        scale: 0.98,
+        clipPath: CLIP_RIGHT,
+      }}
+      animate={{
+        opacity: 1,
+        scale: 1,
+        clipPath: CLIP_VISIBLE,
+      }}
+      exit={{
+        opacity: 0,
+        scale: 0.98,
+        clipPath: CLIP_LEFT,
+      }}
+      transition={{ duration: 0.45, ease: EASE_PREMIUM }}
+      className="relative h-[420px] overflow-hidden rounded-[1.5rem] bg-emerald-950 sm:h-[480px] lg:h-[520px]"
+    >
+      <motion.div
+        initial={{ scale: 1.08 }}
+        animate={{ scale: 1 }}
+        transition={{ duration: 0.9, ease: EASE_PREMIUM }}
+        className="h-full w-full"
+      >
+        <SafeImage
+          src={currentGuide.image}
+          alt={currentGuide.title}
+          className="h-full w-full object-cover"
+        />
+      </motion.div>
 
-                <div className="absolute left-4 top-4 rounded-full bg-yellow-400 px-4 py-2 text-[10px] font-black uppercase tracking-[0.2em] text-emerald-950 shadow-xl">
-                  {currentGuide.badge}
-                </div>
-              </motion.div>
-            </AnimatePresence>
-          </motion.div>
+      <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/70 via-transparent to-emerald-950/20" />
+
+      <div className="absolute left-4 top-4 rounded-full bg-yellow-400 px-4 py-2 text-[10px] font-black uppercase tracking-[0.2em] text-emerald-950 shadow-xl">
+        {currentGuide.badge}
+      </div>
+
+      <div className="absolute bottom-0 left-0 right-0 p-5">
+        <p className="text-[10px] font-black uppercase tracking-[0.24em] text-yellow-300">
+          Panduan Pendaftaran
+        </p>
+
+        <h3 className="mt-2 text-2xl font-black text-white sm:text-3xl">
+          {currentGuide.title}
+        </h3>
+      </div>
+    </motion.div>
+  </AnimatePresence>
+</motion.div>
         </div>
 
         <div className="mx-auto mt-7 flex max-w-5xl flex-col items-center justify-center gap-3 rounded-[1.5rem] border border-yellow-300/30 bg-emerald-950/80 p-5 text-center backdrop-blur-xl sm:flex-row sm:justify-between sm:text-left">
