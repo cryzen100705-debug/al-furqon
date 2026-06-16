@@ -1431,7 +1431,7 @@ function PembinaScreen({ pembinaItems, step, direction, setStep }) {
                         {currentPembina.role}
                       </p>
 
-                      <h3 className="mt-2 line-clamp-2 text-2xl font-black leading-tight text-white lg:text-3xl">
+                      <h3 className="mt-2 line-clamp-2 text-xl font-black leading-tight text-white lg:text-2xl xl:text-3xl">
                         {currentPembina.name}
                       </h3>
 
@@ -1494,7 +1494,7 @@ function PembinaScreen({ pembinaItems, step, direction, setStep }) {
                         Fokus Pembinaan
                       </p>
 
-                      <h3 className="mt-2 max-w-full break-words text-[clamp(1.2rem,2.15vw,1.85rem)] font-black leading-[1.08] tracking-[-0.04em] text-white">
+                      <h3 className="mt-2 max-w-full break-words text-[clamp(1.02rem,1.75vw,1.55rem)] font-black leading-[1.08] tracking-[-0.04em] text-white">
                         Membina santri dengan ilmu, adab, dan keteladanan.
                       </h3>
 
@@ -2071,37 +2071,60 @@ function HomeResponsiveStyles() {
         min-height: 0;
       }
 
-      .pembina-screen-v2 {
-        width: min(92vw, 1240px);
+            .pembina-screen-v2 {
+        width: 100%;
         height: 100dvh;
+        max-height: 100dvh;
         margin-inline: auto;
         box-sizing: border-box;
-        padding-top: calc(var(--home-navbar-height, 92px) + 22px);
-        padding-bottom: max(82px, env(safe-area-inset-bottom));
-        overflow-y: auto;
-        overflow-x: hidden;
-        overscroll-behavior: contain;
+        padding-left: clamp(22px, 3.5vw, 56px);
+        padding-right: clamp(22px, 3.5vw, 56px);
+        padding-top: calc(var(--home-navbar-height, 92px) + 12px);
+        padding-bottom: calc(24px + env(safe-area-inset-bottom));
+        overflow: hidden !important;
       }
 
       .pembina-content-v2 {
-        min-height: calc(100dvh - var(--home-navbar-height, 92px) - 112px);
+        width: min(100%, 1360px);
+        height: calc(
+          100dvh - var(--home-navbar-height, 92px) - 36px - env(safe-area-inset-bottom)
+        );
+        margin-inline: auto;
         display: grid;
-        grid-template-columns: minmax(280px, 0.72fr) minmax(0, 1.28fr);
-        gap: 1rem;
+        grid-template-columns: minmax(300px, 0.76fr) minmax(0, 1.24fr);
+        align-items: stretch;
+        gap: clamp(14px, 1.5vw, 20px);
+        overflow: hidden !important;
       }
 
       .pembina-photo-card-v2,
       .pembina-panel-v2 {
         min-width: 0;
         min-height: 0;
+        height: 100%;
+        overflow: hidden;
+      }
+
+      .pembina-photo-card-v2 > div,
+      .pembina-panel-v2 > div {
+        height: 100%;
+        min-height: 0;
       }
 
       .pembina-title-v2 {
-        font-size: clamp(2rem, 4.2vw, 4.7rem);
+        font-size: clamp(1.9rem, min(3.7vw, 5.4vh), 4.1rem);
+        line-height: 0.96;
       }
 
       .pembina-photo-v2 {
-        min-height: 100%;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .pembina-focus-v2 {
+        margin-top: 0.85rem !important;
+        padding: clamp(14px, 1.2vw, 20px) !important;
       }
 
       .home-hero-screen .mt-6 {
@@ -2221,9 +2244,39 @@ function HomeResponsiveStyles() {
         object-fit: contain;
       }
 
+            @media (max-height: 860px) and (min-width: 1025px) {
+        .pembina-screen-v2 {
+          padding-top: calc(var(--home-navbar-height, 92px) + 8px);
+          padding-bottom: calc(18px + env(safe-area-inset-bottom));
+        }
+
+        .pembina-content-v2 {
+          height: calc(
+            100dvh - var(--home-navbar-height, 92px) - 26px - env(safe-area-inset-bottom)
+          );
+          gap: 14px;
+        }
+
+        .pembina-title-v2 {
+          font-size: clamp(1.6rem, min(3vw, 4.5vh), 3.2rem);
+        }
+
+        .pembina-panel-v2 > div {
+          padding: 12px !important;
+        }
+
+        .pembina-focus-v2 {
+          padding: 12px !important;
+        }
+
+        .pembina-panel-v2 .grid-cols-3 > div {
+          padding: 10px !important;
+        }
+      }
+
       @media (max-width: 820px) {
 
-              .home-hero-screen {
+        .home-hero-screen {
           padding-inline: 20px;
           padding-top: calc(var(--home-navbar-height, 86px) + 10px);
           padding-bottom: calc(24px + env(safe-area-inset-bottom));
@@ -2261,20 +2314,25 @@ function HomeResponsiveStyles() {
         .home-heading {
           font-size: clamp(2rem, 7vw, 4rem);
         }
+        .pembina-screen-v2 {
+          overflow-y: auto !important;
+        }
 
         .pembina-content-v2 {
-          grid-template-columns: 1fr;
+          height: auto;
           min-height: auto;
+          grid-template-columns: 1fr;
         }
 
         .pembina-photo-card-v2 {
+          height: 380px;
           min-height: 380px;
         }
 
         .pembina-panel-v2 {
+          height: auto;
           min-height: auto;
         }
-
       }
 
       @media (max-width: 640px) {
