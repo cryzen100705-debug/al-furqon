@@ -1,38 +1,41 @@
 "use client";
 
 import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+
 import {
   AnimatePresence,
   motion,
+  useMotionValue,
   useReducedMotion,
-  useScroll,
   useSpring,
-  useTransform,
 } from "framer-motion";
+
 import {
+  FaArrowDown,
   FaArrowRight,
-  FaAward,
+  FaArrowUp,
   FaBookOpen,
-  FaCampground,
   FaCheckCircle,
-  FaChevronDown,
-  FaGraduationCap,
-  FaHandshake,
-  FaHeart,
+  FaDumbbell,
+  FaFeatherAlt,
   FaLayerGroup,
-  FaListUl,
+  FaMicrophone,
+  FaMoon,
   FaMosque,
-  FaPlay,
+  FaPenNib,
   FaQuran,
   FaRedo,
   FaShieldAlt,
+  FaSparkles,
   FaStar,
   FaUsers,
   FaWhatsapp,
 } from "react-icons/fa";
+
+const MotionLink = motion(Link);
 
 const API_URL =
   process.env.NEXT_PUBLIC_API_URL ||
@@ -40,194 +43,218 @@ const API_URL =
     ? "http://localhost:5000"
     : "");
 
-const FALLBACK_IMAGE = "/hero-santri.jpg";
 const EASE = [0.22, 1, 0.36, 1];
-
-const PROGRAM_CARD_VARIANTS = {
-  hidden: {
-    opacity: 0,
-    y: 26,
-    scale: 0.96,
-    filter: "blur(10px)",
-  },
-  show: (index = 0) => ({
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    filter: "blur(0px)",
-    transition: {
-      delay: index * 0.08,
-      duration: 0.62,
-      ease: EASE,
-    },
-  }),
-};
-
-const FEATURE_VARIANTS = {
-  hidden: {
-    opacity: 0,
-    y: 18,
-    scale: 0.92,
-  },
-  show: (index = 0) => ({
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    transition: {
-      delay: 0.2 + index * 0.07,
-      duration: 0.42,
-      ease: EASE,
-    },
-  }),
-};
 
 const ADMIN_WHATSAPP_NUMBER = "628999155698";
 const ADMIN_WHATSAPP_MESSAGE =
-  "Assalamu'alaikum Admin Pesantren Al-Furqon, saya ingin bertanya mengenai program pesantren.";
+  "Assalamu'alaikum Admin Pesantren Al-Furqon, saya ingin bertanya mengenai program non formal pesantren.";
+
 const WHATSAPP_ADMIN_URL = `https://wa.me/${ADMIN_WHATSAPP_NUMBER}?text=${encodeURIComponent(
   ADMIN_WHATSAPP_MESSAGE
 )}`;
 
 const DEFAULT_PROGRAM_PAGE = {
   hero: {
-    badge: "Program Unggulan Pesantren",
-    title: "Bukan sekadar kegiatan.",
-    highlight: "Ini ruang tumbuh santri.",
-    desc: "Program pembinaan Al-Furqon dirancang untuk membangun keberanian, adab, kreativitas, kedisiplinan, dan kemandirian santri dalam lingkungan pesantren.",
-    arabic: "وَمَنْ يَتَّقِ اللَّهَ يَجْعَلْ لَهُ مَخْرَجًا",
-    source: "QS. At-Talaq: 2",
-    image: "/hero-santri.jpg",
+    arabic: "وَقُلْ رَبِّ زِدْنِي عِلْمًا",
+    badge: "Program Non Formal Pesantren",
+    title: "Ruang tumbuh",
+    highlight: "santri Al-Furqon.",
+    desc: "Program non formal pesantren menjadi ruang pembinaan santri dalam ibadah, Al-Qur'an, adab, dakwah, seni Islami, kemandirian, dan kedisiplinan hidup sehari-hari.",
+    source: "QS. Thaha: 114",
   },
+
   stats: [
-    { value: "24 Jam", label: "Pembinaan", iconKey: "shield" },
-    { value: "4+", label: "Program Aktif", iconKey: "layer" },
-    { value: "100+", label: "Santri", iconKey: "users" },
+    { value: "9", label: "Program Non Formal", iconKey: "layer" },
+    { value: "24 Jam", label: "Pembinaan Santri", iconKey: "shield" },
     { value: "Terarah", label: "Pendampingan", iconKey: "star" },
+    { value: "Aktif", label: "Kegiatan Harian", iconKey: "users" },
   ],
+
   programs: [
     {
-      title: "Hadroh",
-      subtitle: "Seni Islami & Sholawat",
-      tag: "Program Unggulan",
-      desc: "Melatih kekompakan, keberanian tampil, dan kecintaan kepada sholawat.",
-      longDesc:
-        "Santri dilatih tampil percaya diri dalam kegiatan pesantren, acara keagamaan, dan perlombaan. Program ini membentuk disiplin, kekompakan, adab, serta keberanian di depan umum.",
-      image: "/hero-santri.jpg",
-      iconKey: "mosque",
-      features: ["Rebana", "Sholawat", "Kompak", "Percaya Diri"],
-    },
-    {
-      title: "MTQ",
-      subtitle: "Tilawah Qur'an",
-      tag: "Program Qur'an",
-      desc: "Membina bacaan Al-Qur'an, tajwid, makharijul huruf, dan irama.",
-      longDesc:
-        "Program MTQ membantu santri memperbaiki bacaan Al-Qur'an melalui pembinaan tajwid, makharijul huruf, irama tilawah, dan adab membaca Al-Qur'an.",
-      image: "/kegiatan-1.jpg",
+      title: "Seni Baca Al-Qur'an",
+      subtitle: "Tilawah, Tajwid, dan Irama Qur'ani",
+      tag: "Qur'ani",
       iconKey: "quran",
-      features: ["Tajwid", "Tilawah", "Irama", "Makharijul Huruf"],
+      desc: "Membimbing santri memperindah bacaan Al-Qur'an dengan tajwid, makharijul huruf, adab membaca, dan latihan irama.",
+      focus: ["Tajwid", "Makharijul Huruf", "Tilawah", "Adab Qur'an"],
+      impact: "Santri terbiasa membaca Al-Qur'an dengan baik, benar, dan penuh adab.",
     },
     {
-      title: "Pramuka",
-      subtitle: "Mandiri & Disiplin",
-      tag: "Karakter Santri",
-      desc: "Membentuk santri yang mandiri, disiplin, berani, dan bertanggung jawab.",
-      longDesc:
-        "Pramuka menjadi ruang latihan karakter santri melalui kegiatan lapangan, kerja sama, kepemimpinan, kedisiplinan, dan keberanian menyelesaikan tantangan.",
-      image: "/kegiatan-2.jpg",
-      iconKey: "camp",
-      features: ["Disiplin", "Mandiri", "Tanggung Jawab", "Kerja Sama"],
-    },
-    {
-      title: "Tahfidz Qur'an",
-      subtitle: "Hafalan Qur'an",
-      tag: "Pembinaan Qur'an",
-      desc: "Membimbing santri membaca, menghafal, dan menjaga hafalan Al-Qur'an.",
-      longDesc:
-        "Tahfidz Qur'an membimbing santri untuk membangun kedekatan dengan Al-Qur'an melalui hafalan bertahap, murajaah, adab Qur'an, dan pembiasaan membaca setiap hari.",
-      image: "/masjid.jpg",
+      title: "Pengajian Kitab Kuning",
+      subtitle: "Kajian Turats dan Pemahaman Agama",
+      tag: "Keilmuan",
       iconKey: "book",
-      features: ["Hafalan", "Murajaah", "Adab Qur'an", "Setoran"],
+      desc: "Mengenalkan santri pada kitab-kitab klasik sebagai dasar memahami fikih, akhlak, tauhid, dan adab dalam kehidupan.",
+      focus: ["Fikih", "Akhlak", "Tauhid", "Adab"],
+      impact: "Santri memiliki dasar keilmuan agama yang kuat dan terarah.",
+    },
+    {
+      title: "Kuliah Subuh",
+      subtitle: "Nasihat Pagi dan Pembinaan Ruhani",
+      tag: "Pembiasaan",
+      iconKey: "mosque",
+      desc: "Kegiatan setelah subuh untuk mengisi pagi santri dengan nasihat, ilmu, motivasi ibadah, dan pembiasaan disiplin.",
+      focus: ["Nasihat", "Motivasi", "Ibadah", "Disiplin"],
+      impact: "Santri memulai hari dengan semangat ibadah dan arah hidup yang baik.",
+    },
+    {
+      title: "Tahfidzul Qur'an",
+      subtitle: "Hafalan, Setoran, dan Murajaah",
+      tag: "Hafalan",
+      iconKey: "quran",
+      desc: "Program pembinaan hafalan Al-Qur'an secara bertahap melalui setoran, murajaah, pembiasaan membaca, dan penguatan adab Qur'ani.",
+      focus: ["Hafalan", "Setoran", "Murajaah", "Konsistensi"],
+      impact: "Santri dekat dengan Al-Qur'an dan terbiasa menjaga hafalan.",
+    },
+    {
+      title: "Muhadhoroh",
+      subtitle: "Latihan Dakwah dan Public Speaking",
+      tag: "Dakwah",
+      iconKey: "microphone",
+      desc: "Melatih santri berbicara di depan umum, menyampaikan nasihat, menjadi MC, berpidato, dan percaya diri dalam kegiatan pesantren.",
+      focus: ["Pidato", "MC", "Dakwah", "Percaya Diri"],
+      impact: "Santri berani tampil, tertata dalam bicara, dan siap berdakwah.",
+    },
+    {
+      title: "Lailatul Qiro'ah",
+      subtitle: "Malam Qur'ani dan Pembinaan Bacaan",
+      tag: "Qur'ani",
+      iconKey: "moon",
+      desc: "Kegiatan malam bernuansa Qur'ani untuk menguatkan bacaan, kecintaan kepada Al-Qur'an, dan suasana spiritual santri.",
+      focus: ["Qiro'ah", "Tilawah", "Ruhani", "Kebersamaan"],
+      impact: "Santri merasakan suasana belajar Qur'an yang hidup dan bermakna.",
+    },
+    {
+      title: "Seni Kaligrafi",
+      subtitle: "Kreativitas Islami dan Keindahan Tulisan",
+      tag: "Kreatif",
+      iconKey: "pen",
+      desc: "Mengembangkan kreativitas santri melalui seni menulis indah bernuansa Islami, ketelitian, kesabaran, dan estetika.",
+      focus: ["Kreativitas", "Ketelitian", "Seni Islami", "Kesabaran"],
+      impact: "Santri terlatih sabar, rapi, teliti, dan kreatif.",
+    },
+    {
+      title: "Majelis Ta'lim",
+      subtitle: "Kajian, Dzikir, dan Kebersamaan",
+      tag: "Pembinaan",
+      iconKey: "users",
+      desc: "Ruang kajian dan pembinaan bersama untuk memperkuat ilmu, adab, dzikir, ukhuwah, dan kedekatan santri dengan guru.",
+      focus: ["Kajian", "Dzikir", "Ukhuwah", "Adab"],
+      impact: "Santri terbiasa hadir di majelis ilmu dan menghormati guru.",
+    },
+    {
+      title: "Olahraga / Senam Pagi",
+      subtitle: "Kesehatan, Semangat, dan Kedisiplinan",
+      tag: "Kebugaran",
+      iconKey: "activity",
+      desc: "Kegiatan fisik untuk menjaga kesehatan santri, membangun semangat pagi, kekompakan, dan pola hidup disiplin.",
+      focus: ["Sehat", "Semangat", "Kompak", "Disiplin"],
+      impact: "Santri lebih bugar, aktif, dan siap mengikuti kegiatan harian.",
     },
   ],
-  timeline: [
+
+  flow: [
     {
       number: "01",
-      title: "Masuk ke Lingkungan",
-      desc: "Santri dikenalkan dengan suasana pesantren, aturan, dan budaya kegiatan.",
+      title: "Pembiasaan Harian",
+      desc: "Santri dibiasakan mengikuti kegiatan pesantren secara teratur.",
     },
     {
       number: "02",
-      title: "Mulai Pembiasaan",
-      desc: "Santri mengikuti latihan rutin agar terbentuk disiplin dan tanggung jawab.",
+      title: "Dibimbing Pembina",
+      desc: "Setiap program diarahkan agar tetap sesuai adab dan nilai pesantren.",
     },
     {
       number: "03",
-      title: "Didampingi Pembina",
-      desc: "Pembina mengarahkan adab, kemampuan, keberanian, dan ketertiban santri.",
+      title: "Dilihat Perkembangannya",
+      desc: "Santri didampingi agar kemampuan, disiplin, dan keberaniannya berkembang.",
     },
     {
       number: "04",
-      title: "Tumbuh Percaya Diri",
-      desc: "Santri mulai berani tampil, mandiri, dan aktif dalam kegiatan pesantren.",
+      title: "Menjadi Karakter",
+      desc: "Kegiatan yang berulang membentuk kebiasaan baik dalam diri santri.",
     },
   ],
-  gallery: [
-    "/hero-santri.jpg",
-    "/kegiatan-1.jpg",
-    "/kegiatan-2.jpg",
-    "/masjid.jpg",
-    "/smk.jpg",
-    "/hero-santri.jpg",
-  ],
-  advantages: [
-    {
-      title: "Tidak Pasif",
-      desc: "Santri tidak hanya duduk belajar, tetapi ikut aktif membangun kemampuan diri.",
-      iconKey: "award",
-    },
-    {
-      title: "Dekat dengan Adab",
-      desc: "Setiap kegiatan tetap diarahkan agar sesuai dengan nilai pesantren.",
-      iconKey: "heart",
-    },
-    {
-      title: "Berani Tampil",
-      desc: "Program membantu santri percaya diri berbicara, tampil, dan bekerja sama.",
-      iconKey: "users",
-    },
-  ],
+
   faq: [
     {
-      q: "Apakah semua santri bisa ikut program?",
-      a: "Ya. Santri dapat mengikuti program sesuai jadwal, minat, kemampuan, dan arahan pembina.",
+      q: "Apakah program non formal wajib diikuti?",
+      a: "Beberapa kegiatan menjadi bagian dari pembiasaan pesantren, sedangkan sebagian lainnya dapat diarahkan sesuai minat, kemampuan, dan jadwal santri.",
     },
     {
-      q: "Apakah program hanya kegiatan tambahan?",
-      a: "Tidak. Program juga menjadi bagian dari pembinaan karakter, adab, disiplin, dan keberanian santri.",
+      q: "Apakah halaman ini memakai foto?",
+      a: "Tidak. Tampilan dibuat tanpa foto agar lebih ringan, modern, fokus pada informasi, dan tetap menarik lewat animasi.",
     },
     {
-      q: "Apakah program dibimbing pembina?",
-      a: "Ya. Setiap kegiatan tetap diarahkan oleh pembina agar berjalan tertib dan sesuai nilai pesantren.",
+      q: "Apa tujuan utama program non formal?",
+      a: "Tujuannya membentuk santri yang dekat dengan Al-Qur'an, beradab, percaya diri, disiplin, kreatif, dan aktif dalam lingkungan pesantren.",
     },
   ],
 };
 
+const PARTICLES = Array.from({ length: 18 }, (_, index) => ({
+  id: index,
+  left: `${(index * 19 + 7) % 100}%`,
+  top: `${(index * 31 + 13) % 100}%`,
+  size: 3 + (index % 4),
+  delay: index * 0.22,
+  duration: 7 + (index % 5),
+}));
+
+const screenVariants = {
+  enter: (direction) => ({
+    opacity: 0,
+    y: direction > 0 ? "4%" : "-4%",
+    scale: 0.992,
+    filter: "blur(7px)",
+  }),
+  center: {
+    opacity: 1,
+    y: "0%",
+    scale: 1,
+    filter: "blur(0px)",
+  },
+  exit: (direction) => ({
+    opacity: 0,
+    y: direction > 0 ? "-4%" : "4%",
+    scale: 0.992,
+    filter: "blur(7px)",
+  }),
+};
+
+const stepVariants = {
+  enter: (direction) => ({
+    opacity: 0,
+    y: direction > 0 ? 34 : -34,
+    filter: "blur(8px)",
+  }),
+  center: {
+    opacity: 1,
+    y: 0,
+    filter: "blur(0px)",
+  },
+  exit: (direction) => ({
+    opacity: 0,
+    y: direction > 0 ? -34 : 34,
+    filter: "blur(8px)",
+  }),
+};
+
 function getIcon(key) {
   const icons = {
-    mosque: <FaMosque />,
     quran: <FaQuran />,
-    camp: <FaCampground />,
-    campground: <FaCampground />,
-    users: <FaUsers />,
     book: <FaBookOpen />,
-    award: <FaAward />,
-    hands: <FaHandshake />,
+    mosque: <FaMosque />,
+    microphone: <FaMicrophone />,
+    moon: <FaMoon />,
+    pen: <FaPenNib />,
+    users: <FaUsers />,
+    activity: <FaDumbbell />,
     shield: <FaShieldAlt />,
-    graduate: <FaGraduationCap />,
     star: <FaStar />,
-    heart: <FaHeart />,
     layer: <FaLayerGroup />,
+    spark: <FaSparkles />,
   };
 
   return icons[key] || <FaStar />;
@@ -235,156 +262,76 @@ function getIcon(key) {
 
 function normalizeProgramPage(data) {
   const source = data || {};
-  const fallbackPrograms = DEFAULT_PROGRAM_PAGE.programs;
-
-  const rawPrograms =
-    Array.isArray(source.programs) && source.programs.length
-      ? source.programs
-      : fallbackPrograms;
-
-  const programs = rawPrograms.map((item, index) => {
-    const fallback = fallbackPrograms[index % fallbackPrograms.length];
-
-    return {
-      ...fallback,
-      ...item,
-      title: item?.title || fallback.title,
-      subtitle: item?.subtitle || item?.tag || fallback.subtitle,
-      tag: item?.tag || fallback.tag,
-      desc: item?.desc || fallback.desc,
-      longDesc: item?.longDesc || item?.desc || fallback.longDesc,
-      image: item?.image || fallback.image,
-      iconKey: item?.iconKey || fallback.iconKey,
-      features:
-        Array.isArray(item?.features) && item.features.length
-          ? item.features
-          : fallback.features,
-    };
-  });
+  const fallback = DEFAULT_PROGRAM_PAGE;
 
   return {
     hero: {
-      ...DEFAULT_PROGRAM_PAGE.hero,
+      ...fallback.hero,
       ...(source.hero || {}),
     },
     stats:
       Array.isArray(source.stats) && source.stats.length
         ? source.stats
-        : DEFAULT_PROGRAM_PAGE.stats,
-    programs,
-    timeline:
-      Array.isArray(source.timeline) && source.timeline.length
-        ? source.timeline
-        : DEFAULT_PROGRAM_PAGE.timeline,
-    gallery:
-      Array.isArray(source.gallery) && source.gallery.length
-        ? source.gallery
-        : DEFAULT_PROGRAM_PAGE.gallery,
-    advantages:
-      Array.isArray(source.advantages) && source.advantages.length
-        ? source.advantages
-        : DEFAULT_PROGRAM_PAGE.advantages,
+        : fallback.stats,
+    programs:
+      Array.isArray(source.programs) && source.programs.length
+        ? source.programs.map((item, index) => ({
+            ...fallback.programs[index % fallback.programs.length],
+            ...item,
+            focus:
+              Array.isArray(item?.focus) && item.focus.length
+                ? item.focus
+                : fallback.programs[index % fallback.programs.length].focus,
+          }))
+        : fallback.programs,
+    flow:
+      Array.isArray(source.flow) && source.flow.length
+        ? source.flow
+        : fallback.flow,
     faq:
-      Array.isArray(source.faq) && source.faq.length
-        ? source.faq
-        : DEFAULT_PROGRAM_PAGE.faq,
+      Array.isArray(source.faq) && source.faq.length ? source.faq : fallback.faq,
   };
 }
 
-function SafeImage({ src, alt, className = "", fallback = FALLBACK_IMAGE }) {
-  const [currentSrc, setCurrentSrc] = useState(src || fallback);
+async function fetchJson(url) {
+  const response = await fetch(url, {
+    cache: "no-store",
+  });
 
-  useEffect(() => {
-    setCurrentSrc(src || fallback);
-  }, [src, fallback]);
+  if (!response.ok) {
+    throw new Error(`Request gagal: ${response.status}`);
+  }
 
-  return (
-    <img
-      src={currentSrc}
-      alt={alt || "image"}
-      className={className}
-      draggable={false}
-      loading="lazy"
-      onError={() => {
-        if (currentSrc !== fallback) setCurrentSrc(fallback);
-      }}
-    />
-  );
-}
-
-function BackgroundArt({ dark = false }) {
-  const reduce = useReducedMotion();
-
-  return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden">
-      <div className="absolute inset-0 bg-[url('/pattern.png')] bg-repeat opacity-[0.05]" />
-
-      <div
-        className={`absolute inset-0 ${
-          dark
-            ? "bg-[radial-gradient(circle_at_20%_15%,rgba(250,204,21,0.12),transparent_30%),radial-gradient(circle_at_80%_70%,rgba(16,185,129,0.12),transparent_32%)]"
-            : "bg-[radial-gradient(circle_at_15%_20%,rgba(16,185,129,0.14),transparent_30%),radial-gradient(circle_at_85%_70%,rgba(250,204,21,0.22),transparent_32%)]"
-        }`}
-      />
-
-      <motion.div
-        animate={
-          reduce
-            ? undefined
-            : {
-                rotate: [0, 12, 0],
-                scale: [1, 1.08, 1],
-              }
-        }
-        transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
-        className={`absolute -left-28 top-24 h-72 w-72 rounded-full border ${
-          dark
-            ? "border-yellow-300/15 bg-yellow-300/5"
-            : "border-emerald-900/10 bg-emerald-300/15"
-        }`}
-      />
-
-      <motion.div
-        animate={
-          reduce
-            ? undefined
-            : {
-                rotate: [0, -12, 0],
-                scale: [1, 1.07, 1],
-              }
-        }
-        transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
-        className={`absolute -right-32 bottom-16 h-[28rem] w-[28rem] rounded-full border ${
-          dark
-            ? "border-emerald-300/15 bg-emerald-300/5"
-            : "border-yellow-500/10 bg-yellow-300/15"
-        }`}
-      />
-    </div>
-  );
+  return response.json();
 }
 
 function LoadingPage() {
   return (
-    <main className="relative flex min-h-[100svh] items-center justify-center overflow-hidden bg-[#041b15] text-white">
-      <BackgroundArt dark />
+    <main className="relative flex h-[100dvh] items-center justify-center overflow-hidden bg-[#041b15] text-white">
+      <IslamicBackground dark intense />
 
       <motion.div
-        initial={{ opacity: 0, scale: 0.92, y: 20 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        transition={{ duration: 0.55, ease: EASE }}
+        initial={{ opacity: 0, scale: 0.94 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.45, ease: EASE }}
         className="relative z-10 px-6 text-center"
       >
-        <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-[1.6rem] border border-yellow-300/25 bg-yellow-300/10 text-3xl text-yellow-300">
-          <FaListUl />
-        </div>
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{
+            duration: 1.8,
+            repeat: Infinity,
+            ease: "linear",
+          }}
+          className="mx-auto mb-6 h-14 w-14 rounded-full border-4 border-yellow-300/20 border-t-yellow-300"
+        />
 
-        <p className="mt-7 text-xs font-black uppercase tracking-[0.34em] text-yellow-300">
-          Loading Program
+        <p className="text-xs font-black uppercase tracking-[0.32em] text-yellow-300">
+          Menghubungkan ke Backend
         </p>
 
-        <h1 className="mt-3 text-3xl font-black sm:text-5xl">
-          Memuat tampilan...
+        <h1 className="mt-4 text-2xl font-black sm:text-4xl">
+          Memuat Program...
         </h1>
       </motion.div>
     </main>
@@ -393,289 +340,1090 @@ function LoadingPage() {
 
 function MaintenancePage({ onRetry, checking }) {
   return (
-    <main className="relative flex min-h-[100svh] items-center justify-center overflow-hidden bg-[#041b15] px-6 text-center text-white">
-      <BackgroundArt dark />
+    <main className="relative min-h-[100dvh] overflow-hidden bg-[#041b15] text-white">
+      <IslamicBackground dark intense />
 
-      <div className="relative z-10 mx-auto max-w-2xl">
-        <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-[1.6rem] border border-yellow-300/25 bg-yellow-300/10 text-3xl text-yellow-300">
-          <FaRedo />
-        </div>
+      <div className="relative z-10 mx-auto flex min-h-[100dvh] w-[92vw] max-w-4xl flex-col items-center justify-center py-16 text-center">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.85, y: 24 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 0.65, ease: EASE }}
+          className="relative"
+        >
+          <div className="absolute inset-0 rounded-full bg-yellow-400/20 blur-3xl" />
 
-        <h1 className="mt-6 text-3xl font-black text-yellow-300 sm:text-5xl">
-          Program belum dapat dimuat
+          <div className="relative mx-auto flex h-20 w-20 items-center justify-center rounded-[1.7rem] border border-yellow-300/30 bg-yellow-300/10 text-3xl text-yellow-300 shadow-[0_0_60px_rgba(250,204,21,0.25)] backdrop-blur-xl">
+            <FaRedo />
+          </div>
+        </motion.div>
+
+        <Badge dark>Program Maintenance</Badge>
+
+        <h1 className="mt-5 text-[clamp(2.2rem,6vw,5.2rem)] font-black leading-[0.92] tracking-[-0.06em]">
+          Program belum
+          <span className="block bg-gradient-to-r from-yellow-300 via-yellow-400 to-emerald-200 bg-clip-text text-transparent">
+            dapat dimuat.
+          </span>
         </h1>
 
-        <p className="mt-4 text-sm leading-relaxed text-emerald-100 sm:text-base">
-          Data program belum berhasil dibaca dari backend. Tekan tombol di bawah
-          untuk mencoba kembali.
+        <p className="mx-auto mt-6 max-w-2xl text-sm leading-relaxed text-emerald-100 sm:text-base lg:text-lg">
+          Data program belum berhasil dibaca dari backend. Coba muat ulang atau
+          hubungi admin pesantren.
         </p>
 
-        <button
-          onClick={onRetry}
-          disabled={checking}
-          className="mt-6 rounded-full bg-yellow-400 px-7 py-3.5 font-black text-emerald-950 transition hover:bg-yellow-300 disabled:opacity-60"
-        >
-          {checking ? "Mengecek..." : "Coba Lagi"}
-        </button>
+        <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+          <button
+            onClick={onRetry}
+            disabled={checking}
+            className="inline-flex items-center justify-center gap-3 rounded-full bg-yellow-400 px-7 py-3.5 text-sm font-black text-emerald-950 shadow-[0_0_45px_rgba(250,204,21,0.35)] transition hover:-translate-y-1 hover:bg-yellow-300 disabled:cursor-not-allowed disabled:opacity-70 sm:text-base"
+          >
+            <motion.span
+              animate={checking ? { rotate: 360 } : { rotate: 0 }}
+              transition={{
+                repeat: checking ? Infinity : 0,
+                duration: 1,
+                ease: "linear",
+              }}
+            >
+              <FaRedo />
+            </motion.span>
+            {checking ? "Sedang Memuat..." : "Coba Lagi"}
+          </button>
+
+          <a
+            href={WHATSAPP_ADMIN_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center gap-3 rounded-full border border-white/20 bg-white/10 px-7 py-3.5 text-sm font-black text-white backdrop-blur transition hover:-translate-y-1 hover:bg-white/20 sm:text-base"
+          >
+            <FaWhatsapp />
+            Hubungi Admin
+          </a>
+        </div>
       </div>
     </main>
   );
 }
 
-function ScrollProgress() {
-  const { scrollYProgress } = useScroll();
+function CursorGlow() {
+  const reduce = useReducedMotion();
+  const mouseX = useMotionValue(-100);
+  const mouseY = useMotionValue(-100);
 
-  const scaleX = useSpring(scrollYProgress, {
-    stiffness: 120,
-    damping: 30,
-    restDelta: 0.001,
-  });
+  const smoothX = useSpring(mouseX, { stiffness: 80, damping: 25 });
+  const smoothY = useSpring(mouseY, { stiffness: 80, damping: 25 });
+
+  useEffect(() => {
+    if (reduce) return;
+
+    const handleMouseMove = (event) => {
+      mouseX.set(event.clientX - 140);
+      mouseY.set(event.clientY - 140);
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, [mouseX, mouseY, reduce]);
+
+  if (reduce) return null;
 
   return (
     <motion.div
-      style={{ scaleX }}
-      className="fixed left-0 top-0 z-[9999] h-1.5 w-full origin-left bg-gradient-to-r from-yellow-400 via-amber-300 to-emerald-300"
+      style={{ x: smoothX, y: smoothY }}
+      className="pointer-events-none fixed left-0 top-0 z-[9998] hidden h-72 w-72 rounded-full bg-yellow-300/10 blur-3xl lg:block"
     />
   );
 }
 
-function Section({ children, dark = false, id = "", className = "" }) {
-  return (
-    <section
-      id={id}
-      className={`program-section relative w-full overflow-hidden ${
-        dark ? "bg-[#041b15] text-white" : "bg-[#f7f1df] text-emerald-950"
-      } ${className}`}
-    >
-      {children}
-    </section>
-  );
-}
+function AmbientParticles({ light = false }) {
+  const reduce = useReducedMotion();
+  const [mounted, setMounted] = useState(false);
 
-function Container({ children, className = "", style }) {
-  return (
-    <motion.div
-      style={style}
-      className={`program-container relative z-10 mx-auto ${className}`}
-    >
-      {children}
-    </motion.div>
-  );
-}
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
-function Badge({ children, dark = false }) {
-  return (
-    <div
-      className={`inline-flex max-w-full items-center gap-3 rounded-full border px-4 py-2 text-[10px] font-black uppercase tracking-[0.22em] sm:text-xs ${
-        dark
-          ? "border-yellow-300/30 bg-yellow-300/10 text-yellow-300"
-          : "border-emerald-200 bg-white/85 text-emerald-800 shadow-sm"
-      }`}
-    >
-      <span className="h-2 w-2 shrink-0 rounded-full bg-current" />
-      <span className="truncate">{children}</span>
-    </div>
-  );
-}
+  if (!mounted || reduce) return null;
 
-function Reveal({ children, delay = 0, y = 28, className = "" }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y, filter: "blur(8px)" }}
-      whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-      viewport={{ once: true, amount: 0.18 }}
-      transition={{ duration: 0.6, delay, ease: EASE }}
-      className={className}
-    >
-      {children}
-    </motion.div>
-  );
-}
-
-function ProgramHeader({ badge, title, desc, dark = false, align = "center" }) {
-  return (
-    <Reveal>
-      <div
-        className={`${
-          align === "center" ? "mx-auto text-center" : "text-left"
-        } max-w-5xl`}
-      >
-        <Badge dark={dark}>{badge}</Badge>
-
-        <h2
-          className={`program-section-title mt-5 font-black leading-[0.96] tracking-[-0.055em] ${
-            dark ? "text-white" : "text-emerald-950"
-          }`}
-        >
-          {title}
-        </h2>
-
-        {desc && (
-          <p
-            className={`mt-5 max-w-3xl text-sm leading-relaxed sm:text-base lg:text-lg ${
-              align === "center" ? "mx-auto" : ""
-            } ${dark ? "text-emerald-100" : "text-slate-600"}`}
-          >
-            {desc}
-          </p>
-        )}
-      </div>
-    </Reveal>
-  );
-}
-
-function GlassCard({ children, dark = false, className = "" }) {
-  return (
-    <div
-      className={`group relative overflow-hidden rounded-[2rem] border shadow-[0_24px_70px_rgba(0,0,0,0.12)] backdrop-blur-xl ${
-        dark
-          ? "border-white/10 bg-white/10 text-white"
-          : "border-emerald-100 bg-white/85 text-emerald-950"
-      } ${className}`}
-    >
-      <div
-        className={`absolute -right-20 -top-20 h-56 w-56 rounded-full blur-3xl transition duration-700 group-hover:scale-125 ${
-          dark ? "bg-yellow-300/10" : "bg-yellow-300/20"
-        }`}
-      />
-      <div
-        className={`absolute -bottom-24 -left-24 h-64 w-64 rounded-full blur-3xl ${
-          dark ? "bg-emerald-300/10" : "bg-emerald-300/20"
-        }`}
-      />
-
-      <div className="relative z-10">{children}</div>
-    </div>
-  );
-}
-
-function ChapterRail() {
-  const items = [
-    ["01", "Hero", "#program-hero"],
-    ["02", "Lab", "#program-lab"],
-    ["03", "Peta", "#program-map"],
-    ["04", "Galeri", "#program-gallery"],
-    ["05", "FAQ", "#program-faq"],
-  ];
-
-  return (
-    <div className="pointer-events-none fixed right-5 top-1/2 z-40 hidden -translate-y-1/2 2xl:block">
-      <div className="pointer-events-auto rounded-[1.7rem] border border-white/10 bg-emerald-950/80 p-3 shadow-2xl backdrop-blur-xl">
-        <p className="mb-3 text-center text-[10px] font-black uppercase tracking-[0.26em] text-yellow-300">
-          Chapter
-        </p>
-
-        <div className="space-y-2">
-          {items.map(([number, label, href]) => (
-            <a
-              key={href}
-              href={href}
-              className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-3 py-2 transition hover:bg-white/15"
-            >
-              <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-yellow-400 text-[10px] font-black text-emerald-950">
-                {number}
-              </span>
-              <span className="text-xs font-black text-white">{label}</span>
-            </a>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function ProgramLabAura() {
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden">
+      {PARTICLES.map((particle) => (
+        <motion.span
+          key={particle.id}
+          initial={{ opacity: 0, y: 0, scale: 0.8 }}
+          animate={{
+            opacity: [0, light ? 0.2 : 0.18, 0],
+            y: [-8, -58],
+            scale: [0.8, 1.18, 0.85],
+          }}
+          transition={{
+            duration: particle.duration,
+            delay: particle.delay,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+          className={`absolute rounded-full ${
+            light ? "bg-emerald-800/35" : "bg-yellow-200/60"
+          }`}
+          style={{
+            left: particle.left,
+            top: particle.top,
+            width: particle.size,
+            height: particle.size,
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
+function IslamicBackground({ dark = false, intense = false }) {
+  const reduce = useReducedMotion();
+
+  return (
+    <div className="pointer-events-none absolute inset-0 overflow-hidden">
+      <div
+        className={`absolute inset-0 bg-[url('/pattern.png')] bg-repeat ${
+          intense ? "opacity-[0.08]" : "opacity-[0.045]"
+        }`}
+      />
+
+      <div
+        className={`absolute inset-0 ${
+          dark
+            ? "bg-[radial-gradient(circle_at_20%_15%,rgba(250,204,21,0.14),transparent_30%),radial-gradient(circle_at_80%_70%,rgba(16,185,129,0.14),transparent_32%)]"
+            : "bg-[radial-gradient(circle_at_15%_20%,rgba(16,185,129,0.15),transparent_30%),radial-gradient(circle_at_85%_70%,rgba(250,204,21,0.22),transparent_32%)]"
+        }`}
+      />
+
       <motion.div
-        animate={{
-          x: [0, 80, 0],
-          y: [0, -50, 0],
-          scale: [1, 1.18, 1],
-          opacity: [0.25, 0.45, 0.25],
+        animate={
+          reduce
+            ? undefined
+            : {
+                rotate: [0, 18, 0],
+                scale: [1, 1.08, 1],
+              }
+        }
+        transition={{
+          duration: 14,
+          repeat: Infinity,
+          ease: "easeInOut",
         }}
+        className={`absolute -left-32 top-20 h-64 w-64 rounded-full border ${
+          dark
+            ? "border-yellow-300/18 bg-yellow-300/5"
+            : "border-emerald-900/10 bg-emerald-300/16"
+        }`}
+      />
+
+      <motion.div
+        animate={
+          reduce
+            ? undefined
+            : {
+                rotate: [0, -18, 0],
+                scale: [1, 1.1, 1],
+              }
+        }
+        transition={{
+          duration: 18,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        className={`absolute -right-40 bottom-16 h-[24rem] w-[24rem] rounded-full border ${
+          dark
+            ? "border-emerald-300/18 bg-emerald-300/5"
+            : "border-yellow-600/10 bg-yellow-300/16"
+        }`}
+      />
+
+      <motion.div
+        animate={
+          reduce
+            ? undefined
+            : {
+                y: [0, -16, 0],
+                opacity: [0.35, 0.65, 0.35],
+              }
+        }
         transition={{
           duration: 9,
           repeat: Infinity,
           ease: "easeInOut",
         }}
-        className="absolute left-[8%] top-[18%] h-72 w-72 rounded-full bg-yellow-300/10 blur-3xl"
+        className={`absolute left-1/2 top-1/2 h-[28rem] w-[28rem] -translate-x-1/2 -translate-y-1/2 rounded-full blur-3xl ${
+          dark ? "bg-emerald-400/8" : "bg-yellow-300/14"
+        }`}
       />
 
-      <motion.div
-        animate={{
-          x: [0, -70, 0],
-          y: [0, 60, 0],
-          scale: [1, 1.22, 1],
-          opacity: [0.2, 0.42, 0.2],
-        }}
-        transition={{
-          duration: 11,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-        className="absolute bottom-[12%] right-[10%] h-80 w-80 rounded-full bg-emerald-300/10 blur-3xl"
-      />
-
-      <motion.div
-        animate={{
-          rotate: [0, 360],
-        }}
-        transition={{
-          duration: 32,
-          repeat: Infinity,
-          ease: "linear",
-        }}
-        className="absolute left-1/2 top-1/2 h-[38rem] w-[38rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-yellow-300/10"
-      />
-
-      <motion.div
-        animate={{
-          rotate: [360, 0],
-        }}
-        transition={{
-          duration: 42,
-          repeat: Infinity,
-          ease: "linear",
-        }}
-        className="absolute left-1/2 top-1/2 h-[28rem] w-[28rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-emerald-300/10"
-      />
+      <AmbientParticles light={!dark} />
     </div>
   );
 }
 
+function Badge({ children, dark = false }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 14, filter: "blur(6px)" }}
+      animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+      transition={{ duration: 0.45, ease: EASE }}
+      className={`inline-flex max-w-full items-center gap-3 rounded-full border px-4 py-2 text-[9px] font-black uppercase tracking-[0.2em] sm:text-[10px] ${
+        dark
+          ? "border-yellow-300/30 bg-yellow-300/10 text-yellow-300"
+          : "border-emerald-200 bg-white/85 text-emerald-800"
+      }`}
+    >
+      <span className="h-2 w-2 shrink-0 rounded-full bg-current" />
+      <span className="truncate">{children}</span>
+    </motion.div>
+  );
+}
+
+function TiltCard({ children, className = "" }) {
+  const reduce = useReducedMotion();
+
+  const [rotate, setRotate] = useState({
+    x: 0,
+    y: 0,
+  });
+
+  const handleMouseMove = (event) => {
+    if (reduce) return;
+
+    const rect = event.currentTarget.getBoundingClientRect();
+
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+
+    setRotate({
+      x: (y / rect.height - 0.5) * -5,
+      y: (x / rect.width - 0.5) * 5,
+    });
+  };
+
+  const reset = () => {
+    setRotate({ x: 0, y: 0 });
+  };
+
+  return (
+    <motion.div
+      onMouseMove={handleMouseMove}
+      onMouseLeave={reset}
+      animate={
+        reduce
+          ? undefined
+          : {
+              rotateX: rotate.x,
+              rotateY: rotate.y,
+            }
+      }
+      whileHover={
+        reduce
+          ? undefined
+          : {
+              y: -6,
+              scale: 1.01,
+            }
+      }
+      transition={{
+        type: "spring",
+        stiffness: 230,
+        damping: 22,
+      }}
+      style={{ transformStyle: "preserve-3d" }}
+      className={`group ${className}`}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+function MagneticButton({
+  children,
+  href,
+  variant = "primary",
+  external = false,
+}) {
+  const reduce = useReducedMotion();
+
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  const springX = useSpring(x, { stiffness: 180, damping: 14 });
+  const springY = useSpring(y, { stiffness: 180, damping: 14 });
+
+  const handleMouseMove = (event) => {
+    if (reduce) return;
+
+    const rect = event.currentTarget.getBoundingClientRect();
+
+    const moveX = event.clientX - rect.left - rect.width / 2;
+    const moveY = event.clientY - rect.top - rect.height / 2;
+
+    x.set(moveX * 0.12);
+    y.set(moveY * 0.12);
+  };
+
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
+
+  const className =
+    variant === "primary"
+      ? "bg-yellow-400 text-emerald-950 shadow-[0_0_36px_rgba(250,204,21,0.25)] hover:bg-yellow-300"
+      : "border border-white/25 bg-white/10 text-white backdrop-blur-xl hover:bg-white/20";
+
+  const commonClass = `group inline-flex w-full items-center justify-center gap-3 rounded-full px-6 py-3 text-sm font-black transition hover:-translate-y-1 sm:w-auto ${className}`;
+
+  if (external) {
+    return (
+      <motion.a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        style={reduce ? undefined : { x: springX, y: springY }}
+        whileTap={{ scale: 0.96 }}
+        className={commonClass}
+      >
+        {children}
+      </motion.a>
+    );
+  }
+
+  return (
+    <MotionLink
+      href={href}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={reduce ? undefined : { x: springX, y: springY }}
+      whileTap={{ scale: 0.96 }}
+      className={commonClass}
+    >
+      {children}
+    </MotionLink>
+  );
+}
+
+function ScreenShell({ children, light = false, sectionKey, direction }) {
+  const reduce = useReducedMotion();
+
+  return (
+    <motion.section
+      key={sectionKey}
+      custom={direction}
+      variants={
+        reduce
+          ? {
+              enter: { opacity: 0 },
+              center: { opacity: 1 },
+              exit: { opacity: 0 },
+            }
+          : screenVariants
+      }
+      initial="enter"
+      animate="center"
+      exit="exit"
+      transition={{
+        duration: reduce ? 0.22 : 0.56,
+        ease: EASE,
+      }}
+      className={`fixed inset-0 h-[100dvh] overflow-hidden ${
+        light
+          ? "bg-gradient-to-br from-[#f7f1df] via-white to-emerald-50 text-emerald-950"
+          : "bg-[#041b15] text-white"
+      }`}
+    >
+      {children}
+    </motion.section>
+  );
+}
+
+function ProgressBar({ sections, activeSection, activeStep }) {
+  const totalSteps = sections.reduce((sum, item) => sum + item.total, 0);
+
+  const passed = sections
+    .slice(0, activeSection)
+    .reduce((sum, item) => sum + item.total, 0);
+
+  const progress = ((passed + activeStep + 1) / totalSteps) * 100;
+
+  return (
+    <div className="fixed bottom-0 left-0 z-[260] w-full">
+      <div className="h-1.5 w-full bg-emerald-950/25 backdrop-blur-md">
+        <motion.div
+          animate={{ width: `${progress}%` }}
+          transition={{ duration: 0.38, ease: EASE }}
+          className="h-full bg-gradient-to-r from-yellow-400 via-yellow-300 to-emerald-300 shadow-[0_0_20px_rgba(250,204,21,0.75)]"
+        />
+      </div>
+
+      <div className="pointer-events-none h-[env(safe-area-inset-bottom)] bg-emerald-950/20" />
+    </div>
+  );
+}
+
+function SideDots({ sections, activeSection, activeStep, jumpToSection }) {
+  return (
+    <div className="fixed right-5 top-1/2 z-[260] hidden -translate-y-1/2 flex-col gap-3 xl:flex">
+      {sections.map((section, index) => (
+        <button
+          key={section.key}
+          onClick={() => jumpToSection(index)}
+          className="group flex items-center justify-end gap-3"
+        >
+          <span className="rounded-full bg-emerald-950/85 px-3 py-1 text-[11px] font-black text-yellow-300 opacity-0 shadow-xl backdrop-blur transition group-hover:opacity-100">
+            {section.label}
+            {activeSection === index && section.total > 1
+              ? ` ${activeStep + 1}/${section.total}`
+              : ""}
+          </span>
+
+          <span
+            className={`h-3 w-3 rounded-full border transition ${
+              activeSection === index
+                ? "scale-150 border-yellow-300 bg-yellow-300 shadow-[0_0_20px_rgba(250,204,21,0.8)]"
+                : "border-white/30 bg-white/20"
+            }`}
+          />
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function HeroScreen({ hero, stats, direction }) {
+  return (
+    <ScreenShell sectionKey="program-hero" direction={direction}>
+      <IslamicBackground dark intense />
+
+      <div className="program-screen program-hero-screen">
+        <div className="program-hero-grid">
+          <AnimatePresence mode="wait" custom={direction}>
+            <motion.div
+              key="program-hero-content"
+              custom={direction}
+              variants={stepVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{ duration: 0.5, ease: EASE }}
+              className="program-hero-copy"
+            >
+              <motion.p
+                initial={{ opacity: 0, y: 18 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.08, duration: 0.45 }}
+                className="mb-3 text-base leading-loose text-yellow-300 sm:text-lg lg:text-xl"
+              >
+                {hero.arabic}
+              </motion.p>
+
+              <Badge dark>{hero.badge}</Badge>
+
+              <motion.h1
+                initial={{ opacity: 0, y: 28, filter: "blur(7px)" }}
+                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                transition={{ delay: 0.16, duration: 0.62, ease: EASE }}
+                className="program-title mt-4 font-black leading-[0.94] tracking-[-0.055em]"
+              >
+                {hero.title}
+                <span className="block bg-gradient-to-r from-yellow-300 via-yellow-400 to-emerald-200 bg-clip-text text-transparent">
+                  {hero.highlight}
+                </span>
+              </motion.h1>
+
+              <motion.p
+                initial={{ opacity: 0, y: 18 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.24, duration: 0.45 }}
+                className="mt-4 max-w-3xl text-sm leading-relaxed text-emerald-50 sm:text-base"
+              >
+                {hero.desc}
+              </motion.p>
+
+              <motion.div
+                initial={{ opacity: 0, y: 18 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.32, duration: 0.45 }}
+                className="mt-6 flex flex-col gap-3 sm:flex-row"
+              >
+                <MagneticButton href="/pendaftaran">
+                  Mulai Pendaftaran
+                  <FaArrowRight className="transition group-hover:translate-x-1" />
+                </MagneticButton>
+
+                <MagneticButton
+                  href={WHATSAPP_ADMIN_URL}
+                  variant="ghost"
+                  external
+                >
+                  Tanya Program
+                  <FaWhatsapp />
+                </MagneticButton>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 22 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4, duration: 0.45 }}
+                className="program-stats mt-5 grid max-w-3xl grid-cols-2 gap-2 sm:mt-6 sm:grid-cols-4 sm:gap-3"
+              >
+                {stats.map((item, index) => (
+                  <TiltCard key={`${item.label}-${index}`}>
+                    <div className="rounded-2xl border border-white/10 bg-white/10 p-3 text-center backdrop-blur-xl sm:rounded-3xl sm:p-4">
+                      <div className="mx-auto mb-2 flex h-9 w-9 items-center justify-center rounded-2xl bg-yellow-400 text-sm text-emerald-950">
+                        {getIcon(item.iconKey)}
+                      </div>
+
+                      <h3 className="text-base font-black text-yellow-300 sm:text-xl">
+                        {item.value}
+                      </h3>
+
+                      <p className="mt-1 text-[11px] font-bold text-emerald-100">
+                        {item.label}
+                      </p>
+                    </div>
+                  </TiltCard>
+                ))}
+              </motion.div>
+            </motion.div>
+          </AnimatePresence>
+
+          <motion.div
+            initial={{ opacity: 0, scale: 0.94, rotate: -2 }}
+            animate={{ opacity: 1, scale: 1, rotate: 0 }}
+            transition={{ duration: 0.65, delay: 0.18 }}
+            className="program-orbit hidden lg:block"
+          >
+            <div className="relative ml-auto flex aspect-square max-w-[460px] items-center justify-center">
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 34, repeat: Infinity, ease: "linear" }}
+                className="absolute inset-0 rounded-full border border-yellow-300/20"
+              />
+
+              <motion.div
+                animate={{ rotate: -360 }}
+                transition={{ duration: 42, repeat: Infinity, ease: "linear" }}
+                className="absolute inset-[12%] rounded-full border border-emerald-300/20"
+              />
+
+              <motion.div
+                animate={{ y: [0, -10, 0] }}
+                transition={{
+                  duration: 5.5,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+                className="relative z-10 flex h-56 w-56 items-center justify-center rounded-[3rem] border border-white/10 bg-white/10 text-7xl text-yellow-300 shadow-2xl backdrop-blur-xl"
+              >
+                <FaQuran />
+              </motion.div>
+
+              {["quran", "book", "mosque", "microphone", "pen", "users"].map(
+                (item, index) => (
+                  <motion.div
+                    key={item}
+                    animate={{
+                      rotate: 360,
+                    }}
+                    transition={{
+                      duration: 22 + index * 2,
+                      repeat: Infinity,
+                      ease: "linear",
+                    }}
+                    className="absolute inset-0"
+                    style={{
+                      transformOrigin: "50% 50%",
+                    }}
+                  >
+                    <div
+                      className="absolute flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-white/10 text-xl text-yellow-300 backdrop-blur-xl"
+                      style={{
+                        left: `${50 + 42 * Math.cos((index / 6) * Math.PI * 2)}%`,
+                        top: `${50 + 42 * Math.sin((index / 6) * Math.PI * 2)}%`,
+                        transform: "translate(-50%, -50%)",
+                      }}
+                    >
+                      {getIcon(item)}
+                    </div>
+                  </motion.div>
+                )
+              )}
+            </div>
+          </motion.div>
+        </div>
+      </div>
+    </ScreenShell>
+  );
+}
+
+function ProgramsScreen({
+  programs,
+  activeProgram,
+  setActiveProgram,
+  direction,
+}) {
+  const active = programs[activeProgram] || programs[0];
+
+  return (
+    <ScreenShell light sectionKey="program-list" direction={direction}>
+      <IslamicBackground />
+
+      <div data-allow-scroll="true" className="program-screen overflow-y-auto">
+        <div className="program-list-layout">
+          <motion.div
+            initial={{ opacity: 0, y: 24, filter: "blur(8px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            transition={{ duration: 0.55, ease: EASE }}
+            className="program-list-header"
+          >
+            <Badge>Daftar Program</Badge>
+
+            <h2 className="program-heading mt-4 font-black leading-[0.96] tracking-[-0.055em] text-emerald-950">
+              Non formal pesantren yang membentuk kebiasaan santri
+            </h2>
+
+            <p className="mt-4 max-w-3xl text-sm leading-relaxed text-slate-600 sm:text-base">
+              Pilih salah satu program untuk melihat fokus pembinaan dan
+              dampaknya bagi santri.
+            </p>
+          </motion.div>
+
+          <div className="program-list-grid">
+            <div className="program-buttons-grid">
+              {programs.map((program, index) => {
+                const activeItem = index === activeProgram;
+
+                return (
+                  <motion.button
+                    key={`${program.title}-${index}`}
+                    type="button"
+                    onClick={() => setActiveProgram(index)}
+                    initial={{ opacity: 0, y: 20, filter: "blur(8px)" }}
+                    animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                    transition={{
+                      duration: 0.44,
+                      delay: index * 0.035,
+                      ease: EASE,
+                    }}
+                    whileHover={{ y: -4, scale: 1.01 }}
+                    whileTap={{ scale: 0.97 }}
+                    className={`program-mini-card ${
+                      activeItem ? "program-mini-card-active" : ""
+                    }`}
+                  >
+                    <span className="program-mini-icon">
+                      {getIcon(program.iconKey)}
+                    </span>
+
+                    <span className="min-w-0 text-left">
+                      <span className="block truncate text-sm font-black">
+                        {program.title}
+                      </span>
+                      <span className="mt-1 block truncate text-[11px] font-bold opacity-70">
+                        {program.tag}
+                      </span>
+                    </span>
+                  </motion.button>
+                );
+              })}
+            </div>
+
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeProgram}
+                initial={{ opacity: 0, x: 32, filter: "blur(10px)" }}
+                animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+                exit={{ opacity: 0, x: -32, filter: "blur(10px)" }}
+                transition={{ duration: 0.45, ease: EASE }}
+              >
+                <TiltCard className="h-full">
+                  <div className="program-detail-card">
+                    <div className="program-detail-glow" />
+
+                    <div className="relative z-10">
+                      <div className="flex flex-wrap items-start justify-between gap-4">
+                        <div className="program-detail-icon">
+                          {getIcon(active.iconKey)}
+                        </div>
+
+                        <span className="rounded-full bg-yellow-400 px-4 py-2 text-[10px] font-black uppercase tracking-[0.2em] text-emerald-950">
+                          {active.tag}
+                        </span>
+                      </div>
+
+                      <p className="mt-7 text-xs font-black uppercase tracking-[0.28em] text-yellow-300">
+                        {active.subtitle}
+                      </p>
+
+                      <h3 className="mt-3 text-[clamp(2rem,4vw,4.3rem)] font-black leading-[0.95] tracking-[-0.055em] text-white">
+                        {active.title}
+                      </h3>
+
+                      <p className="mt-5 text-sm leading-relaxed text-emerald-100 sm:text-base">
+                        {active.desc}
+                      </p>
+
+                      <div className="mt-6 grid gap-3 sm:grid-cols-2">
+                        {active.focus.map((item, index) => (
+                          <motion.div
+                            key={`${item}-${index}`}
+                            initial={{ opacity: 0, y: 16 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{
+                              delay: 0.08 + index * 0.06,
+                              duration: 0.35,
+                            }}
+                            className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/10 p-3 text-sm font-black text-white"
+                          >
+                            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-yellow-400 text-[10px] text-emerald-950">
+                              <FaCheckCircle />
+                            </span>
+                            {item}
+                          </motion.div>
+                        ))}
+                      </div>
+
+                      <div className="mt-6 rounded-[1.5rem] border border-yellow-300/20 bg-yellow-300/10 p-5">
+                        <p className="text-[10px] font-black uppercase tracking-[0.25em] text-yellow-300">
+                          Dampak Pembinaan
+                        </p>
+
+                        <p className="mt-2 text-sm font-semibold leading-relaxed text-emerald-50">
+                          {active.impact}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </TiltCard>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+        </div>
+      </div>
+    </ScreenShell>
+  );
+}
+
+function FocusScreen({ programs, step, direction }) {
+  const current = programs[step] || programs[0];
+
+  return (
+    <ScreenShell sectionKey="program-focus" direction={direction}>
+      <IslamicBackground dark intense />
+
+      <div className="program-screen program-focus-screen">
+        <AnimatePresence mode="wait" custom={direction}>
+          <motion.div
+            key={`${current.title}-${step}`}
+            custom={direction}
+            variants={stepVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{ duration: 0.48, ease: EASE }}
+            className="program-focus-layout"
+          >
+            <div className="program-focus-left">
+              <Badge dark>
+                Program {String(step + 1).padStart(2, "0")} /{" "}
+                {String(programs.length).padStart(2, "0")}
+              </Badge>
+
+              <h2 className="program-heading mt-4 font-black leading-[0.96] tracking-[-0.055em] text-white">
+                {current.title}
+              </h2>
+
+              <p className="mt-4 text-sm leading-relaxed text-emerald-100 sm:text-base">
+                {current.desc}
+              </p>
+
+              <div className="mt-6 flex flex-wrap gap-2">
+                {current.focus.map((item, index) => (
+                  <span
+                    key={`${item}-${index}`}
+                    className="rounded-full border border-white/10 bg-white/10 px-4 py-2 text-xs font-black text-emerald-50 backdrop-blur-xl"
+                  >
+                    {item}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <TiltCard className="program-focus-card-wrap">
+              <div className="program-focus-card">
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{
+                    duration: 28,
+                    repeat: Infinity,
+                    ease: "linear",
+                  }}
+                  className="absolute inset-6 rounded-full border border-yellow-300/15"
+                />
+
+                <motion.div
+                  animate={{ rotate: -360 }}
+                  transition={{
+                    duration: 36,
+                    repeat: Infinity,
+                    ease: "linear",
+                  }}
+                  className="absolute inset-16 rounded-full border border-emerald-300/15"
+                />
+
+                <div className="relative z-10 flex h-32 w-32 items-center justify-center rounded-[2.2rem] bg-yellow-400 text-6xl text-emerald-950 shadow-[0_0_70px_rgba(250,204,21,0.25)]">
+                  {getIcon(current.iconKey)}
+                </div>
+
+                <h3 className="relative z-10 mt-8 max-w-md text-center text-2xl font-black leading-tight text-white sm:text-4xl">
+                  {current.impact}
+                </h3>
+              </div>
+            </TiltCard>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    </ScreenShell>
+  );
+}
+
+function FlowScreen({ flow, direction }) {
+  return (
+    <ScreenShell light sectionKey="program-flow" direction={direction}>
+      <IslamicBackground />
+
+      <div data-allow-scroll="true" className="program-screen overflow-y-auto">
+        <div className="program-flow-layout">
+          <motion.div
+            initial={{ opacity: 0, y: 24, filter: "blur(8px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            transition={{ duration: 0.55, ease: EASE }}
+            className="mx-auto max-w-4xl text-center"
+          >
+            <Badge>Alur Pembinaan</Badge>
+
+            <h2 className="program-heading mt-4 font-black leading-[0.96] tracking-[-0.055em] text-emerald-950">
+              Kegiatan yang berulang menjadi karakter
+            </h2>
+
+            <p className="mx-auto mt-4 max-w-3xl text-sm leading-relaxed text-slate-600 sm:text-base">
+              Program non formal tidak hanya menjadi kegiatan tambahan, tetapi
+              bagian dari pembiasaan yang membentuk kehidupan santri.
+            </p>
+          </motion.div>
+
+          <div className="program-flow-grid">
+            {flow.map((item, index) => (
+              <motion.div
+                key={`${item.title}-${index}`}
+                initial={{ opacity: 0, y: 28, filter: "blur(8px)" }}
+                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                transition={{
+                  delay: index * 0.09,
+                  duration: 0.48,
+                  ease: EASE,
+                }}
+              >
+                <TiltCard className="h-full">
+                  <div className="program-flow-card">
+                    <div className="program-flow-number">{item.number}</div>
+
+                    <h3 className="mt-6 text-2xl font-black text-emerald-950">
+                      {item.title}
+                    </h3>
+
+                    <p className="mt-3 text-sm font-semibold leading-relaxed text-slate-600">
+                      {item.desc}
+                    </p>
+                  </div>
+                </TiltCard>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </ScreenShell>
+  );
+}
+
+function FaqScreen({ faq, openFaq, setOpenFaq, direction }) {
+  return (
+    <ScreenShell sectionKey="program-faq" direction={direction}>
+      <IslamicBackground dark intense />
+
+      <div data-allow-scroll="true" className="program-screen overflow-y-auto">
+        <div className="program-faq-layout">
+          <motion.div
+            initial={{ opacity: 0, y: 24, filter: "blur(8px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            transition={{ duration: 0.55, ease: EASE }}
+            className="program-faq-left"
+          >
+            <Badge dark>Pertanyaan Program</Badge>
+
+            <h2 className="program-heading mt-4 font-black leading-[0.96] tracking-[-0.055em] text-white">
+              Informasi singkat tentang program non formal
+            </h2>
+
+            <p className="mt-4 max-w-2xl text-sm leading-relaxed text-emerald-100 sm:text-base">
+              Bagian ini membantu calon santri dan wali memahami tujuan program
+              pesantren tanpa perlu membuka banyak halaman.
+            </p>
+          </motion.div>
+
+          <div className="program-faq-list">
+            {faq.map((item, index) => {
+              const isOpen = openFaq === index;
+
+              return (
+                <motion.button
+                  key={`${item.q}-${index}`}
+                  type="button"
+                  onClick={() => setOpenFaq(isOpen ? -1 : index)}
+                  initial={{ opacity: 0, y: 18, filter: "blur(8px)" }}
+                  animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                  transition={{
+                    delay: index * 0.08,
+                    duration: 0.42,
+                    ease: EASE,
+                  }}
+                  className="program-faq-item"
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <h3 className="text-left text-base font-black text-white sm:text-lg">
+                      {item.q}
+                    </h3>
+
+                    <span
+                      className={`mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-yellow-400 text-emerald-950 transition ${
+                        isOpen ? "rotate-45" : ""
+                      }`}
+                    >
+                      +
+                    </span>
+                  </div>
+
+                  <AnimatePresence initial={false}>
+                    {isOpen && (
+                      <motion.p
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.28, ease: EASE }}
+                        className="overflow-hidden text-left text-sm leading-relaxed text-emerald-100"
+                      >
+                        <span className="block pt-3">{item.a}</span>
+                      </motion.p>
+                    )}
+                  </AnimatePresence>
+                </motion.button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </ScreenShell>
+  );
+}
+
+function CtaScreen({ direction }) {
+  return (
+    <ScreenShell light sectionKey="program-cta" direction={direction}>
+      <IslamicBackground />
+
+      <div className="program-screen program-cta-screen">
+        <motion.div
+          initial={{ opacity: 0, y: 28, filter: "blur(8px)" }}
+          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          transition={{ duration: 0.55, ease: EASE }}
+          className="program-cta-card"
+        >
+          <div className="program-cta-icon">
+            <FaFeatherAlt />
+          </div>
+
+          <Badge>Mulai Perjalanan Santri</Badge>
+
+          <h2 className="program-heading mt-5 font-black leading-[0.96] tracking-[-0.055em] text-emerald-950">
+            Siap menjadi bagian dari pembinaan Al-Furqon?
+          </h2>
+
+          <p className="mx-auto mt-5 max-w-2xl text-sm leading-relaxed text-slate-600 sm:text-base">
+            Program non formal menjadi bagian penting dari kehidupan pesantren.
+            Dari Al-Qur'an, adab, dakwah, kreativitas, hingga kedisiplinan
+            harian.
+          </p>
+
+          <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
+            <MotionLink
+              href="/pendaftaran"
+              whileTap={{ scale: 0.96 }}
+              className="inline-flex items-center justify-center gap-3 rounded-full bg-emerald-950 px-7 py-3.5 text-sm font-black text-yellow-300 shadow-xl transition hover:-translate-y-1 hover:bg-emerald-900"
+            >
+              Daftar Sekarang
+              <FaArrowRight />
+            </MotionLink>
+
+            <motion.a
+              href={WHATSAPP_ADMIN_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              whileTap={{ scale: 0.96 }}
+              className="inline-flex items-center justify-center gap-3 rounded-full border border-emerald-200 bg-white px-7 py-3.5 text-sm font-black text-emerald-950 shadow-xl transition hover:-translate-y-1"
+            >
+              Hubungi Admin
+              <FaWhatsapp />
+            </motion.a>
+          </div>
+        </motion.div>
+      </div>
+    </ScreenShell>
+  );
+}
+
 export default function Program() {
+  const [mounted, setMounted] = useState(false);
   const [programPage, setProgramPage] = useState(null);
   const [maintenance, setMaintenance] = useState(false);
   const [loading, setLoading] = useState(true);
   const [checking, setChecking] = useState(false);
 
+  const [position, setPosition] = useState({
+    section: 0,
+    step: 0,
+    direction: 1,
+  });
+
   const [activeProgram, setActiveProgram] = useState(0);
-  const [currentGallery, setCurrentGallery] = useState(0);
   const [openFaq, setOpenFaq] = useState(0);
 
-  const { scrollY } = useScroll();
+  const cooldown = useRef(false);
+  const touchStartY = useRef(0);
+  const touchStartX = useRef(0);
+  const touchStartTarget = useRef(null);
 
-  const heroImageScale = useTransform(scrollY, [0, 900], [1, 1.12]);
-  const heroTextY = useTransform(scrollY, [0, 900], [0, 55]);
-  const overlayOpacity = useTransform(scrollY, [0, 900], [0.42, 0.82]);
+  const navbarRef = useRef(null);
+  const [navbarHeight, setNavbarHeight] = useState(92);
 
-  const fetchProgramData = async () => {
+  const fetchProgramData = useCallback(async () => {
     try {
       setChecking(true);
       setMaintenance(false);
 
-      const endpoint = `${API_URL}/api/program`;
-
-      const response = await fetch(endpoint, {
-        cache: "no-store",
-      });
-
-      if (!response.ok) {
-        throw new Error(`Status: ${response.status}`);
+      if (!API_URL) {
+        throw new Error("NEXT_PUBLIC_API_URL belum diatur");
       }
 
-      const result = await response.json();
+      await fetchJson(`${API_URL}/api/health`);
+
+      const result = await fetchJson(`${API_URL}/api/program`);
 
       if (!result?.success || !result?.data) {
         throw new Error("Format data program tidak valid");
@@ -683,7 +1431,7 @@ export default function Program() {
 
       setProgramPage(normalizeProgramPage(result.data));
       setActiveProgram(0);
-      setCurrentGallery(0);
+      setOpenFaq(0);
     } catch (error) {
       console.error("PROGRAM BACKEND ERROR:", error.message);
       setProgramPage(null);
@@ -692,820 +1440,770 @@ export default function Program() {
       setLoading(false);
       setChecking(false);
     }
-  };
+  }, []);
+
+  const data = useMemo(() => {
+    return normalizeProgramPage(programPage);
+  }, [programPage]);
+
+  const sections = useMemo(
+    () => [
+      { key: "hero", label: "Hero", total: 1 },
+      { key: "programs", label: "Program", total: 1 },
+      {
+        key: "focus",
+        label: "Fokus",
+        total: data.programs.length || 1,
+      },
+      { key: "flow", label: "Alur", total: 1 },
+      { key: "faq", label: "FAQ", total: 1 },
+      { key: "cta", label: "Daftar", total: 1 },
+    ],
+    [data.programs.length]
+  );
+
+  const activeSection = position.section;
+  const activeStep = position.step;
+  const direction = position.direction;
+
+  const currentTotal = sections[activeSection]?.total || 1;
+  const activeSectionKey = sections[activeSection]?.key || "hero";
+
+  const isFirst = activeSection === 0 && activeStep === 0;
+
+  const isLast =
+    activeSection === sections.length - 1 && activeStep === currentTotal - 1;
+
+  const jumpToSection = useCallback(
+    (index) => {
+      cooldown.current = false;
+
+      setPosition((prev) => {
+        const safeIndex = Math.min(Math.max(index, 0), sections.length - 1);
+
+        return {
+          section: safeIndex,
+          step: 0,
+          direction: safeIndex >= prev.section ? 1 : -1,
+        };
+      });
+    },
+    [sections.length]
+  );
+
+  const handleDirection = useCallback(
+    (dir) => {
+      if (cooldown.current) return;
+
+      cooldown.current = true;
+
+      setPosition((prev) => {
+        const total = sections[prev.section]?.total || 1;
+
+        if (dir > 0) {
+          if (prev.step < total - 1) {
+            return {
+              section: prev.section,
+              step: prev.step + 1,
+              direction: 1,
+            };
+          }
+
+          if (prev.section < sections.length - 1) {
+            return {
+              section: prev.section + 1,
+              step: 0,
+              direction: 1,
+            };
+          }
+
+          return {
+            ...prev,
+            direction: 1,
+          };
+        }
+
+        if (prev.step > 0) {
+          return {
+            section: prev.section,
+            step: prev.step - 1,
+            direction: -1,
+          };
+        }
+
+        if (prev.section > 0) {
+          const previousSection = prev.section - 1;
+
+          return {
+            section: previousSection,
+            step: sections[previousSection].total - 1,
+            direction: -1,
+          };
+        }
+
+        return {
+          ...prev,
+          direction: -1,
+        };
+      });
+
+      window.setTimeout(() => {
+        cooldown.current = false;
+      }, 680);
+    },
+    [sections]
+  );
 
   useEffect(() => {
-    const html = document.documentElement;
-    const body = document.body;
-    const next = document.getElementById("__next");
-
-    html.style.setProperty("overflow", "auto", "important");
-    html.style.setProperty("height", "auto", "important");
-
-    body.style.setProperty("overflow", "auto", "important");
-    body.style.setProperty("height", "auto", "important");
-
-    if (next) {
-      next.style.setProperty("overflow", "visible", "important");
-      next.style.setProperty("height", "auto", "important");
-    }
-
-    return () => {
-      html.style.removeProperty("overflow");
-      html.style.removeProperty("height");
-
-      body.style.removeProperty("overflow");
-      body.style.removeProperty("height");
-
-      if (next) {
-        next.style.removeProperty("overflow");
-        next.style.removeProperty("height");
-      }
-    };
+    setMounted(true);
   }, []);
 
   useEffect(() => {
     fetchProgramData();
-  }, []);
-
-  const data = useMemo(() => normalizeProgramPage(programPage), [programPage]);
-  const { hero, programs, stats, timeline, gallery, advantages, faq } = data;
-  const active = programs[activeProgram] || programs[0];
+  }, [fetchProgramData]);
 
   useEffect(() => {
-    if (!gallery?.length) return;
+    if (!mounted || loading || maintenance) return;
 
-    const interval = setInterval(() => {
-      setCurrentGallery((prev) => (prev + 1) % gallery.length);
-    }, 4000);
+    const oldHtmlOverflow = document.documentElement.style.overflow;
+    const oldBodyOverflow = document.body.style.overflow;
+    const oldHtmlHeight = document.documentElement.style.height;
+    const oldBodyHeight = document.body.style.height;
+    const oldBodyOverscroll = document.body.style.overscrollBehavior;
 
-    return () => clearInterval(interval);
-  }, [gallery]);
+    document.documentElement.style.overflow = "hidden";
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.height = "100%";
+    document.body.style.height = "100%";
+    document.body.style.overscrollBehavior = "none";
 
-  if (loading) return <LoadingPage />;
+    const handleWheel = (event) => {
+      const scrollableTarget = event.target.closest?.(
+        '[data-allow-scroll="true"]'
+      );
+
+      if (scrollableTarget) {
+        const { scrollTop, scrollHeight, clientHeight } = scrollableTarget;
+
+        const isScrollingDown = event.deltaY > 0;
+        const isScrollingUp = event.deltaY < 0;
+
+        const atTop = scrollTop <= 0;
+        const atBottom = scrollTop + clientHeight >= scrollHeight - 2;
+
+        if ((isScrollingDown && !atBottom) || (isScrollingUp && !atTop)) {
+          return;
+        }
+      }
+
+      event.preventDefault();
+
+      if (Math.abs(event.deltaY) < 20) return;
+
+      handleDirection(event.deltaY > 0 ? 1 : -1);
+    };
+
+    const handleKeyDown = (event) => {
+      if (["ArrowDown", "PageDown", " "].includes(event.key)) {
+        event.preventDefault();
+        handleDirection(1);
+      }
+
+      if (["ArrowUp", "PageUp"].includes(event.key)) {
+        event.preventDefault();
+        handleDirection(-1);
+      }
+
+      if (event.key === "Home") {
+        event.preventDefault();
+        jumpToSection(0);
+      }
+
+      if (event.key === "End") {
+        event.preventDefault();
+        jumpToSection(sections.length - 1);
+      }
+    };
+
+    const handleTouchStart = (event) => {
+      touchStartY.current = event.touches[0].clientY;
+      touchStartX.current = event.touches[0].clientX;
+      touchStartTarget.current = event.target;
+    };
+
+    const handleTouchEnd = (event) => {
+      const endY = event.changedTouches[0].clientY;
+      const endX = event.changedTouches[0].clientX;
+
+      const diffY = touchStartY.current - endY;
+      const diffX = touchStartX.current - endX;
+
+      if (Math.abs(diffX) > Math.abs(diffY)) return;
+      if (Math.abs(diffY) < 42) return;
+
+      const scrollableTarget = touchStartTarget.current?.closest?.(
+        '[data-allow-scroll="true"]'
+      );
+
+      if (scrollableTarget) {
+        const { scrollTop, scrollHeight, clientHeight } = scrollableTarget;
+
+        const isSwipingUp = diffY > 0;
+        const isSwipingDown = diffY < 0;
+
+        const atTop = scrollTop <= 0;
+        const atBottom = scrollTop + clientHeight >= scrollHeight - 2;
+
+        if ((isSwipingUp && !atBottom) || (isSwipingDown && !atTop)) {
+          return;
+        }
+      }
+
+      handleDirection(diffY > 0 ? 1 : -1);
+    };
+
+    window.addEventListener("wheel", handleWheel, { passive: false });
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("touchstart", handleTouchStart, { passive: true });
+    window.addEventListener("touchend", handleTouchEnd, { passive: true });
+
+    return () => {
+      document.documentElement.style.overflow = oldHtmlOverflow;
+      document.body.style.overflow = oldBodyOverflow;
+      document.documentElement.style.height = oldHtmlHeight;
+      document.body.style.height = oldBodyHeight;
+      document.body.style.overscrollBehavior = oldBodyOverscroll;
+
+      window.removeEventListener("wheel", handleWheel);
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("touchstart", handleTouchStart);
+      window.removeEventListener("touchend", handleTouchEnd);
+    };
+  }, [
+    mounted,
+    loading,
+    maintenance,
+    handleDirection,
+    jumpToSection,
+    sections.length,
+  ]);
+
+  useEffect(() => {
+    const updateNavbarHeight = () => {
+      const height = navbarRef.current?.offsetHeight || 92;
+      setNavbarHeight(height);
+
+      document.documentElement.style.setProperty(
+        "--program-navbar-height",
+        `${height}px`
+      );
+    };
+
+    updateNavbarHeight();
+
+    window.addEventListener("resize", updateNavbarHeight);
+
+    return () => window.removeEventListener("resize", updateNavbarHeight);
+  }, []);
+
+  useEffect(() => {
+    if (activeSectionKey === "focus") {
+      setActiveProgram(activeStep);
+    }
+  }, [activeSectionKey, activeStep]);
+
+  if (!mounted || loading) {
+    return <LoadingPage />;
+  }
 
   if (maintenance || !programPage) {
     return <MaintenancePage onRetry={fetchProgramData} checking={checking} />;
   }
 
   return (
-    <main className="program-page overflow-x-hidden bg-[#f7f1df] text-emerald-950">
-      <ScrollProgress />
-      <Navbar />
-      <ChapterRail />
+    <main
+      className="program-root"
+      style={{
+        "--program-navbar-height": `${navbarHeight}px`,
+      }}
+    >
+      <CursorGlow />
 
-      {/* HERO EDITORIAL */}
-      <Section id="program-hero" dark>
-        <motion.div style={{ scale: heroImageScale }} className="absolute inset-0">
-          <SafeImage
-            src={hero.image}
-            alt="Program Pesantren Al-Furqon"
-            className="h-full w-full object-cover"
-          />
-        </motion.div>
-
-        <motion.div
-          style={{ opacity: overlayOpacity }}
-          className="absolute inset-0 bg-gradient-to-r from-[#041b15] via-[#062d22]/95 to-[#0d4f38]/45"
-        />
-        <div className="absolute inset-0 bg-black/48" />
-        <BackgroundArt dark />
-
-        <Container
-          style={{ y: heroTextY }}
-          className="flex min-h-[100svh] items-center"
-        >
-          <div className="grid w-full items-center gap-8 lg:grid-cols-[0.95fr_1.05fr]">
-            <motion.div
-              initial={{ opacity: 0, y: 44, filter: "blur(10px)" }}
-              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-              transition={{ duration: 0.75, ease: EASE }}
-              className="max-w-5xl"
-            >
-              <Badge dark>{hero.badge}</Badge>
-
-              <h1 className="program-hero-title mt-5 font-black leading-[0.92] tracking-[-0.065em] text-white">
-                {hero.title}
-                <span className="block bg-gradient-to-r from-yellow-300 via-yellow-400 to-emerald-200 bg-clip-text text-transparent">
-                  {hero.highlight}
-                </span>
-              </h1>
-
-              <p className="mt-6 max-w-3xl text-sm leading-relaxed text-emerald-50 sm:text-base lg:text-xl">
-                {hero.desc}
-              </p>
-
-              <div className="mt-8 grid gap-3 sm:grid-cols-2">
-                <a
-                  href="#program-lab"
-                  className="group inline-flex items-center justify-center gap-3 rounded-full bg-yellow-400 px-7 py-4 text-sm font-black text-emerald-950 shadow-[0_18px_50px_rgba(250,204,21,0.32)] transition hover:-translate-y-1 hover:bg-yellow-300"
-                >
-                  Masuk Program Lab
-                  <FaArrowRight className="transition group-hover:translate-x-1" />
-                </a>
-
-                <a
-                  href="#program-gallery"
-                  className="inline-flex items-center justify-center gap-3 rounded-full border border-white/25 bg-white/10 px-7 py-4 text-sm font-black text-white backdrop-blur-xl transition hover:-translate-y-1 hover:bg-white/20"
-                >
-                  <FaPlay />
-                  Lihat Galeri
-                </a>
-              </div>
-
-              <div className="mt-8 rounded-[1.6rem] border border-white/10 bg-white/10 p-5 backdrop-blur-xl md:max-w-xl">
-                <p className="text-xl leading-loose text-yellow-300 sm:text-2xl">
-                  {hero.arabic}
-                </p>
-                <p className="mt-2 text-[10px] font-black uppercase tracking-[0.28em] text-emerald-100">
-                  {hero.source}
-                </p>
-              </div>
-            </motion.div>
-
-            <Reveal className="hidden lg:block">
-              <div className="program-poster relative ml-auto max-w-xl">
-                <div className="absolute -left-8 top-8 hidden h-[88%] w-10 rounded-full bg-yellow-400 xl:block" />
-
-                <GlassCard dark className="rotate-[1.2deg] p-4">
-                  <div className="relative overflow-hidden rounded-[1.7rem]">
-                    <SafeImage
-                      src={gallery[currentGallery]}
-                      alt="Preview Program"
-                      className="program-hero-preview w-full object-cover"
-                    />
-
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/20 to-transparent" />
-
-                    <div className="absolute left-5 top-5 rounded-full bg-yellow-400 px-4 py-2 text-[10px] font-black uppercase tracking-[0.22em] text-emerald-950">
-                      Program Frame
-                    </div>
-
-                    <div className="absolute bottom-0 left-0 right-0 p-6">
-                      <p className="text-xs font-black uppercase tracking-[0.3em] text-yellow-300">
-                        Bukan layout biasa
-                      </p>
-                      <h3 className="mt-2 text-4xl font-black leading-tight text-white">
-                        Kegiatan santri dibuat seperti cerita perjalanan.
-                      </h3>
-                    </div>
-                  </div>
-                </GlassCard>
-              </div>
-            </Reveal>
-          </div>
-        </Container>
-      </Section>
-
-      {/* STATS STRIP */}
-      <Section className="bg-gradient-to-br from-[#f7f1df] via-white to-emerald-50">
-        <BackgroundArt />
-
-        <Container className="flex min-h-[72svh] flex-col justify-center">
-          <div className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
-            <ProgramHeader
-              align="left"
-              badge="Ringkasan Program"
-              title="Setiap aktivitas punya tujuan pembinaan."
-              desc="Bukan hanya banyak kegiatan, tetapi kegiatan yang diarahkan untuk membentuk karakter santri."
-            />
-
-            <div className="grid gap-3 sm:grid-cols-2">
-              {stats.map((item, index) => (
-                <Reveal key={`${item.label}-${index}`} delay={index * 0.05}>
-                  <div className="program-stat-card rounded-[1.7rem] border border-emerald-100 bg-white/80 p-5 shadow-xl backdrop-blur">
-                    <div className="flex items-center justify-between gap-4">
-                      <div>
-                        <p className="text-[10px] font-black uppercase tracking-[0.24em] text-emerald-700">
-                          {item.label}
-                        </p>
-                        <h3 className="mt-2 text-4xl font-black tracking-[-0.06em] text-emerald-950">
-                          {item.value}
-                        </h3>
-                      </div>
-
-                      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-950 text-2xl text-yellow-300">
-                        {getIcon(item.iconKey)}
-                      </div>
-                    </div>
-                  </div>
-                </Reveal>
-              ))}
-            </div>
-          </div>
-        </Container>
-      </Section>
-      {/* PROGRAM LAB PREMIUM */}
-<Section id="program-lab" dark>
-  <BackgroundArt dark />
-  <ProgramLabAura />
-
-  <Container className="flex min-h-[100svh] items-center py-24">
-    <div className="grid w-full gap-8 xl:grid-cols-[0.72fr_1.28fr]">
-      <div>
-        <ProgramHeader
-          dark
-          align="left"
-          badge="Program Lab"
-          title="Pilih program, rasakan suasananya."
-          desc="Setiap program dibuat seperti ruang eksplorasi agar calon santri dan wali bisa memahami karakter kegiatan dengan lebih hidup."
-        />
-
-        <div className="mt-8 grid gap-4">
-          {programs.map((item, index) => {
-            const activeItem = activeProgram === index;
-
-            return (
-              <motion.button
-                key={`${item.title}-${index}`}
-                custom={index}
-                variants={PROGRAM_CARD_VARIANTS}
-                initial="hidden"
-                whileInView="show"
-                viewport={{ once: true, amount: 0.2 }}
-                onClick={() => setActiveProgram(index)}
-                whileHover={{
-                  y: -6,
-                  scale: activeItem ? 1.01 : 1.025,
-                }}
-                whileTap={{ scale: 0.96 }}
-                className={`group relative overflow-hidden rounded-[1.8rem] border p-4 text-left transition duration-500 ${
-                  activeItem
-                    ? "border-yellow-300 bg-yellow-400 text-emerald-950 shadow-[0_25px_75px_rgba(250,204,21,0.28)]"
-                    : "border-white/10 bg-white/10 text-white shadow-2xl backdrop-blur-xl hover:border-yellow-300/50 hover:bg-white/15"
-                }`}
-              >
-                <motion.div
-                  animate={
-                    activeItem
-                      ? {
-                          x: ["-120%", "120%"],
-                        }
-                      : undefined
-                  }
-                  transition={{
-                    duration: 1.8,
-                    repeat: Infinity,
-                    repeatDelay: 1.2,
-                    ease: "easeInOut",
-                  }}
-                  className="absolute inset-y-0 left-0 w-1/2 skew-x-[-18deg] bg-white/20 blur-xl"
-                />
-
-                <div className="relative z-10 flex items-center gap-4">
-                  <motion.div
-                    animate={
-                      activeItem
-                        ? {
-                            rotate: [0, -6, 6, 0],
-                            scale: [1, 1.08, 1],
-                          }
-                        : undefined
-                    }
-                    transition={{
-                      duration: 2.2,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
-                    className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl text-2xl transition ${
-                      activeItem
-                        ? "bg-emerald-950 text-yellow-300 shadow-xl"
-                        : "bg-white/10 text-yellow-300 group-hover:bg-yellow-400 group-hover:text-emerald-950"
-                    }`}
-                  >
-                    {getIcon(item.iconKey)}
-                  </motion.div>
-
-                  <div className="min-w-0 flex-1">
-                    <p
-                      className={`text-[10px] font-black uppercase tracking-[0.22em] ${
-                        activeItem ? "text-emerald-900" : "text-yellow-300"
-                      }`}
-                    >
-                      {String(index + 1).padStart(2, "0")} • {item.subtitle}
-                    </p>
-
-                    <h3 className="mt-1 truncate text-xl font-black sm:text-2xl">
-                      {item.title}
-                    </h3>
-
-                    <p
-                      className={`mt-1 line-clamp-1 text-xs font-semibold ${
-                        activeItem ? "text-emerald-900" : "text-emerald-100/70"
-                      }`}
-                    >
-                      {item.desc}
-                    </p>
-                  </div>
-
-                  <motion.div
-                    animate={
-                      activeItem
-                        ? {
-                            x: [0, 5, 0],
-                          }
-                        : undefined
-                    }
-                    transition={{
-                      duration: 1.4,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
-                    className={`hidden sm:block ${
-                      activeItem ? "text-emerald-950" : "text-yellow-300"
-                    }`}
-                  >
-                    <FaArrowRight />
-                  </motion.div>
-                </div>
-
-                {activeItem && (
-                  <motion.div
-                    layoutId="program-active-line"
-                    className="absolute bottom-0 left-6 right-6 h-1 rounded-full bg-emerald-950"
-                  />
-                )}
-              </motion.button>
-            );
-          })}
-        </div>
+      <div ref={navbarRef} className="fixed left-0 top-0 z-[500] w-full">
+        <Navbar />
       </div>
 
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={activeProgram}
-          initial={{
-            opacity: 0,
-            x: 70,
-            rotateY: -12,
-            scale: 0.96,
-            filter: "blur(12px)",
-          }}
-          animate={{
-            opacity: 1,
-            x: 0,
-            rotateY: 0,
-            scale: 1,
-            filter: "blur(0px)",
-          }}
-          exit={{
-            opacity: 0,
-            x: -70,
-            rotateY: 12,
-            scale: 0.96,
-            filter: "blur(12px)",
-          }}
-          transition={{
-            duration: 0.58,
-            ease: EASE,
-          }}
-          style={{
-            transformStyle: "preserve-3d",
-          }}
-        >
-          <GlassCard dark className="relative p-4 sm:p-5">
-            <div className="absolute -left-5 top-10 hidden h-24 w-3 rounded-full bg-yellow-400 shadow-[0_0_35px_rgba(250,204,21,0.65)] lg:block" />
+      <AnimatePresence mode="wait" custom={direction}>
+        {activeSectionKey === "hero" && (
+          <HeroScreen
+            key="hero"
+            hero={data.hero}
+            stats={data.stats}
+            direction={direction}
+          />
+        )}
 
-            <div className="relative overflow-hidden rounded-[1.7rem]">
-              <motion.div
-                initial={{ scale: 1.12 }}
-                animate={{ scale: 1 }}
-                transition={{ duration: 1.2, ease: EASE }}
-              >
-                <SafeImage
-                  src={active.image}
-                  alt={active.title}
-                  className="program-feature-image w-full object-cover"
-                />
-              </motion.div>
+        {activeSectionKey === "programs" && (
+          <ProgramsScreen
+            key="programs"
+            programs={data.programs}
+            activeProgram={activeProgram}
+            setActiveProgram={setActiveProgram}
+            direction={direction}
+          />
+        )}
 
-              <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/30 to-transparent" />
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(250,204,21,0.24),transparent_30%)]" />
+        {activeSectionKey === "focus" && (
+          <FocusScreen
+            key="focus"
+            programs={data.programs}
+            step={activeStep}
+            direction={direction}
+          />
+        )}
 
-              <motion.div
-                initial={{ y: -18, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.15, duration: 0.45, ease: EASE }}
-                className="absolute left-4 top-4 rounded-full bg-yellow-400 px-4 py-2 text-[10px] font-black uppercase tracking-[0.24em] text-emerald-950 shadow-xl sm:left-6 sm:top-6"
-              >
-                {active.tag}
-              </motion.div>
+        {activeSectionKey === "flow" && (
+          <FlowScreen key="flow" flow={data.flow} direction={direction} />
+        )}
 
-              <motion.div
-                animate={{
-                  y: [0, -8, 0],
-                  rotate: [0, 2, 0],
-                }}
-                transition={{
-                  duration: 4,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-                className="absolute right-5 top-5 hidden h-16 w-16 items-center justify-center rounded-[1.3rem] border border-white/20 bg-white/10 text-2xl text-yellow-300 backdrop-blur-xl sm:flex"
-              >
-                {getIcon(active.iconKey)}
-              </motion.div>
+        {activeSectionKey === "faq" && (
+          <FaqScreen
+            key="faq"
+            faq={data.faq}
+            openFaq={openFaq}
+            setOpenFaq={setOpenFaq}
+            direction={direction}
+          />
+        )}
 
-              <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-7">
-                <motion.p
-                  initial={{ opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.18, duration: 0.42, ease: EASE }}
-                  className="text-xs font-black uppercase tracking-[0.28em] text-yellow-300"
-                >
-                  {active.subtitle}
-                </motion.p>
-
-                <motion.h3
-                  initial={{ opacity: 0, y: 22 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.25, duration: 0.5, ease: EASE }}
-                  className="program-card-title mt-2 font-black leading-[0.92] tracking-[-0.06em] text-white"
-                >
-                  {active.title}
-                </motion.h3>
-              </div>
-            </div>
-
-            <div className="mt-6 grid gap-6 lg:grid-cols-[1.08fr_0.92fr]">
-              <motion.div
-                initial={{ opacity: 0, y: 22 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2, duration: 0.5, ease: EASE }}
-              >
-                <p className="text-sm font-semibold leading-relaxed text-emerald-50 sm:text-base">
-                  {active.longDesc}
-                </p>
-
-                <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-                  <Link
-                    href="/pendaftaran"
-                    className="group inline-flex items-center justify-center gap-3 rounded-full bg-yellow-400 px-6 py-3 text-sm font-black text-emerald-950 shadow-[0_18px_45px_rgba(250,204,21,0.25)] transition hover:-translate-y-1 hover:bg-yellow-300"
-                  >
-                    Daftar Sekarang
-                    <FaArrowRight className="transition group-hover:translate-x-1" />
-                  </Link>
-
-                  <a
-                    href={WHATSAPP_ADMIN_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-3 rounded-full border border-white/20 bg-white/10 px-6 py-3 text-sm font-black text-white transition hover:-translate-y-1 hover:bg-white/20"
-                  >
-                    <FaWhatsapp />
-                    Tanya Admin
-                  </a>
-                </div>
-              </motion.div>
-
-              <div className="grid grid-cols-2 gap-3">
-                {active.features.map((feature, index) => (
-                  <motion.div
-                    key={`${feature}-${index}`}
-                    custom={index}
-                    variants={FEATURE_VARIANTS}
-                    initial="hidden"
-                    animate="show"
-                    whileHover={{
-                      y: -5,
-                      scale: 1.04,
-                    }}
-                    className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/10 p-4 text-center backdrop-blur-xl"
-                  >
-                    <div className="absolute -right-8 -top-8 h-20 w-20 rounded-full bg-yellow-300/10 blur-2xl" />
-
-                    <FaCheckCircle className="relative z-10 mx-auto text-xl text-yellow-300" />
-
-                    <p className="relative z-10 mt-2 text-sm font-black text-white">
-                      {feature}
-                    </p>
-
-                    <p className="relative z-10 mt-1 text-[9px] font-black uppercase tracking-[0.18em] text-emerald-100/70">
-                      Fokus {index + 1}
-                    </p>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-          </GlassCard>
-        </motion.div>
+        {activeSectionKey === "cta" && (
+          <CtaScreen key="cta" direction={direction} />
+        )}
       </AnimatePresence>
-    </div>
-  </Container>
-</Section>
-      {/* MAP */}
-      <Section id="program-map" className="bg-gradient-to-br from-[#f7f1df] via-white to-emerald-50">
-        <BackgroundArt />
 
-        <Container className="flex min-h-[100svh] flex-col justify-center">
-          <ProgramHeader
-            badge="Peta Program"
-            title="Setiap program punya karakter berbeda."
-            desc="Bagian ini dibuat tidak simetris agar lebih terasa hidup dan tidak monoton seperti grid website biasa."
-          />
+      <SideDots
+        sections={sections}
+        activeSection={activeSection}
+        activeStep={activeStep}
+        jumpToSection={jumpToSection}
+      />
 
-          <div className="program-mosaic mt-10 grid gap-5 lg:grid-cols-4">
-            {programs.map((item, index) => (
-              <Reveal
-                key={`${item.title}-mosaic-${index}`}
-                delay={index * 0.06}
-                className={index === 0 ? "lg:col-span-2 lg:row-span-2" : ""}
-              >
-                <GlassCard className="h-full overflow-hidden transition duration-500 hover:-translate-y-2">
-                  <div
-                    className={`program-mosaic-image relative overflow-hidden ${
-                      index === 0 ? "program-mosaic-image-main" : ""
-                    }`}
-                  >
-                    <SafeImage
-                      src={item.image}
-                      alt={item.title}
-                      className="h-full w-full object-cover transition duration-700 group-hover:scale-110"
-                    />
+      <ProgressBar
+        sections={sections}
+        activeSection={activeSection}
+        activeStep={activeStep}
+      />
 
-                    <div className="absolute inset-0 bg-gradient-to-t from-emerald-950 via-emerald-950/20 to-transparent" />
+      <div className="fixed bottom-7 left-1/2 z-[270] flex -translate-x-1/2 items-center gap-3">
+        <button
+          type="button"
+          disabled={isFirst}
+          onClick={() => handleDirection(-1)}
+          className="rounded-full border border-white/20 bg-emerald-950/70 px-4 py-2 text-xs font-black text-white backdrop-blur transition hover:bg-emerald-900 disabled:cursor-not-allowed disabled:opacity-35"
+        >
+          <span className="inline-flex items-center gap-2">
+            <FaArrowUp />
+            Atas
+          </span>
+        </button>
 
-                    <div className="absolute left-4 top-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-yellow-400 text-xl text-emerald-950">
-                      {getIcon(item.iconKey)}
-                    </div>
+        <button
+          type="button"
+          disabled={isLast}
+          onClick={() => handleDirection(1)}
+          className="rounded-full bg-yellow-400 px-4 py-2 text-xs font-black text-emerald-950 shadow-xl transition hover:bg-yellow-300 disabled:cursor-not-allowed disabled:opacity-35"
+        >
+          <span className="inline-flex items-center gap-2">
+            Bawah
+            <FaArrowDown />
+          </span>
+        </button>
+      </div>
 
-                    <div className="absolute bottom-0 left-0 right-0 p-5">
-                      <p className="text-[10px] font-black uppercase tracking-[0.24em] text-yellow-300">
-                        {item.subtitle}
-                      </p>
+      <style jsx global>{`
+        html,
+        body,
+        #__next {
+          width: 100%;
+          height: 100%;
+          margin: 0;
+        }
 
-                      <h3 className="mt-2 text-3xl font-black leading-tight text-white">
-                        {item.title}
-                      </h3>
+        .program-root {
+          position: relative;
+          min-height: 100dvh;
+          overflow: hidden;
+          background: #041b15;
+        }
 
-                      <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-emerald-50">
-                        {item.desc}
-                      </p>
-                    </div>
-                  </div>
-                </GlassCard>
-              </Reveal>
-            ))}
-          </div>
-        </Container>
-      </Section>
+        .program-screen {
+          position: relative;
+          z-index: 10;
+          height: 100dvh;
+          width: min(92vw, 1240px);
+          margin-inline: auto;
+          box-sizing: border-box;
+          padding-top: max(calc(var(--program-navbar-height, 92px) + 18px), 122px);
+          padding-bottom: 76px;
+          overflow: hidden;
+        }
 
-      {/* ROADMAP */}
-      <Section dark>
-        <BackgroundArt dark />
+        .program-hero-screen,
+        .program-cta-screen,
+        .program-focus-screen {
+          display: flex;
+          align-items: center;
+        }
 
-        <Container className="flex min-h-[90svh] flex-col justify-center">
-          <ProgramHeader
-            dark
-            badge="Roadmap Pembinaan"
-            title="Santri bergerak dari adaptasi menuju percaya diri."
-            desc="Alurnya dibuat seperti rute perjalanan, bukan timeline biasa."
-          />
+        .program-hero-grid {
+          width: 100%;
+          min-height: 0;
+          display: grid;
+          grid-template-columns: minmax(0, 1.12fr) minmax(340px, 0.88fr);
+          align-items: center;
+          gap: clamp(1.2rem, 3vw, 3rem);
+        }
 
-          <div className="program-road mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-            {timeline.map((item, index) => (
-              <Reveal key={item.number} delay={index * 0.07}>
-                <div className="relative h-full rounded-[1.8rem] border border-white/10 bg-white/10 p-5 backdrop-blur-xl">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-yellow-400 text-lg font-black text-emerald-950">
-                    {item.number}
-                  </div>
+        .program-title {
+          font-size: clamp(2.45rem, 6.6vw, 6rem);
+        }
 
-                  <h3 className="mt-5 text-2xl font-black text-white">
-                    {item.title}
-                  </h3>
+        .program-heading {
+          font-size: clamp(2.1rem, 5vw, 4.7rem);
+        }
 
-                  <p className="mt-3 text-sm leading-relaxed text-emerald-100">
-                    {item.desc}
-                  </p>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </Container>
-      </Section>
+        .program-list-layout,
+        .program-flow-layout,
+        .program-faq-layout {
+          min-height: 100%;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          gap: 1.35rem;
+        }
 
-      {/* GALLERY */}
-      <Section id="program-gallery" className="bg-[#f7f1df]">
-        <BackgroundArt />
+        .program-list-header {
+          max-width: 900px;
+        }
 
-        <Container className="flex min-h-[92svh] items-center">
-          <div className="grid w-full gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
-            <ProgramHeader
-              align="left"
-              badge="Galeri Program"
-              title="Potongan suasana yang terasa hidup."
-              desc="Galeri dibuat seperti film strip agar berbeda dari tampilan galeri standar."
-            />
+        .program-list-grid {
+          display: grid;
+          grid-template-columns: minmax(280px, 0.9fr) minmax(0, 1.1fr);
+          gap: 1rem;
+          min-height: 0;
+        }
 
-            <GlassCard className="p-4 sm:p-5">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={currentGallery}
-                  initial={{ opacity: 0, scale: 1.06 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.96 }}
-                  transition={{ duration: 0.45, ease: EASE }}
-                  className="relative overflow-hidden rounded-[1.6rem]"
-                >
-                  <SafeImage
-                    src={gallery[currentGallery]}
-                    alt="Galeri Program"
-                    className="program-gallery-image w-full object-cover"
-                  />
+        .program-buttons-grid {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 0.75rem;
+          align-content: start;
+        }
 
-                  <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/90 via-transparent to-transparent" />
+        .program-mini-card {
+          min-width: 0;
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          border-radius: 1.35rem;
+          border: 1px solid rgba(6, 95, 70, 0.1);
+          background: rgba(255, 255, 255, 0.78);
+          padding: 0.8rem;
+          color: #064e3b;
+          box-shadow: 0 16px 45px rgba(0, 0, 0, 0.07);
+          transition: 0.28s ease;
+        }
 
-                  <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-7">
-                    <p className="text-xs font-black uppercase tracking-[0.3em] text-yellow-300">
-                      Frame {String(currentGallery + 1).padStart(2, "0")}
-                    </p>
+        .program-mini-card-active {
+          background: #052e22;
+          color: white;
+          border-color: rgba(250, 204, 21, 0.4);
+          box-shadow: 0 24px 70px rgba(4, 120, 87, 0.22);
+        }
 
-                    <h3 className="mt-2 text-4xl font-black text-white sm:text-5xl">
-                      Kegiatan Santri
-                    </h3>
-                  </div>
-                </motion.div>
-              </AnimatePresence>
+        .program-mini-icon {
+          display: flex;
+          height: 2.7rem;
+          width: 2.7rem;
+          flex-shrink: 0;
+          align-items: center;
+          justify-content: center;
+          border-radius: 1rem;
+          background: #facc15;
+          color: #052e22;
+          font-size: 1.1rem;
+        }
 
-              <div className="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-6">
-                {gallery.map((img, index) => (
-                  <button
-                    key={`${img}-${index}`}
-                    onClick={() => setCurrentGallery(index)}
-                    className={`overflow-hidden rounded-2xl border-2 p-1 transition ${
-                      currentGallery === index
-                        ? "border-yellow-400 bg-yellow-400"
-                        : "border-emerald-100 bg-white hover:border-emerald-400"
-                    }`}
-                  >
-                    <SafeImage
-                      src={img}
-                      alt={`Thumbnail ${index + 1}`}
-                      className="h-16 w-full rounded-xl object-cover sm:h-20"
-                    />
-                  </button>
-                ))}
-              </div>
-            </GlassCard>
-          </div>
-        </Container>
-      </Section>
+        .program-detail-card {
+          position: relative;
+          min-height: 100%;
+          overflow: hidden;
+          border-radius: 2rem;
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          background: linear-gradient(135deg, #052e22, #064e3b);
+          padding: clamp(1.3rem, 3vw, 2.1rem);
+          box-shadow: 0 28px 80px rgba(0, 0, 0, 0.22);
+        }
 
-      {/* ADVANTAGES */}
-      <Section className="bg-gradient-to-br from-[#f7f1df] via-white to-emerald-50">
-        <BackgroundArt />
+        .program-detail-glow {
+          position: absolute;
+          right: -5rem;
+          top: -5rem;
+          height: 18rem;
+          width: 18rem;
+          border-radius: 999px;
+          background: rgba(250, 204, 21, 0.16);
+          filter: blur(45px);
+        }
 
-        <Container className="flex min-h-[80svh] flex-col justify-center">
-          <ProgramHeader
-            badge="Kenapa Program Ini Berbeda?"
-            title="Program dirancang agar santri tidak hanya mengikuti, tapi ikut tumbuh."
-            desc="Bagian ini dibuat seperti highlight manifesto agar terasa berbeda dari section keunggulan biasa."
-          />
+        .program-detail-icon {
+          display: flex;
+          height: 4.3rem;
+          width: 4.3rem;
+          align-items: center;
+          justify-content: center;
+          border-radius: 1.35rem;
+          background: #facc15;
+          color: #052e22;
+          font-size: 2rem;
+          box-shadow: 0 0 45px rgba(250, 204, 21, 0.25);
+        }
 
-          <div className="mt-10 grid gap-5 md:grid-cols-3">
-            {advantages.map((item, index) => (
-              <Reveal key={item.title} delay={index * 0.06}>
-                <GlassCard className="h-full p-6">
-                  <div className="flex h-16 w-16 items-center justify-center rounded-[1.4rem] bg-emerald-950 text-2xl text-yellow-300">
-                    {getIcon(item.iconKey)}
-                  </div>
+        .program-focus-layout {
+          width: 100%;
+          display: grid;
+          grid-template-columns: minmax(0, 0.9fr) minmax(320px, 1.1fr);
+          align-items: center;
+          gap: clamp(1.2rem, 3vw, 3rem);
+        }
 
-                  <h3 className="mt-6 text-2xl font-black text-emerald-950">
-                    {item.title}
-                  </h3>
+        .program-focus-card {
+          position: relative;
+          min-height: min(58vh, 520px);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          overflow: hidden;
+          border-radius: 2.4rem;
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          background: rgba(255, 255, 255, 0.08);
+          padding: 2rem;
+          box-shadow: 0 30px 90px rgba(0, 0, 0, 0.22);
+          backdrop-filter: blur(18px);
+        }
 
-                  <p className="mt-3 text-sm leading-relaxed text-slate-600 sm:text-base">
-                    {item.desc}
-                  </p>
-                </GlassCard>
-              </Reveal>
-            ))}
-          </div>
-        </Container>
-      </Section>
+        .program-flow-grid {
+          display: grid;
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          gap: 1rem;
+        }
 
-      {/* FAQ */}
-      <Section id="program-faq" dark>
-        <BackgroundArt dark />
+        .program-flow-card {
+          position: relative;
+          height: 100%;
+          min-height: 260px;
+          overflow: hidden;
+          border-radius: 2rem;
+          border: 1px solid rgba(6, 95, 70, 0.1);
+          background: rgba(255, 255, 255, 0.86);
+          padding: 1.2rem;
+          box-shadow: 0 24px 65px rgba(0, 0, 0, 0.09);
+        }
 
-        <Container className="flex min-h-[90svh] items-center">
-          <div className="grid w-full gap-8 lg:grid-cols-[0.9fr_1.1fr]">
-            <ProgramHeader
-              dark
-              align="left"
-              badge="Pertanyaan Umum"
-              title="Jawaban singkat untuk orang tua dan calon santri."
-              desc="FAQ tetap dibuat simple, tetapi dengan panel gelap agar tidak terasa seperti FAQ default."
-            />
+        .program-flow-card::before {
+          content: "";
+          position: absolute;
+          right: -4rem;
+          top: -4rem;
+          height: 12rem;
+          width: 12rem;
+          border-radius: 999px;
+          background: rgba(250, 204, 21, 0.25);
+          filter: blur(30px);
+        }
 
-            <div className="space-y-4">
-              {faq.map((item, index) => {
-                const isOpen = openFaq === index;
+        .program-flow-number {
+          position: relative;
+          z-index: 1;
+          display: flex;
+          height: 4rem;
+          width: 4rem;
+          align-items: center;
+          justify-content: center;
+          border-radius: 1.3rem;
+          background: #052e22;
+          color: #facc15;
+          font-size: 1rem;
+          font-weight: 900;
+        }
 
-                return (
-                  <GlassCard key={item.q} dark>
-                    <button
-                      onClick={() => setOpenFaq(isOpen ? null : index)}
-                      className="flex w-full items-center justify-between gap-5 p-5 text-left sm:p-6"
-                    >
-                      <div>
-                        <p className="mb-2 text-[10px] font-black uppercase tracking-[0.24em] text-yellow-300">
-                          Q{String(index + 1).padStart(2, "0")}
-                        </p>
+        .program-faq-layout {
+          display: grid;
+          grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+          align-items: center;
+        }
 
-                        <h3 className="text-base font-black text-white sm:text-xl">
-                          {item.q}
-                        </h3>
-                      </div>
+        .program-faq-list {
+          display: grid;
+          gap: 0.9rem;
+        }
 
-                      <motion.div
-                        animate={{ rotate: isOpen ? 180 : 0 }}
-                        transition={{ duration: 0.25 }}
-                        className="shrink-0 text-yellow-300"
-                      >
-                        <FaChevronDown />
-                      </motion.div>
-                    </button>
+        .program-faq-item {
+          width: 100%;
+          border-radius: 1.4rem;
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          background: rgba(255, 255, 255, 0.09);
+          padding: 1.15rem;
+          backdrop-filter: blur(14px);
+          transition: 0.25s ease;
+        }
 
-                    <AnimatePresence>
-                      {isOpen && (
-                        <motion.div
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: "auto", opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
-                          transition={{ duration: 0.3, ease: EASE }}
-                          className="overflow-hidden"
-                        >
-                          <div className="border-t border-white/10 px-5 pb-5 pt-4 sm:px-6 sm:pb-6">
-                            <p className="text-sm leading-relaxed text-emerald-100 sm:text-base">
-                              {item.a}
-                            </p>
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </GlassCard>
-                );
-              })}
-            </div>
-          </div>
-        </Container>
-      </Section>
+        .program-faq-item:hover {
+          background: rgba(255, 255, 255, 0.14);
+          transform: translateY(-3px);
+        }
 
-      {/* CTA */}
-      <Section dark className="min-h-[78svh]">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#041b15] via-[#063226] to-[#041b15]" />
-        <BackgroundArt dark />
+        .program-cta-card {
+          position: relative;
+          width: min(100%, 920px);
+          margin-inline: auto;
+          overflow: hidden;
+          border-radius: 2.4rem;
+          border: 1px solid rgba(6, 95, 70, 0.1);
+          background: rgba(255, 255, 255, 0.9);
+          padding: clamp(1.4rem, 4vw, 3rem);
+          text-align: center;
+          box-shadow: 0 30px 90px rgba(0, 0, 0, 0.12);
+        }
 
-        <Container className="flex min-h-[78svh] items-center justify-center text-center">
-          <Reveal className="mx-auto w-full max-w-6xl">
-            <GlassCard dark className="p-7 sm:p-10 lg:p-14">
-              <motion.div
-                animate={{ rotate: [0, 8, -8, 0], scale: [1, 1.05, 1] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-[1.4rem] bg-yellow-400 text-2xl text-emerald-950"
-              >
-                <FaCheckCircle />
-              </motion.div>
+        .program-cta-card::before {
+          content: "";
+          position: absolute;
+          left: -7rem;
+          top: -7rem;
+          height: 20rem;
+          width: 20rem;
+          border-radius: 999px;
+          background: rgba(16, 185, 129, 0.18);
+          filter: blur(40px);
+        }
 
-              <p className="font-black text-yellow-300">
-                Perjalanan santri dimulai dari keputusan kecil.
-              </p>
+        .program-cta-card::after {
+          content: "";
+          position: absolute;
+          right: -7rem;
+          bottom: -7rem;
+          height: 20rem;
+          width: 20rem;
+          border-radius: 999px;
+          background: rgba(250, 204, 21, 0.28);
+          filter: blur(40px);
+        }
 
-              <h2 className="program-section-title mx-auto mt-4 max-w-5xl font-black leading-[0.96] tracking-[-0.06em] text-white">
-                Mulai perjalanan santri bersama program Al-Furqon.
-              </h2>
+        .program-cta-icon {
+          position: relative;
+          z-index: 1;
+          margin: 0 auto 1.2rem;
+          display: flex;
+          height: 5rem;
+          width: 5rem;
+          align-items: center;
+          justify-content: center;
+          border-radius: 1.7rem;
+          background: #052e22;
+          color: #facc15;
+          font-size: 2rem;
+          box-shadow: 0 24px 65px rgba(5, 46, 34, 0.22);
+        }
 
-              <p className="mx-auto mt-5 max-w-3xl text-sm leading-relaxed text-emerald-100 sm:text-base lg:text-lg">
-                Daftarkan calon santri dan ikuti proses pendidikan yang membangun
-                ilmu, ibadah, adab, keberanian, dan kemandirian.
-              </p>
+        @media (max-width: 1024px) {
+          .program-screen {
+            width: min(94vw, 980px);
+            padding-top: max(
+              calc(var(--program-navbar-height, 84px) + 16px),
+              112px
+            );
+          }
 
-              <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
-                <Link
-                  href="/pendaftaran"
-                  className="inline-flex items-center justify-center gap-3 rounded-full bg-yellow-400 px-8 py-4 text-sm font-black text-emerald-950 shadow-[0_18px_45px_rgba(250,204,21,0.28)] transition hover:-translate-y-1 hover:bg-yellow-300"
-                >
-                  Daftar Sekarang
-                  <FaArrowRight />
-                </Link>
+          .program-hero-grid,
+          .program-focus-layout,
+          .program-list-grid,
+          .program-faq-layout {
+            grid-template-columns: 1fr;
+          }
 
-                <a
-                  href={WHATSAPP_ADMIN_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-3 rounded-full border border-white/25 bg-white/10 px-8 py-4 text-sm font-black text-white backdrop-blur-xl transition hover:-translate-y-1 hover:bg-white/20"
-                >
-                  <FaWhatsapp />
-                  Hubungi Admin
-                </a>
-              </div>
-            </GlassCard>
-          </Reveal>
-        </Container>
-      </Section>
+          .program-orbit {
+            display: none !important;
+          }
 
-      <Footer />
+          .program-flow-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+          }
+        }
+
+        @media (max-width: 720px) {
+          .program-screen {
+            width: 100%;
+            padding-inline: 14px;
+            padding-top: calc(var(--program-navbar-height, 76px) + 14px);
+            padding-bottom: calc(74px + env(safe-area-inset-bottom));
+          }
+
+          .program-title {
+            font-size: clamp(2rem, 12vw, 3.45rem);
+          }
+
+          .program-heading {
+            font-size: clamp(1.75rem, 9.5vw, 3rem);
+          }
+
+          .program-hero-grid {
+            min-height: calc(
+              100dvh - var(--program-navbar-height, 76px) - 100px
+            );
+          }
+
+          .program-stats {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+          }
+
+          .program-buttons-grid,
+          .program-flow-grid {
+            grid-template-columns: 1fr;
+          }
+
+          .program-mini-card {
+            padding: 0.72rem;
+          }
+
+          .program-detail-card {
+            padding: 1rem;
+          }
+
+          .program-flow-card {
+            min-height: 190px;
+          }
+
+          .program-focus-card {
+            min-height: 360px;
+          }
+        }
+
+        @media (max-width: 390px) {
+          .program-screen {
+            padding-inline: 10px;
+          }
+
+          .program-title {
+            font-size: clamp(1.8rem, 11vw, 2.65rem);
+          }
+
+          .program-heading {
+            font-size: clamp(1.55rem, 9vw, 2.25rem);
+          }
+        }
+      `}</style>
     </main>
   );
 }
