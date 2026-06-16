@@ -29,12 +29,10 @@ import {
   FaQuran,
   FaRedo,
   FaShieldAlt,
-  FaSparkles,
   FaStar,
   FaUsers,
   FaWhatsapp,
 } from "react-icons/fa";
-
 const MotionLink = motion(Link);
 
 const API_URL =
@@ -254,7 +252,7 @@ function getIcon(key) {
     shield: <FaShieldAlt />,
     star: <FaStar />,
     layer: <FaLayerGroup />,
-    spark: <FaSparkles />,
+    spark: <FaStar />,
   };
 
   return icons[key] || <FaStar />;
