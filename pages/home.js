@@ -20,7 +20,6 @@ import {
   FaRedo,
   FaMosque,
   FaQuran,
-  FaCampground,
   FaBookOpen,
   FaHeart,
   FaShieldAlt,
@@ -31,7 +30,6 @@ import {
   FaStar,
   FaCheckCircle,
   FaWrench,
-  FaPlay,
   FaWhatsapp,
   FaQuoteLeft,
 } from "react-icons/fa";
@@ -76,8 +74,8 @@ const DEFAULT_HERO = {
 
 const DEFAULT_STATS = [
   { value: "100+", label: "Santri" },
-  { value: "3+", label: "Program" },
   { value: "24 Jam", label: "Pembinaan" },
+  { value: "Aktif", label: "Kegiatan Santri" },
 ];
 
 const DEFAULT_VALUES = [
@@ -167,7 +165,6 @@ function getIcon(key) {
   const icons = {
     mosque: <FaMosque />,
     quran: <FaQuran />,
-    camp: <FaCampground />,
     book: <FaBookOpen />,
     heart: <FaHeart />,
     shield: <FaShieldAlt />,
@@ -362,8 +359,21 @@ function MaintenancePage({ onRetry, checking }) {
           </a>
         </motion.div>
       </div>
+      
     </main>
   );
+}
+
+async function fetchJson(url) {
+  const response = await fetch(url, {
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    throw new Error(`Request gagal: ${response.status}`);
+  }
+
+  return response.json();
 }
 
 function CursorGlow() {
@@ -1428,47 +1438,33 @@ const [navbarHeight, setNavbarHeight] = useState(92);
     activeSection === sections.length - 1 && activeStep === currentTotal - 1;
 
   const fetchHomeData = async () => {
-    try {
-      setChecking(true);
-      setMaintenance(false);
+  try {
+    setChecking(true);
+    setMaintenance(false);
 
-      if (!API_URL) {
-        throw new Error("NEXT_PUBLIC_API_URL belum diatur");
-      }
-
-      const health = await fetch(`${API_URL}/api/health`, {
-        cache: "no-store",
-      });
-
-      if (!health.ok) {
-        throw new Error("Backend health check gagal");
-      }
-
-      const response = await fetch(`${API_URL}/api/home`, {
-        cache: "no-store",
-      });
-
-      if (!response.ok) {
-        throw new Error("Gagal mengambil data home");
-      }
-
-      const result = await response.json();
-
-      if (!result?.success || !result?.data) {
-        throw new Error("Format data backend salah");
-      }
-
-      setHomeData(result.data);
-      setMaintenance(false);
-    } catch (error) {
-      console.error("BACKEND ERROR:", error.message);
-      setHomeData(null);
-      setMaintenance(true);
-    } finally {
-      setLoading(false);
-      setChecking(false);
+    if (!API_URL) {
+      throw new Error("NEXT_PUBLIC_API_URL belum diatur");
     }
-  };
+
+    await fetchJson(`${API_URL}/api/health`);
+
+    const result = await fetchJson(`${API_URL}/api/home`);
+
+    if (!result?.success || !result?.data) {
+      throw new Error("Format data backend salah");
+    }
+
+    setHomeData(result.data);
+    setMaintenance(false);
+  } catch (error) {
+    console.error("BACKEND ERROR:", error.message);
+    setHomeData(null);
+    setMaintenance(true);
+  } finally {
+    setLoading(false);
+    setChecking(false);
+  }
+};
 
   useEffect(() => {
     setMounted(true);
