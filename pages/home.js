@@ -1535,67 +1535,57 @@ function PembinaScreen({ pembinaItems, step, direction, setStep }) {
               </div>
 
               {/* LIST PEMBINA */}
-              <div
-                data-allow-scroll="true"
-                className="mt-3 min-h-0 flex-1 overflow-hidden rounded-[1.35rem] border border-white/10 bg-black/10 p-2 sm:p-3"
-              >
-                <div
-                  data-allow-scroll="true"
-                  className="no-scrollbar h-full overflow-y-auto pr-1"
-                >
-                  <div className="grid gap-2">
-                    {pembinaItems.map((item, index) => (
-                      <motion.button
-                        key={`${item.name}-${index}`}
-                        onClick={() => setStep(index)}
-                        whileTap={{ scale: 0.97 }}
-                        whileHover={{ x: 5 }}
-                        className={`group flex min-w-0 items-center gap-3 rounded-2xl border p-3 text-left transition ${
-                          step === index
-                            ? "border-yellow-300 bg-yellow-400 text-emerald-950 shadow-lg shadow-yellow-950/20"
-                            : "border-white/10 bg-white/10 text-white hover:border-yellow-300/40 hover:bg-white/15"
-                        }`}
-                      >
-                        <div
-                          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-base transition ${
-                            step === index
-                              ? "bg-emerald-950 text-yellow-300"
-                              : "bg-white/10 text-yellow-300 group-hover:bg-yellow-300 group-hover:text-emerald-950"
-                          }`}
-                        >
-                          {getIcon(item.iconKey)}
-                        </div>
+              <div className="pembina-list-v2 mt-3 shrink-0 rounded-[1.25rem] border border-white/10 bg-black/10 p-2">
+  <div className="grid grid-cols-1 gap-2 xl:grid-cols-2">
+    {pembinaItems.map((item, index) => (
+      <motion.button
+        key={`${item.name}-${index}`}
+        onClick={() => setStep(index)}
+        whileTap={{ scale: 0.97 }}
+        whileHover={{ x: 4 }}
+        className={`group flex min-h-[50px] min-w-0 items-center gap-2 rounded-2xl border px-3 py-2 text-left transition ${
+          step === index
+            ? "border-yellow-300 bg-yellow-400 text-emerald-950 shadow-lg shadow-yellow-950/20"
+            : "border-white/10 bg-white/10 text-white hover:border-yellow-300/40 hover:bg-white/15"
+        }`}
+      >
+        <div
+          className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-sm transition ${
+            step === index
+              ? "bg-emerald-950 text-yellow-300"
+              : "bg-white/10 text-yellow-300 group-hover:bg-yellow-300 group-hover:text-emerald-950"
+          }`}
+        >
+          {getIcon(item.iconKey)}
+        </div>
 
-                        <div className="min-w-0 flex-1">
-                          <p className="truncate text-sm font-black">
-                            {item.name}
-                          </p>
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-[13px] font-black leading-tight">
+            {item.name}
+          </p>
 
-                          <p
-                            className={`mt-1 truncate text-xs font-semibold ${
-                              step === index
-                                ? "text-emerald-900"
-                                : "text-emerald-100/75"
-                            }`}
-                          >
-                            {item.role}
-                          </p>
-                        </div>
+          <p
+            className={`mt-0.5 truncate text-[11px] font-semibold ${
+              step === index ? "text-emerald-900" : "text-emerald-100/75"
+            }`}
+          >
+            {item.role}
+          </p>
+        </div>
 
-                        <span
-                          className={`hidden rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-[0.18em] sm:block ${
-                            step === index
-                              ? "bg-emerald-950 text-yellow-300"
-                              : "bg-white/10 text-yellow-300"
-                          }`}
-                        >
-                          {String(index + 1).padStart(2, "0")}
-                        </span>
-                      </motion.button>
-                    ))}
-                  </div>
-                </div>
-              </div>
+        <span
+          className={`hidden shrink-0 rounded-full px-2.5 py-1 text-[9px] font-black uppercase tracking-[0.16em] sm:block ${
+            step === index
+              ? "bg-emerald-950 text-yellow-300"
+              : "bg-white/10 text-yellow-300"
+          }`}
+        >
+          {String(index + 1).padStart(2, "0")}
+        </span>
+      </motion.button>
+    ))}
+  </div>
+</div>
 
               {/* CONTROL INTERNAL */}
               <div className="mt-3 flex shrink-0 items-center justify-between gap-3">
@@ -2271,6 +2261,44 @@ function HomeResponsiveStyles() {
 
         .pembina-panel-v2 .grid-cols-3 > div {
           padding: 10px !important;
+        }
+      }
+
+            .pembina-list-v2 {
+        overflow: visible !important;
+      }
+
+      .pembina-list-v2 button {
+        min-width: 0;
+      }
+
+      .pembina-list-v2 p {
+        min-width: 0;
+      }
+
+      @media (max-height: 860px) and (min-width: 1025px) {
+        .pembina-list-v2 {
+          margin-top: 0.65rem !important;
+          padding: 0.45rem !important;
+        }
+
+        .pembina-list-v2 button {
+          min-height: 44px !important;
+          padding: 0.45rem 0.65rem !important;
+          border-radius: 0.9rem !important;
+        }
+
+        .pembina-list-v2 button > div:first-child {
+          width: 2rem !important;
+          height: 2rem !important;
+        }
+
+        .pembina-list-v2 p:first-child {
+          font-size: 12px !important;
+        }
+
+        .pembina-list-v2 p:last-child {
+          font-size: 10px !important;
         }
       }
 
