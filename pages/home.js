@@ -946,8 +946,8 @@ function HeroScreen({ hero, stats, direction, handleDirection }) {
 
       <IslamicBackground dark intense />
 
-      <div className="home-screen home-screen--hero">
-  <div className="hero-shell">
+      <div className="home-hero-screen">
+      <div className="hero-shell">
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div
             key="hero-content"
@@ -957,7 +957,7 @@ function HeroScreen({ hero, stats, direction, handleDirection }) {
             animate="center"
             exit="exit"
             transition={{ duration: 0.5, ease: EASE_PREMIUM }}
-            className="max-w-4xl"
+            className="hero-copy max-w-4xl"
           >
             <motion.p
               initial={{ opacity: 0, y: 18 }}
@@ -1008,7 +1008,7 @@ function HeroScreen({ hero, stats, direction, handleDirection }) {
               initial={{ opacity: 0, y: 22 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 0.45 }}
-              className="mt-4 grid max-w-2xl grid-cols-3 gap-2 sm:mt-6 sm:gap-3"
+              className="hero-stats mt-4 grid max-w-2xl grid-cols-3 gap-2 sm:mt-6 sm:gap-3"
             >
               {stats.map((item, index) => (
                 <TiltCard key={`${item.label}-${index}`}>
@@ -1031,7 +1031,7 @@ function HeroScreen({ hero, stats, direction, handleDirection }) {
           initial={{ opacity: 0, scale: 0.94, rotate: -2 }}
           animate={{ opacity: 1, scale: 1, rotate: 0 }}
           transition={{ duration: 0.65, delay: 0.18 }}
-          className="hidden lg:block"
+          className="hero-visual hidden lg:block"
         >
           <TiltCard>
             <div className="relative ml-auto max-w-md xl:max-w-lg">
@@ -2053,37 +2053,6 @@ function HomeResponsiveStyles() {
         scrollbar-width: none;
       }
 
-            .home-screen--hero {
-        width: 100%;
-        max-width: none;
-        padding-left: clamp(16px, 3vw, 42px);
-        padding-right: clamp(16px, 3vw, 42px);
-        padding-top: calc(var(--home-navbar-height, 92px) + 8px);
-        padding-bottom: calc(78px + env(safe-area-inset-bottom));
-      }
-
-      .hero-shell {
-        width: min(100%, 1320px);
-        min-height: calc(
-          100dvh - var(--home-navbar-height, 92px) - 86px - env(safe-area-inset-bottom)
-        );
-        margin-inline: auto;
-        display: grid;
-        align-items: center;
-        grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
-        gap: clamp(1rem, 2vw, 1.5rem);
-      }
-
-      .hero-copy,
-      .hero-visual,
-      .hero-stats {
-        min-width: 0;
-      }
-
-      .home-screen--hero .home-title {
-        font-size: clamp(3rem, 8vw, 7rem);
-      }
-
       .home-screen::-webkit-scrollbar,
       .pembina-screen-v2::-webkit-scrollbar,
       .no-scrollbar::-webkit-scrollbar {
@@ -2135,7 +2104,97 @@ function HomeResponsiveStyles() {
         min-height: 100%;
       }
 
+            .home-hero-screen {
+        width: 100%;
+        height: 100dvh;
+        max-height: 100dvh;
+        box-sizing: border-box;
+        padding-left: clamp(28px, 4vw, 72px);
+        padding-right: clamp(28px, 4vw, 72px);
+        padding-top: calc(var(--home-navbar-height, 92px) + 10px);
+        padding-bottom: calc(56px + env(safe-area-inset-bottom));
+        overflow: hidden !important;
+      }
+
+      .home-hero-screen .hero-shell {
+        width: min(100%, 1360px);
+        height: calc(
+          100dvh - var(--home-navbar-height, 92px) - 66px - env(safe-area-inset-bottom)
+        );
+        max-height: calc(
+          100dvh - var(--home-navbar-height, 92px) - 66px - env(safe-area-inset-bottom)
+        );
+        margin-inline: auto;
+        display: grid;
+        grid-template-columns: minmax(0, 1.02fr) minmax(320px, 0.82fr);
+        align-items: center;
+        gap: clamp(18px, 2.6vw, 42px);
+        overflow: hidden !important;
+      }
+
+      .home-hero-screen .hero-copy,
+      .home-hero-screen .hero-visual,
+      .home-hero-screen .hero-stats {
+        min-width: 0;
+      }
+
+      .home-hero-screen .home-title {
+        font-size: clamp(2.8rem, 5.4vw, 5.9rem) !important;
+        line-height: 0.9 !important;
+        letter-spacing: -0.06em !important;
+        margin-top: 0.75rem !important;
+      }
+
+      .home-hero-screen p {
+        max-width: 720px;
+      }
+
+      .home-hero-screen .mt-6 {
+        margin-top: 1rem !important;
+      }
+
+      .home-hero-screen .mt-4 {
+        margin-top: 0.75rem !important;
+      }
+
+      .home-hero-screen .hero-visual > div {
+        max-width: 390px !important;
+      }
+
       @media (max-width: 820px) {
+
+        .home-hero-screen {
+          width: 100%;
+          height: 100dvh;
+          max-height: 100dvh;
+          padding-left: 22px;
+          padding-right: 22px;
+          padding-top: calc(var(--home-navbar-height, 86px) + 8px);
+          padding-bottom: calc(48px + env(safe-area-inset-bottom));
+          overflow: hidden !important;
+        }
+
+        .home-hero-screen .hero-shell {
+          height: calc(
+            100dvh - var(--home-navbar-height, 86px) - 56px - env(safe-area-inset-bottom)
+          );
+          max-height: calc(
+            100dvh - var(--home-navbar-height, 86px) - 56px - env(safe-area-inset-bottom)
+          );
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          overflow: hidden !important;
+        }
+
+        .home-hero-screen .hero-visual {
+          display: none !important;
+        }
+
+        .home-hero-screen .home-title {
+          font-size: clamp(2.3rem, 8.4vw, 4.6rem) !important;
+        }
+
         .home-screen {
           width: min(92vw, 720px);
           padding-top: calc(var(--home-navbar-height, 86px) + 18px);
@@ -2163,30 +2222,40 @@ function HomeResponsiveStyles() {
           min-height: auto;
         }
 
-                .home-screen--hero {
-          padding-top: calc(var(--home-navbar-height, 86px) + 8px);
-          padding-bottom: calc(72px + env(safe-area-inset-bottom));
-        }
-
-        .hero-shell {
-          min-height: calc(
-            100dvh - var(--home-navbar-height, 86px) - 78px - env(safe-area-inset-bottom)
-          );
-          grid-template-columns: 1fr;
-          gap: 1rem;
-          align-content: center;
-        }
-
-        .hero-visual {
-          display: none !important;
-        }
-
-        .home-screen--hero .home-title {
-          font-size: clamp(2.6rem, 9vw, 5rem);
-        }
       }
 
       @media (max-width: 640px) {
+
+              .home-hero-screen {
+          padding-left: 16px;
+          padding-right: 16px;
+          padding-top: calc(var(--home-navbar-height, 78px) + 6px);
+          padding-bottom: calc(42px + env(safe-area-inset-bottom));
+        }
+
+        .home-hero-screen .hero-shell {
+          height: calc(
+            100dvh - var(--home-navbar-height, 78px) - 48px - env(safe-area-inset-bottom)
+          );
+          max-height: calc(
+            100dvh - var(--home-navbar-height, 78px) - 48px - env(safe-area-inset-bottom)
+          );
+        }
+
+        .home-hero-screen .home-title {
+          font-size: clamp(1.95rem, 10.4vw, 3.1rem) !important;
+          line-height: 0.94 !important;
+        }
+
+        .home-hero-screen p {
+          font-size: 0.82rem !important;
+          line-height: 1.45 !important;
+        }
+
+        .home-hero-screen .hero-stats {
+          margin-top: 0.75rem !important;
+        }
+
         .home-screen {
           width: 100%;
           height: 100dvh;
@@ -2329,48 +2398,30 @@ function HomeResponsiveStyles() {
           max-width: 100%;
         }
 
-                .home-screen--hero {
-          width: 100%;
-          padding-left: 16px;
-          padding-right: 16px;
-          padding-top: calc(var(--home-navbar-height, 78px) + 6px);
-          padding-bottom: calc(70px + env(safe-area-inset-bottom));
-        }
-
-        .hero-shell {
-          min-height: calc(
-            100dvh - var(--home-navbar-height, 78px) - 74px - env(safe-area-inset-bottom)
-          );
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          gap: 0.9rem;
-        }
-
-        .hero-copy {
-          max-width: 100% !important;
-        }
-
-        .hero-visual {
-          display: none !important;
-        }
-
-        .home-screen--hero .home-title {
-          font-size: clamp(2.2rem, 12vw, 3.6rem);
-          line-height: 0.94;
-          letter-spacing: -0.055em;
-        }
-
-        .home-screen--hero p {
-          font-size: 0.86rem;
-        }
-
-        .hero-stats {
-          margin-top: 0.9rem !important;
-        }
       }
 
       @media (max-width: 420px) {
+
+        .home-hero-screen {
+          padding-left: 13px;
+          padding-right: 13px;
+          padding-top: calc(var(--home-navbar-height, 74px) + 4px);
+          padding-bottom: calc(38px + env(safe-area-inset-bottom));
+        }
+
+        .home-hero-screen .hero-shell {
+          height: calc(
+            100dvh - var(--home-navbar-height, 74px) - 42px - env(safe-area-inset-bottom)
+          );
+          max-height: calc(
+            100dvh - var(--home-navbar-height, 74px) - 42px - env(safe-area-inset-bottom)
+          );
+        }
+
+        .home-hero-screen .home-title {
+          font-size: clamp(1.75rem, 10vw, 2.75rem) !important;
+        }
+
         .home-screen,
         .pembina-screen-v2 {
           padding-left: 13px;
@@ -2396,22 +2447,6 @@ function HomeResponsiveStyles() {
           min-height: 230px;
         }
 
-                .home-screen--hero {
-          padding-left: 13px;
-          padding-right: 13px;
-          padding-top: calc(var(--home-navbar-height, 74px) + 4px);
-          padding-bottom: calc(66px + env(safe-area-inset-bottom));
-        }
-
-        .hero-shell {
-          min-height: calc(
-            100dvh - var(--home-navbar-height, 74px) - 70px - env(safe-area-inset-bottom)
-          );
-        }
-
-        .home-screen--hero .home-title {
-          font-size: clamp(2rem, 11.5vw, 3.1rem);
-        }
       }
     `}</style>
   );
@@ -2873,7 +2908,7 @@ useEffect(() => {
       jumpToSection={jumpToSection}
     />
 
-    {!["profile", "pembina", "requirements", "guide"].includes(
+    {!["hero", "profile", "pembina", "requirements", "guide"].includes(
   sections[activeSection]?.key
 ) && (
   <BottomControls
