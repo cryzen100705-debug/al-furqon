@@ -905,10 +905,6 @@ function BottomControls({ onPrev, onNext, isFirst, isLast }) {
         <FaArrowUp />
       </button>
 
-      <div className="hidden rounded-full border border-white/15 bg-white/10 px-5 py-3 text-[10px] font-black uppercase tracking-[0.22em] text-yellow-300 shadow-xl backdrop-blur-xl sm:block">
-        Scroll / Swipe
-      </div>
-
       <button
         onClick={onNext}
         disabled={isLast}
