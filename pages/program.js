@@ -43,7 +43,45 @@ const API_URL =
 const FALLBACK_IMAGE = "/hero-santri.jpg";
 const EASE = [0.22, 1, 0.36, 1];
 
-const ADMIN_WHATSAPP_NUMBER = "6283899601027";
+const PROGRAM_CARD_VARIANTS = {
+  hidden: {
+    opacity: 0,
+    y: 26,
+    scale: 0.96,
+    filter: "blur(10px)",
+  },
+  show: (index = 0) => ({
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    filter: "blur(0px)",
+    transition: {
+      delay: index * 0.08,
+      duration: 0.62,
+      ease: EASE,
+    },
+  }),
+};
+
+const FEATURE_VARIANTS = {
+  hidden: {
+    opacity: 0,
+    y: 18,
+    scale: 0.92,
+  },
+  show: (index = 0) => ({
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      delay: 0.2 + index * 0.07,
+      duration: 0.42,
+      ease: EASE,
+    },
+  }),
+};
+
+const ADMIN_WHATSAPP_NUMBER = "628999155698";
 const ADMIN_WHATSAPP_MESSAGE =
   "Assalamu'alaikum Admin Pesantren Al-Furqon, saya ingin bertanya mengenai program pesantren.";
 const WHATSAPP_ADMIN_URL = `https://wa.me/${ADMIN_WHATSAPP_NUMBER}?text=${encodeURIComponent(
@@ -546,6 +584,66 @@ function ChapterRail() {
   );
 }
 
+function ProgramLabAura() {
+  return (
+    <div className="pointer-events-none absolute inset-0 overflow-hidden">
+      <motion.div
+        animate={{
+          x: [0, 80, 0],
+          y: [0, -50, 0],
+          scale: [1, 1.18, 1],
+          opacity: [0.25, 0.45, 0.25],
+        }}
+        transition={{
+          duration: 9,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        className="absolute left-[8%] top-[18%] h-72 w-72 rounded-full bg-yellow-300/10 blur-3xl"
+      />
+
+      <motion.div
+        animate={{
+          x: [0, -70, 0],
+          y: [0, 60, 0],
+          scale: [1, 1.22, 1],
+          opacity: [0.2, 0.42, 0.2],
+        }}
+        transition={{
+          duration: 11,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        className="absolute bottom-[12%] right-[10%] h-80 w-80 rounded-full bg-emerald-300/10 blur-3xl"
+      />
+
+      <motion.div
+        animate={{
+          rotate: [0, 360],
+        }}
+        transition={{
+          duration: 32,
+          repeat: Infinity,
+          ease: "linear",
+        }}
+        className="absolute left-1/2 top-1/2 h-[38rem] w-[38rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-yellow-300/10"
+      />
+
+      <motion.div
+        animate={{
+          rotate: [360, 0],
+        }}
+        transition={{
+          duration: 42,
+          repeat: Infinity,
+          ease: "linear",
+        }}
+        className="absolute left-1/2 top-1/2 h-[28rem] w-[28rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-emerald-300/10"
+      />
+    </div>
+  );
+}
+
 export default function Program() {
   const [programPage, setProgramPage] = useState(null);
   const [maintenance, setMaintenance] = useState(false);
@@ -797,164 +895,304 @@ export default function Program() {
           </div>
         </Container>
       </Section>
+      {/* PROGRAM LAB PREMIUM */}
+<Section id="program-lab" dark>
+  <BackgroundArt dark />
+  <ProgramLabAura />
 
-      {/* PROGRAM LAB */}
-      <Section id="program-lab" dark>
-        <BackgroundArt dark />
+  <Container className="flex min-h-[100svh] items-center py-24">
+    <div className="grid w-full gap-8 xl:grid-cols-[0.72fr_1.28fr]">
+      <div>
+        <ProgramHeader
+          dark
+          align="left"
+          badge="Program Lab"
+          title="Pilih program, rasakan suasananya."
+          desc="Setiap program dibuat seperti ruang eksplorasi agar calon santri dan wali bisa memahami karakter kegiatan dengan lebih hidup."
+        />
 
-        <Container className="flex min-h-[100svh] items-center">
-          <div className="grid w-full gap-7 xl:grid-cols-[0.72fr_1.28fr]">
-            <div>
-              <ProgramHeader
-                dark
-                align="left"
-                badge="Program Lab"
-                title="Pilih program, lihat sorotannya."
-                desc="Tampilan dibuat seperti ruang eksplorasi, bukan daftar card biasa."
-              />
+        <div className="mt-8 grid gap-4">
+          {programs.map((item, index) => {
+            const activeItem = activeProgram === index;
 
-              <div className="mt-7 grid gap-3">
-                {programs.map((item, index) => {
-                  const activeItem = activeProgram === index;
+            return (
+              <motion.button
+                key={`${item.title}-${index}`}
+                custom={index}
+                variants={PROGRAM_CARD_VARIANTS}
+                initial="hidden"
+                whileInView="show"
+                viewport={{ once: true, amount: 0.2 }}
+                onClick={() => setActiveProgram(index)}
+                whileHover={{
+                  y: -6,
+                  scale: activeItem ? 1.01 : 1.025,
+                }}
+                whileTap={{ scale: 0.96 }}
+                className={`group relative overflow-hidden rounded-[1.8rem] border p-4 text-left transition duration-500 ${
+                  activeItem
+                    ? "border-yellow-300 bg-yellow-400 text-emerald-950 shadow-[0_25px_75px_rgba(250,204,21,0.28)]"
+                    : "border-white/10 bg-white/10 text-white shadow-2xl backdrop-blur-xl hover:border-yellow-300/50 hover:bg-white/15"
+                }`}
+              >
+                <motion.div
+                  animate={
+                    activeItem
+                      ? {
+                          x: ["-120%", "120%"],
+                        }
+                      : undefined
+                  }
+                  transition={{
+                    duration: 1.8,
+                    repeat: Infinity,
+                    repeatDelay: 1.2,
+                    ease: "easeInOut",
+                  }}
+                  className="absolute inset-y-0 left-0 w-1/2 skew-x-[-18deg] bg-white/20 blur-xl"
+                />
 
-                  return (
-                    <button
-                      key={`${item.title}-${index}`}
-                      onClick={() => setActiveProgram(index)}
-                      className={`group relative overflow-hidden rounded-[1.6rem] border p-4 text-left transition duration-500 ${
-                        activeItem
-                          ? "border-yellow-300 bg-yellow-400 text-emerald-950 shadow-[0_20px_60px_rgba(250,204,21,0.22)]"
-                          : "border-white/10 bg-white/10 text-white backdrop-blur-xl hover:-translate-y-1 hover:border-yellow-300/50 hover:bg-white/15"
+                <div className="relative z-10 flex items-center gap-4">
+                  <motion.div
+                    animate={
+                      activeItem
+                        ? {
+                            rotate: [0, -6, 6, 0],
+                            scale: [1, 1.08, 1],
+                          }
+                        : undefined
+                    }
+                    transition={{
+                      duration: 2.2,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                    className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl text-2xl transition ${
+                      activeItem
+                        ? "bg-emerald-950 text-yellow-300 shadow-xl"
+                        : "bg-white/10 text-yellow-300 group-hover:bg-yellow-400 group-hover:text-emerald-950"
+                    }`}
+                  >
+                    {getIcon(item.iconKey)}
+                  </motion.div>
+
+                  <div className="min-w-0 flex-1">
+                    <p
+                      className={`text-[10px] font-black uppercase tracking-[0.22em] ${
+                        activeItem ? "text-emerald-900" : "text-yellow-300"
                       }`}
                     >
-                      <div className="flex items-center gap-4">
-                        <div
-                          className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl text-2xl transition ${
-                            activeItem
-                              ? "bg-emerald-950 text-yellow-300"
-                              : "bg-white/10 text-yellow-300 group-hover:bg-yellow-400 group-hover:text-emerald-950"
-                          }`}
-                        >
-                          {getIcon(item.iconKey)}
-                        </div>
+                      {String(index + 1).padStart(2, "0")} • {item.subtitle}
+                    </p>
 
-                        <div className="min-w-0 flex-1">
-                          <p
-                            className={`text-[10px] font-black uppercase tracking-[0.22em] ${
-                              activeItem
-                                ? "text-emerald-900"
-                                : "text-yellow-300"
-                            }`}
-                          >
-                            {String(index + 1).padStart(2, "0")} •{" "}
-                            {item.subtitle}
-                          </p>
+                    <h3 className="mt-1 truncate text-xl font-black sm:text-2xl">
+                      {item.title}
+                    </h3>
 
-                          <h3 className="mt-1 truncate text-xl font-black sm:text-2xl">
-                            {item.title}
-                          </h3>
-                        </div>
+                    <p
+                      className={`mt-1 line-clamp-1 text-xs font-semibold ${
+                        activeItem ? "text-emerald-900" : "text-emerald-100/70"
+                      }`}
+                    >
+                      {item.desc}
+                    </p>
+                  </div>
 
-                        <FaArrowRight
-                          className={`hidden transition sm:block ${
-                            activeItem
-                              ? "translate-x-1"
-                              : "group-hover:translate-x-1"
-                          }`}
-                        />
-                      </div>
-                    </button>
-                  );
-                })}
+                  <motion.div
+                    animate={
+                      activeItem
+                        ? {
+                            x: [0, 5, 0],
+                          }
+                        : undefined
+                    }
+                    transition={{
+                      duration: 1.4,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                    className={`hidden sm:block ${
+                      activeItem ? "text-emerald-950" : "text-yellow-300"
+                    }`}
+                  >
+                    <FaArrowRight />
+                  </motion.div>
+                </div>
+
+                {activeItem && (
+                  <motion.div
+                    layoutId="program-active-line"
+                    className="absolute bottom-0 left-6 right-6 h-1 rounded-full bg-emerald-950"
+                  />
+                )}
+              </motion.button>
+            );
+          })}
+        </div>
+      </div>
+
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={activeProgram}
+          initial={{
+            opacity: 0,
+            x: 70,
+            rotateY: -12,
+            scale: 0.96,
+            filter: "blur(12px)",
+          }}
+          animate={{
+            opacity: 1,
+            x: 0,
+            rotateY: 0,
+            scale: 1,
+            filter: "blur(0px)",
+          }}
+          exit={{
+            opacity: 0,
+            x: -70,
+            rotateY: 12,
+            scale: 0.96,
+            filter: "blur(12px)",
+          }}
+          transition={{
+            duration: 0.58,
+            ease: EASE,
+          }}
+          style={{
+            transformStyle: "preserve-3d",
+          }}
+        >
+          <GlassCard dark className="relative p-4 sm:p-5">
+            <div className="absolute -left-5 top-10 hidden h-24 w-3 rounded-full bg-yellow-400 shadow-[0_0_35px_rgba(250,204,21,0.65)] lg:block" />
+
+            <div className="relative overflow-hidden rounded-[1.7rem]">
+              <motion.div
+                initial={{ scale: 1.12 }}
+                animate={{ scale: 1 }}
+                transition={{ duration: 1.2, ease: EASE }}
+              >
+                <SafeImage
+                  src={active.image}
+                  alt={active.title}
+                  className="program-feature-image w-full object-cover"
+                />
+              </motion.div>
+
+              <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/30 to-transparent" />
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(250,204,21,0.24),transparent_30%)]" />
+
+              <motion.div
+                initial={{ y: -18, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.15, duration: 0.45, ease: EASE }}
+                className="absolute left-4 top-4 rounded-full bg-yellow-400 px-4 py-2 text-[10px] font-black uppercase tracking-[0.24em] text-emerald-950 shadow-xl sm:left-6 sm:top-6"
+              >
+                {active.tag}
+              </motion.div>
+
+              <motion.div
+                animate={{
+                  y: [0, -8, 0],
+                  rotate: [0, 2, 0],
+                }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+                className="absolute right-5 top-5 hidden h-16 w-16 items-center justify-center rounded-[1.3rem] border border-white/20 bg-white/10 text-2xl text-yellow-300 backdrop-blur-xl sm:flex"
+              >
+                {getIcon(active.iconKey)}
+              </motion.div>
+
+              <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-7">
+                <motion.p
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.18, duration: 0.42, ease: EASE }}
+                  className="text-xs font-black uppercase tracking-[0.28em] text-yellow-300"
+                >
+                  {active.subtitle}
+                </motion.p>
+
+                <motion.h3
+                  initial={{ opacity: 0, y: 22 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.25, duration: 0.5, ease: EASE }}
+                  className="program-card-title mt-2 font-black leading-[0.92] tracking-[-0.06em] text-white"
+                >
+                  {active.title}
+                </motion.h3>
               </div>
             </div>
 
-            <AnimatePresence mode="wait">
+            <div className="mt-6 grid gap-6 lg:grid-cols-[1.08fr_0.92fr]">
               <motion.div
-                key={activeProgram}
-                initial={{ opacity: 0, x: 44, scale: 0.98 }}
-                animate={{ opacity: 1, x: 0, scale: 1 }}
-                exit={{ opacity: 0, x: -44, scale: 0.98 }}
-                transition={{ duration: 0.45, ease: EASE }}
+                initial={{ opacity: 0, y: 22 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2, duration: 0.5, ease: EASE }}
               >
-                <GlassCard dark className="p-4 sm:p-5">
-                  <div className="relative overflow-hidden rounded-[1.6rem]">
-                    <SafeImage
-                      src={active.image}
-                      alt={active.title}
-                      className="program-feature-image w-full object-cover"
-                    />
+                <p className="text-sm font-semibold leading-relaxed text-emerald-50 sm:text-base">
+                  {active.longDesc}
+                </p>
 
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/25 to-transparent" />
+                <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                  <Link
+                    href="/pendaftaran"
+                    className="group inline-flex items-center justify-center gap-3 rounded-full bg-yellow-400 px-6 py-3 text-sm font-black text-emerald-950 shadow-[0_18px_45px_rgba(250,204,21,0.25)] transition hover:-translate-y-1 hover:bg-yellow-300"
+                  >
+                    Daftar Sekarang
+                    <FaArrowRight className="transition group-hover:translate-x-1" />
+                  </Link>
 
-                    <div className="absolute left-4 top-4 rounded-full bg-yellow-400 px-4 py-2 text-[10px] font-black uppercase tracking-[0.24em] text-emerald-950 sm:left-6 sm:top-6">
-                      {active.tag}
-                    </div>
-
-                    <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-7">
-                      <p className="text-xs font-black uppercase tracking-[0.28em] text-yellow-300">
-                        {active.subtitle}
-                      </p>
-
-                      <h3 className="program-card-title mt-2 font-black leading-[0.92] tracking-[-0.06em] text-white">
-                        {active.title}
-                      </h3>
-                    </div>
-                  </div>
-
-                  <div className="mt-5 grid gap-5 lg:grid-cols-[1.08fr_0.92fr]">
-                    <div>
-                      <p className="text-sm font-semibold leading-relaxed text-emerald-50 sm:text-base">
-                        {active.longDesc}
-                      </p>
-
-                      <div className="mt-5 flex flex-col gap-3 sm:flex-row">
-                        <Link
-                          href="/pendaftaran"
-                          className="inline-flex items-center justify-center gap-3 rounded-full bg-yellow-400 px-6 py-3 text-sm font-black text-emerald-950 transition hover:-translate-y-1 hover:bg-yellow-300"
-                        >
-                          Daftar Sekarang
-                          <FaArrowRight />
-                        </Link>
-
-                        <a
-                          href={WHATSAPP_ADMIN_URL}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center justify-center gap-3 rounded-full border border-white/20 bg-white/10 px-6 py-3 text-sm font-black text-white transition hover:-translate-y-1 hover:bg-white/20"
-                        >
-                          <FaWhatsapp />
-                          Tanya Admin
-                        </a>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-3">
-                      {active.features.map((feature, index) => (
-                        <div
-                          key={`${feature}-${index}`}
-                          className="rounded-2xl border border-white/10 bg-white/10 p-4 text-center"
-                        >
-                          <FaCheckCircle className="mx-auto text-xl text-yellow-300" />
-
-                          <p className="mt-2 text-sm font-black text-white">
-                            {feature}
-                          </p>
-
-                          <p className="mt-1 text-[9px] font-black uppercase tracking-[0.18em] text-emerald-100/70">
-                            Fokus {index + 1}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </GlassCard>
+                  <a
+                    href={WHATSAPP_ADMIN_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-3 rounded-full border border-white/20 bg-white/10 px-6 py-3 text-sm font-black text-white transition hover:-translate-y-1 hover:bg-white/20"
+                  >
+                    <FaWhatsapp />
+                    Tanya Admin
+                  </a>
+                </div>
               </motion.div>
-            </AnimatePresence>
-          </div>
-        </Container>
-      </Section>
 
+              <div className="grid grid-cols-2 gap-3">
+                {active.features.map((feature, index) => (
+                  <motion.div
+                    key={`${feature}-${index}`}
+                    custom={index}
+                    variants={FEATURE_VARIANTS}
+                    initial="hidden"
+                    animate="show"
+                    whileHover={{
+                      y: -5,
+                      scale: 1.04,
+                    }}
+                    className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/10 p-4 text-center backdrop-blur-xl"
+                  >
+                    <div className="absolute -right-8 -top-8 h-20 w-20 rounded-full bg-yellow-300/10 blur-2xl" />
+
+                    <FaCheckCircle className="relative z-10 mx-auto text-xl text-yellow-300" />
+
+                    <p className="relative z-10 mt-2 text-sm font-black text-white">
+                      {feature}
+                    </p>
+
+                    <p className="relative z-10 mt-1 text-[9px] font-black uppercase tracking-[0.18em] text-emerald-100/70">
+                      Fokus {index + 1}
+                    </p>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </GlassCard>
+        </motion.div>
+      </AnimatePresence>
+    </div>
+  </Container>
+</Section>
       {/* MAP */}
       <Section id="program-map" className="bg-gradient-to-br from-[#f7f1df] via-white to-emerald-50">
         <BackgroundArt />
