@@ -946,7 +946,8 @@ function HeroScreen({ hero, stats, direction, handleDirection }) {
 
       <IslamicBackground dark intense />
 
-      <div className="home-screen mx-auto grid items-center gap-6 lg:grid-cols-[1.05fr_0.95fr]">
+      <div className="home-screen home-screen--hero">
+  <div className="hero-shell">
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div
             key="hero-content"
@@ -1081,6 +1082,7 @@ function HeroScreen({ hero, stats, direction, handleDirection }) {
             </div>
           </TiltCard>
         </motion.div>
+      </div>
       </div>
     </ScreenShell>
   );
@@ -2051,6 +2053,37 @@ function HomeResponsiveStyles() {
         scrollbar-width: none;
       }
 
+            .home-screen--hero {
+        width: 100%;
+        max-width: none;
+        padding-left: clamp(16px, 3vw, 42px);
+        padding-right: clamp(16px, 3vw, 42px);
+        padding-top: calc(var(--home-navbar-height, 92px) + 8px);
+        padding-bottom: calc(78px + env(safe-area-inset-bottom));
+      }
+
+      .hero-shell {
+        width: min(100%, 1320px);
+        min-height: calc(
+          100dvh - var(--home-navbar-height, 92px) - 86px - env(safe-area-inset-bottom)
+        );
+        margin-inline: auto;
+        display: grid;
+        align-items: center;
+        grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+        gap: clamp(1rem, 2vw, 1.5rem);
+      }
+
+      .hero-copy,
+      .hero-visual,
+      .hero-stats {
+        min-width: 0;
+      }
+
+      .home-screen--hero .home-title {
+        font-size: clamp(3rem, 8vw, 7rem);
+      }
+
       .home-screen::-webkit-scrollbar,
       .pembina-screen-v2::-webkit-scrollbar,
       .no-scrollbar::-webkit-scrollbar {
@@ -2128,6 +2161,28 @@ function HomeResponsiveStyles() {
 
         .pembina-panel-v2 {
           min-height: auto;
+        }
+
+                .home-screen--hero {
+          padding-top: calc(var(--home-navbar-height, 86px) + 8px);
+          padding-bottom: calc(72px + env(safe-area-inset-bottom));
+        }
+
+        .hero-shell {
+          min-height: calc(
+            100dvh - var(--home-navbar-height, 86px) - 78px - env(safe-area-inset-bottom)
+          );
+          grid-template-columns: 1fr;
+          gap: 1rem;
+          align-content: center;
+        }
+
+        .hero-visual {
+          display: none !important;
+        }
+
+        .home-screen--hero .home-title {
+          font-size: clamp(2.6rem, 9vw, 5rem);
         }
       }
 
@@ -2273,6 +2328,46 @@ function HomeResponsiveStyles() {
         .home-screen img {
           max-width: 100%;
         }
+
+                .home-screen--hero {
+          width: 100%;
+          padding-left: 16px;
+          padding-right: 16px;
+          padding-top: calc(var(--home-navbar-height, 78px) + 6px);
+          padding-bottom: calc(70px + env(safe-area-inset-bottom));
+        }
+
+        .hero-shell {
+          min-height: calc(
+            100dvh - var(--home-navbar-height, 78px) - 74px - env(safe-area-inset-bottom)
+          );
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          gap: 0.9rem;
+        }
+
+        .hero-copy {
+          max-width: 100% !important;
+        }
+
+        .hero-visual {
+          display: none !important;
+        }
+
+        .home-screen--hero .home-title {
+          font-size: clamp(2.2rem, 12vw, 3.6rem);
+          line-height: 0.94;
+          letter-spacing: -0.055em;
+        }
+
+        .home-screen--hero p {
+          font-size: 0.86rem;
+        }
+
+        .hero-stats {
+          margin-top: 0.9rem !important;
+        }
       }
 
       @media (max-width: 420px) {
@@ -2299,6 +2394,23 @@ function HomeResponsiveStyles() {
         .pembina-photo-card-v2 {
           height: 230px;
           min-height: 230px;
+        }
+
+                .home-screen--hero {
+          padding-left: 13px;
+          padding-right: 13px;
+          padding-top: calc(var(--home-navbar-height, 74px) + 4px);
+          padding-bottom: calc(66px + env(safe-area-inset-bottom));
+        }
+
+        .hero-shell {
+          min-height: calc(
+            100dvh - var(--home-navbar-height, 74px) - 70px - env(safe-area-inset-bottom)
+          );
+        }
+
+        .home-screen--hero .home-title {
+          font-size: clamp(2rem, 11.5vw, 3.1rem);
         }
       }
     `}</style>
