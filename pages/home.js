@@ -851,17 +851,16 @@ function ProgressBar({ sections, activeSection, activeStep }) {
   const progress = ((passed + activeStep + 1) / totalSteps) * 100;
 
   return (
-    <div
-      style={{
-        top: "var(--home-navbar-height, 92px)",
-      }}
-      className="fixed left-0 z-[240] h-1 w-full bg-emerald-950/20 backdrop-blur-md"
-    >
-      <motion.div
-        animate={{ width: `${progress}%` }}
-        transition={{ duration: 0.38, ease: EASE_PREMIUM }}
-        className="h-full bg-gradient-to-r from-yellow-400 via-yellow-300 to-emerald-300 shadow-[0_0_18px_rgba(250,204,21,0.65)]"
-      />
+    <div className="fixed bottom-0 left-0 z-[260] w-full">
+      <div className="h-1.5 w-full bg-emerald-950/25 backdrop-blur-md">
+        <motion.div
+          animate={{ width: `${progress}%` }}
+          transition={{ duration: 0.38, ease: EASE_PREMIUM }}
+          className="h-full bg-gradient-to-r from-yellow-400 via-yellow-300 to-emerald-300 shadow-[0_0_20px_rgba(250,204,21,0.75)]"
+        />
+      </div>
+
+      <div className="pointer-events-none h-[env(safe-area-inset-bottom)] bg-emerald-950/20" />
     </div>
   );
 }
