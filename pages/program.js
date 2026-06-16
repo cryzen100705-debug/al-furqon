@@ -1792,7 +1792,7 @@ export default function Program() {
         activeStep={activeStep}
       />
 
-      <div className="fixed bottom-7 left-1/2 z-[270] flex -translate-x-1/2 items-center gap-3">
+      <div className="program-bottom-control">
         <button
           type="button"
           disabled={isFirst}
@@ -1820,387 +1820,663 @@ export default function Program() {
 
       <style jsx global>{`
         html,
-        body,
-        #__next {
-          width: 100%;
-          height: 100%;
-          margin: 0;
-        }
+body,
+#__next {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
 
-        .program-root {
-          position: relative;
-          min-height: 100dvh;
-          overflow: hidden;
-          background: #041b15;
-        }
+.program-root {
+  position: relative;
+  width: 100%;
+  height: 100dvh;
+  overflow: hidden;
+  background: #041b15;
+}
 
-        .program-screen {
-          position: relative;
-          z-index: 10;
-          height: 100dvh;
-          width: min(92vw, 1240px);
-          margin-inline: auto;
-          box-sizing: border-box;
-          padding-top: max(calc(var(--program-navbar-height, 92px) + 18px), 122px);
-          padding-bottom: 76px;
-          overflow: hidden;
-        }
+/* =========================================================
+   SCREEN SYSTEM - 100% DEVICE HEIGHT
+========================================================= */
 
-        .program-hero-screen,
-        .program-cta-screen,
-        .program-focus-screen {
-          display: flex;
-          align-items: center;
-        }
+.program-screen {
+  --program-safe-bottom: max(env(safe-area-inset-bottom), 0px);
+  --program-nav-space: var(--program-navbar-height, 92px);
+  --program-control-space: 76px;
+  --program-top-space: calc(var(--program-nav-space) + 14px);
+  --program-bottom-space: calc(var(--program-control-space) + var(--program-safe-bottom));
 
-        .program-hero-grid {
-          width: 100%;
-          min-height: 0;
-          display: grid;
-          grid-template-columns: minmax(0, 1.12fr) minmax(340px, 0.88fr);
-          align-items: center;
-          gap: clamp(1.2rem, 3vw, 3rem);
-        }
+  position: relative;
+  z-index: 10;
+  width: min(92vw, 1240px);
+  height: 100dvh;
+  max-height: 100dvh;
+  margin-inline: auto;
+  box-sizing: border-box;
+  padding-top: var(--program-top-space);
+  padding-bottom: var(--program-bottom-space);
+  overflow: hidden;
+}
 
-        .program-title {
-          font-size: clamp(2.45rem, 6.6vw, 6rem);
-        }
+.program-hero-screen,
+.program-cta-screen,
+.program-focus-screen {
+  display: flex;
+  align-items: center;
+}
 
-        .program-heading {
-          font-size: clamp(2.1rem, 5vw, 4.7rem);
-        }
+/* =========================================================
+   HERO - FIT FULL SCREEN
+========================================================= */
 
-        .program-list-layout,
-        .program-flow-layout,
-        .program-faq-layout {
-          min-height: 100%;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          gap: 1.35rem;
-        }
+.program-hero-grid {
+  width: 100%;
+  height: calc(100dvh - var(--program-top-space) - var(--program-bottom-space));
+  max-height: calc(100dvh - var(--program-top-space) - var(--program-bottom-space));
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1.02fr) minmax(280px, 0.78fr);
+  align-items: center;
+  gap: clamp(0.8rem, 2vw, 2.4rem);
+  overflow: hidden;
+}
 
-        .program-list-header {
-          max-width: 900px;
-        }
+.program-hero-copy {
+  min-width: 0;
+  min-height: 0;
+}
 
-        .program-list-grid {
-          display: grid;
-          grid-template-columns: minmax(280px, 0.9fr) minmax(0, 1.1fr);
-          gap: 1rem;
-          min-height: 0;
-        }
+.program-title {
+  font-size: clamp(2rem, min(5.8vw, 9.4vh), 5.55rem);
+  line-height: 0.92;
+  letter-spacing: -0.06em;
+}
 
-        .program-buttons-grid {
-          display: grid;
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-          gap: 0.75rem;
-          align-content: start;
-        }
+.program-heading {
+  font-size: clamp(1.8rem, min(4.8vw, 8vh), 4.4rem);
+}
 
-        .program-mini-card {
-          min-width: 0;
-          display: flex;
-          align-items: center;
-          gap: 0.75rem;
-          border-radius: 1.35rem;
-          border: 1px solid rgba(6, 95, 70, 0.1);
-          background: rgba(255, 255, 255, 0.78);
-          padding: 0.8rem;
-          color: #064e3b;
-          box-shadow: 0 16px 45px rgba(0, 0, 0, 0.07);
-          transition: 0.28s ease;
-        }
+.program-hero-copy p {
+  max-width: 760px;
+}
 
-        .program-mini-card-active {
-          background: #052e22;
-          color: white;
-          border-color: rgba(250, 204, 21, 0.4);
-          box-shadow: 0 24px 70px rgba(4, 120, 87, 0.22);
-        }
+.program-stats {
+  max-height: 140px;
+  overflow: hidden;
+}
 
-        .program-mini-icon {
-          display: flex;
-          height: 2.7rem;
-          width: 2.7rem;
-          flex-shrink: 0;
-          align-items: center;
-          justify-content: center;
-          border-radius: 1rem;
-          background: #facc15;
-          color: #052e22;
-          font-size: 1.1rem;
-        }
+.program-stats > * {
+  min-width: 0;
+}
 
-        .program-detail-card {
-          position: relative;
-          min-height: 100%;
-          overflow: hidden;
-          border-radius: 2rem;
-          border: 1px solid rgba(255, 255, 255, 0.12);
-          background: linear-gradient(135deg, #052e22, #064e3b);
-          padding: clamp(1.3rem, 3vw, 2.1rem);
-          box-shadow: 0 28px 80px rgba(0, 0, 0, 0.22);
-        }
+.program-stats h3 {
+  line-height: 1;
+}
 
-        .program-detail-glow {
-          position: absolute;
-          right: -5rem;
-          top: -5rem;
-          height: 18rem;
-          width: 18rem;
-          border-radius: 999px;
-          background: rgba(250, 204, 21, 0.16);
-          filter: blur(45px);
-        }
+.program-orbit {
+  min-width: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-        .program-detail-icon {
-          display: flex;
-          height: 4.3rem;
-          width: 4.3rem;
-          align-items: center;
-          justify-content: center;
-          border-radius: 1.35rem;
-          background: #facc15;
-          color: #052e22;
-          font-size: 2rem;
-          box-shadow: 0 0 45px rgba(250, 204, 21, 0.25);
-        }
+.program-orbit > div {
+  width: min(30vw, 45vh, 430px);
+  max-width: 430px;
+}
 
-        .program-focus-layout {
-          width: 100%;
-          display: grid;
-          grid-template-columns: minmax(0, 0.9fr) minmax(320px, 1.1fr);
-          align-items: center;
-          gap: clamp(1.2rem, 3vw, 3rem);
-        }
+/* =========================================================
+   LIST SECTION
+========================================================= */
 
-        .program-focus-card {
-          position: relative;
-          min-height: min(58vh, 520px);
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          overflow: hidden;
-          border-radius: 2.4rem;
-          border: 1px solid rgba(255, 255, 255, 0.12);
-          background: rgba(255, 255, 255, 0.08);
-          padding: 2rem;
-          box-shadow: 0 30px 90px rgba(0, 0, 0, 0.22);
-          backdrop-filter: blur(18px);
-        }
+.program-list-layout,
+.program-flow-layout,
+.program-faq-layout {
+  width: 100%;
+  height: calc(100dvh - var(--program-top-space) - var(--program-bottom-space));
+  max-height: calc(100dvh - var(--program-top-space) - var(--program-bottom-space));
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(0.75rem, 1.6vh, 1.35rem);
+  overflow: hidden;
+}
 
-        .program-flow-grid {
-          display: grid;
-          grid-template-columns: repeat(4, minmax(0, 1fr));
-          gap: 1rem;
-        }
+.program-list-header {
+  max-width: 900px;
+  flex-shrink: 0;
+}
 
-        .program-flow-card {
-          position: relative;
-          height: 100%;
-          min-height: 260px;
-          overflow: hidden;
-          border-radius: 2rem;
-          border: 1px solid rgba(6, 95, 70, 0.1);
-          background: rgba(255, 255, 255, 0.86);
-          padding: 1.2rem;
-          box-shadow: 0 24px 65px rgba(0, 0, 0, 0.09);
-        }
+.program-list-grid {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.9fr) minmax(0, 1.1fr);
+  gap: 1rem;
+  min-height: 0;
+  flex: 1;
+  overflow: hidden;
+}
 
-        .program-flow-card::before {
-          content: "";
-          position: absolute;
-          right: -4rem;
-          top: -4rem;
-          height: 12rem;
-          width: 12rem;
-          border-radius: 999px;
-          background: rgba(250, 204, 21, 0.25);
-          filter: blur(30px);
-        }
+.program-buttons-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+  align-content: start;
+  min-height: 0;
+  overflow: auto;
+  padding-right: 4px;
+}
 
-        .program-flow-number {
-          position: relative;
-          z-index: 1;
-          display: flex;
-          height: 4rem;
-          width: 4rem;
-          align-items: center;
-          justify-content: center;
-          border-radius: 1.3rem;
-          background: #052e22;
-          color: #facc15;
-          font-size: 1rem;
-          font-weight: 900;
-        }
+.program-buttons-grid::-webkit-scrollbar,
+.program-screen::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
 
-        .program-faq-layout {
-          display: grid;
-          grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
-          align-items: center;
-        }
+.program-mini-card {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  border-radius: 1.25rem;
+  border: 1px solid rgba(6, 95, 70, 0.1);
+  background: rgba(255, 255, 255, 0.78);
+  padding: 0.72rem;
+  color: #064e3b;
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.07);
+  transition: 0.28s ease;
+}
 
-        .program-faq-list {
-          display: grid;
-          gap: 0.9rem;
-        }
+.program-mini-card-active {
+  background: #052e22;
+  color: white;
+  border-color: rgba(250, 204, 21, 0.4);
+  box-shadow: 0 24px 70px rgba(4, 120, 87, 0.22);
+}
 
-        .program-faq-item {
-          width: 100%;
-          border-radius: 1.4rem;
-          border: 1px solid rgba(255, 255, 255, 0.12);
-          background: rgba(255, 255, 255, 0.09);
-          padding: 1.15rem;
-          backdrop-filter: blur(14px);
-          transition: 0.25s ease;
-        }
+.program-mini-icon {
+  display: flex;
+  height: 2.45rem;
+  width: 2.45rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.95rem;
+  background: #facc15;
+  color: #052e22;
+  font-size: 1rem;
+}
 
-        .program-faq-item:hover {
-          background: rgba(255, 255, 255, 0.14);
-          transform: translateY(-3px);
-        }
+.program-detail-card {
+  position: relative;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  border-radius: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: linear-gradient(135deg, #052e22, #064e3b);
+  padding: clamp(1rem, 2.4vw, 2rem);
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.22);
+}
 
-        .program-cta-card {
-          position: relative;
-          width: min(100%, 920px);
-          margin-inline: auto;
-          overflow: hidden;
-          border-radius: 2.4rem;
-          border: 1px solid rgba(6, 95, 70, 0.1);
-          background: rgba(255, 255, 255, 0.9);
-          padding: clamp(1.4rem, 4vw, 3rem);
-          text-align: center;
-          box-shadow: 0 30px 90px rgba(0, 0, 0, 0.12);
-        }
+.program-detail-glow {
+  position: absolute;
+  right: -5rem;
+  top: -5rem;
+  height: 18rem;
+  width: 18rem;
+  border-radius: 999px;
+  background: rgba(250, 204, 21, 0.16);
+  filter: blur(45px);
+}
 
-        .program-cta-card::before {
-          content: "";
-          position: absolute;
-          left: -7rem;
-          top: -7rem;
-          height: 20rem;
-          width: 20rem;
-          border-radius: 999px;
-          background: rgba(16, 185, 129, 0.18);
-          filter: blur(40px);
-        }
+.program-detail-icon {
+  display: flex;
+  height: 4rem;
+  width: 4rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1.25rem;
+  background: #facc15;
+  color: #052e22;
+  font-size: 1.9rem;
+  box-shadow: 0 0 45px rgba(250, 204, 21, 0.25);
+}
 
-        .program-cta-card::after {
-          content: "";
-          position: absolute;
-          right: -7rem;
-          bottom: -7rem;
-          height: 20rem;
-          width: 20rem;
-          border-radius: 999px;
-          background: rgba(250, 204, 21, 0.28);
-          filter: blur(40px);
-        }
+/* =========================================================
+   FOCUS SECTION
+========================================================= */
 
-        .program-cta-icon {
-          position: relative;
-          z-index: 1;
-          margin: 0 auto 1.2rem;
-          display: flex;
-          height: 5rem;
-          width: 5rem;
-          align-items: center;
-          justify-content: center;
-          border-radius: 1.7rem;
-          background: #052e22;
-          color: #facc15;
-          font-size: 2rem;
-          box-shadow: 0 24px 65px rgba(5, 46, 34, 0.22);
-        }
+.program-focus-layout {
+  width: 100%;
+  height: calc(100dvh - var(--program-top-space) - var(--program-bottom-space));
+  max-height: calc(100dvh - var(--program-top-space) - var(--program-bottom-space));
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(300px, 1.1fr);
+  align-items: center;
+  gap: clamp(0.9rem, 2.3vw, 2.6rem);
+  overflow: hidden;
+}
 
-        @media (max-width: 1024px) {
-          .program-screen {
-            width: min(94vw, 980px);
-            padding-top: max(
-              calc(var(--program-navbar-height, 84px) + 16px),
-              112px
-            );
-          }
+.program-focus-card {
+  position: relative;
+  height: min(56vh, 500px);
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 2.4rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.08);
+  padding: clamp(1rem, 2.8vw, 2rem);
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(18px);
+}
 
-          .program-hero-grid,
-          .program-focus-layout,
-          .program-list-grid,
-          .program-faq-layout {
-            grid-template-columns: 1fr;
-          }
+/* =========================================================
+   FLOW SECTION
+========================================================= */
 
-          .program-orbit {
-            display: none !important;
-          }
+.program-flow-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.9rem;
+  min-height: 0;
+}
 
-          .program-flow-grid {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-          }
-        }
+.program-flow-card {
+  position: relative;
+  height: 100%;
+  min-height: 230px;
+  overflow: hidden;
+  border-radius: 2rem;
+  border: 1px solid rgba(6, 95, 70, 0.1);
+  background: rgba(255, 255, 255, 0.86);
+  padding: 1.1rem;
+  box-shadow: 0 24px 65px rgba(0, 0, 0, 0.09);
+}
 
-        @media (max-width: 720px) {
-          .program-screen {
-            width: 100%;
-            padding-inline: 14px;
-            padding-top: calc(var(--program-navbar-height, 76px) + 14px);
-            padding-bottom: calc(74px + env(safe-area-inset-bottom));
-          }
+.program-flow-card::before {
+  content: "";
+  position: absolute;
+  right: -4rem;
+  top: -4rem;
+  height: 12rem;
+  width: 12rem;
+  border-radius: 999px;
+  background: rgba(250, 204, 21, 0.25);
+  filter: blur(30px);
+}
 
-          .program-title {
-            font-size: clamp(2rem, 12vw, 3.45rem);
-          }
+.program-flow-number {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  height: 3.6rem;
+  width: 3.6rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1.2rem;
+  background: #052e22;
+  color: #facc15;
+  font-size: 0.95rem;
+  font-weight: 900;
+}
 
-          .program-heading {
-            font-size: clamp(1.75rem, 9.5vw, 3rem);
-          }
+/* =========================================================
+   FAQ SECTION
+========================================================= */
 
-          .program-hero-grid {
-            min-height: calc(
-              100dvh - var(--program-navbar-height, 76px) - 100px
-            );
-          }
+.program-faq-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  align-items: center;
+}
 
-          .program-stats {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-          }
+.program-faq-list {
+  display: grid;
+  gap: 0.8rem;
+  min-height: 0;
+  overflow: auto;
+  padding-right: 4px;
+}
 
-          .program-buttons-grid,
-          .program-flow-grid {
-            grid-template-columns: 1fr;
-          }
+.program-faq-list::-webkit-scrollbar {
+  width: 0;
+}
 
-          .program-mini-card {
-            padding: 0.72rem;
-          }
+.program-faq-item {
+  width: 100%;
+  border-radius: 1.4rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.09);
+  padding: 1rem;
+  backdrop-filter: blur(14px);
+  transition: 0.25s ease;
+}
 
-          .program-detail-card {
-            padding: 1rem;
-          }
+.program-faq-item:hover {
+  background: rgba(255, 255, 255, 0.14);
+  transform: translateY(-3px);
+}
 
-          .program-flow-card {
-            min-height: 190px;
-          }
+/* =========================================================
+   CTA SECTION
+========================================================= */
 
-          .program-focus-card {
-            min-height: 360px;
-          }
-        }
+.program-cta-card {
+  position: relative;
+  width: min(100%, 900px);
+  max-height: calc(100dvh - var(--program-top-space) - var(--program-bottom-space));
+  margin-inline: auto;
+  overflow: hidden;
+  border-radius: 2.4rem;
+  border: 1px solid rgba(6, 95, 70, 0.1);
+  background: rgba(255, 255, 255, 0.9);
+  padding: clamp(1.25rem, 3.4vw, 2.8rem);
+  text-align: center;
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.12);
+}
 
-        @media (max-width: 390px) {
-          .program-screen {
-            padding-inline: 10px;
-          }
+.program-cta-card::before {
+  content: "";
+  position: absolute;
+  left: -7rem;
+  top: -7rem;
+  height: 20rem;
+  width: 20rem;
+  border-radius: 999px;
+  background: rgba(16, 185, 129, 0.18);
+  filter: blur(40px);
+}
 
-          .program-title {
-            font-size: clamp(1.8rem, 11vw, 2.65rem);
-          }
+.program-cta-card::after {
+  content: "";
+  position: absolute;
+  right: -7rem;
+  bottom: -7rem;
+  height: 20rem;
+  width: 20rem;
+  border-radius: 999px;
+  background: rgba(250, 204, 21, 0.28);
+  filter: blur(40px);
+}
 
-          .program-heading {
-            font-size: clamp(1.55rem, 9vw, 2.25rem);
-          }
-        }
+.program-cta-icon {
+  position: relative;
+  z-index: 1;
+  margin: 0 auto 1rem;
+  display: flex;
+  height: 4.7rem;
+  width: 4.7rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1.6rem;
+  background: #052e22;
+  color: #facc15;
+  font-size: 1.9rem;
+  box-shadow: 0 24px 65px rgba(5, 46, 34, 0.22);
+}
+
+/* =========================================================
+   BOTTOM CONTROL - INCLUDED IN 100% SCREEN
+========================================================= */
+
+.program-bottom-control {
+  position: fixed;
+  left: 50%;
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  z-index: 270;
+  display: flex;
+  transform: translateX(-50%);
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 1024px) {
+  .program-screen {
+    --program-nav-space: var(--program-navbar-height, 84px);
+    --program-control-space: 72px;
+    width: min(94vw, 980px);
+  }
+
+  .program-hero-grid,
+  .program-focus-layout,
+  .program-list-grid,
+  .program-faq-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .program-hero-grid {
+    align-content: center;
+  }
+
+  .program-orbit {
+    display: none !important;
+  }
+
+  .program-flow-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .program-list-grid {
+    overflow: auto;
+  }
+
+  .program-buttons-grid {
+    max-height: 230px;
+  }
+}
+
+/* =========================================================
+   PHONE
+========================================================= */
+
+@media (max-width: 720px) {
+  .program-screen {
+    --program-nav-space: var(--program-navbar-height, 74px);
+    --program-control-space: 66px;
+    width: 100%;
+    padding-inline: 14px;
+    padding-top: calc(var(--program-nav-space) + 10px);
+    padding-bottom: calc(var(--program-control-space) + var(--program-safe-bottom));
+  }
+
+  .program-hero-grid {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.75rem;
+  }
+
+  .program-title {
+    font-size: clamp(1.85rem, min(11vw, 8.4vh), 3.25rem);
+    line-height: 0.94;
+  }
+
+  .program-heading {
+    font-size: clamp(1.65rem, min(9vw, 7vh), 2.75rem);
+  }
+
+  .program-hero-copy p {
+    font-size: clamp(0.78rem, 3.4vw, 0.95rem);
+    line-height: 1.55;
+  }
+
+  .program-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-height: 160px;
+    gap: 0.55rem !important;
+  }
+
+  .program-stats > div > div {
+    padding: 0.65rem !important;
+    border-radius: 1.2rem !important;
+  }
+
+  .program-stats h3 {
+    font-size: 0.95rem !important;
+  }
+
+  .program-stats p {
+    font-size: 0.68rem !important;
+  }
+
+  .program-buttons-grid,
+  .program-flow-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .program-list-layout,
+  .program-flow-layout,
+  .program-faq-layout {
+    justify-content: flex-start;
+    overflow-y: auto;
+    padding-bottom: 4px;
+  }
+
+  .program-list-header p,
+  .program-flow-layout p,
+  .program-faq-layout p {
+    font-size: 0.85rem;
+  }
+
+  .program-mini-card {
+    padding: 0.68rem;
+    border-radius: 1.15rem;
+  }
+
+  .program-mini-icon {
+    height: 2.3rem;
+    width: 2.3rem;
+    border-radius: 0.85rem;
+  }
+
+  .program-detail-card {
+    padding: 1rem;
+    border-radius: 1.5rem;
+  }
+
+  .program-detail-icon {
+    height: 3.4rem;
+    width: 3.4rem;
+    border-radius: 1.05rem;
+    font-size: 1.55rem;
+  }
+
+  .program-flow-card {
+    min-height: 170px;
+    border-radius: 1.45rem;
+  }
+
+  .program-focus-card {
+    height: auto;
+    min-height: 310px;
+    border-radius: 1.7rem;
+  }
+
+  .program-faq-item {
+    padding: 0.9rem;
+  }
+
+  .program-cta-card {
+    border-radius: 1.7rem;
+    padding: 1.2rem;
+  }
+
+  .program-cta-icon {
+    height: 4rem;
+    width: 4rem;
+    border-radius: 1.25rem;
+    font-size: 1.6rem;
+  }
+
+  .program-bottom-control {
+    bottom: max(0.75rem, env(safe-area-inset-bottom));
+    gap: 0.5rem;
+  }
+
+  .program-bottom-control button {
+    padding: 0.55rem 0.8rem !important;
+    font-size: 0.68rem !important;
+  }
+}
+
+/* =========================================================
+   SMALL PHONE / SHORT HEIGHT
+========================================================= */
+
+@media (max-width: 430px) {
+  .program-screen {
+    padding-inline: 10px;
+  }
+
+  .program-title {
+    font-size: clamp(1.65rem, min(10.5vw, 7.8vh), 2.7rem);
+  }
+
+  .program-heading {
+    font-size: clamp(1.45rem, min(8.8vw, 6.8vh), 2.2rem);
+  }
+
+  .program-stats {
+    max-height: 128px;
+  }
+
+  .program-stats > div > div {
+    padding: 0.55rem !important;
+  }
+}
+
+@media (max-height: 740px) {
+  .program-screen {
+    --program-control-space: 58px;
+    padding-top: calc(var(--program-nav-space) + 8px);
+  }
+
+  .program-title {
+    font-size: clamp(1.7rem, min(5vw, 8vh), 4.5rem);
+  }
+
+  .program-hero-copy p {
+    line-height: 1.45;
+  }
+
+  .program-stats {
+    max-height: 110px;
+  }
+
+  .program-stats > div > div {
+    padding: 0.55rem !important;
+  }
+
+  .program-stats .mx-auto {
+    height: 2rem !important;
+    width: 2rem !important;
+    margin-bottom: 0.35rem !important;
+  }
+}
+
+@media (max-height: 640px) {
+  .program-stats {
+    display: none !important;
+  }
+
+  .program-title {
+    font-size: clamp(1.55rem, min(4.8vw, 8vh), 3.6rem);
+  }
+
+  .program-screen {
+    --program-control-space: 52px;
+  }
+}
       `}</style>
     </main>
   );
