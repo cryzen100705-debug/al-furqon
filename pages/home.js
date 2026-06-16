@@ -4204,17 +4204,6 @@ useEffect(() => {
       jumpToSection={jumpToSection}
     />
 
-    {!["hero", "profile", "pembina", "requirements", "guide"].includes(
-  sections[activeSection]?.key
-) && (
-  <BottomControls
-    onPrev={() => handleDirection(-1)}
-    onNext={() => handleDirection(1)}
-    isFirst={isFirst}
-    isLast={isLast}
-  />
-)}
-
     <AnimatePresence mode="wait" custom={direction}>
       {renderScreen()}
     </AnimatePresence>
