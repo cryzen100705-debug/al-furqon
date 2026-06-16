@@ -987,24 +987,13 @@ function ProgramsScreen({
               Non formal pesantren yang membentuk kebiasaan santri
             </h2>
 
-            <p className="program-list-desc mt-4 max-w-3xl text-sm leading-relaxed text-slate-600 sm:text-base">
-              Pilih program untuk melihat fokus pembinaan, kegiatan, dan
+            <p className="mt-4 max-w-3xl text-sm leading-relaxed text-slate-600 sm:text-base">
+              Pilih salah satu program untuk melihat fokus pembinaan dan
               dampaknya bagi santri.
             </p>
           </motion.div>
 
           <div className="program-list-grid">
-            <div className="program-mobile-tabs-head">
-              <p className="program-mobile-tabs-label">
-                Geser pilihan program
-              </p>
-
-              <span className="program-mobile-tabs-count">
-                {String(activeProgram + 1).padStart(2, "0")} /{" "}
-                {String(programs.length).padStart(2, "0")}
-              </span>
-            </div>
-
             <div className="program-buttons-grid">
               {programs.map((program, index) => {
                 const activeItem = index === activeProgram;
@@ -1031,12 +1020,11 @@ function ProgramsScreen({
                       {getIcon(program.iconKey)}
                     </span>
 
-                    <span className="program-mini-text">
-                      <span className="program-mini-title">
+                    <span className="min-w-0 text-left">
+                      <span className="block truncate text-sm font-black">
                         {program.title}
                       </span>
-
-                      <span className="program-mini-tag">
+                      <span className="mt-1 block truncate text-[11px] font-bold opacity-70">
                         {program.tag}
                       </span>
                     </span>
@@ -1052,40 +1040,35 @@ function ProgramsScreen({
                 animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
                 exit={{ opacity: 0, x: -32, filter: "blur(10px)" }}
                 transition={{ duration: 0.45, ease: EASE }}
-                className="program-detail-wrap"
               >
                 <TiltCard className="h-full">
                   <div className="program-detail-card">
                     <div className="program-detail-glow" />
 
-                    <div className="program-detail-card-content">
-                      <div className="program-detail-top">
+                    <div className="relative z-10">
+                      <div className="flex flex-wrap items-start justify-between gap-4">
                         <div className="program-detail-icon">
                           {getIcon(active.iconKey)}
                         </div>
 
-                        <div className="program-detail-badge-wrap">
-                          <span className="program-detail-badge">
-                            {active.tag}
-                          </span>
-                        </div>
+                        <span className="rounded-full bg-yellow-400 px-4 py-2 text-[10px] font-black uppercase tracking-[0.2em] text-emerald-950">
+                          {active.tag}
+                        </span>
                       </div>
 
-                      <div className="program-detail-main">
-                        <p className="program-detail-subtitle">
-                          {active.subtitle}
-                        </p>
+                      <p className="mt-7 text-xs font-black uppercase tracking-[0.28em] text-yellow-300">
+                        {active.subtitle}
+                      </p>
 
-                        <h3 className="program-detail-title">
-                          {active.title}
-                        </h3>
+                      <h3 className="mt-3 text-[clamp(2rem,4vw,4.3rem)] font-black leading-[0.95] tracking-[-0.055em] text-white">
+                        {active.title}
+                      </h3>
 
-                        <p className="program-detail-desc">
-                          {active.desc}
-                        </p>
-                      </div>
+                      <p className="mt-5 text-sm leading-relaxed text-emerald-100 sm:text-base">
+                        {active.desc}
+                      </p>
 
-                      <div className="program-focus-chip-grid">
+                      <div className="mt-6 grid gap-3 sm:grid-cols-2">
                         {active.focus.map((item, index) => (
                           <motion.div
                             key={`${item}-${index}`}
@@ -1095,9 +1078,9 @@ function ProgramsScreen({
                               delay: 0.08 + index * 0.06,
                               duration: 0.35,
                             }}
-                            className="program-focus-chip"
+                            className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/10 p-3 text-sm font-black text-white"
                           >
-                            <span>
+                            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-yellow-400 text-[10px] text-emerald-950">
                               <FaCheckCircle />
                             </span>
                             {item}
@@ -1105,9 +1088,14 @@ function ProgramsScreen({
                         ))}
                       </div>
 
-                      <div className="program-impact-card">
-                        <p>Dampak Pembinaan</p>
-                        <h4>{active.impact}</h4>
+                      <div className="mt-6 rounded-[1.5rem] border border-yellow-300/20 bg-yellow-300/10 p-5">
+                        <p className="text-[10px] font-black uppercase tracking-[0.25em] text-yellow-300">
+                          Dampak Pembinaan
+                        </p>
+
+                        <p className="mt-2 text-sm font-semibold leading-relaxed text-emerald-50">
+                          {active.impact}
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -2395,132 +2383,6 @@ body,
   }
 }
 
-.program-mobile-tabs-head {
-  display: none;
-}
-
-.program-detail-wrap {
-  min-height: 0;
-  height: 100%;
-}
-
-.program-detail-card-content {
-  position: relative;
-  z-index: 10;
-  height: 100%;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-.program-detail-top {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
-.program-detail-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 999px;
-  background: #facc15;
-  padding: 0.7rem 1.3rem;
-  font-size: 0.62rem;
-  font-weight: 900;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: #052e22;
-}
-
-.program-detail-main {
-  min-height: 0;
-}
-
-.program-detail-subtitle {
-  margin-top: 1.2rem;
-  font-size: 0.76rem;
-  font-weight: 900;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  color: #facc15;
-}
-
-.program-detail-title {
-  margin-top: 0.75rem;
-  font-size: clamp(2rem, 4vw, 4.3rem);
-  font-weight: 900;
-  line-height: 0.95;
-  letter-spacing: -0.055em;
-  color: white;
-}
-
-.program-detail-desc {
-  margin-top: 1rem;
-  font-size: 0.95rem;
-  line-height: 1.65;
-  color: rgba(209, 250, 229, 0.95);
-}
-
-.program-focus-chip-grid {
-  margin-top: 1rem;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.65rem;
-}
-
-.program-focus-chip {
-  display: flex;
-  min-width: 0;
-  align-items: center;
-  gap: 0.65rem;
-  border-radius: 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(255, 255, 255, 0.1);
-  padding: 0.78rem;
-  font-size: 0.82rem;
-  font-weight: 900;
-  color: white;
-}
-
-.program-focus-chip span {
-  display: flex;
-  width: 1.45rem;
-  height: 1.45rem;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-  border-radius: 999px;
-  background: #facc15;
-  color: #052e22;
-  font-size: 0.58rem;
-}
-
-.program-impact-card {
-  margin-top: auto;
-  border-radius: 1.25rem;
-  border: 1px solid rgba(250, 204, 21, 0.22);
-  background: rgba(250, 204, 21, 0.1);
-  padding: 1rem;
-}
-
-.program-impact-card p {
-  font-size: 0.62rem;
-  font-weight: 900;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: #facc15;
-}
-
-.program-impact-card h4 {
-  margin-top: 0.4rem;
-  font-size: 0.92rem;
-  font-weight: 800;
-  line-height: 1.5;
-  color: #ecfdf5;
-}
-
 /* =========================================================
    PHONE
 ========================================================= */
@@ -2528,7 +2390,7 @@ body,
 @media (max-width: 720px) {
   .program-screen {
     --program-nav-space: var(--program-navbar-height, 74px);
-    --program-control-space: 56px;
+    --program-control-space: 58px;
     width: 100%;
     padding-inline: 12px;
     padding-top: calc(var(--program-nav-space) + 8px);
@@ -2538,421 +2400,6 @@ body,
     );
   }
 
-  /* HERO */
-  .program-hero-grid {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 0.58rem;
-  }
-
-  .program-title {
-    font-size: clamp(1.82rem, min(10vw, 7.6vh), 2.95rem);
-    line-height: 0.94;
-  }
-
-  .program-heading {
-    font-size: clamp(1.42rem, min(7.6vw, 5.8vh), 2.35rem);
-    line-height: 0.96;
-  }
-
-  .program-hero-copy p {
-    font-size: 0.78rem;
-    line-height: 1.48;
-  }
-
-  .program-hero-copy .mt-6 {
-    margin-top: 0.8rem !important;
-  }
-
-  .program-stats {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    max-height: 126px;
-    gap: 0.42rem !important;
-  }
-
-  .program-stats > div > div {
-    padding: 0.5rem !important;
-    border-radius: 1rem !important;
-  }
-
-  .program-stats .mx-auto {
-    width: 1.75rem !important;
-    height: 1.75rem !important;
-    margin-bottom: 0.22rem !important;
-    border-radius: 0.65rem !important;
-  }
-
-  .program-stats h3 {
-    font-size: 0.8rem !important;
-  }
-
-  .program-stats p {
-    font-size: 0.6rem !important;
-    line-height: 1.2 !important;
-  }
-
-  /* PROGRAM LIST */
-  .program-list-layout {
-    display: grid;
-    grid-template-rows: auto minmax(0, 1fr);
-    gap: 0.55rem;
-  }
-
-  .program-list-header .program-heading {
-    font-size: clamp(1.42rem, min(7vw, 5.2vh), 2.18rem);
-    line-height: 0.95;
-  }
-
-  .program-list-desc {
-    margin-top: 0.42rem !important;
-    font-size: 0.72rem !important;
-    line-height: 1.35 !important;
-  }
-
-  .program-list-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto minmax(0, 1fr);
-    gap: 0.48rem;
-    overflow: hidden;
-  }
-
-  .program-mobile-tabs-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-  }
-
-  .program-mobile-tabs-label {
-    font-size: 0.58rem;
-    font-weight: 900;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: #047857;
-  }
-
-  .program-mobile-tabs-count {
-    border-radius: 999px;
-    background: #052e22;
-    padding: 0.32rem 0.55rem;
-    font-size: 0.58rem;
-    font-weight: 900;
-    color: #facc15;
-  }
-
-  .program-buttons-grid {
-    display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: minmax(150px, 70%);
-    grid-template-columns: none;
-    grid-template-rows: repeat(2, minmax(46px, 1fr));
-    gap: 0.42rem;
-    overflow-x: auto;
-    overflow-y: hidden;
-    padding-bottom: 0.1rem;
-    scroll-snap-type: x proximity;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-  }
-
-  .program-buttons-grid::-webkit-scrollbar {
-    display: none;
-  }
-
-  .program-mini-card {
-    min-height: 46px;
-    padding: 0.48rem 0.55rem;
-    border-radius: 0.9rem;
-    gap: 0.5rem;
-    scroll-snap-align: start;
-  }
-
-  .program-mini-icon {
-    height: 1.9rem;
-    width: 1.9rem;
-    border-radius: 0.68rem;
-    font-size: 0.72rem;
-  }
-
-  .program-mini-text {
-    min-width: 0;
-    text-align: left;
-  }
-
-  .program-mini-title {
-    display: block;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    font-size: 0.74rem;
-    font-weight: 900;
-    line-height: 1.08;
-  }
-
-  .program-mini-tag {
-    display: block;
-    margin-top: 0.12rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    font-size: 0.58rem;
-    font-weight: 800;
-    opacity: 0.72;
-  }
-
-  .program-detail-wrap {
-    min-height: 0;
-    height: 100%;
-  }
-
-  .program-detail-card {
-    height: 100%;
-    border-radius: 1.18rem;
-    padding: 0.78rem;
-  }
-
-  .program-detail-card-content {
-    gap: 0;
-  }
-
-  .program-detail-icon {
-    height: 2.65rem;
-    width: 2.65rem;
-    border-radius: 0.82rem;
-    font-size: 1.15rem;
-  }
-
-  .program-detail-badge {
-    padding: 0.46rem 0.75rem;
-    font-size: 0.52rem;
-    letter-spacing: 0.16em;
-  }
-
-  .program-detail-subtitle {
-    margin-top: 0.65rem;
-    font-size: 0.56rem;
-    letter-spacing: 0.18em;
-  }
-
-  .program-detail-title {
-    margin-top: 0.42rem;
-    font-size: clamp(1.38rem, min(7.6vw, 4.9vh), 2.18rem);
-    line-height: 0.96;
-  }
-
-  .program-detail-desc {
-    margin-top: 0.5rem;
-    font-size: 0.7rem;
-    line-height: 1.38;
-  }
-
-  .program-focus-chip-grid {
-    margin-top: 0.55rem;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.38rem;
-  }
-
-  .program-focus-chip {
-    gap: 0.35rem;
-    border-radius: 0.72rem;
-    padding: 0.42rem;
-    font-size: 0.6rem;
-  }
-
-  .program-focus-chip span {
-    width: 1.15rem;
-    height: 1.15rem;
-    font-size: 0.44rem;
-  }
-
-  .program-impact-card {
-    margin-top: auto;
-    border-radius: 0.9rem;
-    padding: 0.58rem;
-  }
-
-  .program-impact-card p {
-    font-size: 0.5rem;
-    letter-spacing: 0.16em;
-  }
-
-  .program-impact-card h4 {
-    margin-top: 0.25rem;
-    font-size: 0.66rem;
-    line-height: 1.32;
-  }
-
-  /* FOCUS SECTION */
-  .program-focus-layout {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto minmax(0, 1fr);
-    gap: 0.62rem;
-  }
-
-  .program-focus-left .program-heading {
-    font-size: clamp(1.42rem, min(7.6vw, 5.5vh), 2.16rem);
-  }
-
-  .program-focus-left p {
-    font-size: 0.76rem;
-    line-height: 1.38;
-  }
-
-  .program-focus-left .mt-6 {
-    margin-top: 0.75rem !important;
-  }
-
-  .program-focus-left .gap-2 {
-    gap: 0.32rem !important;
-  }
-
-  .program-focus-left .gap-2 span {
-    padding: 0.36rem 0.52rem !important;
-    font-size: 0.58rem !important;
-  }
-
-  .program-focus-card {
-    height: 100%;
-    border-radius: 1.25rem;
-    padding: 0.8rem;
-  }
-
-  .program-focus-card .h-32 {
-    width: 4.35rem !important;
-    height: 4.35rem !important;
-    border-radius: 1.08rem !important;
-    font-size: 2rem !important;
-  }
-
-  .program-focus-card h3 {
-    margin-top: 0.75rem !important;
-    font-size: 1rem !important;
-    line-height: 1.25 !important;
-  }
-
-  /* FLOW */
-  .program-flow-layout {
-    display: grid;
-    grid-template-rows: auto minmax(0, 1fr);
-    gap: 0.55rem;
-  }
-
-  .program-flow-layout .program-heading {
-    font-size: clamp(1.42rem, min(7.4vw, 5.5vh), 2.15rem);
-  }
-
-  .program-flow-layout p {
-    font-size: 0.72rem;
-    line-height: 1.35;
-  }
-
-  .program-flow-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-auto-rows: minmax(0, 1fr);
-    gap: 0.42rem;
-  }
-
-  .program-flow-card {
-    padding: 0.68rem;
-    border-radius: 0.95rem;
-  }
-
-  .program-flow-number {
-    width: 2.05rem;
-    height: 2.05rem;
-    border-radius: 0.68rem;
-    font-size: 0.62rem;
-  }
-
-  .program-flow-card h3 {
-    margin-top: 0.5rem !important;
-    font-size: 0.78rem !important;
-    line-height: 1.12;
-  }
-
-  .program-flow-card p {
-    margin-top: 0.32rem !important;
-    font-size: 0.58rem !important;
-    line-height: 1.3;
-  }
-
-  /* FAQ */
-  .program-faq-layout {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto minmax(0, 1fr);
-    gap: 0.58rem;
-  }
-
-  .program-faq-left .program-heading {
-    font-size: clamp(1.42rem, min(7.4vw, 5.5vh), 2.15rem);
-  }
-
-  .program-faq-left p {
-    font-size: 0.72rem;
-    line-height: 1.35;
-  }
-
-  .program-faq-list {
-    gap: 0.42rem;
-  }
-
-  .program-faq-item {
-    padding: 0.68rem;
-    border-radius: 0.9rem;
-  }
-
-  .program-faq-item h3 {
-    font-size: 0.74rem !important;
-    line-height: 1.25;
-  }
-
-  .program-faq-item p {
-    font-size: 0.64rem !important;
-    line-height: 1.35;
-  }
-
-  .program-faq-item .h-8 {
-    width: 1.45rem !important;
-    height: 1.45rem !important;
-    font-size: 0.72rem !important;
-  }
-
-  /* CTA */
-  .program-cta-card {
-    border-radius: 1.25rem;
-    padding: 0.95rem;
-  }
-
-  .program-cta-icon {
-    height: 3.25rem;
-    width: 3.25rem;
-    border-radius: 0.95rem;
-    font-size: 1.22rem;
-  }
-
-  .program-cta-card .program-heading {
-    font-size: clamp(1.42rem, min(7.4vw, 5.5vh), 2.15rem);
-  }
-
-  .program-cta-card p {
-    font-size: 0.72rem !important;
-    line-height: 1.38 !important;
-  }
-
-  /* CONTROL */
-  .program-bottom-control {
-    bottom: max(0.62rem, env(safe-area-inset-bottom));
-    gap: 0.38rem;
-  }
-
-  .program-bottom-control button {
-    padding: 0.42rem 0.68rem !important;
-    font-size: 0.6rem !important;
-    border-radius: 999px !important;
-  }
-}
   /* =========================
      HERO MOBILE
   ========================= */
@@ -3342,79 +2789,50 @@ body,
   }
 
   .program-title {
-    font-size: clamp(1.5rem, min(9.6vw, 7vh), 2.35rem);
+    font-size: clamp(1.55rem, min(10vw, 7.2vh), 2.45rem);
   }
 
   .program-heading {
-    font-size: clamp(1.24rem, min(7.4vw, 5.4vh), 1.86rem);
+    font-size: clamp(1.28rem, min(7.8vw, 5.7vh), 1.95rem);
   }
 
   .program-hero-copy p,
-  .program-list-desc,
+  .program-list-header p,
   .program-flow-layout p,
   .program-faq-left p,
   .program-cta-card p {
-    font-size: 0.68rem !important;
-  }
-
-  .program-stats {
-    max-height: 108px;
-  }
-
-  .program-stats > div > div {
-    padding: 0.42rem !important;
-  }
-
-  .program-buttons-grid {
-    grid-auto-columns: minmax(136px, 76%);
-    grid-template-rows: repeat(2, minmax(44px, 1fr));
-  }
-
-  .program-mini-card {
-    min-height: 44px;
-  }
-
-  .program-mini-title {
-    font-size: 0.7rem;
-  }
-
-  .program-mini-tag {
-    font-size: 0.55rem;
-  }
-
-  .program-detail-card {
-    padding: 0.72rem;
-  }
-
-  .program-detail-title {
-    font-size: clamp(1.26rem, min(7.4vw, 4.7vh), 2rem);
-  }
-
-  .program-detail-desc {
-    font-size: 0.66rem;
-  }
-
-  .program-focus-chip {
-    font-size: 0.56rem;
-  }
-
-  .program-impact-card h4 {
-    font-size: 0.62rem;
-  }
-
-  .program-flow-card h3 {
     font-size: 0.72rem !important;
   }
 
+  .program-stats {
+    max-height: 116px;
+  }
+
+  .program-stats > div > div {
+    padding: 0.46rem !important;
+  }
+
+  .program-buttons-grid {
+    grid-auto-columns: minmax(140px, 78%);
+  }
+
+  .program-detail-card h3 {
+    font-size: clamp(1.38rem, min(7.8vw, 5vh), 2.15rem) !important;
+  }
+
+  .program-flow-card h3 {
+    font-size: 0.78rem !important;
+  }
+
   .program-flow-card p {
-    font-size: 0.55rem !important;
+    font-size: 0.6rem !important;
   }
 
   .program-faq-item h3 {
-    font-size: 0.7rem !important;
+    font-size: 0.74rem !important;
   }
 }
-  /* =========================================================
+/* =========================================================
    SHORT HEIGHT DEVICE
 ========================================================= */
 
