@@ -160,6 +160,33 @@ const DEFAULT_REQUIREMENTS = [
   },
 ];
 
+const DEFAULT_GUIDES = [
+  {
+    title: "Isi Data Santri",
+    badge: "Langkah 1",
+    desc: "Lengkapi data calon santri seperti nama lengkap, jenis kelamin, jenjang pendidikan, NISN, NIK, tempat lahir, tanggal lahir, agama, hobi, cita-cita, dan asal sekolah.",
+    image: "/panduan-daftar-1.png",
+  },
+  {
+    title: "Isi Data Orang Tua",
+    badge: "Langkah 2",
+    desc: "Lengkapi data ayah, ibu, alamat, kota, provinsi, kode pos, nomor HP, dan email yang aktif agar pihak pesantren dapat menghubungi wali santri.",
+    image: "/panduan-daftar-2.png",
+  },
+  {
+    title: "Lakukan Pembayaran",
+    badge: "Langkah 3",
+    desc: "Lakukan pembayaran pendaftaran melalui metode yang tersedia seperti transfer, QRIS, atau e-wallet. Setelah itu upload bukti pembayaran.",
+    image: "/panduan-daftar-3.png",
+  },
+  {
+    title: "Pendaftaran Berhasil",
+    badge: "Langkah 4",
+    desc: "Setelah data dan pembayaran dikirim, sistem akan menampilkan halaman berhasil. Simpan email dan password akun santri yang muncul.",
+    image: "/panduan-daftar-4.png",
+  },
+];
+
 const PARTICLES = Array.from({ length: 12 }, (_, index) => ({
   id: index,
   left: `${(index * 17 + 11) % 100}%`,
@@ -1444,6 +1471,181 @@ function RequirementsScreen({ requirements, direction }) {
   );
 }
 
+function GuideScreen({ guides, direction }) {
+  const [guideIndex, setGuideIndex] = useState(0);
+
+  const currentGuide = guides[guideIndex] || guides[0];
+
+  const nextGuide = () => {
+    setGuideIndex((prev) => (prev >= guides.length - 1 ? 0 : prev + 1));
+  };
+
+  const prevGuide = () => {
+    setGuideIndex((prev) => (prev <= 0 ? guides.length - 1 : prev - 1));
+  };
+
+  return (
+    <ScreenShell sectionKey="guide" direction={direction}>
+      <IslamicBackground dark intense />
+
+      <div data-allow-scroll="true" className="home-screen overflow-y-auto py-28">
+        <div className="mx-auto max-w-5xl text-center">
+          <Badge dark>Panduan Pendaftaran</Badge>
+
+          <motion.h2
+            initial={{ opacity: 0, y: 28, filter: "blur(7px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            transition={{ delay: 0.1, duration: 0.55, ease: EASE_PREMIUM }}
+            className="home-heading mt-4 font-black leading-[0.98] tracking-[-0.05em] text-white"
+          >
+            Ikuti alur pendaftaran santri dengan mudah
+          </motion.h2>
+
+          <motion.p
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.18, duration: 0.45 }}
+            className="mx-auto mt-4 max-w-3xl text-sm leading-relaxed text-emerald-100 sm:text-base"
+          >
+            Panduan ini membantu wali santri memahami tahapan pendaftaran dari
+            pengisian data santri sampai pendaftaran berhasil.
+          </motion.p>
+        </div>
+
+        <div className="mx-auto mt-8 grid max-w-6xl gap-5 lg:grid-cols-[0.8fr_1.2fr]">
+          <motion.div
+            initial={{ opacity: 0, x: -24, filter: "blur(7px)" }}
+            animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+            transition={{ delay: 0.22, duration: 0.5, ease: EASE_PREMIUM }}
+            className="rounded-[1.8rem] border border-white/10 bg-white/10 p-5 shadow-2xl backdrop-blur-xl"
+          >
+            <p className="text-xs font-black uppercase tracking-[0.25em] text-yellow-300">
+              {currentGuide.badge}
+            </p>
+
+            <h3 className="mt-3 text-3xl font-black leading-tight text-white">
+              {currentGuide.title}
+            </h3>
+
+            <p className="mt-4 text-sm leading-relaxed text-emerald-100">
+              {currentGuide.desc}
+            </p>
+
+            <div className="mt-6 grid gap-3">
+              {guides.map((item, index) => (
+                <button
+                  key={`${item.title}-${index}`}
+                  onClick={() => setGuideIndex(index)}
+                  className={`group flex items-center gap-3 rounded-2xl border p-3 text-left transition ${
+                    guideIndex === index
+                      ? "border-yellow-300 bg-yellow-400 text-emerald-950 shadow-lg shadow-yellow-950/20"
+                      : "border-white/10 bg-white/10 text-white hover:border-yellow-300/40 hover:bg-white/15"
+                  }`}
+                >
+                  <span
+                    className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-black ${
+                      guideIndex === index
+                        ? "bg-emerald-950 text-yellow-300"
+                        : "bg-white/10 text-yellow-300"
+                    }`}
+                  >
+                    {index + 1}
+                  </span>
+
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-black">{item.title}</p>
+                    <p
+                      className={`mt-1 text-xs font-semibold ${
+                        guideIndex === index
+                          ? "text-emerald-900"
+                          : "text-emerald-100/75"
+                      }`}
+                    >
+                      {item.badge}
+                    </p>
+                  </div>
+                </button>
+              ))}
+            </div>
+
+            <div className="mt-5 flex items-center justify-between">
+              <button
+                onClick={prevGuide}
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white transition hover:-translate-y-1 hover:bg-white/20"
+              >
+                <FaArrowUp />
+              </button>
+
+              <div className="rounded-full border border-white/10 bg-white/10 px-4 py-2 text-[10px] font-black uppercase tracking-[0.2em] text-yellow-300">
+                {guideIndex + 1} / {guides.length}
+              </div>
+
+              <button
+                onClick={nextGuide}
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-yellow-400 text-emerald-950 transition hover:-translate-y-1 hover:bg-yellow-300"
+              >
+                <FaArrowDown />
+              </button>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, x: 24, filter: "blur(7px)" }}
+            animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+            transition={{ delay: 0.28, duration: 0.5, ease: EASE_PREMIUM }}
+            className="rounded-[1.8rem] border border-white/10 bg-white/10 p-3 shadow-2xl backdrop-blur-xl"
+          >
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={guideIndex}
+                initial={{
+                  opacity: 0,
+                  scale: 0.98,
+                  clipPath: CLIP_RIGHT,
+                }}
+                animate={{
+                  opacity: 1,
+                  scale: 1,
+                  clipPath: CLIP_VISIBLE,
+                }}
+                exit={{
+                  opacity: 0,
+                  scale: 0.98,
+                  clipPath: CLIP_LEFT,
+                }}
+                transition={{ duration: 0.45, ease: EASE_PREMIUM }}
+                className="relative overflow-hidden rounded-[1.5rem] bg-emerald-950"
+              >
+                <SafeImage
+                  src={currentGuide.image}
+                  alt={currentGuide.title}
+                  className="h-full max-h-[520px] w-full object-contain"
+                />
+
+                <div className="absolute left-4 top-4 rounded-full bg-yellow-400 px-4 py-2 text-[10px] font-black uppercase tracking-[0.2em] text-emerald-950 shadow-xl">
+                  {currentGuide.badge}
+                </div>
+              </motion.div>
+            </AnimatePresence>
+          </motion.div>
+        </div>
+
+        <div className="mx-auto mt-7 flex max-w-5xl flex-col items-center justify-center gap-3 rounded-[1.5rem] border border-yellow-300/30 bg-emerald-950/80 p-5 text-center backdrop-blur-xl sm:flex-row sm:justify-between sm:text-left">
+          <p className="max-w-2xl text-sm leading-relaxed text-emerald-100">
+            Setelah memahami panduan, wali santri dapat langsung membuka halaman
+            pendaftaran dan mengisi data sesuai langkah-langkah di atas.
+          </p>
+
+          <MagneticButton href="/pendaftaran">
+            Mulai Daftar
+            <FaArrowRight />
+          </MagneticButton>
+        </div>
+      </div>
+    </ScreenShell>
+  );
+}
+
 function CtaScreen({ direction }) {
   return (
     <ScreenShell light sectionKey="cta" direction={direction}>
@@ -1582,16 +1784,20 @@ const [navbarHeight, setNavbarHeight] = useState(92);
   ? homeData.requirements
   : DEFAULT_REQUIREMENTS;
 
-  const sections = useMemo(
+  const requirements = homeData?.requirements?.length
+
+
+const sections = useMemo(
   () => [
     { key: "hero", label: "Home", total: 1 },
     { key: "values", label: "Nilai", total: 1 },
     { key: "pembina", label: "Pembina", total: pembinaItems.length || 1 },
     { key: "requirements", label: "Syarat", total: 1 },
+    { key: "guide", label: "Panduan", total: 1 },
     { key: "cta", label: "Daftar", total: 1 },
   ],
   [pembinaItems.length]
-);
+); 
 
   const activeSection = position.section;
   const activeStep = position.step;
@@ -1885,6 +2091,16 @@ if (key === "requirements") {
     <RequirementsScreen
       key="requirements"
       requirements={requirements}
+      direction={direction}
+    />
+  );
+}
+
+if (key === "guide") {
+  return (
+    <GuideScreen
+      key="guide"
+      guides={guides}
       direction={direction}
     />
   );
