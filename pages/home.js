@@ -14,6 +14,11 @@ import {
 } from "framer-motion";
 
 import {
+  FaLandmark,
+  FaBullseye,
+  FaLightbulb,
+  FaSchool,
+  FaScroll,
   FaArrowRight,
   FaArrowUp,
   FaArrowDown,
@@ -77,6 +82,54 @@ const DEFAULT_STATS = [
   { value: "24 Jam", label: "Pembinaan" },
   { value: "Aktif", label: "Kegiatan Santri" },
 ];
+
+const DEFAULT_PROFILE = {
+  introduction: {
+    badge: "Profil Pesantren",
+    title: "Jejak panjang Pondok Pesantren Al Qur'an Al Furqon",
+    desc: "Pondok Pesantren Al Qur'an Al Furqon berdiri pada tahun 1976 yang berlokasi di Cilendek Barat Kota Bogor oleh Abah KH. Abdurrochman. Perkembangannya berlanjut dengan pembangunan kembali pada tahun 1992 di daerah Cimulang Rancabungur, dan hingga saat ini tetap eksis dalam membina santri.",
+    points: [
+      "Berdiri sejak tahun 1976 di Cilendek Barat Kota Bogor.",
+      "Didirikan oleh Abah KH. Abdurrochman.",
+      "Berkembang kembali pada tahun 1992 di Cimulang Rancabungur.",
+      "Tahun 2004 membuka Madrasah Tsanawiyah (MTs) Al Furqon.",
+      "Tahun 2015 membuka Sekolah Menengah Kejuruan (SMK) Al Furqon.",
+    ],
+  },
+  foundation: {
+    title: "Landasan",
+    verse: "QS. An-Nisa ayat 9",
+    desc: "Dan hendaklah takut kepada Allah, orang-orang yang seandainya meninggalkan di belakang mereka anak-anak yang lemah, yang mereka khawatir terhadap kesejahteraan mereka. Oleh sebab itu hendaklah mereka bertaqwa kepada Allah dan hendaklah berbicara dengan tutur kata yang benar.",
+  },
+  vision: "Membentuk Generasi Qur'ani yang berdaya Fikir dan Dzikir",
+  missions: [
+    "Memahami dan mendalami qo'idah-qo'idah bacaan Al Qur'an (Tilawatil Qur'an) dengan baik dan benar.",
+    "Mengkaji, memahami, dan mengamalkan isi kandungan Al Qur'an.",
+    "Menjadikan Al Qur'an sebagai pedoman hidup sepanjang hayat.",
+  ],
+  programs: [
+    {
+      title: "Pendidikan Formal",
+      iconKey: "school",
+      items: ["Madrasah Tsanawiyah (MTs)", "Sekolah Menengah Kejuruan (SMK)"],
+    },
+    {
+      title: "Pendidikan Non Formal Pesantren",
+      iconKey: "quran",
+      items: [
+        "Seni Baca Al Qur'an",
+        "Pengajian Kitab Kuning",
+        "Kuliah Subuh",
+        "Tahfidzul Qur'an",
+        "Muhadhoroh",
+        "Lailatul Qiro'ah",
+        "Seni Kaligrafi",
+        "Majelis Ta'lim",
+        "Olahraga / Senam Pagi",
+      ],
+    },
+  ],
+};
 
 const DEFAULT_VALUES = [
   {
@@ -250,6 +303,11 @@ function getIcon(key) {
     users: <FaUsers />,
     moon: <FaMoon />,
     star: <FaStar />,
+    landmark: <FaLandmark />,
+    vision: <FaBullseye />,
+    mission: <FaLightbulb />,
+    school: <FaSchool />,
+    scroll: <FaScroll />,
   };
 
   return icons[key] || <FaStar />;
@@ -1024,6 +1082,206 @@ function HeroScreen({ hero, stats, direction, handleDirection }) {
   );
 }
 
+function ProfileScreen({ profile, direction }) {
+  return (
+    <ScreenShell light sectionKey="profile" direction={direction}>
+      <IslamicBackground />
+
+      <div data-allow-scroll="true" className="home-screen overflow-y-auto py-28">
+        <div className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
+          {/* KIRI: PENDAHULUAN */}
+          <motion.div
+            initial={{ opacity: 0, x: -34, filter: "blur(10px)" }}
+            animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+            transition={{ duration: 0.58, ease: EASE_PREMIUM }}
+            className="relative overflow-hidden rounded-[2rem] border border-emerald-100 bg-white/90 p-6 shadow-2xl backdrop-blur-xl"
+          >
+            <div className="absolute -right-24 -top-24 h-72 w-72 rounded-full bg-yellow-300/25 blur-3xl" />
+            <div className="absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-emerald-300/25 blur-3xl" />
+
+            <div className="relative z-10">
+              <Badge>{profile.introduction.badge}</Badge>
+
+              <h2 className="home-heading mt-4 font-black leading-[0.98] tracking-[-0.05em] text-emerald-950">
+                {profile.introduction.title}
+              </h2>
+
+              <p className="mt-5 text-sm leading-relaxed text-slate-600 sm:text-base">
+                {profile.introduction.desc}
+              </p>
+
+              <div className="mt-6 space-y-3">
+                {profile.introduction.points.map((point, index) => (
+                  <motion.div
+                    key={`${point}-${index}`}
+                    initial={{ opacity: 0, y: 18 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{
+                      delay: 0.18 + index * 0.06,
+                      duration: 0.42,
+                      ease: EASE_PREMIUM,
+                    }}
+                    className="flex gap-3 rounded-2xl border border-emerald-100 bg-emerald-50/80 p-3"
+                  >
+                    <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-emerald-950 text-[10px] text-yellow-300">
+                      <FaCheckCircle />
+                    </div>
+
+                    <p className="text-sm font-semibold leading-relaxed text-slate-700">
+                      {point}
+                    </p>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+
+          {/* KANAN: LANDASAN, VISI MISI, PROGRAM */}
+          <div className="grid gap-5">
+            {/* LANDASAN */}
+            <motion.div
+              initial={{ opacity: 0, x: 34, filter: "blur(10px)" }}
+              animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+              transition={{ delay: 0.12, duration: 0.58, ease: EASE_PREMIUM }}
+              className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-emerald-950 p-6 text-white shadow-2xl"
+            >
+              <div className="absolute -right-16 -top-16 h-52 w-52 rounded-full bg-yellow-300/15 blur-3xl" />
+
+              <div className="relative z-10 flex gap-4">
+                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-yellow-400 text-2xl text-emerald-950">
+                  {getIcon("scroll")}
+                </div>
+
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-[0.24em] text-yellow-300">
+                    {profile.foundation.verse}
+                  </p>
+
+                  <h3 className="mt-2 text-2xl font-black text-white">
+                    {profile.foundation.title}
+                  </h3>
+
+                  <p className="mt-3 text-sm leading-relaxed text-emerald-100">
+                    “{profile.foundation.desc}”
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* VISI MISI */}
+            <div className="grid gap-5 md:grid-cols-2">
+              <motion.div
+                initial={{ opacity: 0, y: 24, filter: "blur(8px)" }}
+                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                transition={{ delay: 0.2, duration: 0.5, ease: EASE_PREMIUM }}
+              >
+                <TiltCard>
+                  <div className="h-full rounded-[2rem] border border-emerald-100 bg-white/90 p-5 shadow-xl">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-950 text-xl text-yellow-300">
+                      {getIcon("vision")}
+                    </div>
+
+                    <p className="mt-5 text-[10px] font-black uppercase tracking-[0.24em] text-emerald-700">
+                      Visi
+                    </p>
+
+                    <h3 className="mt-2 text-2xl font-black leading-tight text-emerald-950">
+                      {profile.vision}
+                    </h3>
+                  </div>
+                </TiltCard>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 24, filter: "blur(8px)" }}
+                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                transition={{ delay: 0.28, duration: 0.5, ease: EASE_PREMIUM }}
+              >
+                <TiltCard>
+                  <div className="h-full rounded-[2rem] border border-emerald-100 bg-white/90 p-5 shadow-xl">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-950 text-xl text-yellow-300">
+                      {getIcon("mission")}
+                    </div>
+
+                    <p className="mt-5 text-[10px] font-black uppercase tracking-[0.24em] text-emerald-700">
+                      Misi
+                    </p>
+
+                    <div className="mt-3 space-y-3">
+                      {profile.missions.map((mission, index) => (
+                        <div key={`${mission}-${index}`} className="flex gap-3">
+                          <span className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-yellow-400 text-[10px] font-black text-emerald-950">
+                            {index + 1}
+                          </span>
+
+                          <p className="text-sm font-semibold leading-relaxed text-slate-700">
+                            {mission}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </TiltCard>
+              </motion.div>
+            </div>
+
+            {/* PROGRAM */}
+            <motion.div
+              initial={{ opacity: 0, y: 28, filter: "blur(8px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              transition={{ delay: 0.36, duration: 0.52, ease: EASE_PREMIUM }}
+              className="grid gap-4 md:grid-cols-2"
+            >
+              {profile.programs.map((program, index) => (
+                <TiltCard key={program.title}>
+                  <div className="relative h-full overflow-hidden rounded-[2rem] border border-emerald-100 bg-white/90 p-5 shadow-xl">
+                    <div className="absolute -right-16 -top-16 h-40 w-40 rounded-full bg-yellow-300/20 blur-3xl" />
+
+                    <div className="relative z-10">
+                      <div className="flex items-center gap-4">
+                        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-950 text-xl text-yellow-300">
+                          {getIcon(program.iconKey)}
+                        </div>
+
+                        <div>
+                          <p className="text-[10px] font-black uppercase tracking-[0.22em] text-emerald-700">
+                            Program {index + 1}
+                          </p>
+
+                          <h3 className="text-xl font-black text-emerald-950">
+                            {program.title}
+                          </h3>
+                        </div>
+                      </div>
+
+                      <div className="mt-5 grid gap-2">
+                        {program.items.map((item, itemIndex) => (
+                          <div
+                            key={`${item}-${itemIndex}`}
+                            className="flex items-center gap-3 rounded-2xl bg-emerald-50 p-3"
+                          >
+                            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-950 text-[10px] font-black text-yellow-300">
+                              {itemIndex + 1}
+                            </span>
+
+                            <p className="text-sm font-bold text-slate-700">
+                              {item}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </TiltCard>
+              ))}
+            </motion.div>
+          </div>
+        </div>
+      </div>
+    </ScreenShell>
+  );
+}
+
 function ValuesScreen({ values, direction }) {
   return (
     <ScreenShell light sectionKey="values" direction={direction}>
@@ -1778,6 +2036,7 @@ const [navbarHeight, setNavbarHeight] = useState(92);
   const hero = homeData?.hero || DEFAULT_HERO;
   const stats = homeData?.heroStats?.length ? homeData.heroStats : DEFAULT_STATS;
   const values = homeData?.values?.length ? homeData.values : DEFAULT_VALUES;
+  const profile = homeData?.profile || DEFAULT_PROFILE;
 
   const pembinaItems = homeData?.pembina?.length
     ? homeData.pembina
@@ -1795,6 +2054,7 @@ const [navbarHeight, setNavbarHeight] = useState(92);
 const sections = useMemo(
   () => [
     { key: "hero", label: "Home", total: 1 },
+    { key: "profile", label: "Profil", total: 1 },
     { key: "values", label: "Nilai", total: 1 },
     { key: "pembina", label: "Pembina", total: pembinaItems.length || 1 },
     { key: "requirements", label: "Syarat", total: 1 },
@@ -1802,7 +2062,7 @@ const sections = useMemo(
     { key: "cta", label: "Daftar", total: 1 },
   ],
   [pembinaItems.length]
-); 
+);
 
   const activeSection = position.section;
   const activeStep = position.step;
@@ -2054,7 +2314,7 @@ const sections = useMemo(
 
 const setCurrentPembinaStep = (index) => {
   setPosition({
-    section: 2,
+    section: 3,
     step: index,
     direction: index >= activeStep ? 1 : -1,
   });
@@ -2064,16 +2324,27 @@ const setCurrentPembinaStep = (index) => {
     const key = sections[activeSection]?.key;
 
     if (key === "hero") {
-      return (
-        <HeroScreen
-          key="hero"
-          hero={hero}
-          stats={stats}
-          direction={direction}
-          handleDirection={handleDirection}
-        />
-      );
-    }
+  return (
+    <HeroScreen
+      key="hero"
+      hero={hero}
+      stats={stats}
+      direction={direction}
+      handleDirection={handleDirection}
+    />
+  );
+}
+
+if (key === "profile") {
+  return (
+    <ProfileScreen
+      key="profile"
+      profile={profile}
+      direction={direction}
+    />
+  );
+}
+
 
     if (key === "values") {
       return <ValuesScreen key="values" values={values} direction={direction} />;
