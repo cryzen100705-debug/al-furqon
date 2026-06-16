@@ -1065,7 +1065,7 @@ function HeroScreen({ hero, stats, direction, handleDirection }) {
                   }}
                 >
                   <SafeImage
-                    src="/Logo.png"
+                    src="/logo.png"
                     alt="Logo Al-Furqon"
                     className="mx-auto w-40 drop-shadow-[0_0_40px_rgba(255,255,255,0.35)] xl:w-48"
                   />
