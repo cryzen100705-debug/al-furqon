@@ -973,7 +973,7 @@ function ProgramsScreen({
     <ScreenShell light sectionKey="program-list" direction={direction}>
       <IslamicBackground />
 
-      <div data-allow-scroll="true" className="program-screen overflow-y-auto">
+      <div className="program-screen">
         <div className="program-list-layout">
           <motion.div
             initial={{ opacity: 0, y: 24, filter: "blur(8px)" }}
@@ -1197,7 +1197,7 @@ function FlowScreen({ flow, direction }) {
     <ScreenShell light sectionKey="program-flow" direction={direction}>
       <IslamicBackground />
 
-      <div data-allow-scroll="true" className="program-screen overflow-y-auto">
+      <div className="program-screen">
         <div className="program-flow-layout">
           <motion.div
             initial={{ opacity: 0, y: 24, filter: "blur(8px)" }}
@@ -1819,7 +1819,7 @@ export default function Program() {
       </div>
 
       <style jsx global>{`
-        html,
+      html,
 body,
 #__next {
   width: 100%;
@@ -1836,15 +1836,23 @@ body,
 }
 
 /* =========================================================
-   SCREEN SYSTEM - 100% DEVICE HEIGHT
+   GLOBAL SCREEN SYSTEM
+   Semua section = 100% layar perangkat
 ========================================================= */
 
 .program-screen {
   --program-safe-bottom: max(env(safe-area-inset-bottom), 0px);
   --program-nav-space: var(--program-navbar-height, 92px);
-  --program-control-space: 76px;
+  --program-control-space: 72px;
+  --program-progress-space: 6px;
   --program-top-space: calc(var(--program-nav-space) + 14px);
-  --program-bottom-space: calc(var(--program-control-space) + var(--program-safe-bottom));
+  --program-bottom-space: calc(
+    var(--program-control-space) + var(--program-progress-space) +
+      var(--program-safe-bottom)
+  );
+  --program-available-height: calc(
+    100dvh - var(--program-top-space) - var(--program-bottom-space)
+  );
 
   position: relative;
   z-index: 10;
@@ -1858,6 +1866,23 @@ body,
   overflow: hidden;
 }
 
+/* Semua isi utama section wajib masuk area ini */
+.program-hero-grid,
+.program-list-layout,
+.program-focus-layout,
+.program-flow-layout,
+.program-faq-layout {
+  width: 100%;
+  height: var(--program-available-height);
+  max-height: var(--program-available-height);
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* =========================================================
+   HERO SECTION
+========================================================= */
+
 .program-hero-screen,
 .program-cta-screen,
 .program-focus-screen {
@@ -1865,20 +1890,11 @@ body,
   align-items: center;
 }
 
-/* =========================================================
-   HERO - FIT FULL SCREEN
-========================================================= */
-
 .program-hero-grid {
-  width: 100%;
-  height: calc(100dvh - var(--program-top-space) - var(--program-bottom-space));
-  max-height: calc(100dvh - var(--program-top-space) - var(--program-bottom-space));
-  min-height: 0;
   display: grid;
   grid-template-columns: minmax(0, 1.02fr) minmax(280px, 0.78fr);
   align-items: center;
   gap: clamp(0.8rem, 2vw, 2.4rem);
-  overflow: hidden;
 }
 
 .program-hero-copy {
@@ -1893,7 +1909,9 @@ body,
 }
 
 .program-heading {
-  font-size: clamp(1.8rem, min(4.8vw, 8vh), 4.4rem);
+  font-size: clamp(1.8rem, min(4.6vw, 7.2vh), 4.2rem);
+  line-height: 0.96;
+  letter-spacing: -0.055em;
 }
 
 .program-hero-copy p {
@@ -1901,7 +1919,7 @@ body,
 }
 
 .program-stats {
-  max-height: 140px;
+  max-height: 138px;
   overflow: hidden;
 }
 
@@ -1916,8 +1934,8 @@ body,
 .program-orbit {
   min-width: 0;
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
 }
 
 .program-orbit > div {
@@ -1926,65 +1944,61 @@ body,
 }
 
 /* =========================================================
-   LIST SECTION
+   PROGRAM LIST SECTION
 ========================================================= */
 
-.program-list-layout,
-.program-flow-layout,
-.program-faq-layout {
-  width: 100%;
-  height: calc(100dvh - var(--program-top-space) - var(--program-bottom-space));
-  max-height: calc(100dvh - var(--program-top-space) - var(--program-bottom-space));
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: clamp(0.75rem, 1.6vh, 1.35rem);
-  overflow: hidden;
+.program-list-layout {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: clamp(0.7rem, 1.4vh, 1.1rem);
 }
 
 .program-list-header {
-  max-width: 900px;
-  flex-shrink: 0;
+  max-width: 930px;
+  min-height: 0;
+}
+
+.program-list-header .program-heading {
+  font-size: clamp(1.9rem, min(4.4vw, 6.2vh), 4rem);
+}
+
+.program-list-header p {
+  margin-top: 0.8rem !important;
 }
 
 .program-list-grid {
   display: grid;
-  grid-template-columns: minmax(260px, 0.9fr) minmax(0, 1.1fr);
+  grid-template-columns: minmax(260px, 0.82fr) minmax(0, 1.18fr);
   gap: 1rem;
   min-height: 0;
-  flex: 1;
+  height: 100%;
   overflow: hidden;
 }
 
 .program-buttons-grid {
+  min-height: 0;
+  height: 100%;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-auto-rows: minmax(68px, 1fr);
   gap: 0.65rem;
-  align-content: start;
-  min-height: 0;
-  overflow: auto;
-  padding-right: 4px;
-}
-
-.program-buttons-grid::-webkit-scrollbar,
-.program-screen::-webkit-scrollbar {
-  width: 0;
-  height: 0;
+  overflow: hidden;
 }
 
 .program-mini-card {
   min-width: 0;
+  min-height: 0;
   display: flex;
   align-items: center;
   gap: 0.7rem;
   border-radius: 1.25rem;
   border: 1px solid rgba(6, 95, 70, 0.1);
   background: rgba(255, 255, 255, 0.78);
-  padding: 0.72rem;
+  padding: 0.7rem;
   color: #064e3b;
   box-shadow: 0 16px 45px rgba(0, 0, 0, 0.07);
   transition: 0.28s ease;
+  overflow: hidden;
 }
 
 .program-mini-card-active {
@@ -1996,27 +2010,35 @@ body,
 
 .program-mini-icon {
   display: flex;
-  height: 2.45rem;
-  width: 2.45rem;
+  height: 2.35rem;
+  width: 2.35rem;
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  border-radius: 0.95rem;
+  border-radius: 0.9rem;
   background: #facc15;
   color: #052e22;
-  font-size: 1rem;
+  font-size: 0.95rem;
 }
 
 .program-detail-card {
   position: relative;
   height: 100%;
+  max-height: 100%;
   min-height: 0;
   overflow: hidden;
   border-radius: 2rem;
   border: 1px solid rgba(255, 255, 255, 0.12);
   background: linear-gradient(135deg, #052e22, #064e3b);
-  padding: clamp(1rem, 2.4vw, 2rem);
+  padding: clamp(1rem, 2.2vw, 1.85rem);
   box-shadow: 0 28px 80px rgba(0, 0, 0, 0.22);
+}
+
+.program-detail-card > .relative {
+  height: 100%;
+  display: flex;
+  min-height: 0;
+  flex-direction: column;
 }
 
 .program-detail-glow {
@@ -2032,15 +2054,50 @@ body,
 
 .program-detail-icon {
   display: flex;
-  height: 4rem;
-  width: 4rem;
+  height: 3.75rem;
+  width: 3.75rem;
   align-items: center;
   justify-content: center;
-  border-radius: 1.25rem;
+  border-radius: 1.18rem;
   background: #facc15;
   color: #052e22;
-  font-size: 1.9rem;
+  font-size: 1.75rem;
   box-shadow: 0 0 45px rgba(250, 204, 21, 0.25);
+}
+
+.program-detail-card h3 {
+  font-size: clamp(1.9rem, min(3.8vw, 6vh), 4rem) !important;
+}
+
+.program-detail-card p {
+  line-height: 1.55;
+}
+
+.program-detail-card .mt-7 {
+  margin-top: 1.15rem !important;
+}
+
+.program-detail-card .mt-6 {
+  margin-top: 1rem !important;
+}
+
+.program-detail-card .mt-5 {
+  margin-top: 0.9rem !important;
+}
+
+/* focus item dalam detail */
+.program-detail-card .grid {
+  gap: 0.65rem !important;
+}
+
+.program-detail-card .grid > div {
+  padding: 0.72rem !important;
+  border-radius: 1rem !important;
+  font-size: 0.82rem !important;
+}
+
+.program-detail-card .rounded-\[1\.5rem\] {
+  padding: 1rem !important;
 }
 
 /* =========================================================
@@ -2048,21 +2105,27 @@ body,
 ========================================================= */
 
 .program-focus-layout {
-  width: 100%;
-  height: calc(100dvh - var(--program-top-space) - var(--program-bottom-space));
-  max-height: calc(100dvh - var(--program-top-space) - var(--program-bottom-space));
-  min-height: 0;
   display: grid;
   grid-template-columns: minmax(0, 0.9fr) minmax(300px, 1.1fr);
   align-items: center;
   gap: clamp(0.9rem, 2.3vw, 2.6rem);
-  overflow: hidden;
+}
+
+.program-focus-left {
+  min-width: 0;
+  min-height: 0;
+}
+
+.program-focus-card-wrap {
+  min-width: 0;
+  min-height: 0;
 }
 
 .program-focus-card {
   position: relative;
-  height: min(56vh, 500px);
+  height: min(100%, 500px);
   min-height: 0;
+  max-height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -2076,26 +2139,47 @@ body,
   backdrop-filter: blur(18px);
 }
 
+.program-focus-card h3 {
+  font-size: clamp(1.3rem, min(2.6vw, 4.5vh), 2.5rem) !important;
+}
+
 /* =========================================================
    FLOW SECTION
 ========================================================= */
 
+.program-flow-layout {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(0.8rem, 1.8vh, 1.3rem);
+}
+
+.program-flow-layout > .mx-auto {
+  min-height: 0;
+}
+
+.program-flow-layout .program-heading {
+  font-size: clamp(1.9rem, min(4.3vw, 6.4vh), 4rem);
+}
+
 .program-flow-grid {
+  height: 100%;
+  min-height: 0;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0.9rem;
-  min-height: 0;
+  gap: 0.85rem;
+  overflow: hidden;
 }
 
 .program-flow-card {
   position: relative;
   height: 100%;
-  min-height: 230px;
+  min-height: 0;
   overflow: hidden;
   border-radius: 2rem;
   border: 1px solid rgba(6, 95, 70, 0.1);
   background: rgba(255, 255, 255, 0.86);
-  padding: 1.1rem;
+  padding: 1rem;
   box-shadow: 0 24px 65px rgba(0, 0, 0, 0.09);
 }
 
@@ -2115,15 +2199,27 @@ body,
   position: relative;
   z-index: 1;
   display: flex;
-  height: 3.6rem;
-  width: 3.6rem;
+  height: 3.4rem;
+  width: 3.4rem;
   align-items: center;
   justify-content: center;
-  border-radius: 1.2rem;
+  border-radius: 1.1rem;
   background: #052e22;
   color: #facc15;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 900;
+}
+
+.program-flow-card h3 {
+  margin-top: 1rem !important;
+  font-size: clamp(1.15rem, 1.8vw, 1.55rem) !important;
+  line-height: 1.1;
+}
+
+.program-flow-card p {
+  margin-top: 0.65rem !important;
+  font-size: clamp(0.78rem, 1.1vw, 0.92rem) !important;
+  line-height: 1.55;
 }
 
 /* =========================================================
@@ -2134,26 +2230,29 @@ body,
   display: grid;
   grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
   align-items: center;
+  gap: 1.1rem;
+}
+
+.program-faq-left {
+  min-width: 0;
+  min-height: 0;
 }
 
 .program-faq-list {
-  display: grid;
-  gap: 0.8rem;
   min-height: 0;
-  overflow: auto;
-  padding-right: 4px;
-}
-
-.program-faq-list::-webkit-scrollbar {
-  width: 0;
+  max-height: 100%;
+  display: grid;
+  gap: 0.75rem;
+  overflow: hidden;
 }
 
 .program-faq-item {
   width: 100%;
-  border-radius: 1.4rem;
+  min-height: 0;
+  border-radius: 1.35rem;
   border: 1px solid rgba(255, 255, 255, 0.12);
   background: rgba(255, 255, 255, 0.09);
-  padding: 1rem;
+  padding: 0.95rem;
   backdrop-filter: blur(14px);
   transition: 0.25s ease;
 }
@@ -2170,13 +2269,13 @@ body,
 .program-cta-card {
   position: relative;
   width: min(100%, 900px);
-  max-height: calc(100dvh - var(--program-top-space) - var(--program-bottom-space));
+  max-height: var(--program-available-height);
   margin-inline: auto;
   overflow: hidden;
   border-radius: 2.4rem;
   border: 1px solid rgba(6, 95, 70, 0.1);
   background: rgba(255, 255, 255, 0.9);
-  padding: clamp(1.25rem, 3.4vw, 2.8rem);
+  padding: clamp(1.25rem, 3.2vw, 2.6rem);
   text-align: center;
   box-shadow: 0 30px 90px rgba(0, 0, 0, 0.12);
 }
@@ -2210,19 +2309,19 @@ body,
   z-index: 1;
   margin: 0 auto 1rem;
   display: flex;
-  height: 4.7rem;
-  width: 4.7rem;
+  height: 4.5rem;
+  width: 4.5rem;
   align-items: center;
   justify-content: center;
-  border-radius: 1.6rem;
+  border-radius: 1.5rem;
   background: #052e22;
   color: #facc15;
-  font-size: 1.9rem;
+  font-size: 1.8rem;
   box-shadow: 0 24px 65px rgba(5, 46, 34, 0.22);
 }
 
 /* =========================================================
-   BOTTOM CONTROL - INCLUDED IN 100% SCREEN
+   BOTTOM CONTROL + PROGRESS
 ========================================================= */
 
 .program-bottom-control {
@@ -2243,7 +2342,7 @@ body,
 @media (max-width: 1024px) {
   .program-screen {
     --program-nav-space: var(--program-navbar-height, 84px);
-    --program-control-space: 72px;
+    --program-control-space: 68px;
     width: min(94vw, 980px);
   }
 
@@ -2254,24 +2353,33 @@ body,
     grid-template-columns: 1fr;
   }
 
-  .program-hero-grid {
-    align-content: center;
-  }
-
   .program-orbit {
     display: none !important;
+  }
+
+  .program-list-layout {
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+
+  .program-list-grid {
+    gap: 0.75rem;
+  }
+
+  .program-buttons-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-auto-rows: minmax(62px, 1fr);
+  }
+
+  .program-detail-card h3 {
+    font-size: clamp(1.8rem, min(5vw, 5.8vh), 3.4rem) !important;
   }
 
   .program-flow-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .program-list-grid {
-    overflow: auto;
-  }
-
-  .program-buttons-grid {
-    max-height: 230px;
+  .program-faq-layout {
+    align-content: center;
   }
 }
 
@@ -2282,120 +2390,231 @@ body,
 @media (max-width: 720px) {
   .program-screen {
     --program-nav-space: var(--program-navbar-height, 74px);
-    --program-control-space: 66px;
+    --program-control-space: 62px;
     width: 100%;
     padding-inline: 14px;
     padding-top: calc(var(--program-nav-space) + 10px);
-    padding-bottom: calc(var(--program-control-space) + var(--program-safe-bottom));
+    padding-bottom: calc(
+      var(--program-control-space) + var(--program-progress-space) +
+        var(--program-safe-bottom)
+    );
   }
 
   .program-hero-grid {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 0.75rem;
+    gap: 0.7rem;
   }
 
   .program-title {
-    font-size: clamp(1.85rem, min(11vw, 8.4vh), 3.25rem);
+    font-size: clamp(1.85rem, min(11vw, 8.2vh), 3.15rem);
     line-height: 0.94;
   }
 
   .program-heading {
-    font-size: clamp(1.65rem, min(9vw, 7vh), 2.75rem);
+    font-size: clamp(1.45rem, min(8.6vw, 6.5vh), 2.55rem);
   }
 
   .program-hero-copy p {
-    font-size: clamp(0.78rem, 3.4vw, 0.95rem);
-    line-height: 1.55;
+    font-size: clamp(0.78rem, 3.3vw, 0.94rem);
+    line-height: 1.5;
   }
 
   .program-stats {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    max-height: 160px;
-    gap: 0.55rem !important;
+    max-height: 145px;
+    gap: 0.5rem !important;
   }
 
   .program-stats > div > div {
-    padding: 0.65rem !important;
-    border-radius: 1.2rem !important;
+    padding: 0.58rem !important;
+    border-radius: 1.1rem !important;
   }
 
   .program-stats h3 {
-    font-size: 0.95rem !important;
+    font-size: 0.9rem !important;
   }
 
   .program-stats p {
-    font-size: 0.68rem !important;
+    font-size: 0.66rem !important;
   }
 
-  .program-buttons-grid,
-  .program-flow-grid {
+  .program-list-layout {
+    gap: 0.65rem;
+  }
+
+  .program-list-header .program-heading {
+    font-size: clamp(1.4rem, min(8vw, 5.8vh), 2.35rem);
+  }
+
+  .program-list-header p {
+    font-size: 0.82rem;
+    line-height: 1.45;
+  }
+
+  .program-list-grid {
+    grid-template-rows: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    gap: 0.65rem;
+  }
+
+  .program-buttons-grid {
     grid-template-columns: 1fr;
-  }
-
-  .program-list-layout,
-  .program-flow-layout,
-  .program-faq-layout {
-    justify-content: flex-start;
-    overflow-y: auto;
-    padding-bottom: 4px;
-  }
-
-  .program-list-header p,
-  .program-flow-layout p,
-  .program-faq-layout p {
-    font-size: 0.85rem;
+    grid-auto-rows: minmax(54px, 1fr);
+    gap: 0.5rem;
   }
 
   .program-mini-card {
-    padding: 0.68rem;
-    border-radius: 1.15rem;
+    padding: 0.58rem;
+    border-radius: 1rem;
   }
 
   .program-mini-icon {
-    height: 2.3rem;
-    width: 2.3rem;
-    border-radius: 0.85rem;
+    height: 2.15rem;
+    width: 2.15rem;
+    border-radius: 0.8rem;
+    font-size: 0.86rem;
+  }
+
+  .program-mini-card .text-sm {
+    font-size: 0.8rem !important;
   }
 
   .program-detail-card {
-    padding: 1rem;
-    border-radius: 1.5rem;
+    padding: 0.9rem;
+    border-radius: 1.35rem;
   }
 
   .program-detail-icon {
-    height: 3.4rem;
-    width: 3.4rem;
-    border-radius: 1.05rem;
-    font-size: 1.55rem;
+    height: 3.1rem;
+    width: 3.1rem;
+    border-radius: 0.95rem;
+    font-size: 1.42rem;
   }
 
-  .program-flow-card {
-    min-height: 170px;
-    border-radius: 1.45rem;
+  .program-detail-card h3 {
+    font-size: clamp(1.55rem, min(8.5vw, 5.7vh), 2.65rem) !important;
+  }
+
+  .program-detail-card p {
+    font-size: 0.78rem !important;
+    line-height: 1.45;
+  }
+
+  .program-detail-card .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 0.45rem !important;
+  }
+
+  .program-detail-card .grid > div {
+    padding: 0.5rem !important;
+    font-size: 0.68rem !important;
+    border-radius: 0.85rem !important;
+  }
+
+  .program-detail-card .rounded-\[1\.5rem\] {
+    padding: 0.72rem !important;
+    border-radius: 1rem !important;
+  }
+
+  .program-focus-layout {
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 0.7rem;
+  }
+
+  .program-focus-left p {
+    font-size: 0.82rem;
+    line-height: 1.45;
+  }
+
+  .program-focus-left .mt-6 {
+    margin-top: 1rem !important;
   }
 
   .program-focus-card {
-    height: auto;
-    min-height: 310px;
-    border-radius: 1.7rem;
+    height: 100%;
+    border-radius: 1.45rem;
+    padding: 1rem;
+  }
+
+  .program-focus-card .h-32 {
+    width: 5rem !important;
+    height: 5rem !important;
+    border-radius: 1.45rem !important;
+    font-size: 2.6rem !important;
+  }
+
+  .program-flow-layout {
+    gap: 0.7rem;
+  }
+
+  .program-flow-layout p {
+    font-size: 0.82rem;
+    line-height: 1.45;
+  }
+
+  .program-flow-grid {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .program-flow-card {
+    padding: 0.85rem;
+    border-radius: 1.25rem;
+  }
+
+  .program-flow-number {
+    height: 2.7rem;
+    width: 2.7rem;
+    border-radius: 0.9rem;
+    font-size: 0.78rem;
+  }
+
+  .program-flow-card h3 {
+    margin-top: 0.65rem !important;
+    font-size: 1rem !important;
+  }
+
+  .program-flow-card p {
+    font-size: 0.76rem !important;
+  }
+
+  .program-faq-layout {
+    gap: 0.8rem;
+  }
+
+  .program-faq-left p {
+    font-size: 0.82rem;
+    line-height: 1.45;
+  }
+
+  .program-faq-list {
+    gap: 0.55rem;
   }
 
   .program-faq-item {
-    padding: 0.9rem;
+    padding: 0.75rem;
+    border-radius: 1rem;
+  }
+
+  .program-faq-item h3 {
+    font-size: 0.88rem !important;
+  }
+
+  .program-faq-item p {
+    font-size: 0.78rem !important;
   }
 
   .program-cta-card {
-    border-radius: 1.7rem;
-    padding: 1.2rem;
+    border-radius: 1.45rem;
+    padding: 1.1rem;
   }
 
   .program-cta-icon {
-    height: 4rem;
-    width: 4rem;
-    border-radius: 1.25rem;
-    font-size: 1.6rem;
+    height: 3.7rem;
+    width: 3.7rem;
+    border-radius: 1.15rem;
+    font-size: 1.45rem;
   }
 
   .program-bottom-control {
@@ -2404,13 +2623,13 @@ body,
   }
 
   .program-bottom-control button {
-    padding: 0.55rem 0.8rem !important;
-    font-size: 0.68rem !important;
+    padding: 0.5rem 0.78rem !important;
+    font-size: 0.66rem !important;
   }
 }
 
 /* =========================================================
-   SMALL PHONE / SHORT HEIGHT
+   SMALL PHONE
 ========================================================= */
 
 @media (max-width: 430px) {
@@ -2419,62 +2638,97 @@ body,
   }
 
   .program-title {
-    font-size: clamp(1.65rem, min(10.5vw, 7.8vh), 2.7rem);
+    font-size: clamp(1.6rem, min(10.5vw, 7.5vh), 2.55rem);
   }
 
   .program-heading {
-    font-size: clamp(1.45rem, min(8.8vw, 6.8vh), 2.2rem);
+    font-size: clamp(1.32rem, min(8.2vw, 6vh), 2.05rem);
   }
 
   .program-stats {
-    max-height: 128px;
+    max-height: 120px;
   }
 
   .program-stats > div > div {
-    padding: 0.55rem !important;
+    padding: 0.5rem !important;
+  }
+
+  .program-list-header p,
+  .program-flow-layout p,
+  .program-faq-left p {
+    font-size: 0.76rem;
   }
 }
 
-@media (max-height: 740px) {
+/* =========================================================
+   SHORT HEIGHT DEVICE
+========================================================= */
+
+@media (max-height: 780px) {
   .program-screen {
     --program-control-space: 58px;
     padding-top: calc(var(--program-nav-space) + 8px);
   }
 
   .program-title {
-    font-size: clamp(1.7rem, min(5vw, 8vh), 4.5rem);
+    font-size: clamp(1.65rem, min(5vw, 7.7vh), 4.3rem);
+  }
+
+  .program-heading {
+    font-size: clamp(1.45rem, min(4vw, 6.3vh), 3.5rem);
   }
 
   .program-hero-copy p {
-    line-height: 1.45;
+    line-height: 1.42;
   }
 
   .program-stats {
-    max-height: 110px;
+    max-height: 108px;
   }
 
   .program-stats > div > div {
-    padding: 0.55rem !important;
+    padding: 0.52rem !important;
   }
 
   .program-stats .mx-auto {
     height: 2rem !important;
     width: 2rem !important;
-    margin-bottom: 0.35rem !important;
+    margin-bottom: 0.32rem !important;
+  }
+
+  .program-list-header p {
+    display: none;
+  }
+
+  .program-detail-card .mt-7 {
+    margin-top: 0.75rem !important;
+  }
+
+  .program-detail-card .mt-5,
+  .program-detail-card .mt-6 {
+    margin-top: 0.72rem !important;
   }
 }
 
-@media (max-height: 640px) {
+@media (max-height: 660px) {
   .program-stats {
     display: none !important;
   }
 
   .program-title {
-    font-size: clamp(1.55rem, min(4.8vw, 8vh), 3.6rem);
+    font-size: clamp(1.5rem, min(4.8vw, 7.5vh), 3.4rem);
   }
 
   .program-screen {
     --program-control-space: 52px;
+  }
+
+  .program-list-header .program-heading {
+    font-size: clamp(1.35rem, min(4vw, 5.7vh), 2.8rem);
+  }
+
+  .program-detail-card .grid {
+    display: none !important;
   }
 }
       `}</style>
