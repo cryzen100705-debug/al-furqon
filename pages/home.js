@@ -894,28 +894,6 @@ function SideDots({ sections, activeSection, activeStep, jumpToSection }) {
   );
 }
 
-function BottomControls({ onPrev, onNext, isFirst, isLast }) {
-  return (
-    <div className="home-bottom-controls fixed bottom-4 left-1/2 z-[280] flex -translate-x-1/2 items-center gap-3">
-      <button
-        onClick={onPrev}
-        disabled={isFirst}
-        className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white shadow-xl backdrop-blur-xl transition hover:-translate-y-1 hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-30"
-      >
-        <FaArrowUp />
-      </button>
-
-      <button
-        onClick={onNext}
-        disabled={isLast}
-        className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-yellow-400 text-emerald-950 shadow-xl shadow-yellow-400/20 transition hover:-translate-y-1 hover:bg-yellow-300 disabled:cursor-not-allowed disabled:opacity-30"
-      >
-        <FaArrowDown />
-      </button>
-    </div>
-  );
-}
-
 function HeroScreen({ hero, stats, direction, handleDirection }) {
   return (
     <ScreenShell sectionKey="hero" direction={direction}>
