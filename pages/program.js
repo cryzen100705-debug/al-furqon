@@ -4,7 +4,30 @@ import Navbar from "../components/Navbar";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {AnimatePresence,motion,useMotionValue,useReducedMotion,useSpring,} from "framer-motion";
-import {FaArrowDown,FaArrowRight,FaArrowUp,FaBookOpen,FaCheckCircle,FaDumbbell,FaFeatherAlt,FaLayerGroup,FaMicrophone,FaMoon,FaMosque,FaPenNib,FaQuran,FaRedo,FaShieldAlt,FaStar,FaUsers,FaWhatsapp,} from "react-icons/fa";
+import {
+  FaArrowDown,
+  FaArrowRight,
+  FaArrowUp,
+  FaBookOpen,
+  FaCalendarAlt,
+  FaCheckCircle,
+  FaClipboardList,
+  FaDumbbell,
+  FaFeatherAlt,
+  FaHeart,
+  FaLayerGroup,
+  FaLightbulb,
+  FaMicrophone,
+  FaMoon,
+  FaMosque,
+  FaPenNib,
+  FaQuran,
+  FaRedo,
+  FaShieldAlt,
+  FaStar,
+  FaUsers,
+  FaWhatsapp,
+} from "react-icons/fa";
 const MotionLink = motion(Link);
 const API_URL =
   process.env.NEXT_PUBLIC_API_URL ||
