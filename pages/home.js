@@ -4997,6 +4997,7 @@ function HomeResponsiveStyles() {
     font-size: 0.63rem;
   }
 }
+  
   `}</style>
   );
 }
