@@ -4069,6 +4069,274 @@ body {
   }
 }
 
+/* =========================================================
+   HERO SECTION - MOBILE PREMIUM RESPONSIVE
+========================================================= */
+
+@media (max-width: 720px) {
+  .program-hero-screen {
+    width: min(92vw, 430px) !important;
+    padding-top: calc(var(--program-navbar-height, 74px) + 8px) !important;
+    padding-bottom: 4.8rem !important;
+    display: block !important;
+    overflow: hidden !important;
+  }
+
+  .program-hero-grid {
+    height: calc(100dvh - var(--program-navbar-height, 74px) - 5.4rem) !important;
+    max-height: calc(100dvh - var(--program-navbar-height, 74px) - 5.4rem) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: hidden !important;
+  }
+
+  .program-hero-copy {
+    position: relative;
+    width: 100%;
+    min-height: 0;
+    border-radius: 1.6rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background:
+      radial-gradient(circle at 85% 12%, rgba(250, 204, 21, 0.2), transparent 34%),
+      radial-gradient(circle at 0% 100%, rgba(16, 185, 129, 0.18), transparent 38%),
+      rgba(255, 255, 255, 0.055);
+    padding: 1rem;
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(18px);
+    overflow: hidden;
+  }
+
+  .program-hero-copy::before {
+    content: "";
+    position: absolute;
+    right: -4rem;
+    top: -4rem;
+    width: 11rem;
+    height: 11rem;
+    border-radius: 999px;
+    border: 1px solid rgba(250, 204, 21, 0.18);
+    background: rgba(250, 204, 21, 0.06);
+    pointer-events: none;
+  }
+
+  .program-hero-copy::after {
+    content: "";
+    position: absolute;
+    left: -4rem;
+    bottom: -4rem;
+    width: 12rem;
+    height: 12rem;
+    border-radius: 999px;
+    border: 1px solid rgba(52, 211, 153, 0.16);
+    background: rgba(16, 185, 129, 0.06);
+    pointer-events: none;
+  }
+
+  .program-hero-copy > * {
+    position: relative;
+    z-index: 2;
+  }
+
+  .program-hero-copy > p:first-child {
+    margin: 0 0 0.45rem !important;
+    font-size: 0.82rem !important;
+    line-height: 1.35 !important;
+    color: #facc15 !important;
+  }
+
+  .program-hero-copy .inline-flex {
+    max-width: 100%;
+  }
+
+  .program-hero-copy .inline-flex span:last-child {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .program-title {
+    margin-top: 0.65rem !important;
+    font-size: clamp(2.05rem, 11vw, 3.05rem) !important;
+    line-height: 0.9 !important;
+    letter-spacing: -0.075em !important;
+  }
+
+  .program-title span {
+    display: block;
+    margin-top: 0.15rem;
+  }
+
+  .program-hero-copy > p:not(:first-child) {
+    margin-top: 0.75rem !important;
+    max-width: 100% !important;
+    color: rgba(236, 253, 245, 0.9) !important;
+    font-size: 0.78rem !important;
+    font-weight: 650 !important;
+    line-height: 1.45 !important;
+  }
+
+  .program-hero-copy .mt-6 {
+    margin-top: 0.85rem !important;
+    gap: 0.5rem !important;
+  }
+
+  .program-hero-copy a {
+    min-height: 2.65rem;
+    border-radius: 999px !important;
+    padding: 0.78rem 1rem !important;
+    font-size: 0.72rem !important;
+    letter-spacing: 0.01em;
+  }
+
+  .program-stats {
+    margin-top: 0.85rem !important;
+    max-height: none !important;
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 0.5rem !important;
+    overflow: visible !important;
+  }
+
+  .program-stats > div {
+    min-width: 0 !important;
+  }
+
+  .program-stats > div > div {
+    min-height: 4.3rem;
+    border-radius: 1rem !important;
+    padding: 0.65rem 0.45rem !important;
+    background: rgba(255, 255, 255, 0.09) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+  }
+
+  .program-stats .h-9 {
+    width: 1.9rem !important;
+    height: 1.9rem !important;
+    margin-bottom: 0.35rem !important;
+    border-radius: 0.75rem !important;
+    font-size: 0.75rem !important;
+  }
+
+  .program-stats h3 {
+    font-size: 0.9rem !important;
+    line-height: 1 !important;
+  }
+
+  .program-stats p {
+    margin-top: 0.22rem !important;
+    font-size: 0.58rem !important;
+    line-height: 1.15 !important;
+    opacity: 0.95;
+  }
+
+  .program-bottom-control {
+    bottom: calc(1.05rem + env(safe-area-inset-bottom)) !important;
+    gap: 0.55rem !important;
+  }
+
+  .program-bottom-control button {
+    padding: 0.48rem 0.75rem !important;
+    font-size: 0.65rem !important;
+  }
+}
+
+/* HP KECIL */
+@media (max-width: 390px) {
+  .program-hero-screen {
+    width: min(94vw, 390px) !important;
+    padding-top: calc(var(--program-navbar-height, 70px) + 6px) !important;
+  }
+
+  .program-hero-grid {
+    height: calc(100dvh - var(--program-navbar-height, 70px) - 5rem) !important;
+    max-height: calc(100dvh - var(--program-navbar-height, 70px) - 5rem) !important;
+  }
+
+  .program-hero-copy {
+    border-radius: 1.25rem;
+    padding: 0.82rem;
+  }
+
+  .program-hero-copy > p:first-child {
+    font-size: 0.72rem !important;
+  }
+
+  .program-title {
+    font-size: clamp(1.78rem, 10vw, 2.45rem) !important;
+  }
+
+  .program-hero-copy > p:not(:first-child) {
+    font-size: 0.68rem !important;
+    line-height: 1.35 !important;
+  }
+
+  .program-hero-copy a {
+    min-height: 2.25rem;
+    padding: 0.58rem 0.75rem !important;
+    font-size: 0.62rem !important;
+  }
+
+  .program-stats {
+    gap: 0.4rem !important;
+  }
+
+  .program-stats > div > div {
+    min-height: 3.75rem;
+    padding: 0.5rem 0.35rem !important;
+  }
+
+  .program-stats .h-9 {
+    width: 1.55rem !important;
+    height: 1.55rem !important;
+    font-size: 0.62rem !important;
+    border-radius: 0.6rem !important;
+  }
+
+  .program-stats h3 {
+    font-size: 0.72rem !important;
+  }
+
+  .program-stats p {
+    font-size: 0.5rem !important;
+  }
+}
+
+/* HP PENDEK */
+@media (max-width: 430px) and (max-height: 780px) {
+  .program-hero-copy {
+    padding: 0.75rem !important;
+  }
+
+  .program-hero-copy > p:first-child {
+    display: none !important;
+  }
+
+  .program-title {
+    margin-top: 0.45rem !important;
+    font-size: clamp(1.7rem, 9.4vw, 2.25rem) !important;
+  }
+
+  .program-hero-copy > p:not(:first-child) {
+    margin-top: 0.55rem !important;
+    font-size: 0.62rem !important;
+    line-height: 1.3 !important;
+  }
+
+  .program-hero-copy .mt-6 {
+    margin-top: 0.65rem !important;
+  }
+
+  .program-stats {
+    margin-top: 0.65rem !important;
+  }
+
+  .program-stats > div > div {
+    min-height: 3.35rem;
+  }
+}
+
 `}</style>
           </main>
   );
