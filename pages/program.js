@@ -4337,6 +4337,230 @@ body {
   }
 }
 
+/* =========================================================
+   FAQ SECTION - MOBILE PREMIUM RESPONSIVE
+========================================================= */
+
+@media (max-width: 720px) {
+  .program-faq-layout {
+    width: 100%;
+    height: auto !important;
+    max-height: none !important;
+    min-height: calc(100dvh - var(--program-navbar-height, 74px) - 5rem);
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    gap: 1rem !important;
+    overflow: visible !important;
+  }
+
+  .program-screen.overflow-y-auto {
+    width: min(92vw, 430px) !important;
+    padding-top: calc(var(--program-navbar-height, 74px) + 10px) !important;
+    padding-bottom: 4.8rem !important;
+    overflow-y: auto !important;
+    scrollbar-width: none;
+  }
+
+  .program-screen.overflow-y-auto::-webkit-scrollbar {
+    display: none;
+  }
+
+  .program-faq-left {
+    position: relative;
+    width: 100%;
+    padding: 1rem;
+    border-radius: 1.45rem;
+    border: 1px solid rgba(250, 204, 21, 0.16);
+    background:
+      radial-gradient(circle at 90% 10%, rgba(250, 204, 21, 0.18), transparent 32%),
+      radial-gradient(circle at 0% 100%, rgba(16, 185, 129, 0.14), transparent 38%),
+      rgba(255, 255, 255, 0.055);
+    box-shadow: 0 20px 55px rgba(0, 0, 0, 0.18);
+    backdrop-filter: blur(18px);
+    overflow: hidden;
+  }
+
+  .program-faq-left::before {
+    content: "";
+    position: absolute;
+    right: -4rem;
+    top: -4rem;
+    width: 10rem;
+    height: 10rem;
+    border-radius: 999px;
+    border: 1px solid rgba(250, 204, 21, 0.18);
+    background: rgba(250, 204, 21, 0.06);
+    pointer-events: none;
+  }
+
+  .program-faq-left::after {
+    content: "";
+    position: absolute;
+    left: -4rem;
+    bottom: -4rem;
+    width: 10rem;
+    height: 10rem;
+    border-radius: 999px;
+    border: 1px solid rgba(52, 211, 153, 0.14);
+    background: rgba(16, 185, 129, 0.06);
+    pointer-events: none;
+  }
+
+  .program-faq-left > * {
+    position: relative;
+    z-index: 2;
+  }
+
+  .program-faq-left .program-heading {
+    margin-top: 0.75rem !important;
+    font-size: clamp(1.55rem, 7.8vw, 2.25rem) !important;
+    line-height: 0.96 !important;
+    letter-spacing: -0.065em !important;
+  }
+
+  .program-faq-left p {
+    margin-top: 0.65rem !important;
+    max-width: 100% !important;
+    font-size: 0.78rem !important;
+    font-weight: 650 !important;
+    line-height: 1.45 !important;
+    color: rgba(209, 250, 229, 0.88) !important;
+  }
+
+  .program-faq-list {
+    width: 100%;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.55rem !important;
+  }
+
+  .program-faq-item {
+    width: 100%;
+    border-radius: 1rem !important;
+    border: 1px solid rgba(255, 255, 255, 0.11) !important;
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.115), rgba(255, 255, 255, 0.045)) !important;
+    padding: 0.8rem !important;
+    box-shadow: 0 12px 34px rgba(0, 0, 0, 0.14) !important;
+    backdrop-filter: blur(16px);
+  }
+
+  .program-faq-item h3 {
+    font-size: 0.78rem !important;
+    line-height: 1.25 !important;
+    letter-spacing: -0.02em !important;
+  }
+
+  .program-faq-item span.mt-1 {
+    width: 1.65rem !important;
+    height: 1.65rem !important;
+    min-width: 1.65rem !important;
+    margin-top: 0 !important;
+    font-size: 0.9rem !important;
+    box-shadow: 0 8px 22px rgba(250, 204, 21, 0.22);
+  }
+
+  .program-faq-item p,
+  .program-faq-item p span {
+    font-size: 0.7rem !important;
+    line-height: 1.45 !important;
+    color: rgba(209, 250, 229, 0.88) !important;
+  }
+
+  .program-faq-item p span {
+    padding-top: 0.55rem !important;
+  }
+}
+
+/* HP KECIL */
+@media (max-width: 390px) {
+  .program-screen.overflow-y-auto {
+    width: min(94vw, 390px) !important;
+    padding-top: calc(var(--program-navbar-height, 70px) + 8px) !important;
+  }
+
+  .program-faq-layout {
+    min-height: calc(100dvh - var(--program-navbar-height, 70px) - 4.8rem);
+    gap: 0.75rem !important;
+  }
+
+  .program-faq-left {
+    padding: 0.85rem;
+    border-radius: 1.2rem;
+  }
+
+  .program-faq-left .program-heading {
+    font-size: clamp(1.35rem, 7.3vw, 1.85rem) !important;
+  }
+
+  .program-faq-left p {
+    font-size: 0.68rem !important;
+    line-height: 1.38 !important;
+  }
+
+  .program-faq-list {
+    gap: 0.45rem !important;
+  }
+
+  .program-faq-item {
+    padding: 0.68rem !important;
+    border-radius: 0.9rem !important;
+  }
+
+  .program-faq-item h3 {
+    font-size: 0.68rem !important;
+  }
+
+  .program-faq-item span.mt-1 {
+    width: 1.45rem !important;
+    height: 1.45rem !important;
+    min-width: 1.45rem !important;
+    font-size: 0.78rem !important;
+  }
+
+  .program-faq-item p,
+  .program-faq-item p span {
+    font-size: 0.62rem !important;
+    line-height: 1.35 !important;
+  }
+}
+
+/* HP PENDEK */
+@media (max-width: 430px) and (max-height: 780px) {
+  .program-faq-layout {
+    justify-content: flex-start !important;
+  }
+
+  .program-faq-left {
+    padding: 0.72rem !important;
+  }
+
+  .program-faq-left .program-heading {
+    margin-top: 0.45rem !important;
+    font-size: clamp(1.25rem, 6.8vw, 1.65rem) !important;
+  }
+
+  .program-faq-left p {
+    margin-top: 0.45rem !important;
+    font-size: 0.62rem !important;
+    line-height: 1.3 !important;
+  }
+
+  .program-faq-item {
+    padding: 0.6rem !important;
+  }
+
+  .program-faq-item h3 {
+    font-size: 0.62rem !important;
+  }
+
+  .program-faq-item p,
+  .program-faq-item p span {
+    font-size: 0.58rem !important;
+  }
+}
+
 `}</style>
           </main>
   );
