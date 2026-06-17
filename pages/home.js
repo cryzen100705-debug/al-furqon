@@ -2386,6 +2386,75 @@ function HomeResponsiveStyles() {
         object-fit: contain;
       }
 
+      .fees-screen-v2 {
+  position: relative;
+  z-index: 10;
+  height: 100dvh;
+  width: 100%;
+  overflow-y: auto;
+  padding: calc(var(--home-navbar-height, 92px) + 18px) 18px
+    calc(54px + env(safe-area-inset-bottom));
+}
+
+.fees-inner-v2 {
+  width: min(1180px, 100%);
+  min-height: calc(
+    100dvh - var(--home-navbar-height, 92px) - 72px - env(safe-area-inset-bottom)
+  );
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 18px;
+}
+
+.fees-header-v2 {
+  max-width: 850px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.fees-title-v2 {
+  margin-top: 14px;
+  font-size: clamp(2rem, 5vw, 4.4rem);
+  font-weight: 950;
+  line-height: 0.96;
+  letter-spacing: -0.055em;
+  color: #052e24;
+}
+
+.fees-desc-v2 {
+  max-width: 760px;
+  margin: 16px auto 0;
+  font-size: 0.98rem;
+  line-height: 1.75;
+  color: #475569;
+}
+
+.fees-layout-v2 {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(330px, 0.75fr);
+  gap: 18px;
+  align-items: stretch;
+}
+
+.fees-main-card-v2,
+.fees-monthly-card-v2,
+.fees-include-card-v2,
+.fees-note-card-v2 {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(16, 185, 129, 0.16);
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.13);
+  backdrop-filter: blur(18px);
+}
+
+.fees-main-card-v2 {
+  border-radius: 2rem;
+  padding: 22px;
+}
+
 .fees-main-glow-v2 {
   position: absolute;
   right: -90px;
@@ -2441,6 +2510,25 @@ function HomeResponsiveStyles() {
   gap: 14px;
 }
 
+.fees-entry-card-v2 {
+  position: relative;
+  height: 100%;
+  min-height: 270px;
+  overflow: hidden;
+  border-radius: 1.7rem;
+  border: 1px solid rgba(16, 185, 129, 0.16);
+  background: linear-gradient(180deg, #ffffff, #ecfdf5);
+  padding: 18px;
+  transition: 0.25s ease;
+}
+
+.fees-entry-card-v2.is-highlight {
+  background: linear-gradient(145deg, #052e24, #065f46);
+  color: white;
+  border-color: rgba(250, 204, 21, 0.45);
+  box-shadow: 0 26px 50px rgba(5, 46, 36, 0.2);
+}
+
 .fees-entry-icon-v2 {
   display: flex;
   width: 52px;
@@ -2453,6 +2541,11 @@ function HomeResponsiveStyles() {
   font-size: 1.25rem;
 }
 
+.fees-entry-card-v2.is-highlight .fees-entry-icon-v2 {
+  background: #facc15;
+  color: #052e24;
+}
+
 .fees-entry-label-v2 {
   margin-top: 18px;
   font-size: 0.67rem;
@@ -2460,6 +2553,10 @@ function HomeResponsiveStyles() {
   text-transform: uppercase;
   letter-spacing: 0.2em;
   color: #047857;
+}
+
+.fees-entry-card-v2.is-highlight .fees-entry-label-v2 {
+  color: #fde68a;
 }
 
 .fees-entry-level-v2 {
@@ -2470,6 +2567,10 @@ function HomeResponsiveStyles() {
   color: #052e24;
 }
 
+.fees-entry-card-v2.is-highlight .fees-entry-level-v2 {
+  color: white;
+}
+
 .fees-entry-price-v2 {
   margin-top: 12px;
   font-size: clamp(1.1rem, 2vw, 1.55rem);
@@ -2477,11 +2578,19 @@ function HomeResponsiveStyles() {
   color: #d97706;
 }
 
+.fees-entry-card-v2.is-highlight .fees-entry-price-v2 {
+  color: #facc15;
+}
+
 .fees-entry-desc-v2 {
   margin-top: 12px;
   font-size: 0.83rem;
   line-height: 1.6;
   color: #64748b;
+}
+
+.fees-entry-card-v2.is-highlight .fees-entry-desc-v2 {
+  color: #d1fae5;
 }
 
 .fees-popular-v2 {
@@ -2502,6 +2611,13 @@ function HomeResponsiveStyles() {
 .fees-side-v2 {
   display: grid;
   gap: 14px;
+}
+
+.fees-monthly-card-v2,
+.fees-include-card-v2,
+.fees-note-card-v2 {
+  border-radius: 1.7rem;
+  padding: 17px;
 }
 
 .fees-card-head-v2 {
@@ -4041,6 +4157,42 @@ function HomeResponsiveStyles() {
     
     @media (max-width: 820px) {
 
+      .fees-screen-v2 {
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: calc(var(--home-navbar-height, 74px) + 8px);
+  padding-bottom: calc(50px + env(safe-area-inset-bottom));
+}
+
+.fees-inner-v2 {
+  min-height: auto;
+  justify-content: flex-start;
+  gap: 12px;
+}
+
+.fees-title-v2 {
+  font-size: clamp(1.45rem, 8vw, 2.15rem);
+}
+
+.fees-desc-v2 {
+  margin-top: 10px;
+  font-size: 0.82rem;
+  line-height: 1.6;
+}
+
+.fees-layout-v2 {
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.fees-main-card-v2,
+.fees-monthly-card-v2,
+.fees-include-card-v2,
+.fees-note-card-v2 {
+  border-radius: 1.35rem;
+  padding: 12px;
+}
+
 .fees-main-top-v2 {
   flex-direction: column;
   align-items: flex-start;
@@ -4057,6 +4209,12 @@ function HomeResponsiveStyles() {
 .fees-entry-grid-v2 {
   grid-template-columns: 1fr;
   gap: 10px;
+}
+
+.fees-entry-card-v2 {
+  min-height: auto;
+  border-radius: 1.25rem;
+  padding: 14px;
 }
 
 .fees-entry-icon-v2 {
