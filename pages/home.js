@@ -2423,7 +2423,8 @@ function HomeResponsiveStyles() {
 
 .fees-title-v2 {
   margin-top: 14px;
-  font-size: clamp(2rem, 5vw, 4.4rem);
+    font-size: clamp(1.35rem, 2.8vw, 2.65rem);
+
   font-weight: 950;
   line-height: 0.96;
   letter-spacing: -0.055em;
@@ -4178,7 +4179,8 @@ function HomeResponsiveStyles() {
 }
 
 .fees-title-v2 {
-  font-size: clamp(1.45rem, 8vw, 2.15rem);
+    font-size: clamp(1.35rem, 2.8vw, 2.65rem);
+
 }
 
 .fees-desc-v2 {
