@@ -1260,51 +1260,56 @@ function FlowScreen({ flow, direction }) {
     <ScreenShell light sectionKey="program-flow" direction={direction}>
       <IslamicBackground />
 
-      <div className="program-screen">
-        <div className="program-flow-layout">
+      <div data-allow-scroll="true" className="program-screen program-flow-screen-mobile">
+        <div className="program-flow-layout-v2">
           <motion.div
             initial={{ opacity: 0, y: 24, filter: "blur(8px)" }}
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             transition={{ duration: 0.55, ease: EASE }}
-            className="mx-auto max-w-4xl text-center"
+            className="program-flow-head-v2"
           >
             <Badge>Alur Pembinaan</Badge>
 
-            <h2 className="program-heading mt-4 font-black leading-[0.96] tracking-[-0.055em] text-emerald-950">
+            <h2>
               Kegiatan yang berulang menjadi karakter
             </h2>
 
-            <p className="mx-auto mt-4 max-w-3xl text-sm leading-relaxed text-slate-600 sm:text-base">
+            <p>
               Program non formal tidak hanya menjadi kegiatan tambahan, tetapi
-              bagian dari pembiasaan yang membentuk kehidupan santri.
+              menjadi pembiasaan harian yang membentuk ilmu, adab, disiplin,
+              dan karakter santri.
             </p>
           </motion.div>
 
-          <div className="program-flow-grid">
+          <div className="program-flow-list-v2">
             {flow.map((item, index) => (
               <motion.div
                 key={`${item.title}-${index}`}
-                initial={{ opacity: 0, y: 28, filter: "blur(8px)" }}
+                initial={{ opacity: 0, y: 24, filter: "blur(8px)" }}
                 animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                 transition={{
-                  delay: index * 0.09,
-                  duration: 0.48,
+                  delay: index * 0.08,
+                  duration: 0.45,
                   ease: EASE,
                 }}
+                className="program-flow-item-v2"
               >
-                <TiltCard className="h-full">
-                  <div className="program-flow-card">
-                    <div className="program-flow-number">{item.number}</div>
+                <div className="program-flow-line-v2" />
 
-                    <h3 className="mt-6 text-2xl font-black text-emerald-950">
-                      {item.title}
-                    </h3>
+                <div className="program-flow-number-v2">
+                  {item.number}
+                </div>
 
-                    <p className="mt-3 text-sm font-semibold leading-relaxed text-slate-600">
-                      {item.desc}
-                    </p>
+                <div className="program-flow-card-v2">
+                  <div className="program-flow-card-top-v2">
+                    <span>Step {item.number}</span>
+                    <FaCheckCircle />
                   </div>
-                </TiltCard>
+
+                  <h3>{item.title}</h3>
+
+                  <p>{item.desc}</p>
+                </div>
               </motion.div>
             ))}
           </div>
@@ -3779,6 +3784,291 @@ body {
     font-size: 0.74rem;
   }
 }
+
+/* =========================================================
+   FLOW SECTION V2 - RESPONSIVE MOBILE PREMIUM
+========================================================= */
+
+.program-flow-screen-mobile {
+  overflow-y: auto !important;
+  scrollbar-width: none;
+}
+
+.program-flow-screen-mobile::-webkit-scrollbar {
+  display: none;
+}
+
+.program-flow-layout-v2 {
+  min-height: var(--program-available-height);
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  align-content: center;
+  gap: clamp(1rem, 2vh, 1.5rem);
+}
+
+.program-flow-head-v2 {
+  position: relative;
+  z-index: 2;
+  max-width: 900px;
+  margin-inline: auto;
+  text-align: center;
+}
+
+.program-flow-head-v2 h2 {
+  max-width: 780px;
+  margin: 1rem auto 0;
+  color: #052e22;
+  font-size: clamp(2rem, min(4.6vw, 6.4vh), 4rem);
+  font-weight: 950;
+  line-height: 0.96;
+  letter-spacing: -0.055em;
+}
+
+.program-flow-head-v2 p {
+  max-width: 720px;
+  margin: 0.9rem auto 0;
+  color: #31564d;
+  font-size: clamp(0.9rem, 1.2vw, 1.05rem);
+  font-weight: 650;
+  line-height: 1.65;
+}
+
+.program-flow-list-v2 {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+.program-flow-item-v2 {
+  position: relative;
+  min-width: 0;
+}
+
+.program-flow-line-v2 {
+  display: none;
+}
+
+.program-flow-number-v2 {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  width: 3.2rem;
+  height: 3.2rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1.1rem;
+  background: #052e22;
+  color: #facc15;
+  font-size: 0.9rem;
+  font-weight: 950;
+  box-shadow: 0 14px 35px rgba(5, 46, 34, 0.22);
+}
+
+.program-flow-card-v2 {
+  position: relative;
+  z-index: 2;
+  min-height: 210px;
+  margin-top: 0.7rem;
+  overflow: hidden;
+  border-radius: 1.6rem;
+  border: 1px solid rgba(6, 95, 70, 0.1);
+  background:
+    radial-gradient(circle at 85% 10%, rgba(250, 204, 21, 0.24), transparent 34%),
+    rgba(255, 255, 255, 0.9);
+  padding: 1rem;
+  box-shadow: 0 22px 60px rgba(5, 46, 34, 0.09);
+}
+
+.program-flow-card-top-v2 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+}
+
+.program-flow-card-top-v2 span {
+  display: inline-flex;
+  border-radius: 999px;
+  background: #fff4c2;
+  padding: 0.4rem 0.7rem;
+  color: #064e3b;
+  font-size: 0.68rem;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.program-flow-card-top-v2 svg {
+  color: #0f766e;
+  font-size: 1rem;
+}
+
+.program-flow-card-v2 h3 {
+  margin: 1rem 0 0;
+  color: #052e22;
+  font-size: clamp(1rem, 1.7vw, 1.35rem);
+  font-weight: 950;
+  line-height: 1.12;
+}
+
+.program-flow-card-v2 p {
+  margin: 0.65rem 0 0;
+  color: #31564d;
+  font-size: 0.86rem;
+  font-weight: 650;
+  line-height: 1.55;
+}
+
+/* TABLET */
+@media (max-width: 900px) {
+  .program-flow-list-v2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .program-flow-card-v2 {
+    min-height: 170px;
+  }
+}
+
+/* HANDPHONE */
+@media (max-width: 720px) {
+  .program-flow-screen-mobile {
+    width: min(92vw, 430px) !important;
+    padding-top: calc(var(--program-navbar-height, 74px) + 10px) !important;
+    padding-bottom: 4.8rem !important;
+  }
+
+  .program-flow-layout-v2 {
+    min-height: auto;
+    display: block;
+  }
+
+  .program-flow-head-v2 {
+    text-align: left;
+  }
+
+  .program-flow-head-v2 h2 {
+    margin-top: 0.75rem;
+    font-size: clamp(1.55rem, 8.2vw, 2.25rem);
+    line-height: 0.96;
+    letter-spacing: -0.055em;
+  }
+
+  .program-flow-head-v2 p {
+    margin-top: 0.6rem;
+    font-size: 0.82rem;
+    line-height: 1.45;
+  }
+
+  .program-flow-list-v2 {
+    margin-top: 1.1rem;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .program-flow-item-v2 {
+    display: grid;
+    grid-template-columns: 2.75rem minmax(0, 1fr);
+    gap: 0.75rem;
+    align-items: stretch;
+  }
+
+  .program-flow-line-v2 {
+    position: absolute;
+    left: 1.35rem;
+    top: 2.8rem;
+    bottom: -0.8rem;
+    z-index: 1;
+    display: block;
+    width: 2px;
+    border-radius: 999px;
+    background: linear-gradient(to bottom, rgba(5, 46, 34, 0.24), transparent);
+  }
+
+  .program-flow-item-v2:last-child .program-flow-line-v2 {
+    display: none;
+  }
+
+  .program-flow-number-v2 {
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 0.95rem;
+    font-size: 0.78rem;
+  }
+
+  .program-flow-card-v2 {
+    min-height: 0;
+    margin-top: 0;
+    border-radius: 1.15rem;
+    padding: 0.85rem;
+    box-shadow: 0 14px 36px rgba(5, 46, 34, 0.08);
+  }
+
+  .program-flow-card-top-v2 span {
+    padding: 0.32rem 0.6rem;
+    font-size: 0.58rem;
+  }
+
+  .program-flow-card-top-v2 svg {
+    font-size: 0.9rem;
+  }
+
+  .program-flow-card-v2 h3 {
+    margin-top: 0.65rem;
+    font-size: 0.98rem;
+    line-height: 1.12;
+  }
+
+  .program-flow-card-v2 p {
+    margin-top: 0.38rem;
+    font-size: 0.74rem;
+    line-height: 1.38;
+  }
+}
+
+/* HP KECIL */
+@media (max-width: 390px) {
+  .program-flow-head-v2 h2 {
+    font-size: clamp(1.35rem, 7.8vw, 1.8rem);
+  }
+
+  .program-flow-head-v2 p {
+    font-size: 0.74rem;
+  }
+
+  .program-flow-item-v2 {
+    grid-template-columns: 2.45rem minmax(0, 1fr);
+    gap: 0.62rem;
+  }
+
+  .program-flow-number-v2 {
+    width: 2.45rem;
+    height: 2.45rem;
+    border-radius: 0.82rem;
+    font-size: 0.7rem;
+  }
+
+  .program-flow-line-v2 {
+    left: 1.22rem;
+    top: 2.5rem;
+  }
+
+  .program-flow-card-v2 {
+    padding: 0.72rem;
+    border-radius: 1rem;
+  }
+
+  .program-flow-card-v2 h3 {
+    font-size: 0.88rem;
+  }
+
+  .program-flow-card-v2 p {
+    font-size: 0.68rem;
+  }
+}
+
 `}</style>
           </main>
   );
