@@ -2393,6 +2393,356 @@ function HomeResponsiveStyles() {
         object-fit: contain;
       }
 
+      .fees-screen-v2 {
+  position: relative;
+  z-index: 10;
+  height: 100dvh;
+  width: 100%;
+  overflow-y: auto;
+  padding: calc(var(--home-navbar-height, 92px) + 18px) 18px
+    calc(54px + env(safe-area-inset-bottom));
+}
+
+.fees-inner-v2 {
+  width: min(1180px, 100%);
+  min-height: calc(
+    100dvh - var(--home-navbar-height, 92px) - 72px - env(safe-area-inset-bottom)
+  );
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 18px;
+}
+
+.fees-header-v2 {
+  max-width: 850px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.fees-title-v2 {
+  margin-top: 14px;
+  font-size: clamp(2rem, 5vw, 4.4rem);
+  font-weight: 950;
+  line-height: 0.96;
+  letter-spacing: -0.055em;
+  color: #052e24;
+}
+
+.fees-desc-v2 {
+  max-width: 760px;
+  margin: 16px auto 0;
+  font-size: 0.98rem;
+  line-height: 1.75;
+  color: #475569;
+}
+
+.fees-layout-v2 {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(330px, 0.75fr);
+  gap: 18px;
+  align-items: stretch;
+}
+
+.fees-main-card-v2,
+.fees-monthly-card-v2,
+.fees-include-card-v2,
+.fees-note-card-v2 {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(16, 185, 129, 0.16);
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.13);
+  backdrop-filter: blur(18px);
+}
+
+.fees-main-card-v2 {
+  border-radius: 2rem;
+  padding: 22px;
+}
+
+.fees-main-glow-v2 {
+  position: absolute;
+  right: -90px;
+  top: -90px;
+  width: 260px;
+  height: 260px;
+  border-radius: 999px;
+  background: rgba(250, 204, 21, 0.25);
+  filter: blur(48px);
+}
+
+.fees-main-top-v2 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+  padding: 16px;
+  border-radius: 1.5rem;
+  background: linear-gradient(135deg, #052e24, #064e3b);
+  color: white;
+}
+
+.fees-kicker-v2 {
+  font-size: 0.66rem;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: #d9a710;
+}
+
+.fees-main-title-v2 {
+  margin-top: 5px;
+  font-size: clamp(1.2rem, 2.2vw, 1.8rem);
+  font-weight: 950;
+  line-height: 1.05;
+}
+
+.fees-form-price-v2 {
+  flex-shrink: 0;
+  border-radius: 999px;
+  background: #facc15;
+  padding: 12px 16px;
+  color: #052e24;
+  font-size: clamp(0.95rem, 1.7vw, 1.25rem);
+  font-weight: 950;
+  box-shadow: 0 12px 28px rgba(250, 204, 21, 0.24);
+}
+
+.fees-entry-grid-v2 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.fees-entry-card-v2 {
+  position: relative;
+  height: 100%;
+  min-height: 270px;
+  overflow: hidden;
+  border-radius: 1.7rem;
+  border: 1px solid rgba(16, 185, 129, 0.16);
+  background: linear-gradient(180deg, #ffffff, #ecfdf5);
+  padding: 18px;
+  transition: 0.25s ease;
+}
+
+.fees-entry-card-v2.is-highlight {
+  background: linear-gradient(145deg, #052e24, #065f46);
+  color: white;
+  border-color: rgba(250, 204, 21, 0.45);
+  box-shadow: 0 26px 50px rgba(5, 46, 36, 0.2);
+}
+
+.fees-entry-icon-v2 {
+  display: flex;
+  width: 52px;
+  height: 52px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1.25rem;
+  background: #052e24;
+  color: #facc15;
+  font-size: 1.25rem;
+}
+
+.fees-entry-card-v2.is-highlight .fees-entry-icon-v2 {
+  background: #facc15;
+  color: #052e24;
+}
+
+.fees-entry-label-v2 {
+  margin-top: 18px;
+  font-size: 0.67rem;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: #047857;
+}
+
+.fees-entry-card-v2.is-highlight .fees-entry-label-v2 {
+  color: #fde68a;
+}
+
+.fees-entry-level-v2 {
+  margin-top: 7px;
+  font-size: clamp(1.45rem, 2.5vw, 2.25rem);
+  font-weight: 950;
+  line-height: 1;
+  color: #052e24;
+}
+
+.fees-entry-card-v2.is-highlight .fees-entry-level-v2 {
+  color: white;
+}
+
+.fees-entry-price-v2 {
+  margin-top: 12px;
+  font-size: clamp(1.1rem, 2vw, 1.55rem);
+  font-weight: 950;
+  color: #d97706;
+}
+
+.fees-entry-card-v2.is-highlight .fees-entry-price-v2 {
+  color: #facc15;
+}
+
+.fees-entry-desc-v2 {
+  margin-top: 12px;
+  font-size: 0.83rem;
+  line-height: 1.6;
+  color: #64748b;
+}
+
+.fees-entry-card-v2.is-highlight .fees-entry-desc-v2 {
+  color: #d1fae5;
+}
+
+.fees-popular-v2 {
+  position: absolute;
+  right: 14px;
+  top: 14px;
+  border-radius: 999px;
+  background: rgba(250, 204, 21, 0.14);
+  border: 1px solid rgba(250, 204, 21, 0.35);
+  padding: 8px 11px;
+  color: #facc15;
+  font-size: 0.62rem;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+}
+
+.fees-side-v2 {
+  display: grid;
+  gap: 14px;
+}
+
+.fees-monthly-card-v2,
+.fees-include-card-v2,
+.fees-note-card-v2 {
+  border-radius: 1.7rem;
+  padding: 17px;
+}
+
+.fees-card-head-v2 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.fees-card-head-v2 h3 {
+  margin-top: 3px;
+  font-size: 1.05rem;
+  font-weight: 950;
+  color: #052e24;
+}
+
+.fees-card-icon-v2 {
+  display: flex;
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1.15rem;
+  background: #052e24;
+  color: #facc15;
+}
+
+.fees-monthly-list-v2 {
+  margin-top: 14px;
+  display: grid;
+  gap: 9px;
+}
+
+.fees-monthly-item-v2 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border-radius: 1rem;
+  background: #ecfdf5;
+  padding: 12px 13px;
+}
+
+.fees-monthly-item-v2 span {
+  font-size: 0.9rem;
+  font-weight: 900;
+  color: #052e24;
+}
+
+.fees-monthly-item-v2 strong {
+  color: #d97706;
+  font-size: 0.95rem;
+  font-weight: 950;
+}
+
+.fees-include-grid-v2 {
+  margin-top: 14px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.fees-include-item-v2 {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 8px;
+  border-radius: 0.95rem;
+  background: #f8fafc;
+  padding: 9px;
+  color: #334155;
+  font-size: 0.76rem;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.fees-include-item-v2 svg {
+  flex-shrink: 0;
+  color: #059669;
+  font-size: 0.8rem;
+}
+
+.fees-note-list-v2 {
+  margin-top: 12px;
+  display: grid;
+  gap: 9px;
+}
+
+.fees-note-item-v2 {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 10px;
+  align-items: start;
+  border-radius: 1rem;
+  background: #fffbeb;
+  padding: 11px;
+}
+
+.fees-note-item-v2 span {
+  display: flex;
+  width: 25px;
+  height: 25px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: #facc15;
+  color: #052e24;
+  font-size: 0.72rem;
+  font-weight: 950;
+}
+
+.fees-note-item-v2 p {
+  font-size: 0.78rem;
+  font-weight: 800;
+  line-height: 1.5;
+  color: #475569;
+}
+
             @media (max-height: 860px) and (min-width: 1025px) {
         .pembina-screen-v2 {
           padding-top: calc(var(--home-navbar-height, 92px) + 8px);
@@ -3218,273 +3568,6 @@ function HomeResponsiveStyles() {
         }
       }
 
-      @media (max-width: 820px) {
-
-      .fees-screen-v2 {
-  padding-left: 10px;
-  padding-right: 10px;
-  padding-top: calc(var(--home-navbar-height, 74px) + 8px);
-  padding-bottom: calc(50px + env(safe-area-inset-bottom));
-}
-
-.fees-inner-v2 {
-  min-height: auto;
-  justify-content: flex-start;
-  gap: 12px;
-}
-
-.fees-title-v2 {
-  font-size: clamp(1.45rem, 8vw, 2.15rem);
-}
-
-.fees-desc-v2 {
-  margin-top: 10px;
-  font-size: 0.82rem;
-  line-height: 1.6;
-}
-
-.fees-layout-v2 {
-  grid-template-columns: 1fr;
-  gap: 12px;
-}
-
-.fees-main-card-v2,
-.fees-monthly-card-v2,
-.fees-include-card-v2,
-.fees-note-card-v2 {
-  border-radius: 1.35rem;
-  padding: 12px;
-}
-
-.fees-main-top-v2 {
-  flex-direction: column;
-  align-items: flex-start;
-  border-radius: 1.15rem;
-  padding: 13px;
-}
-
-.fees-form-price-v2 {
-  width: 100%;
-  text-align: center;
-  font-size: 1rem;
-}
-
-.fees-entry-grid-v2 {
-  grid-template-columns: 1fr;
-  gap: 10px;
-}
-
-.fees-entry-card-v2 {
-  min-height: auto;
-  border-radius: 1.25rem;
-  padding: 14px;
-}
-
-.fees-entry-icon-v2 {
-  width: 44px;
-  height: 44px;
-  border-radius: 1rem;
-}
-
-.fees-entry-label-v2 {
-  margin-top: 12px;
-}
-
-.fees-entry-level-v2 {
-  font-size: 1.5rem;
-}
-
-.fees-entry-price-v2 {
-  font-size: 1.15rem;
-}
-
-.fees-entry-desc-v2 {
-  font-size: 0.78rem;
-}
-
-.fees-popular-v2 {
-  right: 10px;
-  top: 10px;
-  font-size: 0.55rem;
-  padding: 6px 9px;
-}
-
-.fees-card-head-v2 h3 {
-  font-size: 0.95rem;
-}
-
-.fees-monthly-item-v2 {
-  padding: 10px;
-}
-
-.fees-monthly-item-v2 span,
-.fees-monthly-item-v2 strong {
-  font-size: 0.82rem;
-}
-
-.fees-include-grid-v2 {
-  grid-template-columns: 1fr;
-}
-
-.fees-include-item-v2 {
-  font-size: 0.74rem;
-  padding: 8px;
-}
-
-.fees-note-item-v2 p {
-  font-size: 0.73rem;
-}
-
-              .values-screen-v2 {
-          padding-left: 18px;
-          padding-right: 18px;
-          padding-top: calc(var(--home-navbar-height, 86px) + 10px);
-          padding-bottom: calc(18px + env(safe-area-inset-bottom));
-        }
-
-        .values-inner-v2 {
-          height: calc(
-            100dvh - var(--home-navbar-height, 86px) - 28px - env(safe-area-inset-bottom)
-          );
-        }
-
-        .values-layout-v2 {
-          grid-template-columns: 1fr;
-          grid-template-rows: auto minmax(0, 1fr);
-        }
-
-        .values-feature-v2 {
-          height: auto;
-        }
-
-        .values-feature-desc-v2 {
-          display: none;
-        }
-
-        .values-grid-v2 {
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-
-        .values-title-v2 {
-          font-size: clamp(1.65rem, min(5.5vw, 4.6vh), 3rem);
-        }
-
-              .guide-screen-v2 {
-          padding-left: 18px;
-          padding-right: 18px;
-          padding-top: calc(var(--home-navbar-height, 86px) + 10px);
-          padding-bottom: calc(18px + env(safe-area-inset-bottom));
-        }
-
-        .guide-inner-v2 {
-          height: calc(
-            100dvh - var(--home-navbar-height, 86px) - 28px - env(safe-area-inset-bottom)
-          );
-        }
-
-        .guide-content-v2 {
-          grid-template-columns: 1fr;
-          grid-template-rows: auto minmax(0, 1fr);
-        }
-
-        .guide-panel-v2 {
-          height: auto;
-        }
-
-        .guide-step-list-v2 {
-          grid-template-columns: repeat(4, minmax(0, 1fr));
-          gap: 0.5rem;
-        }
-
-        .guide-step-button-v2 {
-          flex-direction: column;
-          align-items: flex-start;
-        }
-
-        .guide-current-desc-v2 {
-          display: none;
-        }
-
-              .requirements-screen-v2 {
-          padding-left: 18px;
-          padding-right: 18px;
-          padding-top: calc(var(--home-navbar-height, 86px) + 10px);
-          padding-bottom: calc(18px + env(safe-area-inset-bottom));
-        }
-
-        .requirements-inner-v2 {
-          height: calc(
-            100dvh - var(--home-navbar-height, 86px) - 28px - env(safe-area-inset-bottom)
-          );
-        }
-
-        .requirements-grid-v2 {
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-
-        .requirements-title-v2 {
-          font-size: clamp(1.65rem, min(5.5vw, 4.6vh), 3rem);
-        }
-
-        .home-hero-screen {
-          padding-inline: 20px;
-          padding-top: calc(var(--home-navbar-height, 86px) + 10px);
-          padding-bottom: calc(24px + env(safe-area-inset-bottom));
-        }
-
-        .home-hero-screen .hero-shell {
-          height: calc(
-            100dvh - var(--home-navbar-height, 86px) - 34px - env(safe-area-inset-bottom)
-          );
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: stretch;
-          gap: 0.8rem;
-        }
-
-        .home-hero-screen .hero-visual {
-          display: none !important;
-        }
-
-        .home-hero-screen .home-title {
-          font-size: clamp(2.25rem, min(8.4vw, 8.5vh), 4.1rem) !important;
-        }
-
-        .home-screen {
-          width: min(92vw, 720px);
-          padding-top: calc(var(--home-navbar-height, 86px) + 18px);
-          padding-bottom: max(76px, env(safe-area-inset-bottom));
-        }
-
-        .home-title {
-          font-size: clamp(2.8rem, 10vw, 5.3rem);
-        }
-
-        .home-heading {
-          font-size: clamp(2rem, 7vw, 4rem);
-        }
-        .pembina-screen-v2 {
-          overflow-y: auto !important;
-        }
-
-        .pembina-content-v2 {
-          height: auto;
-          min-height: auto;
-          grid-template-columns: 1fr;
-        }
-
-        .pembina-photo-card-v2 {
-          height: 380px;
-          min-height: 380px;
-        }
-
-        .pembina-panel-v2 {
-          height: auto;
-          min-height: auto;
-        }
-      }
-
       @media (max-width: 640px) {
 
               .values-screen-v2 {
@@ -3915,356 +3998,6 @@ function HomeResponsiveStyles() {
 
       }
 
-      .fees-screen-v2 {
-  position: relative;
-  z-index: 10;
-  height: 100dvh;
-  width: 100%;
-  overflow-y: auto;
-  padding: calc(var(--home-navbar-height, 92px) + 18px) 18px
-    calc(54px + env(safe-area-inset-bottom));
-}
-
-.fees-inner-v2 {
-  width: min(1180px, 100%);
-  min-height: calc(
-    100dvh - var(--home-navbar-height, 92px) - 72px - env(safe-area-inset-bottom)
-  );
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 18px;
-}
-
-.fees-header-v2 {
-  max-width: 850px;
-  margin: 0 auto;
-  text-align: center;
-}
-
-.fees-title-v2 {
-  margin-top: 14px;
-  font-size: clamp(2rem, 5vw, 4.4rem);
-  font-weight: 950;
-  line-height: 0.96;
-  letter-spacing: -0.055em;
-  color: #052e24;
-}
-
-.fees-desc-v2 {
-  max-width: 760px;
-  margin: 16px auto 0;
-  font-size: 0.98rem;
-  line-height: 1.75;
-  color: #475569;
-}
-
-.fees-layout-v2 {
-  display: grid;
-  grid-template-columns: minmax(0, 1.25fr) minmax(330px, 0.75fr);
-  gap: 18px;
-  align-items: stretch;
-}
-
-.fees-main-card-v2,
-.fees-monthly-card-v2,
-.fees-include-card-v2,
-.fees-note-card-v2 {
-  position: relative;
-  overflow: hidden;
-  border: 1px solid rgba(16, 185, 129, 0.16);
-  background: rgba(255, 255, 255, 0.9);
-  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.13);
-  backdrop-filter: blur(18px);
-}
-
-.fees-main-card-v2 {
-  border-radius: 2rem;
-  padding: 22px;
-}
-
-.fees-main-glow-v2 {
-  position: absolute;
-  right: -90px;
-  top: -90px;
-  width: 260px;
-  height: 260px;
-  border-radius: 999px;
-  background: rgba(250, 204, 21, 0.25);
-  filter: blur(48px);
-}
-
-.fees-main-top-v2 {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 18px;
-  padding: 16px;
-  border-radius: 1.5rem;
-  background: linear-gradient(135deg, #052e24, #064e3b);
-  color: white;
-}
-
-.fees-kicker-v2 {
-  font-size: 0.66rem;
-  font-weight: 950;
-  text-transform: uppercase;
-  letter-spacing: 0.22em;
-  color: #d9a710;
-}
-
-.fees-main-title-v2 {
-  margin-top: 5px;
-  font-size: clamp(1.2rem, 2.2vw, 1.8rem);
-  font-weight: 950;
-  line-height: 1.05;
-}
-
-.fees-form-price-v2 {
-  flex-shrink: 0;
-  border-radius: 999px;
-  background: #facc15;
-  padding: 12px 16px;
-  color: #052e24;
-  font-size: clamp(0.95rem, 1.7vw, 1.25rem);
-  font-weight: 950;
-  box-shadow: 0 12px 28px rgba(250, 204, 21, 0.24);
-}
-
-.fees-entry-grid-v2 {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
-}
-
-.fees-entry-card-v2 {
-  position: relative;
-  height: 100%;
-  min-height: 270px;
-  overflow: hidden;
-  border-radius: 1.7rem;
-  border: 1px solid rgba(16, 185, 129, 0.16);
-  background: linear-gradient(180deg, #ffffff, #ecfdf5);
-  padding: 18px;
-  transition: 0.25s ease;
-}
-
-.fees-entry-card-v2.is-highlight {
-  background: linear-gradient(145deg, #052e24, #065f46);
-  color: white;
-  border-color: rgba(250, 204, 21, 0.45);
-  box-shadow: 0 26px 50px rgba(5, 46, 36, 0.2);
-}
-
-.fees-entry-icon-v2 {
-  display: flex;
-  width: 52px;
-  height: 52px;
-  align-items: center;
-  justify-content: center;
-  border-radius: 1.25rem;
-  background: #052e24;
-  color: #facc15;
-  font-size: 1.25rem;
-}
-
-.fees-entry-card-v2.is-highlight .fees-entry-icon-v2 {
-  background: #facc15;
-  color: #052e24;
-}
-
-.fees-entry-label-v2 {
-  margin-top: 18px;
-  font-size: 0.67rem;
-  font-weight: 950;
-  text-transform: uppercase;
-  letter-spacing: 0.2em;
-  color: #047857;
-}
-
-.fees-entry-card-v2.is-highlight .fees-entry-label-v2 {
-  color: #fde68a;
-}
-
-.fees-entry-level-v2 {
-  margin-top: 7px;
-  font-size: clamp(1.45rem, 2.5vw, 2.25rem);
-  font-weight: 950;
-  line-height: 1;
-  color: #052e24;
-}
-
-.fees-entry-card-v2.is-highlight .fees-entry-level-v2 {
-  color: white;
-}
-
-.fees-entry-price-v2 {
-  margin-top: 12px;
-  font-size: clamp(1.1rem, 2vw, 1.55rem);
-  font-weight: 950;
-  color: #d97706;
-}
-
-.fees-entry-card-v2.is-highlight .fees-entry-price-v2 {
-  color: #facc15;
-}
-
-.fees-entry-desc-v2 {
-  margin-top: 12px;
-  font-size: 0.83rem;
-  line-height: 1.6;
-  color: #64748b;
-}
-
-.fees-entry-card-v2.is-highlight .fees-entry-desc-v2 {
-  color: #d1fae5;
-}
-
-.fees-popular-v2 {
-  position: absolute;
-  right: 14px;
-  top: 14px;
-  border-radius: 999px;
-  background: rgba(250, 204, 21, 0.14);
-  border: 1px solid rgba(250, 204, 21, 0.35);
-  padding: 8px 11px;
-  color: #facc15;
-  font-size: 0.62rem;
-  font-weight: 950;
-  text-transform: uppercase;
-  letter-spacing: 0.16em;
-}
-
-.fees-side-v2 {
-  display: grid;
-  gap: 14px;
-}
-
-.fees-monthly-card-v2,
-.fees-include-card-v2,
-.fees-note-card-v2 {
-  border-radius: 1.7rem;
-  padding: 17px;
-}
-
-.fees-card-head-v2 {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.fees-card-head-v2 h3 {
-  margin-top: 3px;
-  font-size: 1.05rem;
-  font-weight: 950;
-  color: #052e24;
-}
-
-.fees-card-icon-v2 {
-  display: flex;
-  width: 46px;
-  height: 46px;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-  border-radius: 1.15rem;
-  background: #052e24;
-  color: #facc15;
-}
-
-.fees-monthly-list-v2 {
-  margin-top: 14px;
-  display: grid;
-  gap: 9px;
-}
-
-.fees-monthly-item-v2 {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  border-radius: 1rem;
-  background: #ecfdf5;
-  padding: 12px 13px;
-}
-
-.fees-monthly-item-v2 span {
-  font-size: 0.9rem;
-  font-weight: 900;
-  color: #052e24;
-}
-
-.fees-monthly-item-v2 strong {
-  color: #d97706;
-  font-size: 0.95rem;
-  font-weight: 950;
-}
-
-.fees-include-grid-v2 {
-  margin-top: 14px;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
-}
-
-.fees-include-item-v2 {
-  display: flex;
-  min-width: 0;
-  align-items: center;
-  gap: 8px;
-  border-radius: 0.95rem;
-  background: #f8fafc;
-  padding: 9px;
-  color: #334155;
-  font-size: 0.76rem;
-  font-weight: 800;
-  line-height: 1.35;
-}
-
-.fees-include-item-v2 svg {
-  flex-shrink: 0;
-  color: #059669;
-  font-size: 0.8rem;
-}
-
-.fees-note-list-v2 {
-  margin-top: 12px;
-  display: grid;
-  gap: 9px;
-}
-
-.fees-note-item-v2 {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 10px;
-  align-items: start;
-  border-radius: 1rem;
-  background: #fffbeb;
-  padding: 11px;
-}
-
-.fees-note-item-v2 span {
-  display: flex;
-  width: 25px;
-  height: 25px;
-  align-items: center;
-  justify-content: center;
-  border-radius: 999px;
-  background: #facc15;
-  color: #052e24;
-  font-size: 0.72rem;
-  font-weight: 950;
-}
-
-.fees-note-item-v2 p {
-  font-size: 0.78rem;
-  font-weight: 800;
-  line-height: 1.5;
-  color: #475569;
-}
-
       @media (max-width: 420px) {
 
               .values-screen-v2 {
@@ -4427,7 +4160,275 @@ function HomeResponsiveStyles() {
         }
 
       }
-    `}</style>
+    
+    
+    @media (max-width: 820px) {
+
+      .fees-screen-v2 {
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: calc(var(--home-navbar-height, 74px) + 8px);
+  padding-bottom: calc(50px + env(safe-area-inset-bottom));
+}
+
+.fees-inner-v2 {
+  min-height: auto;
+  justify-content: flex-start;
+  gap: 12px;
+}
+
+.fees-title-v2 {
+  font-size: clamp(1.45rem, 8vw, 2.15rem);
+}
+
+.fees-desc-v2 {
+  margin-top: 10px;
+  font-size: 0.82rem;
+  line-height: 1.6;
+}
+
+.fees-layout-v2 {
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.fees-main-card-v2,
+.fees-monthly-card-v2,
+.fees-include-card-v2,
+.fees-note-card-v2 {
+  border-radius: 1.35rem;
+  padding: 12px;
+}
+
+.fees-main-top-v2 {
+  flex-direction: column;
+  align-items: flex-start;
+  border-radius: 1.15rem;
+  padding: 13px;
+}
+
+.fees-form-price-v2 {
+  width: 100%;
+  text-align: center;
+  font-size: 1rem;
+}
+
+.fees-entry-grid-v2 {
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.fees-entry-card-v2 {
+  min-height: auto;
+  border-radius: 1.25rem;
+  padding: 14px;
+}
+
+.fees-entry-icon-v2 {
+  width: 44px;
+  height: 44px;
+  border-radius: 1rem;
+}
+
+.fees-entry-label-v2 {
+  margin-top: 12px;
+}
+
+.fees-entry-level-v2 {
+  font-size: 1.5rem;
+}
+
+.fees-entry-price-v2 {
+  font-size: 1.15rem;
+}
+
+.fees-entry-desc-v2 {
+  font-size: 0.78rem;
+}
+
+.fees-popular-v2 {
+  right: 10px;
+  top: 10px;
+  font-size: 0.55rem;
+  padding: 6px 9px;
+}
+
+.fees-card-head-v2 h3 {
+  font-size: 0.95rem;
+}
+
+.fees-monthly-item-v2 {
+  padding: 10px;
+}
+
+.fees-monthly-item-v2 span,
+.fees-monthly-item-v2 strong {
+  font-size: 0.82rem;
+}
+
+.fees-include-grid-v2 {
+  grid-template-columns: 1fr;
+}
+
+.fees-include-item-v2 {
+  font-size: 0.74rem;
+  padding: 8px;
+}
+
+.fees-note-item-v2 p {
+  font-size: 0.73rem;
+}
+
+              .values-screen-v2 {
+          padding-left: 18px;
+          padding-right: 18px;
+          padding-top: calc(var(--home-navbar-height, 86px) + 10px);
+          padding-bottom: calc(18px + env(safe-area-inset-bottom));
+        }
+
+        .values-inner-v2 {
+          height: calc(
+            100dvh - var(--home-navbar-height, 86px) - 28px - env(safe-area-inset-bottom)
+          );
+        }
+
+        .values-layout-v2 {
+          grid-template-columns: 1fr;
+          grid-template-rows: auto minmax(0, 1fr);
+        }
+
+        .values-feature-v2 {
+          height: auto;
+        }
+
+        .values-feature-desc-v2 {
+          display: none;
+        }
+
+        .values-grid-v2 {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .values-title-v2 {
+          font-size: clamp(1.65rem, min(5.5vw, 4.6vh), 3rem);
+        }
+
+              .guide-screen-v2 {
+          padding-left: 18px;
+          padding-right: 18px;
+          padding-top: calc(var(--home-navbar-height, 86px) + 10px);
+          padding-bottom: calc(18px + env(safe-area-inset-bottom));
+        }
+
+        .guide-inner-v2 {
+          height: calc(
+            100dvh - var(--home-navbar-height, 86px) - 28px - env(safe-area-inset-bottom)
+          );
+        }
+
+        .guide-content-v2 {
+          grid-template-columns: 1fr;
+          grid-template-rows: auto minmax(0, 1fr);
+        }
+
+        .guide-panel-v2 {
+          height: auto;
+        }
+
+        .guide-step-list-v2 {
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          gap: 0.5rem;
+        }
+
+        .guide-step-button-v2 {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .guide-current-desc-v2 {
+          display: none;
+        }
+
+              .requirements-screen-v2 {
+          padding-left: 18px;
+          padding-right: 18px;
+          padding-top: calc(var(--home-navbar-height, 86px) + 10px);
+          padding-bottom: calc(18px + env(safe-area-inset-bottom));
+        }
+
+        .requirements-inner-v2 {
+          height: calc(
+            100dvh - var(--home-navbar-height, 86px) - 28px - env(safe-area-inset-bottom)
+          );
+        }
+
+        .requirements-grid-v2 {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .requirements-title-v2 {
+          font-size: clamp(1.65rem, min(5.5vw, 4.6vh), 3rem);
+        }
+
+        .home-hero-screen {
+          padding-inline: 20px;
+          padding-top: calc(var(--home-navbar-height, 86px) + 10px);
+          padding-bottom: calc(24px + env(safe-area-inset-bottom));
+        }
+
+        .home-hero-screen .hero-shell {
+          height: calc(
+            100dvh - var(--home-navbar-height, 86px) - 34px - env(safe-area-inset-bottom)
+          );
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: stretch;
+          gap: 0.8rem;
+        }
+
+        .home-hero-screen .hero-visual {
+          display: none !important;
+        }
+
+        .home-hero-screen .home-title {
+          font-size: clamp(2.25rem, min(8.4vw, 8.5vh), 4.1rem) !important;
+        }
+
+        .home-screen {
+          width: min(92vw, 720px);
+          padding-top: calc(var(--home-navbar-height, 86px) + 18px);
+          padding-bottom: max(76px, env(safe-area-inset-bottom));
+        }
+
+        .home-title {
+          font-size: clamp(2.8rem, 10vw, 5.3rem);
+        }
+
+        .home-heading {
+          font-size: clamp(2rem, 7vw, 4rem);
+        }
+        .pembina-screen-v2 {
+          overflow-y: auto !important;
+        }
+
+        .pembina-content-v2 {
+          height: auto;
+          min-height: auto;
+          grid-template-columns: 1fr;
+        }
+
+        .pembina-photo-card-v2 {
+          height: 380px;
+          min-height: 380px;
+        }
+
+        .pembina-panel-v2 {
+          height: auto;
+          min-height: auto;
+        }
+      }
+  `}</style>
   );
 }
 export default function Home() {
