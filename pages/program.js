@@ -1508,20 +1508,15 @@ export default function Program() {
   }, [programPage]);
 
   const sections = useMemo(
-    () => [
-      { key: "hero", label: "Hero", total: 1 },
-      { key: "programs", label: "Program", total: 1 },
-      {
-        key: "focus",
-        label: "Fokus",
-        total: data.programs.length || 1,
-      },
-      { key: "flow", label: "Alur", total: 1 },
-      { key: "faq", label: "FAQ", total: 1 },
-      { key: "cta", label: "Daftar", total: 1 },
-    ],
-    [data.programs.length]
-  );
+  () => [
+    { key: "hero", label: "Hero", total: 1 },
+    { key: "programs", label: "Program", total: 1 },
+    { key: "flow", label: "Alur", total: 1 },
+    { key: "faq", label: "FAQ", total: 1 },
+    { key: "cta", label: "Daftar", total: 1 },
+  ],
+  []
+);
 
   const activeSection = position.section;
   const activeStep = position.step;
@@ -1767,12 +1762,6 @@ export default function Program() {
     return () => window.removeEventListener("resize", updateNavbarHeight);
   }, []);
 
-  useEffect(() => {
-    if (activeSectionKey === "focus") {
-      setActiveProgram(activeStep);
-    }
-  }, [activeSectionKey, activeStep]);
-
   if (!mounted || loading) {
     return <LoadingPage />;
   }
@@ -1810,15 +1799,6 @@ export default function Program() {
             programs={data.programs}
             activeProgram={activeProgram}
             setActiveProgram={setActiveProgram}
-            direction={direction}
-          />
-        )}
-
-        {activeSectionKey === "focus" && (
-          <FocusScreen
-            key="focus"
-            programs={data.programs}
-            step={activeStep}
             direction={direction}
           />
         )}
