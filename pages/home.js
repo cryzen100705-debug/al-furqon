@@ -1929,7 +1929,158 @@ function GuideScreen({ guides, direction }) {
   );
 }
 
+function FeesScreen({ fees, direction }) {
+  return (
+    <ScreenShell light sectionKey="fees" direction={direction}>
+      <IslamicBackground />
 
+      <div data-allow-scroll="true" className="fees-screen-v2">
+        <div className="fees-inner-v2">
+          <motion.div
+            initial={{ opacity: 0, y: 24, filter: "blur(8px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            transition={{ duration: 0.52, ease: EASE_PREMIUM }}
+            className="fees-header-v2"
+          >
+            <Badge>Biaya Santri</Badge>
+
+            <h2 className="fees-title-v2">
+              Informasi biaya masuk dan iuran bulanan santri
+            </h2>
+
+            <p className="fees-desc-v2">
+              Rincian biaya dibuat jelas agar wali santri mudah memahami
+              kebutuhan administrasi awal, iuran bulanan, serta fasilitas yang
+              sudah termasuk di dalam biaya masuk.
+            </p>
+          </motion.div>
+
+          <div className="fees-layout-v2">
+            <motion.div
+              initial={{ opacity: 0, x: -24, filter: "blur(8px)" }}
+              animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+              transition={{ delay: 0.12, duration: 0.52, ease: EASE_PREMIUM }}
+              className="fees-main-card-v2"
+            >
+              <div className="fees-main-glow-v2" />
+
+              <div className="relative z-10">
+                <div className="fees-main-top-v2">
+                  <div>
+                    <p className="fees-kicker-v2">Biaya Pendaftaran</p>
+                    <h3 className="fees-main-title-v2">
+                      {fees.registration.title}
+                    </h3>
+                  </div>
+
+                  <div className="fees-form-price-v2">
+                    {formatRupiah(fees.registration.price)}
+                  </div>
+                </div>
+
+                <div className="fees-entry-grid-v2">
+                  {fees.entryFees.map((item, index) => (
+                    <TiltCard key={item.level} className="h-full">
+                      <div
+                        className={`fees-entry-card-v2 ${
+                          item.highlight ? "is-highlight" : ""
+                        }`}
+                      >
+                        <div className="fees-entry-icon-v2">
+                          {getIcon(item.iconKey)}
+                        </div>
+
+                        <p className="fees-entry-label-v2">Biaya Masuk</p>
+
+                        <h3 className="fees-entry-level-v2">{item.level}</h3>
+
+                        <h4 className="fees-entry-price-v2">
+                          {formatRupiah(item.price)}
+                        </h4>
+
+                        <p className="fees-entry-desc-v2">{item.desc}</p>
+
+                        {item.highlight && (
+                          <div className="fees-popular-v2">
+                            Pilihan Formal
+                          </div>
+                        )}
+                      </div>
+                    </TiltCard>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 24, filter: "blur(8px)" }}
+              animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+              transition={{ delay: 0.18, duration: 0.52, ease: EASE_PREMIUM }}
+              className="fees-side-v2"
+            >
+              <div className="fees-monthly-card-v2">
+                <div className="fees-card-head-v2">
+                  <div className="fees-card-icon-v2">
+                    <FaScroll />
+                  </div>
+
+                  <div>
+                    <p className="fees-kicker-v2">Iuran Bulanan</p>
+                    <h3>Per Jenjang Santri</h3>
+                  </div>
+                </div>
+
+                <div className="fees-monthly-list-v2">
+                  {fees.monthlyFees.map((item) => (
+                    <div key={item.level} className="fees-monthly-item-v2">
+                      <span>{item.level}</span>
+                      <strong>{formatRupiah(item.price)}</strong>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="fees-include-card-v2">
+                <div className="fees-card-head-v2">
+                  <div className="fees-card-icon-v2">
+                    <FaCheckCircle />
+                  </div>
+
+                  <div>
+                    <p className="fees-kicker-v2">Sudah Termasuk</p>
+                    <h3>Perlengkapan Awal Santri</h3>
+                  </div>
+                </div>
+
+                <div className="fees-include-grid-v2">
+                  {fees.includes.map((item, index) => (
+                    <div key={`${item}-${index}`} className="fees-include-item-v2">
+                      <FaCheckCircle />
+                      <span>{item}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="fees-note-card-v2">
+                <p className="fees-kicker-v2">Catatan Penting</p>
+
+                <div className="fees-note-list-v2">
+                  {fees.notes.map((note, index) => (
+                    <div key={`${note}-${index}`} className="fees-note-item-v2">
+                      <span>{index + 1}</span>
+                      <p>{note}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </div>
+    </ScreenShell>
+  );
+}
 
 function CtaScreen({ direction }) {
   return (
