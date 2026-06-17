@@ -4376,48 +4376,509 @@ function HomeResponsiveStyles() {
       }
 
 @media (max-width: 640px) {
-  .fees-screen-v3 {
-    height: 100dvh;
-    overflow: hidden;
+  /* =========================================================
+   FEES SECTION V3 - FIX AGAR TIDAK TERPOTONG
+========================================================= */
 
-    padding-top: calc(var(--home-navbar-height, 74px) + 8px);
-    padding-left: 10px;
-    padding-right: 10px;
-    padding-bottom: calc(18px + env(safe-area-inset-bottom));
+.fees-screen-v3 {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  height: 100dvh;
+  overflow: hidden;
+  box-sizing: border-box;
+  padding-top: calc(var(--home-navbar-height, 92px) + 10px);
+  padding-left: clamp(10px, 1.5vw, 22px);
+  padding-right: clamp(10px, 1.5vw, 22px);
+  padding-bottom: calc(10px + 10px + env(safe-area-inset-bottom));
+}
+
+.fees-inner-v3 {
+  width: min(1320px, 100%);
+  height: calc(
+    100dvh - var(--home-navbar-height, 92px) - 26px - env(safe-area-inset-bottom)
+  );
+  margin-inline: auto;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 10px;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.fees-header-v3 {
+  max-width: 920px;
+  margin-inline: auto;
+  text-align: center;
+}
+
+.fees-title-v3 {
+  margin-top: 8px;
+  color: #052e24;
+  font-size: clamp(1.5rem, 3.5vw, 3.35rem);
+  font-weight: 950;
+  line-height: 0.94;
+  letter-spacing: -0.05em;
+}
+
+.fees-desc-v3 {
+  max-width: 760px;
+  margin: 8px auto 0;
+  color: #475569;
+  font-size: clamp(0.74rem, 0.95vw, 0.92rem);
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.fees-content-v3 {
+  min-height: 0;
+  overflow: auto;
+  padding-right: 3px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(360px, 0.92fr);
+  gap: 12px;
+  align-items: start;
+  scrollbar-width: thin;
+}
+
+.fees-left-v3,
+.fees-right-v3 {
+  min-width: 0;
+  min-height: 0;
+}
+
+.fees-left-v3 {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 10px;
+}
+
+.fees-right-v3 {
+  display: grid;
+  grid-template-rows: auto auto auto;
+  gap: 10px;
+  align-content: start;
+}
+
+/* FORM */
+.fees-form-v3 {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.5rem;
+  background: linear-gradient(135deg, #052e24, #065f46);
+  color: white;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  box-shadow: 0 18px 45px rgba(5, 46, 36, 0.18);
+}
+
+.fees-form-v3::after {
+  content: "";
+  position: absolute;
+  right: -40px;
+  top: -70px;
+  width: 150px;
+  height: 150px;
+  border-radius: 999px;
+  background: rgba(250, 204, 21, 0.16);
+  filter: blur(24px);
+}
+
+.fees-kicker-v3 {
+  color: #d9a710;
+  font-size: 0.62rem;
+  font-weight: 950;
+  line-height: 1.15;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.fees-form-v3 h3 {
+  position: relative;
+  z-index: 1;
+  margin-top: 4px;
+  font-size: clamp(0.95rem, 1.2vw, 1.25rem);
+  font-weight: 950;
+  line-height: 1.05;
+}
+
+.fees-form-v3 strong {
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+  border-radius: 999px;
+  background: #facc15;
+  color: #052e24;
+  padding: 10px 14px;
+  font-size: clamp(0.86rem, 1vw, 1.08rem);
+  font-weight: 950;
+  white-space: nowrap;
+}
+
+/* CARD BIAYA MASUK */
+.fees-entry-grid-v3 {
+  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  align-items: stretch;
+}
+
+.fees-entry-card-v3 {
+  position: relative;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  border: 1px solid rgba(16, 185, 129, 0.16);
+  border-radius: 1.45rem;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 14px 34px rgba(15, 23, 42, 0.1);
+  backdrop-filter: blur(14px);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+}
+
+.fees-entry-card-v3.is-highlight {
+  background: linear-gradient(145deg, #052e24, #047857);
+  color: white;
+  border-color: rgba(250, 204, 21, 0.4);
+}
+
+.fees-entry-top-v3 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.fees-entry-icon-v3,
+.fees-panel-icon-v3 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 1rem;
+  background: #052e24;
+  color: #facc15;
+  font-size: 1rem;
+}
+
+.fees-entry-card-v3.is-highlight .fees-entry-icon-v3 {
+  background: #facc15;
+  color: #052e24;
+}
+
+.fees-entry-badge-v3 {
+  border-radius: 999px;
+  background: rgba(250, 204, 21, 0.14);
+  border: 1px solid rgba(250, 204, 21, 0.35);
+  color: #facc15;
+  padding: 5px 8px;
+  font-size: 0.54rem;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.fees-entry-card-v3 .fees-kicker-v3 {
+  margin-top: 0;
+}
+
+.fees-entry-card-v3 h3 {
+  margin-top: 5px;
+  color: #052e24;
+  font-size: clamp(1.2rem, 2vw, 1.9rem);
+  font-weight: 950;
+  line-height: 0.95;
+}
+
+.fees-entry-card-v3.is-highlight h3 {
+  color: white;
+}
+
+.fees-entry-card-v3 strong {
+  margin-top: 8px;
+  color: #d97706;
+  font-size: clamp(0.96rem, 1.45vw, 1.28rem);
+  font-weight: 950;
+  line-height: 1;
+}
+
+.fees-entry-card-v3.is-highlight strong {
+  color: #facc15;
+}
+
+.fees-entry-card-v3 p:last-child {
+  margin-top: 8px;
+  color: #64748b;
+  font-size: clamp(0.68rem, 0.82vw, 0.78rem);
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.fees-entry-card-v3.is-highlight p:last-child {
+  color: #d1fae5;
+}
+
+/* PANEL KANAN */
+.fees-panel-v3 {
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  border: 1px solid rgba(16, 185, 129, 0.16);
+  border-radius: 1.45rem;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 14px 34px rgba(15, 23, 42, 0.08);
+  backdrop-filter: blur(14px);
+  padding: 12px 14px;
+}
+
+.fees-panel-head-v3 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.fees-panel-head-v3 h3 {
+  margin-top: 3px;
+  color: #052e24;
+  font-size: 1rem;
+  font-weight: 950;
+  line-height: 1.05;
+}
+
+.fees-monthly-list-v3 {
+  margin-top: 10px;
+  display: grid;
+  gap: 7px;
+}
+
+.fees-monthly-item-v3 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border-radius: 0.9rem;
+  background: #ecfdf5;
+  padding: 9px 10px;
+}
+
+.fees-monthly-item-v3 span {
+  color: #052e24;
+  font-size: 0.84rem;
+  font-weight: 950;
+}
+
+.fees-monthly-item-v3 strong {
+  color: #d97706;
+  font-size: 0.85rem;
+  font-weight: 950;
+  white-space: nowrap;
+}
+
+.fees-includes-grid-v3 {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.fees-include-v3 {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  border-radius: 0.85rem;
+  background: #f8fafc;
+  padding: 8px;
+  color: #334155;
+  font-size: 0.71rem;
+  font-weight: 850;
+  line-height: 1.2;
+}
+
+.fees-include-v3 svg {
+  flex-shrink: 0;
+  color: #059669;
+  font-size: 0.72rem;
+}
+
+.fees-note-list-v3 {
+  margin-top: 8px;
+  display: grid;
+  gap: 7px;
+}
+
+.fees-note-v3 {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: start;
+  gap: 8px;
+  border-radius: 0.85rem;
+  background: #fffbeb;
+  padding: 8px;
+}
+
+.fees-note-v3 span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: #facc15;
+  color: #052e24;
+  font-size: 0.64rem;
+  font-weight: 950;
+}
+
+.fees-note-v3 p {
+  color: #475569;
+  font-size: 0.72rem;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+/* DESKTOP PENDEK */
+@media (max-height: 930px) and (min-width: 1025px) {
+  .fees-screen-v3 {
+    padding-top: calc(var(--home-navbar-height, 92px) + 8px);
+    padding-bottom: calc(8px + env(safe-area-inset-bottom));
   }
 
   .fees-inner-v3 {
     height: calc(
-      100dvh - var(--home-navbar-height, 74px) - 34px -
-        env(safe-area-inset-bottom)
+      100dvh - var(--home-navbar-height, 92px) - 18px - env(safe-area-inset-bottom)
     );
     gap: 8px;
   }
 
-  .fees-header-v3 {
-    max-width: 100%;
-  }
-
   .fees-title-v3 {
-    margin-top: 7px;
-    font-size: clamp(1.28rem, 7vw, 1.85rem);
-    line-height: 0.98;
-    letter-spacing: -0.045em;
+    font-size: clamp(1.3rem, 3vw, 2.75rem);
   }
 
   .fees-desc-v3 {
-    margin-top: 7px;
-    font-size: 0.72rem;
-    line-height: 1.45;
+    font-size: 0.78rem;
+    line-height: 1.35;
+    margin-top: 6px;
+  }
+
+  .fees-content-v3 {
+    gap: 10px;
+    grid-template-columns: minmax(0, 1.04fr) minmax(340px, 0.96fr);
+  }
+
+  .fees-form-v3,
+  .fees-entry-card-v3,
+  .fees-panel-v3 {
+    padding: 10px 11px;
+  }
+
+  .fees-entry-icon-v3,
+  .fees-panel-icon-v3 {
+    width: 40px;
+    height: 40px;
+    font-size: 0.92rem;
+  }
+
+  .fees-form-v3 h3 {
+    font-size: 0.92rem;
+  }
+
+  .fees-form-v3 strong {
+    font-size: 0.84rem;
+    padding: 9px 12px;
+  }
+
+  .fees-entry-card-v3 h3 {
+    font-size: 1.55rem;
+  }
+
+  .fees-entry-card-v3 strong {
+    font-size: 1.02rem;
+  }
+
+  .fees-entry-card-v3 p:last-child,
+  .fees-include-v3,
+  .fees-note-v3 p {
+    font-size: 0.68rem;
+    line-height: 1.28;
+  }
+
+  .fees-monthly-item-v3 span,
+  .fees-monthly-item-v3 strong {
+    font-size: 0.78rem;
+  }
+}
+
+/* TABLET */
+@media (max-width: 1024px) {
+  .fees-screen-v3 {
+    padding-top: calc(var(--home-navbar-height, 86px) + 8px);
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
+  }
+
+  .fees-inner-v3 {
+    height: calc(
+      100dvh - var(--home-navbar-height, 86px) - 20px - env(safe-area-inset-bottom)
+    );
   }
 
   .fees-content-v3 {
     grid-template-columns: 1fr;
     gap: 10px;
     overflow-y: auto;
-    overscroll-behavior: contain;
+  }
+
+  .fees-right-v3 {
+    grid-template-rows: auto auto auto;
+  }
+
+  .fees-entry-grid-v3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* HP */
+@media (max-width: 640px) {
+  .fees-screen-v3 {
+    padding-top: calc(var(--home-navbar-height, 74px) + 8px);
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: calc(10px + env(safe-area-inset-bottom));
+  }
+
+  .fees-inner-v3 {
+    height: calc(
+      100dvh - var(--home-navbar-height, 74px) - 18px - env(safe-area-inset-bottom)
+    );
+    gap: 8px;
+  }
+
+  .fees-title-v3 {
+    font-size: clamp(1.2rem, 7vw, 1.85rem);
+    line-height: 0.98;
+  }
+
+  .fees-desc-v3 {
+    font-size: 0.72rem;
+    line-height: 1.4;
+  }
+
+  .fees-content-v3 {
+    grid-template-columns: 1fr;
+    gap: 9px;
+    overflow-y: auto;
     padding-right: 2px;
-    padding-bottom: 8px;
   }
 
   .fees-form-v3 {
@@ -4427,28 +4888,22 @@ function HomeResponsiveStyles() {
   }
 
   .fees-form-v3 h3 {
-    font-size: 0.9rem;
+    font-size: 0.88rem;
   }
 
   .fees-form-v3 strong {
     padding: 8px 10px;
-    font-size: 0.82rem;
+    font-size: 0.8rem;
   }
 
   .fees-entry-grid-v3 {
     grid-template-columns: 1fr;
     gap: 8px;
-    overflow: visible;
   }
 
   .fees-entry-card-v3 {
-    min-height: auto;
     border-radius: 1.05rem;
     padding: 11px;
-  }
-
-  .fees-entry-top-v3 {
-    margin-bottom: 8px;
   }
 
   .fees-entry-icon-v3,
@@ -4456,41 +4911,25 @@ function HomeResponsiveStyles() {
     width: 36px;
     height: 36px;
     border-radius: 0.85rem;
-    font-size: 0.9rem;
-  }
-
-  .fees-kicker-v3 {
-    font-size: 0.52rem;
-    letter-spacing: 0.16em;
-  }
-
-  .fees-entry-card-v3 .fees-kicker-v3 {
-    margin-top: 0;
+    font-size: 0.88rem;
   }
 
   .fees-entry-card-v3 h3 {
-    margin-top: 4px;
-    font-size: 1.25rem;
+    font-size: 1.22rem;
   }
 
   .fees-entry-card-v3 strong {
-    margin-top: 6px;
-    font-size: 1rem;
+    font-size: 0.98rem;
   }
 
   .fees-entry-card-v3 p:last-child {
-    margin-top: 6px;
-    font-size: 0.7rem;
-    line-height: 1.35;
+    font-size: 0.69rem;
+    line-height: 1.32;
   }
 
   .fees-entry-badge-v3 {
-    padding: 5px 8px;
-    font-size: 0.52rem;
-  }
-
-  .fees-right-v3 {
-    gap: 8px;
+    font-size: 0.5rem;
+    padding: 4px 7px;
   }
 
   .fees-panel-v3 {
@@ -4502,14 +4941,8 @@ function HomeResponsiveStyles() {
     font-size: 0.88rem;
   }
 
-  .fees-monthly-list-v3 {
-    margin-top: 8px;
-    gap: 6px;
-  }
-
   .fees-monthly-item-v3 {
     padding: 8px 9px;
-    border-radius: 0.8rem;
   }
 
   .fees-monthly-item-v3 span,
@@ -4519,89 +4952,51 @@ function HomeResponsiveStyles() {
 
   .fees-includes-grid-v3 {
     grid-template-columns: 1fr;
-    margin-top: 8px;
     gap: 6px;
-    overflow: visible;
   }
 
   .fees-include-v3 {
-    padding: 7px;
-    border-radius: 0.8rem;
     font-size: 0.68rem;
-  }
-
-  .fees-note-list-v3 {
-    margin-top: 8px;
-    gap: 6px;
-  }
-
-  .fees-note-v3 {
-    padding: 8px;
-    border-radius: 0.8rem;
-  }
-
-  .fees-note-v3 span {
-    width: 21px;
-    height: 21px;
-    font-size: 0.62rem;
+    padding: 7px;
   }
 
   .fees-note-v3 p {
     font-size: 0.68rem;
-    line-height: 1.35;
+    line-height: 1.3;
   }
 }
 
+/* HP PENDEK */
 @media (max-width: 640px) and (max-height: 760px) {
-  .fees-screen-v3 {
-    padding-top: calc(var(--home-navbar-height, 70px) + 6px);
-    padding-bottom: calc(14px + env(safe-area-inset-bottom));
-  }
-
-  .fees-inner-v3 {
-    gap: 6px;
-  }
-
   .fees-title-v3 {
-    font-size: clamp(1.12rem, 6.5vw, 1.55rem);
+    font-size: clamp(1.05rem, 6.2vw, 1.45rem);
   }
 
   .fees-desc-v3 {
-    font-size: 0.68rem;
-    line-height: 1.35;
+    font-size: 0.66rem;
+    line-height: 1.28;
   }
 
-  .fees-form-v3 {
-    padding: 9px;
-  }
-
+  .fees-form-v3,
   .fees-entry-card-v3,
   .fees-panel-v3 {
     padding: 9px;
   }
 
-  .fees-entry-icon-v3,
-  .fees-panel-icon-v3 {
-    width: 32px;
-    height: 32px;
-    font-size: 0.82rem;
-  }
-
   .fees-entry-card-v3 h3 {
-    font-size: 1.08rem;
+    font-size: 1.05rem;
   }
 
   .fees-entry-card-v3 strong {
-    font-size: 0.9rem;
+    font-size: 0.88rem;
   }
 
   .fees-entry-card-v3 p:last-child,
   .fees-include-v3,
   .fees-note-v3 p {
-    font-size: 0.64rem;
+    font-size: 0.63rem;
   }
 }
-
   `}</style>
   );
 }
