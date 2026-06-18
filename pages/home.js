@@ -226,13 +226,13 @@ const DEFAULT_GUIDES = [
   {
     title: "Isi Data Orang Tua",
     badge: "Langkah 2",
-    desc: "Lengkapi data ayah, ibu, alamat, kota, provinsi, kode pos, nomor HP, dan email yang aktif agar pihak pesantren dapat menghubungi wali santri.",
+    desc: "Lengkapi data ayah, ibu, alamat, kota, provinsi, kode pos, nomor HP, dan email aktif agar pihak pesantren dapat menghubungi wali santri.",
     image: "/panduan-daftar-2.png",
   },
   {
     title: "Lakukan Pembayaran",
     badge: "Langkah 3",
-    desc: "Lakukan pembayaran pendaftaran melalui metode yang tersedia seperti transfer, QRIS, atau e-wallet. Setelah itu upload bukti pembayaran.",
+    desc: "Lakukan pembayaran pendaftaran melalui metode yang tersedia seperti transfer, QRIS, atau e-wallet. Setelah itu upload bukti pembayaran agar dapat diverifikasi.",
     image: "/panduan-daftar-3.png",
   },
   {
@@ -241,8 +241,13 @@ const DEFAULT_GUIDES = [
     desc: "Setelah data dan pembayaran dikirim, sistem akan menampilkan halaman berhasil. Simpan email dan password akun santri yang muncul.",
     image: "/panduan-daftar-4.png",
   },
+  {
+    title: "Menunggu Aktivasi Akun",
+    badge: "Langkah 5",
+    desc: "Setelah pendaftaran berhasil, akun santri belum langsung aktif. Admin pesantren akan memeriksa data dan pembayaran terlebih dahulu. Jika muncul pesan akun belum aktif, silakan tunggu hingga admin mengaktifkan akun atau hubungi admin melalui tombol WhatsApp.",
+    image: "/panduan-daftar-5.png",
+  },
 ];
-
 const DEFAULT_FEES = {
   registration: {
     label: "Biaya Pendaftaran",

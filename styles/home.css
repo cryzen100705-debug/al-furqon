@@ -1494,7 +1494,6 @@
         }
 
         .guide-step-list-v2 {
-          grid-template-columns: repeat(2, minmax(0, 1fr));
           gap: 0.42rem;
         }
 
@@ -2238,3 +2237,175 @@
           min-height: auto;
         }
       }
+
+      /* =========================================================
+   FIX PANDUAN PENDAFTARAN - MOBILE
+   Membuat langkah panduan tidak berantakan di HP
+========================================================= */
+
+@media (max-width: 640px) {
+  .guide-screen-v2 {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+    padding-top: calc(var(--home-navbar-height, 74px) + 8px) !important;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom)) !important;
+    overflow: hidden !important;
+  }
+
+  .guide-inner-v2 {
+    height: calc(
+      100dvh - var(--home-navbar-height, 74px) - 20px -
+        env(safe-area-inset-bottom)
+    ) !important;
+    display: grid !important;
+    grid-template-rows: auto minmax(0, 1fr) !important;
+    gap: 8px !important;
+    overflow: hidden !important;
+  }
+
+  .guide-header-v2 {
+    max-width: 100% !important;
+  }
+
+  .guide-title-v2 {
+    font-size: clamp(1.15rem, 6vw, 1.6rem) !important;
+    line-height: 1.02 !important;
+    letter-spacing: -0.04em !important;
+    margin-top: 8px !important;
+  }
+
+  .guide-desc-v2 {
+    display: none !important;
+  }
+
+  .guide-content-v2 {
+    min-height: 0 !important;
+    height: 100% !important;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto minmax(0, 1fr) !important;
+    gap: 8px !important;
+    overflow: hidden !important;
+  }
+
+  .guide-panel-v2 {
+    height: auto !important;
+    min-height: 0 !important;
+    border-radius: 1rem !important;
+    padding: 9px !important;
+  }
+
+  .guide-current-v2 {
+    display: none !important;
+  }
+
+  .guide-step-list-v2 {
+    margin-top: 0 !important;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 6px !important;
+    max-height: 190px !important;
+    overflow-y: auto !important;
+    padding-right: 2px !important;
+    scrollbar-width: none !important;
+  }
+
+  .guide-step-list-v2::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  .guide-step-button-v2 {
+    width: 100% !important;
+    min-height: 44px !important;
+    display: grid !important;
+    grid-template-columns: 30px minmax(0, 1fr) !important;
+    align-items: center !important;
+    gap: 8px !important;
+    padding: 7px 8px !important;
+    border-radius: 0.85rem !important;
+    text-align: left !important;
+  }
+
+  .guide-step-number-v2 {
+    width: 28px !important;
+    height: 28px !important;
+    font-size: 0.72rem !important;
+  }
+
+  .guide-step-title-v2 {
+    display: block !important;
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: unset !important;
+    font-size: 0.72rem !important;
+    line-height: 1.15 !important;
+    font-weight: 950 !important;
+  }
+
+  .guide-step-badge-v2 {
+    display: block !important;
+    margin-top: 2px !important;
+    font-size: 0.56rem !important;
+    line-height: 1.1 !important;
+  }
+
+  .guide-controls-v2 {
+    margin-top: 8px !important;
+  }
+
+  .guide-control-btn-v2 {
+    width: 34px !important;
+    height: 34px !important;
+  }
+
+  .guide-count-v2 {
+    padding: 8px 12px !important;
+    font-size: 0.62rem !important;
+  }
+
+  .guide-image-card-v2 {
+    min-height: 0 !important;
+    height: 100% !important;
+    border-radius: 1rem !important;
+    padding: 7px !important;
+    overflow: hidden !important;
+  }
+
+  .guide-image-wrap-v2 {
+    height: 100% !important;
+    min-height: 0 !important;
+    border-radius: 0.85rem !important;
+  }
+
+  .guide-image-v2 {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+    object-position: center !important;
+    background: #022c22 !important;
+  }
+
+  .guide-image-badge-v2 {
+    left: 10px !important;
+    top: 10px !important;
+    padding: 6px 10px !important;
+    font-size: 0.52rem !important;
+  }
+
+  .guide-image-caption-v2 {
+    padding: 10px !important;
+  }
+
+  .guide-image-caption-v2 p {
+    font-size: 0.55rem !important;
+  }
+
+  .guide-image-caption-v2 h3 {
+    font-size: 1rem !important;
+    line-height: 1.05 !important;
+  }
+
+  .guide-footer-v2 {
+    display: none !important;
+  }
+}
