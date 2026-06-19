@@ -2409,3 +2409,39 @@
     display: none !important;
   }
 }
+
+/* ===============================
+   FIX NAVBAR NEMPEL ATAS
+   =============================== */
+
+html,
+body,
+#__next {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.home-navbar,
+.navbar,
+header {
+  top: 0 !important;
+  margin-top: 0 !important;
+}
+
+.home-navbar {
+  position: fixed !important;
+  top: 0 !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: min(92vw, 1240px) !important;
+  z-index: 9999 !important;
+}
+
+/* khusus tampilan HP */
+@media (max-width: 640px) {
+  .home-navbar {
+    top: 0 !important;
+    width: 100% !important;
+    border-radius: 0 0 18px 18px !important;
+  }
+}

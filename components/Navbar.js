@@ -61,9 +61,9 @@ export default function Navbar() {
   const lightNavbar = scrolled || open;
 
   const navClass = `
-    fixed left-0 top-0 z-[650] w-full transition-all duration-500 ease-out
-    ${scrolled ? "py-2" : "py-3"}
-  `;
+  fixed left-0 top-0 z-[650] w-full transition-all duration-500 ease-out
+  py-0
+`;
 
   const shellClass = `
     mx-auto flex max-w-6xl items-center justify-between
