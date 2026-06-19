@@ -107,7 +107,7 @@ export default function SidebarAdmin({
         <div className="flex min-w-0 items-center gap-3">
           <div className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white p-1 shadow-lg">
             <img
-              src="/logo.png"
+              src="/Logo.png"
               alt="Logo"
               onError={(e) => {
                 e.currentTarget.style.display = "none";
@@ -179,7 +179,7 @@ export default function SidebarAdmin({
             <div className="flex min-w-0 flex-1 items-center gap-3 overflow-hidden">
               <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-[18px] bg-white p-1 shadow-xl shadow-black/20">
                 <img
-                  src="/logo.png"
+                  src="/Logo.png"
                   alt="Logo"
                   onError={(e) => {
                     e.currentTarget.style.display = "none";
@@ -413,7 +413,7 @@ export default function SidebarAdmin({
         </div>
       </aside>
 
-      {/* LOGOUT MODAL */}
+      {/* LogoUT MODAL */}
       <div
         className={`
           fixed inset-0 z-[9999] flex items-center justify-center px-4
@@ -457,7 +457,7 @@ export default function SidebarAdmin({
           <div className="p-6">
             <div className="rounded-3xl border border-red-100 bg-red-50 p-4">
               <p className="text-sm leading-relaxed text-slate-600">
-                Setelah logout, Anda harus login kembali untuk mengakses sistem
+                Setelah Logout, Anda harus login kembali untuk mengakses sistem
                 admin Al-Furqon.
               </p>
             </div>

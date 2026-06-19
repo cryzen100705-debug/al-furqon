@@ -526,12 +526,12 @@ export default function Login() {
               <motion.div
                 animate={{ y: [0, -7, 0], rotate: [0, 3, -3, 0] }}
                 transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-                className="login-logo-box mx-auto flex items-center justify-center border border-yellow-300/25 bg-yellow-400/15 shadow-[0_0_45px_rgba(250,204,21,0.22)]"
+                className="login-Logo-box mx-auto flex items-center justify-center border border-yellow-300/25 bg-yellow-400/15 shadow-[0_0_45px_rgba(250,204,21,0.22)]"
               >
                 <img
                   src="/Logo.png"
                   alt="Logo Al-Furqon"
-                  className="login-logo-img object-contain"
+                  className="login-Logo-img object-contain"
                 />
               </motion.div>
 
@@ -807,14 +807,14 @@ export default function Login() {
     margin-top: clamp(0.55rem, 1.1svh, 0.78rem);
   }
 
-  .login-logo-box {
+  .login-Logo-box {
     width: clamp(2.75rem, 5svh, 3.45rem);
     height: clamp(2.75rem, 5svh, 3.45rem);
     border-radius: clamp(0.9rem, 1.5vw, 1.2rem);
     margin-bottom: clamp(0.35rem, 0.9svh, 0.6rem);
   }
 
-  .login-logo-img {
+  .login-Logo-img {
     width: clamp(1.85rem, 3.7svh, 2.25rem);
     height: clamp(1.85rem, 3.7svh, 2.25rem);
   }
@@ -898,13 +898,13 @@ export default function Login() {
       font-size: 1.45rem;
     }
 
-    .login-logo-box {
+    .login-Logo-box {
       width: 2.55rem;
       height: 2.55rem;
       margin-bottom: 0.25rem;
     }
 
-    .login-logo-img {
+    .login-Logo-img {
       width: 1.72rem;
       height: 1.72rem;
     }
@@ -951,12 +951,12 @@ export default function Login() {
       font-size: 1.25rem;
     }
 
-    .login-logo-box {
+    .login-Logo-box {
       width: 2.2rem;
       height: 2.2rem;
     }
 
-    .login-logo-img {
+    .login-Logo-img {
       width: 1.5rem;
       height: 1.5rem;
     }
@@ -1013,13 +1013,13 @@ export default function Login() {
       display: none;
     }
 
-    .login-logo-box {
+    .login-Logo-box {
       width: 2.75rem;
       height: 2.75rem;
       border-radius: 0.9rem;
     }
 
-    .login-logo-img {
+    .login-Logo-img {
       width: 1.85rem;
       height: 1.85rem;
     }
@@ -1075,13 +1075,13 @@ export default function Login() {
       display: none;
     }
 
-    .login-logo-box {
+    .login-Logo-box {
       width: 2.45rem;
       height: 2.45rem;
       margin-bottom: 0.2rem;
     }
 
-    .login-logo-img {
+    .login-Logo-img {
       width: 1.6rem;
       height: 1.6rem;
     }

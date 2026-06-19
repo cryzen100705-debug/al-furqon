@@ -596,7 +596,7 @@ export default function AdminGuruPage() {
       showModal({
         type: "error",
         title: "Admin Tidak Terdeteksi",
-        message: "Silakan logout lalu login ulang sebagai admin.",
+        message: "Silakan Logout lalu login ulang sebagai admin.",
       });
       return;
     }

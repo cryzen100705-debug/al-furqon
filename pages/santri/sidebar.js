@@ -372,7 +372,7 @@ export default function SidebarSantri({
         </div>
       </aside>
 
-      {/* LOGOUT MODAL */}
+      {/* LogoUT MODAL */}
       <div
         className={`
           fixed inset-0 z-[999]

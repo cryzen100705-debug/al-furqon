@@ -144,12 +144,12 @@ export default function SidebarOwner({
     ${collapsed ? "justify-center px-3" : "justify-between px-3.5"}
   `}
 >
-  {/* LOGO + TEXT HANYA MUNCUL SAAT SIDEBAR TERBUKA */}
+  {/* Logo + TEXT HANYA MUNCUL SAAT SIDEBAR TERBUKA */}
   {!collapsed && (
     <div className="flex min-w-0 flex-1 items-center gap-3 overflow-hidden">
       <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-[18px] bg-white p-1 shadow-xl shadow-black/20">
         <img
-          src="/logo.png"
+          src="/Logo.png"
           alt="Logo"
           className="h-full w-full rounded-2xl object-contain"
         />
@@ -337,7 +337,7 @@ export default function SidebarOwner({
         </div>
       </aside>
 
-      {/* LOGOUT MODAL */}
+      {/* LogoUT MODAL */}
       <div
         className={`
           fixed inset-0 z-[9999] flex items-center justify-center px-4
@@ -380,7 +380,7 @@ export default function SidebarOwner({
           <div className="p-6">
             <div className="rounded-3xl border border-red-100 bg-red-50 p-4">
               <p className="text-sm leading-relaxed text-slate-600">
-                Setelah logout, Anda harus login kembali untuk mengakses sistem
+                Setelah Logout, Anda harus login kembali untuk mengakses sistem
                 owner Al-Furqon.
               </p>
             </div>

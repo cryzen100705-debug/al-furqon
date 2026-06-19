@@ -145,7 +145,7 @@ export default function SidebarGuru({
             <div className="flex min-w-0 items-center gap-3">
               <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-3xl bg-white p-1 shadow-md">
                 <img
-                  src="/logo.png"
+                  src="/Logo.png"
                   alt="Logo"
                   className="h-full w-full rounded-2xl object-contain"
                   onError={(e) => {
@@ -340,7 +340,7 @@ export default function SidebarGuru({
         </div>
       </aside>
 
-      {/* LOGOUT MODAL */}
+      {/* LogoUT MODAL */}
       <div
         className={`fixed inset-0 z-[9999] flex items-center justify-center px-4 transition ${
           showLogoutModal ? "visible opacity-100" : "invisible opacity-0"

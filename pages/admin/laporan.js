@@ -437,7 +437,7 @@ if (checking) {
               <div className="flex items-center gap-4 border-b-4 border-green-800 pb-4">
                 <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-2xl border border-slate-300 bg-white p-2">
                   <img
-                    src="/logo.png"
+                    src="/Logo.png"
                     alt="Logo"
                     className="h-full w-full object-contain"
                   />

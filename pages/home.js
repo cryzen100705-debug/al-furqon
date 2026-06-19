@@ -66,7 +66,7 @@ function clipOut(direction) {
   return direction > 0 ? CLIP_LEFT : CLIP_RIGHT;
 }
 
-const PRELOAD_ASSETS = ["/hero-santri.jpg", "/logo.png", "/pattern.png"];
+const PRELOAD_ASSETS = ["/hero-santri.jpg", "/Logo.png", "/pattern.png"];
 
 const DEFAULT_HERO = {
   arabic: "وَقُلْ رَبِّ زِدْنِي عِلْمًا",
@@ -1109,7 +1109,7 @@ function HeroScreen({ hero, stats, direction, handleDirection }) {
                   }}
                 >
                   <SafeImage
-                    src="/logo.png"
+                    src="/Logo.png"
                     alt="Logo Al-Furqon"
                     className="mx-auto w-40 drop-shadow-[0_0_40px_rgba(255,255,255,0.35)] xl:w-48"
                   />
