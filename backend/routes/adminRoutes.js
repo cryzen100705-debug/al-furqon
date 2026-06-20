@@ -21,6 +21,79 @@ router.get("/test-kelulusan", (req, res) => {
   });
 });
 
+router.get("/pembayaran/cicilan", async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from("pembayaran_cicilan")
+      .select(`
+        id,
+        pembayaran_id,
+        tagihan_id,
+        santri_id,
+        nominal_cicilan,
+        metode,
+        bukti_transfer,
+        status,
+        tanggal_bayar,
+        verified_at,
+        catatan_admin,
+        created_at,
+
+        santri:santri_id (
+          id,
+          nama,
+          nisn,
+          kelas,
+          jenjang
+        ),
+
+        pembayaran:pembayaran_id (
+          id,
+          jenis,
+          nominal,
+          nominal_dibayar,
+          status,
+          deadline
+        )
+      `)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      return res.status(400).json({
+        success: false,
+        message: "Gagal mengambil data cicilan.",
+        error: error.message,
+      });
+    }
+
+    return res.json({
+      success: true,
+      message: "Data cicilan berhasil diambil.",
+      data: data || [],
+    });
+  } catch (error) {
+    console.error("GET CICILAN ERROR:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Terjadi kesalahan server saat mengambil cicilan.",
+      error: error.message,
+    });
+  }
+});
+
+router.get("/test-cicilan", (req, res) => {
+  return res.json({
+    success: true,
+    message: "Route cicilan admin aktif",
+    routes: [
+      "GET /api/admin/pembayaran/cicilan",
+      "PUT /api/admin/pembayaran/cicilan/:id/verify",
+      "PUT /api/admin/pembayaran/cicilan/:id/reject",
+    ],
+  });
+});
+
 
 /* =========================================================
    ADMIN DASHBOARD
