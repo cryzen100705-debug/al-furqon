@@ -9,6 +9,19 @@ import {
 
 const router = express.Router();
 
+router.get("/test-kelulusan", (req, res) => {
+  return res.json({
+    success: true,
+    message: "Admin kelulusan routes aktif",
+    routes: [
+      "GET /api/admin/kelulusan",
+      "POST /api/admin/kelulusan/:id/verifikasi",
+      "POST /api/admin/kelulusan/:id/proses-kelas",
+    ],
+  });
+});
+
+
 /* =========================================================
    ADMIN DASHBOARD
    GET /api/admin/dashboard
@@ -2048,18 +2061,6 @@ const { error: updateKelulusanError } = await supabase
       error: error.message,
     });
   }
-});
-
-router.get("/test-kelulusan", (req, res) => {
-  return res.json({
-    success: true,
-    message: "Admin kelulusan routes aktif",
-    routes: [
-      "GET /api/admin/kelulusan",
-      "POST /api/admin/kelulusan/:id/verifikasi",
-      "POST /api/admin/kelulusan/:id/proses-kelas",
-    ],
-  });
 });
 
 export default router;
