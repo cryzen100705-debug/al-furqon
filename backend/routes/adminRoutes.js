@@ -755,16 +755,22 @@ router.get("/pembayaran/santri", async (req, res) => {
 router.post("/tagihan", async (req, res) => {
   try {
     const {
-      target_type,
-      santri_id,
-      kelas,
-      jenjang,
-      jenis,
-      nominal,
-      deadline,
-      admin_id,
-      nama_admin,
-    } = req.body;
+  target_type,
+  santri_id,
+  kelas,
+  jenjang,
+  jenis,
+  nominal,
+  deadline,
+  metode,
+  admin_id,
+  nama_admin,
+} = req.body;
+
+const metodePembayaran = metode || "transfer";
+const isTunai = metodePembayaran === "tunai";
+const statusPembayaran = isTunai ? "lunas" : "belum_bayar";
+const tanggalBayar = isTunai ? new Date().toISOString() : null;
 
     if (!target_type || !jenis || !nominal || !deadline) {
       return res.status(400).json({
@@ -843,14 +849,14 @@ router.post("/tagihan", async (req, res) => {
         .from("tagihan")
         .insert([
           {
-            santri_id: item.id,
-            jenis,
-            nominal: Number(nominal),
-            deadline,
-            status: "belum_bayar",
-            metode: null,
-            tanggal_bayar: null,
-          },
+  santri_id: item.id,
+  jenis,
+  nominal: Number(nominal),
+  deadline,
+  status: statusPembayaran,
+  metode: metodePembayaran,
+  tanggal_bayar: tanggalBayar,
+}
         ])
         .select()
         .single();
@@ -869,16 +875,16 @@ router.post("/tagihan", async (req, res) => {
   .from("pembayaran")
   .insert([
     {
-      santri_id: item.id,
-      tagihan_id: tagihanData.id,
-      jenis: jenis,
-      nominal: Number(nominal),
-      status: "belum_bayar",
-      metode: null,
-      bukti_transfer: null,
-      deadline: deadline,
-      tanggal_bayar: null,
-    },
+  santri_id: item.id,
+  tagihan_id: tagihanData.id,
+  jenis: jenis,
+  nominal: Number(nominal),
+  status: statusPembayaran,
+  metode: metodePembayaran,
+  bukti_transfer: null,
+  deadline: deadline,
+  tanggal_bayar: tanggalBayar,
+},
   ])
   .select()
   .single();

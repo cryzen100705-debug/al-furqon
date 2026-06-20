@@ -47,8 +47,8 @@ const initialForm = {
   jenis: "",
   nominal: "",
   deadline: "",
+  metode: "tunai",
 };
-
 export default function AdminPembayaran() {
   const [data, setData] = useState([]);
   const [santri, setSantri] = useState([]);
@@ -343,6 +343,21 @@ export default function AdminPembayaran() {
         return;
       }
 
+      const metodeText =
+  form.metode === "tunai"
+    ? "Tunai / Bayar Langsung di Tempat"
+    : "Transfer / Upload Bukti";
+
+const yakin = confirm(
+  `Buat tagihan dengan metode: ${metodeText}?\n\n${
+    form.metode === "tunai"
+      ? "Pembayaran akan langsung dicatat LUNAS."
+      : "Pembayaran akan berstatus BELUM BAYAR."
+  }`
+);
+
+if (!yakin) return;
+
       setLoadingAction(true);
 
       const result = await fetchJson(`${API_URL}/api/admin/tagihan`, {
@@ -351,15 +366,16 @@ export default function AdminPembayaran() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          target_type: form.target_type,
-          santri_id: form.santri_id,
-          kelas: form.kelas,
-          jenjang: form.jenjang,
-          jenis: form.jenis,
-          nominal: form.nominal,
-          deadline: form.deadline,
-          ...getAdminPayload(),
-        }),
+  target_type: form.target_type,
+  santri_id: form.santri_id,
+  kelas: form.kelas,
+  jenjang: form.jenjang,
+  jenis: form.jenis,
+  nominal: form.nominal,
+  deadline: form.deadline,
+  metode: form.metode,
+  ...getAdminPayload(),
+}),
       });
 
       alert(result.message || "Tagihan berhasil dibuat.");
@@ -1069,6 +1085,34 @@ function TagihanForm({
                 </select>
               </InputGroup>
             )}
+
+            <InputGroup label="Metode Pembayaran">
+  <select
+    value={form.metode}
+    onChange={(e) =>
+      setForm({
+        ...form,
+        metode: e.target.value,
+      })
+    }
+    className="input"
+  >
+    <option value="transfer">Transfer / Upload Bukti</option>
+    <option value="tunai">Tunai / Bayar Langsung di Tempat</option>
+  </select>
+
+  {form.metode === "tunai" && (
+    <div className="mt-3 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm font-semibold text-emerald-700">
+      Pembayaran tunai akan langsung dicatat sebagai lunas saat tagihan dibuat.
+    </div>
+  )}
+
+  {form.metode === "transfer" && (
+    <div className="mt-3 rounded-2xl border border-yellow-200 bg-yellow-50 p-4 text-sm font-semibold text-yellow-700">
+      Pembayaran transfer akan menunggu santri/orang tua upload bukti pembayaran.
+    </div>
+  )}
+</InputGroup>
 
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <InputGroup label="Jenis Pembayaran">
