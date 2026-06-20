@@ -200,5 +200,8 @@ app.listen(PORT, "0.0.0.0", () => {
   console.log("- /api/admin");
   console.log("- /api/owner");
   console.log("- /api/guru");
+  console.log("- GET /api/guru/test");
+console.log("- GET /api/guru/kelulusan/:userId");
+console.log("- POST /api/guru/kelulusan/submit");
   console.log("=====================================");
 });

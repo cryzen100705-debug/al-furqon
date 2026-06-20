@@ -3,6 +3,14 @@ import { supabase } from "../config/supabase.js";
 
 const router = express.Router();
 
+router.get("/test", (req, res) => {
+  return res.json({
+    success: true,
+    message: "Guru routes aktif di Railway",
+    version: "kelulusan-guru-v1",
+  });
+});
+
 function getTodayName() {
   return new Date().toLocaleDateString("id-ID", {
     weekday: "long",
