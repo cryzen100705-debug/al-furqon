@@ -749,6 +749,7 @@ router.get("/pembayaran", async (req, res) => {
         tagihan_id,
         santri_id,
         nominal,
+        nominal_dibayar,
         jenis,
         status,
         metode,

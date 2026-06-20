@@ -1591,6 +1591,15 @@ function PaymentCard({
       ? "Ditolak"
       : item.status || "-";
 
+      const nominalTagihan = Number(item.nominal || 0);
+const nominalDibayar = Number(item.nominal_dibayar || 0);
+const sisaTagihan = Math.max(nominalTagihan - nominalDibayar, 0);
+
+const isDicicil =
+  nominalDibayar > 0 &&
+  nominalDibayar < nominalTagihan &&
+  item.status !== "lunas";
+
   return (
     <div className="group relative overflow-hidden rounded-[32px] border border-[#E5D6AA] bg-gradient-to-br from-white via-[#FFFDF6] to-[#FFF3C4] p-5 shadow-lg shadow-yellow-950/5 transition duration-300 hover:-translate-y-1 hover:shadow-2xl">
       <div className="absolute -right-14 -top-14 h-40 w-40 rounded-full bg-yellow-300/20 blur-3xl transition group-hover:scale-125" />
@@ -1636,9 +1645,37 @@ function PaymentCard({
             Nominal Pembayaran
           </p>
 
-          <h2 className="mt-1 break-words text-3xl font-black text-[#064E3B]">
-            {formatRupiah(item.nominal)}
-          </h2>
+          {isDicicil ? (
+  <div className="mt-2">
+    <div className="flex flex-wrap items-end gap-3">
+      <span className="break-words text-xl font-black text-slate-400 line-through sm:text-2xl">
+        {formatRupiah(nominalTagihan)}
+      </span>
+
+      <span className="break-words text-3xl font-black text-[#064E3B]">
+        {formatRupiah(sisaTagihan)}
+      </span>
+    </div>
+
+    <div className="mt-3 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3">
+      <p className="text-xs font-black uppercase tracking-wide text-emerald-700">
+        Pembayaran Cicilan
+      </p>
+
+      <p className="mt-1 text-sm font-bold text-slate-600">
+        Sudah dibayar: {formatRupiah(nominalDibayar)}
+      </p>
+
+      <p className="mt-1 text-sm font-bold text-slate-600">
+        Sisa tagihan: {formatRupiah(sisaTagihan)}
+      </p>
+    </div>
+  </div>
+) : (
+  <h2 className="mt-1 break-words text-3xl font-black text-[#064E3B]">
+    {formatRupiah(nominalTagihan)}
+  </h2>
+)}
 
           <div className="mt-4 grid gap-3 text-sm text-slate-600">
             <SmallInfo
