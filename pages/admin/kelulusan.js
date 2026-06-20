@@ -4,17 +4,16 @@ import {
   FaTimesCircle,
   FaSearch,
   FaSyncAlt,
-  FaUserGraduate,
-  FaClipboardCheck,
   FaHourglassHalf,
-  FaExclamationTriangle,
+  FaExchangeAlt,
+  FaUserGraduate,
 } from "react-icons/fa";
 import SidebarAdmin from "./sidebar";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
-function Badge({ status }) {
-  const value = String(status || "").toLowerCase();
+function BadgeVerifikasi({ status }) {
+  const value = String(status || "pending").toLowerCase();
 
   if (value === "disetujui") {
     return (
@@ -39,7 +38,7 @@ function Badge({ status }) {
   );
 }
 
-function KelulusanBadge({ status }) {
+function BadgeKelulusan({ status }) {
   if (status === "lulus") {
     return (
       <span className="inline-flex items-center gap-2 rounded-full bg-green-100 px-3 py-1 text-xs font-black text-green-700">
@@ -53,6 +52,40 @@ function KelulusanBadge({ status }) {
     <span className="inline-flex items-center gap-2 rounded-full bg-red-100 px-3 py-1 text-xs font-black text-red-700">
       <FaTimesCircle />
       Tidak Lulus
+    </span>
+  );
+}
+
+function BadgeKenaikan({ status }) {
+  const value = String(status || "belum_diproses").toLowerCase();
+
+  if (value === "naik_kelas") {
+    return (
+      <span className="inline-flex rounded-full bg-blue-100 px-3 py-1 text-xs font-black text-blue-700">
+        Naik Kelas
+      </span>
+    );
+  }
+
+  if (value === "tinggal_kelas") {
+    return (
+      <span className="inline-flex rounded-full bg-red-100 px-3 py-1 text-xs font-black text-red-700">
+        Tinggal Kelas
+      </span>
+    );
+  }
+
+  if (value === "lulus_akhir") {
+    return (
+      <span className="inline-flex rounded-full bg-green-100 px-3 py-1 text-xs font-black text-green-700">
+        Lulus Akhir
+      </span>
+    );
+  }
+
+  return (
+    <span className="inline-flex rounded-full bg-slate-100 px-3 py-1 text-xs font-black text-slate-600">
+      Belum Diproses
     </span>
   );
 }
@@ -100,7 +133,8 @@ export default function AdminKelulusanPage() {
         String(item.nama_santri || "").toLowerCase().includes(keyword) ||
         String(item.nis || "").toLowerCase().includes(keyword) ||
         String(item.nama_guru || "").toLowerCase().includes(keyword) ||
-        String(item.nama_kelas || "").toLowerCase().includes(keyword);
+        String(item.nama_kelas || "").toLowerCase().includes(keyword) ||
+        String(item.status_kenaikan || "").toLowerCase().includes(keyword);
 
       const matchStatus =
         filterStatus === "semua" ||
@@ -110,6 +144,17 @@ export default function AdminKelulusanPage() {
       return matchKeyword && matchStatus;
     });
   }, [dataKelulusan, search, filterStatus]);
+
+  const getAdminId = () => {
+    try {
+      const adminRaw = localStorage.getItem("user");
+      const admin = adminRaw ? JSON.parse(adminRaw) : null;
+
+      return admin?.id || null;
+    } catch (error) {
+      return null;
+    }
+  };
 
   const handleVerifikasi = async (id, status) => {
     try {
@@ -131,16 +176,19 @@ export default function AdminKelulusanPage() {
 
       setProcessingId(id);
 
-      const res = await fetch(`${API_URL}/api/admin/kelulusan/${id}/verifikasi`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          status_verifikasi: status,
-          catatan_admin,
-        }),
-      });
+      const res = await fetch(
+        `${API_URL}/api/admin/kelulusan/${id}/verifikasi`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            status_verifikasi: status,
+            catatan_admin,
+          }),
+        }
+      );
 
       const result = await res.json();
 
@@ -158,6 +206,45 @@ export default function AdminKelulusanPage() {
     }
   };
 
+  const handleProsesKelas = async (id) => {
+    try {
+      const yakin = confirm(
+        "Yakin ingin memproses hasil kelulusan ini ke sistem kelas? Jika lulus, santri akan naik kelas atau lulus akhir. Jika tidak lulus, santri tetap di kelas saat ini."
+      );
+
+      if (!yakin) return;
+
+      setProcessingId(id);
+
+      const res = await fetch(
+        `${API_URL}/api/admin/kelulusan/${id}/proses-kelas`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            admin_user_id: getAdminId(),
+          }),
+        }
+      );
+
+      const result = await res.json();
+
+      if (!res.ok || !result.success) {
+        throw new Error(result.message || "Gagal memproses kelas.");
+      }
+
+      alert(result.message);
+      fetchKelulusan();
+    } catch (error) {
+      console.error("PROSES KELAS ERROR:", error);
+      alert(error.message);
+    } finally {
+      setProcessingId("");
+    }
+  };
+
   const totalPending = dataKelulusan.filter(
     (item) => String(item.status_verifikasi || "pending") === "pending"
   ).length;
@@ -168,6 +255,11 @@ export default function AdminKelulusanPage() {
 
   const totalDitolak = dataKelulusan.filter(
     (item) => item.status_verifikasi === "ditolak"
+  ).length;
+
+  const totalBelumDiproses = dataKelulusan.filter(
+    (item) =>
+      String(item.status_kenaikan || "belum_diproses") === "belum_diproses"
   ).length;
 
   return (
@@ -202,9 +294,9 @@ export default function AdminKelulusanPage() {
                   Verifikasi Kelulusan Santri
                 </h1>
 
-                <p className="mt-2 max-w-2xl text-sm leading-relaxed text-emerald-100">
-                  Admin dapat memeriksa data kelulusan yang dikirim guru wali
-                  kelas, lalu menyetujui atau menolak pengajuan tersebut.
+                <p className="mt-2 max-w-3xl text-sm leading-relaxed text-emerald-100">
+                  Admin memeriksa data kelulusan dari guru, menyetujui atau
+                  menolak, lalu memproses kenaikan kelas santri.
                 </p>
               </div>
 
@@ -219,10 +311,12 @@ export default function AdminKelulusanPage() {
             </div>
           </div>
 
-          <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-4">
+          <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-5">
             <div className="rounded-[26px] bg-white p-5 shadow-sm">
               <p className="text-sm font-bold text-emerald-600">Total Data</p>
-              <h2 className="mt-2 text-3xl font-black">{dataKelulusan.length}</h2>
+              <h2 className="mt-2 text-3xl font-black">
+                {dataKelulusan.length}
+              </h2>
             </div>
 
             <div className="rounded-[26px] bg-white p-5 shadow-sm">
@@ -239,6 +333,13 @@ export default function AdminKelulusanPage() {
               <p className="text-sm font-bold text-red-600">Ditolak</p>
               <h2 className="mt-2 text-3xl font-black">{totalDitolak}</h2>
             </div>
+
+            <div className="rounded-[26px] bg-white p-5 shadow-sm">
+              <p className="text-sm font-bold text-blue-600">Belum Diproses</p>
+              <h2 className="mt-2 text-3xl font-black">
+                {totalBelumDiproses}
+              </h2>
+            </div>
           </div>
 
           <div className="mt-6 rounded-[28px] bg-white p-4 shadow-sm">
@@ -249,7 +350,7 @@ export default function AdminKelulusanPage() {
                   type="text"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Cari nama santri, NIS, guru, atau kelas..."
+                  placeholder="Cari nama santri, NIS, guru, kelas, atau status..."
                   className="w-full rounded-2xl border border-emerald-100 bg-emerald-50 px-12 py-3 text-sm font-semibold outline-none transition focus:border-emerald-400 focus:bg-white"
                 />
               </div>
@@ -278,7 +379,7 @@ export default function AdminKelulusanPage() {
               </div>
             ) : (
               <div className="overflow-x-auto">
-                <table className="w-full min-w-[1200px] border-collapse">
+                <table className="w-full min-w-[1450px] border-collapse">
                   <thead>
                     <tr className="bg-emerald-800 text-left text-xs uppercase tracking-wider text-white">
                       <th className="px-5 py-4">Santri</th>
@@ -286,95 +387,147 @@ export default function AdminKelulusanPage() {
                       <th className="px-5 py-4">Guru</th>
                       <th className="px-5 py-4">Kelulusan</th>
                       <th className="px-5 py-4">Verifikasi</th>
+                      <th className="px-5 py-4">Kenaikan</th>
                       <th className="px-5 py-4">Catatan</th>
                       <th className="px-5 py-4">Aksi</th>
                     </tr>
                   </thead>
 
                   <tbody>
-                    {filteredData.map((item) => (
-                      <tr
-                        key={item.id}
-                        className="border-b border-emerald-50 align-top"
-                      >
-                        <td className="px-5 py-4">
-                          <p className="font-black text-emerald-950">
-                            {item.nama_santri}
-                          </p>
-                          <p className="mt-1 text-xs font-semibold text-emerald-600">
-                            NIS/NISN: {item.nis}
-                          </p>
-                        </td>
+                    {filteredData.map((item) => {
+                      const statusKenaikan =
+                        item.status_kenaikan || "belum_diproses";
 
-                        <td className="px-5 py-4 text-sm font-bold">
-                          {item.nama_kelas}
-                        </td>
+                      const bisaProsesKelas =
+                        item.status_verifikasi === "disetujui" &&
+                        statusKenaikan === "belum_diproses";
 
-                        <td className="px-5 py-4 text-sm font-bold">
-                          {item.nama_guru}
-                        </td>
+                      return (
+                        <tr
+                          key={item.id}
+                          className="border-b border-emerald-50 align-top"
+                        >
+                          <td className="px-5 py-4">
+                            <p className="font-black text-emerald-950">
+                              {item.nama_santri || item.santri?.nama || "-"}
+                            </p>
 
-                        <td className="px-5 py-4">
-                          <KelulusanBadge status={item.status_kelulusan} />
-                        </td>
+                            <p className="mt-1 text-xs font-semibold text-emerald-600">
+                              NIS/NISN: {item.nis || "-"}
+                            </p>
+                          </td>
 
-                        <td className="px-5 py-4">
-                          <Badge status={item.status_verifikasi} />
-                        </td>
+                          <td className="px-5 py-4 text-sm font-bold">
+                            {item.nama_kelas || "-"}
+                          </td>
 
-                        <td className="px-5 py-4">
-                          <div className="max-w-sm space-y-2 text-sm">
-                            <div className="rounded-2xl bg-emerald-50 p-3">
-                              <p className="text-xs font-black text-emerald-700">
-                                Guru
+                          <td className="px-5 py-4 text-sm font-bold">
+                            {item.nama_guru || "-"}
+                          </td>
+
+                          <td className="px-5 py-4">
+                            <BadgeKelulusan status={item.status_kelulusan} />
+                          </td>
+
+                          <td className="px-5 py-4">
+                            <BadgeVerifikasi
+                              status={item.status_verifikasi}
+                            />
+                          </td>
+
+                          <td className="px-5 py-4">
+                            <BadgeKenaikan status={statusKenaikan} />
+
+                            {item.kelas_tujuan?.nama_kelas && (
+                              <p className="mt-2 text-xs font-semibold text-slate-500">
+                                Tujuan: {item.kelas_tujuan.nama_kelas}
                               </p>
-                              <p className="mt-1 text-slate-600">
-                                {item.catatan_guru || "-"}
-                              </p>
-                            </div>
+                            )}
+                          </td>
 
-                            {item.catatan_admin && (
-                              <div className="rounded-2xl bg-yellow-50 p-3">
-                                <p className="text-xs font-black text-yellow-700">
-                                  Admin
+                          <td className="px-5 py-4">
+                            <div className="max-w-sm space-y-2 text-sm">
+                              <div className="rounded-2xl bg-emerald-50 p-3">
+                                <p className="text-xs font-black text-emerald-700">
+                                  Guru
                                 </p>
+
                                 <p className="mt-1 text-slate-600">
-                                  {item.catatan_admin}
+                                  {item.catatan_guru || "-"}
                                 </p>
                               </div>
-                            )}
-                          </div>
-                        </td>
 
-                        <td className="px-5 py-4">
-                          <div className="flex flex-wrap gap-2">
-                            <button
-                              type="button"
-                              disabled={processingId === item.id}
-                              onClick={() =>
-                                handleVerifikasi(item.id, "disetujui")
-                              }
-                              className="inline-flex items-center gap-2 rounded-xl bg-green-600 px-3 py-2 text-xs font-black text-white transition hover:bg-green-700 disabled:opacity-60"
-                            >
-                              <FaCheckCircle />
-                              Setujui
-                            </button>
+                              {item.catatan_admin && (
+                                <div className="rounded-2xl bg-yellow-50 p-3">
+                                  <p className="text-xs font-black text-yellow-700">
+                                    Admin
+                                  </p>
 
-                            <button
-                              type="button"
-                              disabled={processingId === item.id}
-                              onClick={() =>
-                                handleVerifikasi(item.id, "ditolak")
-                              }
-                              className="inline-flex items-center gap-2 rounded-xl bg-red-600 px-3 py-2 text-xs font-black text-white transition hover:bg-red-700 disabled:opacity-60"
-                            >
-                              <FaTimesCircle />
-                              Tolak
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
+                                  <p className="mt-1 text-slate-600">
+                                    {item.catatan_admin}
+                                  </p>
+                                </div>
+                              )}
+                            </div>
+                          </td>
+
+                          <td className="px-5 py-4">
+                            <div className="flex min-w-[220px] flex-wrap gap-2">
+                              <button
+                                type="button"
+                                disabled={processingId === item.id}
+                                onClick={() =>
+                                  handleVerifikasi(item.id, "disetujui")
+                                }
+                                className="inline-flex items-center gap-2 rounded-xl bg-green-600 px-3 py-2 text-xs font-black text-white transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-60"
+                              >
+                                <FaCheckCircle />
+                                Setujui
+                              </button>
+
+                              <button
+                                type="button"
+                                disabled={processingId === item.id}
+                                onClick={() =>
+                                  handleVerifikasi(item.id, "ditolak")
+                                }
+                                className="inline-flex items-center gap-2 rounded-xl bg-red-600 px-3 py-2 text-xs font-black text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60"
+                              >
+                                <FaTimesCircle />
+                                Tolak
+                              </button>
+
+                              {bisaProsesKelas && (
+                                <button
+                                  type="button"
+                                  disabled={processingId === item.id}
+                                  onClick={() => handleProsesKelas(item.id)}
+                                  className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-3 py-2 text-xs font-black text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+                                >
+                                  <FaExchangeAlt />
+                                  Proses Kelas
+                                </button>
+                              )}
+
+                              {!bisaProsesKelas &&
+                                item.status_verifikasi === "disetujui" && (
+                                  <span className="inline-flex items-center gap-2 rounded-xl bg-slate-100 px-3 py-2 text-xs font-black text-slate-600">
+                                    <FaUserGraduate />
+                                    Sudah diproses
+                                  </span>
+                                )}
+
+                              {item.status_verifikasi !== "disetujui" && (
+                                <span className="inline-flex items-center gap-2 rounded-xl bg-yellow-50 px-3 py-2 text-xs font-black text-yellow-700">
+                                  <FaHourglassHalf />
+                                  Tunggu setujui
+                                </span>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>

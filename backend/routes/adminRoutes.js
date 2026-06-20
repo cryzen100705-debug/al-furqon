@@ -9,84 +9,6 @@ import {
 
 const router = express.Router();
 
-// GET semua data kelulusan pending untuk admin
-router.get("/kelulusan", async (req, res) => {
-  try {
-    const { data, error } = await supabase
-      .from("kelulusan_santri")
-      .select("*")
-      .order("submitted_at", { ascending: false });
-
-    if (error) {
-      console.error("GET ADMIN KELULUSAN ERROR:", error);
-      return res.status(500).json({
-        success: false,
-        message: "Gagal mengambil data kelulusan.",
-      });
-    }
-
-    return res.json({
-      success: true,
-      message: "Data kelulusan berhasil diambil.",
-      data: data || [],
-    });
-  } catch (error) {
-    console.error("ADMIN KELULUSAN ERROR:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Terjadi kesalahan server.",
-      error: error.message,
-    });
-  }
-});
-
-// POST verifikasi kelulusan oleh admin
-router.post("/kelulusan/:id/verifikasi", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { status_verifikasi, catatan_admin } = req.body;
-
-    if (!["disetujui", "ditolak"].includes(status_verifikasi)) {
-      return res.status(400).json({
-        success: false,
-        message: "Status verifikasi tidak valid.",
-      });
-    }
-
-    const { data, error } = await supabase
-      .from("kelulusan_santri")
-      .update({
-        status_verifikasi,
-        catatan_admin: catatan_admin || "",
-        verified_at: new Date().toISOString(),
-      })
-      .eq("id", id)
-      .select("*")
-      .single();
-
-    if (error) {
-      console.error("VERIFIKASI KELULUSAN ERROR:", error);
-      return res.status(500).json({
-        success: false,
-        message: "Gagal memverifikasi data kelulusan.",
-      });
-    }
-
-    return res.json({
-      success: true,
-      message: "Data kelulusan berhasil diverifikasi.",
-      data,
-    });
-  } catch (error) {
-    console.error("ADMIN VERIFIKASI KELULUSAN ERROR:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Terjadi kesalahan server.",
-      error: error.message,
-    });
-  }
-});
-
 /* =========================================================
    ADMIN DASHBOARD
    GET /api/admin/dashboard
@@ -1664,6 +1586,10 @@ router.get("/kelulusan", async (req, res) => {
     const guruIds = [...new Set((data || []).map((item) => item.guru_id).filter(Boolean))];
     const kelasIds = [...new Set((data || []).map((item) => item.kelas_id).filter(Boolean))];
 
+    const kelasTujuanIds = [
+  ...new Set((data || []).map((item) => item.kelas_tujuan_id).filter(Boolean)),
+];
+
     const { data: santriList } = santriIds.length
       ? await supabase.from("santri").select("*").in("id", santriIds)
       : { data: [] };
@@ -1676,20 +1602,30 @@ router.get("/kelulusan", async (req, res) => {
       ? await supabase.from("kelas").select("*").in("id", kelasIds)
       : { data: [] };
 
+      const { data: kelasTujuanList } = kelasTujuanIds.length
+  ? await supabase.from("kelas").select("*").in("id", kelasTujuanIds)
+  : { data: [] };
+
     const santriMap = new Map((santriList || []).map((item) => [item.id, item]));
     const guruMap = new Map((guruList || []).map((item) => [item.id, item]));
     const kelasMap = new Map((kelasList || []).map((item) => [item.id, item]));
+const kelasTujuanMap = new Map(
+  (kelasTujuanList || []).map((item) => [item.id, item])
+);
 
     const mapped = (data || []).map((item) => {
       const santri = santriMap.get(item.santri_id);
       const guru = guruMap.get(item.guru_id);
       const kelas = kelasMap.get(item.kelas_id);
+const kelasTujuan = kelasTujuanMap.get(item.kelas_tujuan_id);
 
       return {
         ...item,
         santri: santri || null,
         guru: guru || null,
         kelas: kelas || null,
+        kelas_tujuan: kelasTujuan || null,
+status_kenaikan: item.status_kenaikan || "belum_diproses",
         nama_santri: santri?.nama || "-",
         nis: santri?.nis || santri?.nisn || "-",
         nama_guru: guru?.nama || "-",
@@ -1775,6 +1711,307 @@ router.post("/kelulusan/:id/verifikasi", async (req, res) => {
       error: error.message,
     });
   }
+});
+
+router.post("/kelulusan/:id/proses-kelas", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { admin_user_id } = req.body;
+
+    if (!id) {
+      return res.status(400).json({
+        success: false,
+        message: "ID kelulusan wajib dikirim.",
+      });
+    }
+
+    const { data: kelulusan, error: kelulusanError } = await supabase
+      .from("kelulusan_santri")
+      .select("*")
+      .eq("id", id)
+      .single();
+
+    if (kelulusanError || !kelulusan) {
+      return res.status(404).json({
+        success: false,
+        message: "Data kelulusan tidak ditemukan.",
+        error: kelulusanError?.message,
+      });
+    }
+
+    if (kelulusan.status_verifikasi !== "disetujui") {
+      return res.status(400).json({
+        success: false,
+        message: "Kelulusan harus disetujui admin terlebih dahulu.",
+      });
+    }
+
+    if (kelulusan.status_kenaikan !== "belum_diproses") {
+      return res.status(400).json({
+        success: false,
+        message: "Proses kelas untuk data ini sudah pernah dijalankan.",
+      });
+    }
+
+    const { data: santri, error: santriError } = await supabase
+      .from("santri")
+      .select("*")
+      .eq("id", kelulusan.santri_id)
+      .single();
+
+    if (santriError || !santri) {
+      return res.status(404).json({
+        success: false,
+        message: "Data santri tidak ditemukan.",
+        error: santriError?.message,
+      });
+    }
+
+    const { data: kelasSiswa, error: kelasSiswaError } = await supabase
+      .from("kelas_siswa")
+      .select("*")
+      .eq("santri_id", kelulusan.santri_id)
+      .single();
+
+    if (kelasSiswaError || !kelasSiswa) {
+      return res.status(404).json({
+        success: false,
+        message: "Relasi kelas_siswa santri tidak ditemukan.",
+        error: kelasSiswaError?.message,
+      });
+    }
+
+    const { data: kelasAsal, error: kelasAsalError } = await supabase
+      .from("kelas")
+      .select("*")
+      .eq("id", kelasSiswa.kelas_id)
+      .single();
+
+    if (kelasAsalError || !kelasAsal) {
+      return res.status(404).json({
+        success: false,
+        message: "Data kelas asal tidak ditemukan.",
+        error: kelasAsalError?.message,
+      });
+    }
+
+    const jenjangRaw = String(kelasAsal.jenjang || santri.jenjang || "").toLowerCase();
+    const tingkat = Number(kelasAsal.tingkat);
+
+    const batasAkhir = ["smp", "mts"].includes(jenjangRaw)
+      ? 9
+      : ["sma", "smk", "ma"].includes(jenjangRaw)
+      ? 12
+      : null;
+
+    if (!batasAkhir || !tingkat) {
+      return res.status(400).json({
+        success: false,
+        message: "Jenjang atau tingkat kelas tidak valid untuk diproses.",
+      });
+    }
+
+    const now = new Date().toISOString();
+
+    // =========================
+    // JIKA TIDAK LULUS
+    // =========================
+    if (kelulusan.status_kelulusan === "tidak_lulus") {
+      const { error: updateKelulusanError } = await supabase
+        .from("kelulusan_santri")
+        .update({
+          kelas_tujuan_id: kelasAsal.id,
+          status_kenaikan: "tinggal_kelas",
+          processed_at: now,
+          processed_by: admin_user_id || null,
+        })
+        .eq("id", id);
+
+      if (updateKelulusanError) {
+        return res.status(500).json({
+          success: false,
+          message: "Gagal memperbarui status tinggal kelas.",
+          error: updateKelulusanError.message,
+        });
+      }
+
+      await supabase.from("riwayat_kelas_santri").insert({
+        santri_id: santri.id,
+        kelas_asal_id: kelasAsal.id,
+        kelas_tujuan_id: kelasAsal.id,
+        aksi: "tinggal_kelas",
+        kelulusan_id: kelulusan.id,
+        diproses_oleh: admin_user_id || null,
+      });
+
+      return res.json({
+        success: true,
+        message: "Santri ditetapkan tinggal di kelas saat ini.",
+      });
+    }
+
+    // =========================
+    // JIKA LULUS DAN KELAS AKHIR
+    // =========================
+    if (tingkat >= batasAkhir) {
+      const { error: updateSantriError } = await supabase
+        .from("santri")
+        .update({
+          status: "lulus",
+          updated_at: now,
+        })
+        .eq("id", santri.id);
+
+      if (updateSantriError) {
+        return res.status(500).json({
+          success: false,
+          message: "Gagal memperbarui status santri.",
+          error: updateSantriError.message,
+        });
+      }
+
+      const { error: updateKelulusanError } = await supabase
+        .from("kelulusan_santri")
+        .update({
+          kelas_tujuan_id: null,
+          status_kenaikan: "lulus_akhir",
+          processed_at: now,
+          processed_by: admin_user_id || null,
+        })
+        .eq("id", id);
+
+      if (updateKelulusanError) {
+        return res.status(500).json({
+          success: false,
+          message: "Gagal memperbarui status lulus akhir.",
+          error: updateKelulusanError.message,
+        });
+      }
+
+      await supabase.from("riwayat_kelas_santri").insert({
+        santri_id: santri.id,
+        kelas_asal_id: kelasAsal.id,
+        kelas_tujuan_id: null,
+        aksi: "lulus_akhir",
+        kelulusan_id: kelulusan.id,
+        diproses_oleh: admin_user_id || null,
+      });
+
+      return res.json({
+        success: true,
+        message: "Santri lulus akhir jenjang.",
+      });
+    }
+
+    // =========================
+    // JIKA LULUS DAN NAIK KELAS
+    // =========================
+    const tingkatTujuan = tingkat + 1;
+
+    const { data: kelasTujuan, error: kelasTujuanError } = await supabase
+      .from("kelas")
+      .select("*")
+      .eq("jenjang", kelasAsal.jenjang)
+      .eq("tingkat", tingkatTujuan)
+      .limit(1)
+      .single();
+
+    if (kelasTujuanError || !kelasTujuan) {
+      return res.status(404).json({
+        success: false,
+        message: `Kelas tujuan tingkat ${tingkatTujuan} tidak ditemukan.`,
+        error: kelasTujuanError?.message,
+      });
+    }
+
+    const { error: updateKelasSiswaError } = await supabase
+      .from("kelas_siswa")
+      .update({
+        kelas_id: kelasTujuan.id,
+      })
+      .eq("id", kelasSiswa.id);
+
+    if (updateKelasSiswaError) {
+      return res.status(500).json({
+        success: false,
+        message: "Gagal memperbarui kelas_siswa.",
+        error: updateKelasSiswaError.message,
+      });
+    }
+
+    const labelKelasTujuan =
+      kelasTujuan.nama_kelas ||
+      `${kelasTujuan.jenjang || ""} kelas ${kelasTujuan.tingkat || ""}`.trim();
+
+    const { error: updateSantriError } = await supabase
+      .from("santri")
+      .update({
+        kelas: labelKelasTujuan,
+        jenjang: kelasTujuan.jenjang || santri.jenjang,
+        updated_at: now,
+      })
+      .eq("id", santri.id);
+
+    if (updateSantriError) {
+      return res.status(500).json({
+        success: false,
+        message: "Gagal memperbarui data kelas di tabel santri.",
+        error: updateSantriError.message,
+      });
+    }
+
+    const { error: updateKelulusanError } = await supabase
+      .from("kelulusan_santri")
+      .update({
+        kelas_tujuan_id: kelasTujuan.id,
+        status_kenaikan: "naik_kelas",
+        processed_at: now,
+        processed_by: admin_user_id || null,
+      })
+      .eq("id", id);
+
+    if (updateKelulusanError) {
+      return res.status(500).json({
+        success: false,
+        message: "Gagal memperbarui status kenaikan kelas.",
+        error: updateKelulusanError.message,
+      });
+    }
+
+    await supabase.from("riwayat_kelas_santri").insert({
+      santri_id: santri.id,
+      kelas_asal_id: kelasAsal.id,
+      kelas_tujuan_id: kelasTujuan.id,
+      aksi: "naik_kelas",
+      kelulusan_id: kelulusan.id,
+      diproses_oleh: admin_user_id || null,
+    });
+
+    return res.json({
+      success: true,
+      message: `Santri berhasil dinaikkan ke ${labelKelasTujuan}.`,
+    });
+  } catch (error) {
+    console.error("PROSES NAIK KELAS ERROR:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Terjadi kesalahan saat memproses kenaikan kelas.",
+      error: error.message,
+    });
+  }
+});
+
+router.get("/test-kelulusan", (req, res) => {
+  return res.json({
+    success: true,
+    message: "Admin kelulusan routes aktif",
+    routes: [
+      "GET /api/admin/kelulusan",
+      "POST /api/admin/kelulusan/:id/verifikasi",
+      "POST /api/admin/kelulusan/:id/proses-kelas",
+    ],
+  });
 });
 
 export default router;
