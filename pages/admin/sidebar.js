@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { FaLayerGroup } from "react-icons/fa";
 
@@ -34,6 +34,37 @@ export default function SidebarAdmin({
   const router = useRouter();
 
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    try {
+      const savedUser =
+        localStorage.getItem("user") || sessionStorage.getItem("user");
+
+      const savedSession =
+        localStorage.getItem("session") || sessionStorage.getItem("session");
+
+      if (savedUser) {
+        setUser(JSON.parse(savedUser));
+        return;
+      }
+
+      if (savedSession) {
+        const parsedSession = JSON.parse(savedSession);
+        setUser(parsedSession?.user || null);
+      }
+    } catch (error) {
+      console.error("Gagal mengambil data user:", error);
+      setUser(null);
+    }
+  }, []);
+
+  const adminName =
+    user?.nama ||
+    user?.name ||
+    user?.nama_lengkap ||
+    user?.username ||
+    "Admin";
 
   const menu = useMemo(
     () => [
@@ -50,11 +81,11 @@ export default function SidebarAdmin({
         desc: "Data santri aktif",
       },
       {
-  name: "Kelas",
-  href: "/admin/kelas",
-  icon: <FaLayerGroup />,
-  desc: "Data kelas & jadwal",
-},
+        name: "Kelas",
+        href: "/admin/kelas",
+        icon: <FaLayerGroup />,
+        desc: "Data kelas & jadwal",
+      },
       {
         name: "Data Guru",
         href: "/admin/guru",
@@ -92,6 +123,16 @@ export default function SidebarAdmin({
   const handleLogout = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
+    localStorage.removeItem("session");
+    localStorage.removeItem("santri");
+    localStorage.removeItem("guru");
+
+    sessionStorage.removeItem("user");
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("session");
+    sessionStorage.removeItem("santri");
+    sessionStorage.removeItem("guru");
+
     router.push("/login");
   };
 
@@ -118,7 +159,7 @@ export default function SidebarAdmin({
 
           <div className="min-w-0">
             <h1 className="truncate text-sm font-black leading-tight">
-              Admin Al-Furqon
+              {adminName}
             </h1>
 
             <p className="truncate text-[10px] font-semibold text-green-200">
@@ -190,8 +231,8 @@ export default function SidebarAdmin({
 
               <div className="min-w-0 flex-1 overflow-hidden">
                 <h1 className="truncate text-[15px] font-black leading-tight text-white">
-                  Admin Panel
-                </h1>
+  {adminName}
+</h1>
 
                 <p className="truncate text-[10.5px] font-semibold text-green-200">
                   Pondok Pesantren Al-Furqon
@@ -200,22 +241,6 @@ export default function SidebarAdmin({
             </div>
           )}
 
-          <button
-            type="button"
-            onClick={() => setCollapsed(!collapsed)}
-            className={`
-              flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl
-              border border-white/10 shadow-lg transition-all duration-300
-              ${
-                collapsed
-                  ? "bg-yellow-400 text-green-950 hover:bg-yellow-300"
-                  : "bg-white/10 text-white hover:bg-white/20"
-              }
-            `}
-            title={collapsed ? "Buka sidebar" : "Tutup sidebar"}
-          >
-            <FaBars />
-          </button>
         </div>
 
         {/* PROFILE MINI */}
@@ -234,7 +259,7 @@ export default function SidebarAdmin({
 
                 <div className="min-w-0">
                   <p className="truncate text-sm font-black text-white">
-                    Administrator
+                    {adminName}
                   </p>
 
                   <p className="truncate text-[11px] font-semibold text-green-200">
@@ -413,7 +438,7 @@ export default function SidebarAdmin({
         </div>
       </aside>
 
-      {/* LogoUT MODAL */}
+      {/* LOGOUT MODAL */}
       <div
         className={`
           fixed inset-0 z-[9999] flex items-center justify-center px-4
@@ -457,7 +482,7 @@ export default function SidebarAdmin({
           <div className="p-6">
             <div className="rounded-3xl border border-red-100 bg-red-50 p-4">
               <p className="text-sm leading-relaxed text-slate-600">
-                Setelah Logout, Anda harus login kembali untuk mengakses sistem
+                Setelah logout, Anda harus login kembali untuk mengakses sistem
                 admin Al-Furqon.
               </p>
             </div>

@@ -9,6 +9,84 @@ import {
 
 const router = express.Router();
 
+// GET semua data kelulusan pending untuk admin
+router.get("/kelulusan", async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from("kelulusan_santri")
+      .select("*")
+      .order("submitted_at", { ascending: false });
+
+    if (error) {
+      console.error("GET ADMIN KELULUSAN ERROR:", error);
+      return res.status(500).json({
+        success: false,
+        message: "Gagal mengambil data kelulusan.",
+      });
+    }
+
+    return res.json({
+      success: true,
+      message: "Data kelulusan berhasil diambil.",
+      data: data || [],
+    });
+  } catch (error) {
+    console.error("ADMIN KELULUSAN ERROR:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Terjadi kesalahan server.",
+      error: error.message,
+    });
+  }
+});
+
+// POST verifikasi kelulusan oleh admin
+router.post("/kelulusan/:id/verifikasi", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status_verifikasi, catatan_admin } = req.body;
+
+    if (!["disetujui", "ditolak"].includes(status_verifikasi)) {
+      return res.status(400).json({
+        success: false,
+        message: "Status verifikasi tidak valid.",
+      });
+    }
+
+    const { data, error } = await supabase
+      .from("kelulusan_santri")
+      .update({
+        status_verifikasi,
+        catatan_admin: catatan_admin || "",
+        verified_at: new Date().toISOString(),
+      })
+      .eq("id", id)
+      .select("*")
+      .single();
+
+    if (error) {
+      console.error("VERIFIKASI KELULUSAN ERROR:", error);
+      return res.status(500).json({
+        success: false,
+        message: "Gagal memverifikasi data kelulusan.",
+      });
+    }
+
+    return res.json({
+      success: true,
+      message: "Data kelulusan berhasil diverifikasi.",
+      data,
+    });
+  } catch (error) {
+    console.error("ADMIN VERIFIKASI KELULUSAN ERROR:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Terjadi kesalahan server.",
+      error: error.message,
+    });
+  }
+});
+
 /* =========================================================
    ADMIN DASHBOARD
    GET /api/admin/dashboard

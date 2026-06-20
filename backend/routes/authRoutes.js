@@ -3,6 +3,14 @@ import { supabase } from "../config/supabase.js";
 
 const router = express.Router();
 
+const getRedirectByRole = (role) => {
+  if (role === "admin") return "/admin/dashboard";
+  if (role === "owner") return "/owner/dashboard";
+  if (role === "santri") return "/santri/dashboard";
+  if (role === "guru") return "/guru/dashboard";
+  return "/login";
+};
+
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -14,7 +22,7 @@ router.post("/login", async (req, res) => {
       });
     }
 
-    const cleanEmail = String(email).trim();
+    const cleanEmail = String(email).trim().toLowerCase();
     const cleanPassword = String(password).trim();
 
     const { data: user, error: userError } = await supabase
@@ -22,19 +30,31 @@ router.post("/login", async (req, res) => {
       .select("*")
       .eq("email", cleanEmail)
       .eq("password", cleanPassword)
-      .single();
+      .maybeSingle();
 
-    if (userError || !user) {
+    if (userError) {
+      console.error("SUPABASE LOGIN ERROR:", userError);
+
+      return res.status(500).json({
+        success: false,
+        message: "Terjadi kesalahan saat mengambil data user.",
+      });
+    }
+
+    if (!user) {
       return res.status(401).json({
         success: false,
+        type: "wrong_credentials",
         message: "Email atau password salah.",
       });
     }
 
-    // role guru ditambahkan di sini
-    if (!["admin", "owner", "santri", "guru"].includes(user.role)) {
+    const role = String(user.role || "").toLowerCase().trim();
+
+    if (!["admin", "owner", "santri", "guru"].includes(role)) {
       return res.status(403).json({
         success: false,
+        type: "invalid_role",
         message: "Role akun tidak dikenali.",
       });
     }
@@ -42,15 +62,23 @@ router.post("/login", async (req, res) => {
     let santriData = null;
     let guruData = null;
 
-    // cek data santri jika role santri
-    if (user.role === "santri") {
+    if (role === "santri") {
       const { data: santri, error: santriError } = await supabase
         .from("santri")
         .select("*")
         .eq("user_id", user.id)
-        .single();
+        .maybeSingle();
 
-      if (santriError || !santri) {
+      if (santriError) {
+        console.error("SUPABASE SANTRI ERROR:", santriError);
+
+        return res.status(500).json({
+          success: false,
+          message: "Terjadi kesalahan saat mengambil data santri.",
+        });
+      }
+
+      if (!santri) {
         return res.status(404).json({
           success: false,
           type: "not_found",
@@ -79,15 +107,23 @@ router.post("/login", async (req, res) => {
       santriData = santri;
     }
 
-    // cek data guru jika role guru
-    if (user.role === "guru") {
+    if (role === "guru") {
       const { data: guru, error: guruError } = await supabase
         .from("guru")
         .select("*")
         .eq("user_id", user.id)
-        .single();
+        .maybeSingle();
 
-      if (guruError || !guru) {
+      if (guruError) {
+        console.error("SUPABASE GURU ERROR:", guruError);
+
+        return res.status(500).json({
+          success: false,
+          message: "Terjadi kesalahan saat mengambil data guru.",
+        });
+      }
+
+      if (!guru) {
         return res.status(404).json({
           success: false,
           type: "not_found",
@@ -110,30 +146,14 @@ router.post("/login", async (req, res) => {
     const safeUser = {
       id: user.id,
       email: user.email,
-      role: user.role,
-      nama: user.nama || null,
+      role,
+      nama: user.nama || user.name || user.nama_lengkap || user.username || null,
+      created_at: user.created_at || null,
     };
 
-    let redirectTo = "/login";
+    const redirectTo = getRedirectByRole(role);
 
-    if (user.role === "admin") {
-      redirectTo = "/admin/dashboard";
-    }
-
-    if (user.role === "owner") {
-      redirectTo = "/owner/dashboard";
-    }
-
-    if (user.role === "santri") {
-      redirectTo = "/santri/dashboard";
-    }
-
-    // redirect guru ditambahkan di sini
-    if (user.role === "guru") {
-      redirectTo = "/guru/dashboard";
-    }
-
-    return res.json({
+    return res.status(200).json({
       success: true,
       message: "Login berhasil.",
       redirectTo,

@@ -21,6 +21,7 @@ import {
   FaBullhorn,
   FaPenFancy,
   FaLeaf,
+  FaUserCheck,
 } from "react-icons/fa";
 
 export default function SidebarGuru({
@@ -53,6 +54,12 @@ export default function SidebarGuru({
         href: "/guru/santri",
         icon: <FaUserGraduate />,
         desc: "Daftar santri",
+      },
+      {
+        name: "Kelulusan",
+        href: "/guru/kelulusan",
+        icon: <FaUserCheck />,
+        desc: "Validasi lulus santri",
       },
       {
         name: "Nilai",
