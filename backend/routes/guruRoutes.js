@@ -92,6 +92,109 @@ async function safeSelect(table, queryBuilder, fallback = []) {
   }
 }
 
+const normalizeText = (value = "") => {
+  return String(value || "")
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, " ");
+};
+
+const kelasMatchWali = (kelas, waliKelas) => {
+  const target = normalizeText(waliKelas);
+
+  if (!target) return false;
+
+  const namaKelas = normalizeText(kelas.nama_kelas);
+  const tingkat = normalizeText(kelas.tingkat);
+  const jenjang = normalizeText(kelas.jenjang);
+  const jurusan = normalizeText(kelas.jurusan);
+
+  const gabungan = normalizeText(
+    `${kelas.jenjang || ""} ${kelas.nama_kelas || ""} ${kelas.tingkat || ""} ${
+      kelas.jurusan || ""
+    }`
+  );
+
+  return (
+    namaKelas === target ||
+    tingkat === target ||
+    gabungan.includes(target) ||
+    target.includes(namaKelas) ||
+    target === `${jenjang} kelas ${tingkat}` ||
+    target === `${jenjang} kelas ${tingkat} ${jurusan}`.trim()
+  );
+};
+
+async function getKelasWaliGuru(guru) {
+  /*
+    Prioritas utama:
+    kelas.wali_guru_id = guru.id
+  */
+  const { data: kelasByWaliId, error: kelasByWaliIdError } = await supabase
+    .from("kelas")
+    .select(
+      `
+      id,
+      jenjang,
+      nama_kelas,
+      tingkat,
+      jurusan,
+      wali_guru_id,
+      tahun_ajaran,
+      semester,
+      status
+    `
+    )
+    .eq("wali_guru_id", guru.id)
+    .eq("status", "aktif")
+    .order("tingkat", { ascending: true });
+
+  if (kelasByWaliIdError) {
+    throw new Error(kelasByWaliIdError.message);
+  }
+
+  if (kelasByWaliId && kelasByWaliId.length > 0) {
+    return kelasByWaliId;
+  }
+
+  /*
+    Fallback:
+    kalau masih pakai guru.wali_kelas berupa text.
+    Contoh: "SMP Kelas 7" atau "7"
+  */
+  const waliKelasText = String(guru.wali_kelas || "").trim();
+
+  if (!waliKelasText) {
+    return [];
+  }
+
+  const { data: semuaKelas, error: semuaKelasError } = await supabase
+    .from("kelas")
+    .select(
+      `
+      id,
+      jenjang,
+      nama_kelas,
+      tingkat,
+      jurusan,
+      wali_guru_id,
+      tahun_ajaran,
+      semester,
+      status
+    `
+    )
+    .eq("status", "aktif")
+    .order("tingkat", { ascending: true });
+
+  if (semuaKelasError) {
+    throw new Error(semuaKelasError.message);
+  }
+
+  return (semuaKelas || []).filter((kelas) =>
+    kelasMatchWali(kelas, waliKelasText)
+  );
+}
+
 router.get("/dashboard/:userId", verifyGuru, async (req, res) => {
   try {
     const { userId } = req.params;
@@ -175,6 +278,109 @@ router.get("/dashboard/:userId", verifyGuru, async (req, res) => {
         .order("hari", { ascending: true })
         .order("jam_mulai", { ascending: true })
     );
+
+    const normalizeText = (value = "") => {
+  return String(value || "")
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, " ");
+};
+
+const kelasMatchWali = (kelas, waliKelas) => {
+  const target = normalizeText(waliKelas);
+
+  if (!target) return false;
+
+  const namaKelas = normalizeText(kelas.nama_kelas);
+  const tingkat = normalizeText(kelas.tingkat);
+  const jenjang = normalizeText(kelas.jenjang);
+  const jurusan = normalizeText(kelas.jurusan);
+
+  const gabungan = normalizeText(
+    `${kelas.jenjang || ""} ${kelas.nama_kelas || ""} ${kelas.tingkat || ""} ${
+      kelas.jurusan || ""
+    }`
+  );
+
+  return (
+    namaKelas === target ||
+    tingkat === target ||
+    gabungan.includes(target) ||
+    target.includes(namaKelas) ||
+    target === `${jenjang} kelas ${tingkat}` ||
+    target === `${jenjang} kelas ${tingkat} ${jurusan}`.trim()
+  );
+};
+
+async function getKelasWaliGuru(guru) {
+  /*
+    Prioritas 1:
+    Ambil kelas berdasarkan kolom kelas.wali_guru_id = guru.id
+  */
+  const { data: kelasByWaliId, error: kelasByWaliIdError } = await supabase
+    .from("kelas")
+    .select(
+      `
+      id,
+      jenjang,
+      nama_kelas,
+      tingkat,
+      jurusan,
+      wali_guru_id,
+      tahun_ajaran,
+      semester,
+      status
+    `
+    )
+    .eq("wali_guru_id", guru.id)
+    .eq("status", "aktif")
+    .order("tingkat", { ascending: true });
+
+  if (kelasByWaliIdError) {
+    throw new Error(kelasByWaliIdError.message);
+  }
+
+  if (kelasByWaliId && kelasByWaliId.length > 0) {
+    return kelasByWaliId;
+  }
+
+  /*
+    Prioritas 2:
+    Fallback kalau kamu masih pakai kolom guru.wali_kelas berbentuk text.
+    Contoh guru.wali_kelas = "SMP Kelas 7" atau "7".
+  */
+  const waliKelasText = String(guru.wali_kelas || "").trim();
+
+  if (!waliKelasText) {
+    return [];
+  }
+
+  const { data: semuaKelas, error: semuaKelasError } = await supabase
+    .from("kelas")
+    .select(
+      `
+      id,
+      jenjang,
+      nama_kelas,
+      tingkat,
+      jurusan,
+      wali_guru_id,
+      tahun_ajaran,
+      semester,
+      status
+    `
+    )
+    .eq("status", "aktif")
+    .order("tingkat", { ascending: true });
+
+  if (semuaKelasError) {
+    throw new Error(semuaKelasError.message);
+  }
+
+  return (semuaKelas || []).filter((kelas) =>
+    kelasMatchWali(kelas, waliKelasText)
+  );
+}
 
     const jadwalHariIni = (jadwalGuru || []).filter(
       (item) =>
@@ -673,8 +879,6 @@ router.get("/nilai/:userId", verifyGuru, async (req, res) => {
     const { userId } = req.params;
     const { semester, tahun_ajaran } = req.query;
 
-    
-
     if (String(userId) !== String(req.user.id)) {
       return res.status(403).json({
         success: false,
@@ -696,66 +900,20 @@ router.get("/nilai/:userId", verifyGuru, async (req, res) => {
       });
     }
 
-    const { data: jadwal, error: jadwalError } = await supabase
-      .from("kelas_mapel")
-      .select(
-        `
-        id,
-        kelas_id,
-        nama_mapel,
-        guru_id,
-        hari,
-        kelas:kelas_id (
-          id,
-          jenjang,
-          nama_kelas,
-          tingkat,
-          jurusan,
-          tahun_ajaran,
-          semester,
-          status
-        )
-      `
-      )
-      .eq("guru_id", guru.id);
+    /*
+      INI BAGIAN PENTING:
+      kelasSaya sekarang diambil dari wali kelas,
+      bukan dari kelas_mapel.
+    */
+    const kelasSaya = await getKelasWaliGuru(guru);
+    const kelasIds = kelasSaya.map((kelas) => kelas.id).filter(Boolean);
 
-    if (jadwalError) {
-      console.error("JADWAL NILAI ERROR:", jadwalError);
-
-      return res.status(500).json({
-        success: false,
-        message: "Gagal mengambil kelas guru.",
-        error: jadwalError.message,
-      });
-    }
-
-    const kelasMap = new Map();
-    const mapelMap = new Map();
-
-    for (const item of jadwal || []) {
-      if (item.kelas?.id) {
-        kelasMap.set(item.kelas.id, item.kelas);
-      }
-
-      if (item.nama_mapel) {
-        mapelMap.set(String(item.nama_mapel).toLowerCase(), item.nama_mapel);
-      }
-    }
-
-    const kelasSaya = Array.from(kelasMap.values());
-    const kelasIds = kelasSaya.map((kelas) => kelas.id);
-    const mapelSaya = Array.from(mapelMap.values());
+    const mapelSaya = guru.mapel ? [guru.mapel] : [];
 
     let santri = [];
 
-    /*
-      Catatan:
-      Bagian ini dibuat aman.
-      Kalau tabel kelas_siswa / santri belum ada datanya,
-      halaman nilai tetap jalan.
-    */
     if (kelasIds.length > 0) {
-      const { data: kelasSiswa, error: siswaError } = await supabase
+      const { data: kelasSiswaRaw, error: siswaError } = await supabase
         .from("kelas_siswa")
         .select(
           `
@@ -785,9 +943,9 @@ router.get("/nilai/:userId", verifyGuru, async (req, res) => {
         .in("kelas_id", kelasIds);
 
       if (siswaError) {
-        console.warn("KELAS SISWA / SANTRI BELUM TERSEDIA:", siswaError.message);
+        console.warn("KELAS SISWA / SANTRI ERROR:", siswaError.message);
       } else {
-        santri = (kelasSiswa || [])
+        santri = (kelasSiswaRaw || [])
           .filter((item) => item.santri)
           .map((item) => ({
             ...item.santri,
@@ -795,48 +953,96 @@ router.get("/nilai/:userId", verifyGuru, async (req, res) => {
             kelas_siswa_id: item.id,
           }));
       }
+
+      /*
+        Fallback:
+        Kalau kelas_siswa kosong, ambil dari tabel santri
+        berdasarkan jenjang + kelas.
+      */
+      if (santri.length === 0) {
+        const { data: semuaSantri, error: semuaSantriError } = await supabase
+          .from("santri")
+          .select(
+            `
+            id,
+            user_id,
+            nama,
+            nisn,
+            jenjang,
+            kelas,
+            status,
+            jenis_kelamin
+          `
+          );
+
+        if (semuaSantriError) {
+          console.warn("FALLBACK SANTRI NILAI ERROR:", semuaSantriError.message);
+        } else {
+          santri = (semuaSantri || [])
+            .map((item) => {
+              const matchedKelas = kelasSaya.find((kelas) => {
+                const sameJenjang =
+                  normalizeText(kelas.jenjang) === normalizeText(item.jenjang);
+
+                const sameKelas =
+                  normalizeText(kelas.tingkat) === normalizeText(item.kelas) ||
+                  normalizeText(kelas.nama_kelas).includes(
+                    normalizeText(item.kelas)
+                  ) ||
+                  normalizeText(item.kelas).includes(
+                    normalizeText(kelas.nama_kelas)
+                  );
+
+                return sameJenjang && sameKelas;
+              });
+
+              if (!matchedKelas) return null;
+
+              return {
+                ...item,
+                kelas_detail: matchedKelas,
+                kelas_siswa_id: null,
+              };
+            })
+            .filter(Boolean);
+        }
+      }
     }
 
-    /*
-      Ambil nilai tanpa relasi nested.
-      Ini penting karena santri belum masuk Supabase.
-    */
     let nilaiQuery = supabase
-  .from("nilai")
-  .select(
-    `
-    id,
-    guru_id,
-    santri_id,
-    kelas_id,
-    mapel,
-    jenis_nilai,
-    nilai,
-    semester,
-    tahun_ajaran,
-    keterangan,
-    created_at,
-    updated_at
-  `
-  )
-  .eq("guru_id", guru.id);
+      .from("nilai")
+      .select(
+        `
+        id,
+        guru_id,
+        santri_id,
+        kelas_id,
+        mapel,
+        jenis_nilai,
+        nilai,
+        semester,
+        tahun_ajaran,
+        keterangan,
+        created_at,
+        updated_at
+      `
+      )
+      .eq("guru_id", guru.id);
 
-if (semester) {
-  nilaiQuery = nilaiQuery.eq("semester", semester);
-}
+    if (semester) {
+      nilaiQuery = nilaiQuery.eq("semester", semester);
+    }
 
-if (tahun_ajaran) {
-  nilaiQuery = nilaiQuery.eq("tahun_ajaran", tahun_ajaran);
-}
+    if (tahun_ajaran) {
+      nilaiQuery = nilaiQuery.eq("tahun_ajaran", tahun_ajaran);
+    }
 
-const { data: nilaiRaw, error: nilaiError } = await nilaiQuery.order(
-  "created_at",
-  { ascending: false }
-);
+    const { data: nilaiRaw, error: nilaiError } = await nilaiQuery.order(
+      "created_at",
+      { ascending: false }
+    );
 
     if (nilaiError) {
-      console.error("NILAI SELECT ERROR:", nilaiError);
-
       return res.status(500).json({
         success: false,
         message: "Gagal mengambil data nilai.",
@@ -873,7 +1079,7 @@ const { data: nilaiRaw, error: nilaiError } = await nilaiQuery.order(
 
     return res.json({
       success: true,
-      message: "Data nilai guru berhasil diambil.",
+      message: "Data nilai wali kelas berhasil diambil.",
       data: {
         guru,
         kelasSaya,
@@ -889,11 +1095,11 @@ const { data: nilaiRaw, error: nilaiError } = await nilaiQuery.order(
       },
     });
   } catch (error) {
-    console.error("GURU NILAI ERROR:", error);
+    console.error("GURU NILAI WALI KELAS ERROR:", error);
 
     return res.status(500).json({
       success: false,
-      message: "Terjadi kesalahan saat mengambil data nilai guru.",
+      message: "Terjadi kesalahan saat mengambil data nilai wali kelas.",
       error: error.message,
     });
   }
@@ -947,10 +1153,10 @@ router.post("/nilai/:userId", verifyGuru, async (req, res) => {
     }
 
     const { data: guru, error: guruError } = await supabase
-      .from("guru")
-      .select("id, user_id, nama")
-      .eq("user_id", userId)
-      .single();
+  .from("guru")
+  .select("id, user_id, nama, mapel, wali_kelas")
+  .eq("user_id", userId)
+  .single();
 
     if (guruError || !guru) {
       return res.status(404).json({
@@ -959,19 +1165,16 @@ router.post("/nilai/:userId", verifyGuru, async (req, res) => {
       });
     }
 
-    const { data: jadwalGuru, error: jadwalError } = await supabase
-      .from("kelas_mapel")
-      .select("id, kelas_id, guru_id, nama_mapel")
-      .eq("guru_id", guru.id)
-      .eq("kelas_id", kelas_id);
+    const kelasSaya = await getKelasWaliGuru(guru);
+const kelasWaliIds = kelasSaya.map((kelas) => kelas.id).filter(Boolean);
 
-    if (jadwalError || !jadwalGuru || jadwalGuru.length === 0) {
-      return res.status(403).json({
-        success: false,
-        message:
-          "Guru tidak memiliki akses ke kelas ini. Pastikan admin sudah memilih guru pada jadwal mapel.",
-      });
-    }
+if (!kelasWaliIds.includes(kelas_id)) {
+  return res.status(403).json({
+    success: false,
+    message:
+      "Guru hanya boleh menginput nilai untuk santri di kelas yang menjadi wali kelasnya.",
+  });
+}
 
     const { data: siswaKelas, error: siswaError } = await supabase
       .from("kelas_siswa")
@@ -1291,85 +1494,99 @@ router.get("/kelulusan/:userId", verifyGuru, async (req, res) => {
       });
     }
 
-    /*
-      Ambil kelas yang diajar guru dari kelas_mapel.
-      Ini mengikuti pola route santri/nilai/materi yang sudah ada di file kamu.
-    */
-    const { data: jadwal, error: jadwalError } = await supabase
-      .from("kelas_mapel")
-      .select(
-        `
-        id,
-        kelas_id,
-        nama_mapel,
-        guru_id,
-        kelas:kelas_id (
-          id,
-          jenjang,
-          nama_kelas,
-          tingkat,
-          jurusan,
-          tahun_ajaran,
-          semester,
-          status
-        )
-      `
-      )
-      .eq("guru_id", guru.id);
-
-    if (jadwalError) {
-      return res.status(500).json({
-        success: false,
-        message: "Gagal mengambil kelas guru.",
-        error: jadwalError.message,
-      });
-    }
-
-    const kelasMap = new Map();
-
-    for (const item of jadwal || []) {
-      if (item.kelas?.id) {
-        kelasMap.set(item.kelas.id, item.kelas);
-      }
-    }
-
-    const kelasSaya = Array.from(kelasMap.values());
-    const kelasIds = kelasSaya.map((kelas) => kelas.id);
+    const kelasSaya = await getKelasWaliGuru(guru);
+    const kelasIds = kelasSaya.map((kelas) => kelas.id).filter(Boolean);
 
     if (kelasIds.length === 0) {
       return res.json({
         success: true,
-        message: "Guru belum memiliki kelas.",
+        message:
+          "Guru ini belum menjadi wali kelas. Atur wali kelas di data kelas atau data guru.",
         data: [],
+        meta: {
+          guru,
+          kelasSaya: [],
+        },
       });
     }
 
-    /*
-      Ambil santri berdasarkan tabel kelas_siswa.
-      Ini lebih cocok dengan struktur project kamu karena route /santri guru juga pakai kelas_siswa.
-    */
     const { data: kelasSiswaRaw, error: kelasSiswaError } = await supabase
       .from("kelas_siswa")
-      .select("id, kelas_id, santri_id")
+      .select("id, kelas_id, santri_id, created_at")
       .in("kelas_id", kelasIds);
 
     if (kelasSiswaError) {
       return res.status(500).json({
         success: false,
-        message: "Gagal mengambil relasi kelas santri.",
+        message: "Gagal mengambil relasi kelas_siswa.",
         error: kelasSiswaError.message,
       });
     }
 
+    let kelasSiswaFinal = kelasSiswaRaw || [];
+
+    /*
+      Fallback:
+      Kalau kelas_siswa masih kosong, ambil dari tabel santri berdasarkan jenjang + kelas.
+      Ini membantu data lama yang belum masuk kelas_siswa.
+    */
+    if (kelasSiswaFinal.length === 0) {
+      const { data: semuaSantri, error: semuaSantriError } = await supabase
+        .from("santri")
+        .select("id, nama, nisn, jenjang, kelas, status, jenis_kelamin");
+
+      if (semuaSantriError) {
+        return res.status(500).json({
+          success: false,
+          message: "Gagal mengambil data santri.",
+          error: semuaSantriError.message,
+        });
+      }
+
+      kelasSiswaFinal = [];
+
+      for (const santri of semuaSantri || []) {
+        const matchedKelas = kelasSaya.find((kelas) => {
+          const sameJenjang =
+            normalizeText(kelas.jenjang) === normalizeText(santri.jenjang);
+
+          const sameKelas =
+            normalizeText(kelas.tingkat) === normalizeText(santri.kelas) ||
+            normalizeText(kelas.nama_kelas).includes(
+              normalizeText(santri.kelas)
+            ) ||
+            normalizeText(santri.kelas).includes(
+              normalizeText(kelas.nama_kelas)
+            );
+
+          return sameJenjang && sameKelas;
+        });
+
+        if (matchedKelas) {
+          kelasSiswaFinal.push({
+            id: null,
+            kelas_id: matchedKelas.id,
+            santri_id: santri.id,
+          });
+        }
+      }
+    }
+
     const santriIds = [
-      ...new Set((kelasSiswaRaw || []).map((item) => item.santri_id).filter(Boolean)),
+      ...new Set(
+        (kelasSiswaFinal || []).map((item) => item.santri_id).filter(Boolean)
+      ),
     ];
 
     if (santriIds.length === 0) {
       return res.json({
         success: true,
-        message: "Belum ada santri pada kelas guru.",
+        message: "Belum ada santri pada kelas wali ini.",
         data: [],
+        meta: {
+          guru,
+          kelasSaya,
+        },
       });
     }
 
@@ -1392,13 +1609,12 @@ router.get("/kelulusan/:userId", verifyGuru, async (req, res) => {
         created_at
       `
       )
-      .in("id", santriIds)
-      .order("nama", { ascending: true });
+      .in("id", santriIds);
 
     if (santriError) {
       return res.status(500).json({
         success: false,
-        message: "Gagal mengambil data santri.",
+        message: "Gagal mengambil data santri wali kelas.",
         error: santriError.message,
       });
     }
@@ -1412,29 +1628,20 @@ router.get("/kelulusan/:userId", verifyGuru, async (req, res) => {
     if (kelulusanError) {
       return res.status(500).json({
         success: false,
-        message:
-          "Gagal mengambil data kelulusan. Pastikan tabel kelulusan_santri sudah dibuat.",
+        message: "Gagal mengambil data kelulusan santri.",
         error: kelulusanError.message,
       });
     }
 
-    const santriMap = new Map();
-    const kelasMapById = new Map();
+    const santriMap = new Map((santriRaw || []).map((item) => [item.id, item]));
+    const kelasMap = new Map((kelasSaya || []).map((item) => [item.id, item]));
 
-    for (const item of santriRaw || []) {
-      santriMap.set(item.id, item);
-    }
-
-    for (const kelas of kelasSaya || []) {
-      kelasMapById.set(kelas.id, kelas);
-    }
-
-    const mappedData = (kelasSiswaRaw || [])
+    const mappedData = (kelasSiswaFinal || [])
       .map((item) => {
         const santri = santriMap.get(item.santri_id);
-        const kelas = kelasMapById.get(item.kelas_id);
+        const kelas = kelasMap.get(item.kelas_id);
 
-        if (!santri) return null;
+        if (!santri || !kelas) return null;
 
         const kelulusan = (kelulusanList || []).find(
           (row) => row.santri_id === santri.id
@@ -1445,13 +1652,15 @@ router.get("/kelulusan/:userId", verifyGuru, async (req, res) => {
           nama: santri.nama || "-",
           nis: santri.nis || santri.nisn || "-",
           nisn: santri.nisn || "-",
-          kelas_id: item.kelas_id,
+
+          kelas_id: kelas.id,
           kelas_nama:
-            kelas?.nama_kelas ||
-            `${kelas?.jenjang || ""} ${kelas?.tingkat || ""}`.trim() ||
+            kelas.nama_kelas ||
+            `${kelas.jenjang || ""} Kelas ${kelas.tingkat || ""}`.trim() ||
             santri.kelas ||
             "-",
-          jenjang: santri.jenjang || kelas?.jenjang || "-",
+
+          jenjang: santri.jenjang || kelas.jenjang || "-",
           status_santri: santri.status || "-",
 
           status_kelulusan: kelulusan?.status_kelulusan || "",
@@ -1464,8 +1673,12 @@ router.get("/kelulusan/:userId", verifyGuru, async (req, res) => {
 
     return res.json({
       success: true,
-      message: "Data kelulusan santri berhasil diambil.",
+      message: "Data kelulusan santri wali kelas berhasil diambil.",
       data: mappedData,
+      meta: {
+        guru,
+        kelasSaya,
+      },
     });
   } catch (error) {
     console.error("GET KELULUSAN GURU ERROR:", error);
@@ -1505,7 +1718,7 @@ router.post("/kelulusan/submit", verifyGuru, async (req, res) => {
 
     const { data: guru, error: guruError } = await supabase
       .from("guru")
-      .select("id, user_id, nama")
+      .select("id, user_id, nama, wali_kelas")
       .eq("user_id", user_id)
       .single();
 
@@ -1514,6 +1727,17 @@ router.post("/kelulusan/submit", verifyGuru, async (req, res) => {
         success: false,
         message: "Data guru tidak ditemukan.",
         error: guruError?.message,
+      });
+    }
+
+    const kelasSaya = await getKelasWaliGuru(guru);
+    const kelasWaliIds = kelasSaya.map((kelas) => kelas.id).filter(Boolean);
+
+    if (kelasWaliIds.length === 0) {
+      return res.status(403).json({
+        success: false,
+        message:
+          "Guru ini belum menjadi wali kelas. Admin harus mengatur wali kelas terlebih dahulu.",
       });
     }
 
@@ -1532,7 +1756,49 @@ router.post("/kelulusan/submit", verifyGuru, async (req, res) => {
       });
     }
 
-    const santriIds = data.map((item) => item.santri_id);
+    const adaKelasBukanWali = data.find(
+      (item) => !kelasWaliIds.includes(item.kelas_id)
+    );
+
+    if (adaKelasBukanWali) {
+      return res.status(403).json({
+        success: false,
+        message:
+          "Guru hanya boleh mengirim kelulusan untuk kelas yang menjadi wali kelasnya.",
+      });
+    }
+
+    const santriIds = data.map((item) => item.santri_id).filter(Boolean);
+
+    const { data: siswaKelas, error: siswaKelasError } = await supabase
+      .from("kelas_siswa")
+      .select("id, kelas_id, santri_id")
+      .in("santri_id", santriIds)
+      .in("kelas_id", kelasWaliIds);
+
+    if (siswaKelasError) {
+      return res.status(500).json({
+        success: false,
+        message: "Gagal memvalidasi santri pada kelas wali.",
+        error: siswaKelasError.message,
+      });
+    }
+
+    const validSantriSet = new Set(
+      (siswaKelas || []).map((item) => `${item.santri_id}-${item.kelas_id}`)
+    );
+
+    const adaSantriBukanKelasWali = data.find(
+      (item) => !validSantriSet.has(`${item.santri_id}-${item.kelas_id}`)
+    );
+
+    if (adaSantriBukanKelasWali) {
+      return res.status(403).json({
+        success: false,
+        message:
+          "Ada santri yang tidak terdaftar pada kelas wali guru ini. Periksa tabel kelas_siswa.",
+      });
+    }
 
     const payload = data.map((item) => ({
       guru_id: guru.id,
@@ -1544,10 +1810,6 @@ router.post("/kelulusan/submit", verifyGuru, async (req, res) => {
       submitted_at: new Date().toISOString(),
     }));
 
-    /*
-      Hapus data lama guru untuk santri yang sama.
-      Setelah itu insert ulang sebagai pending agar admin bisa verifikasi ulang.
-    */
     const { error: deleteError } = await supabase
       .from("kelulusan_santri")
       .delete()
@@ -1577,7 +1839,7 @@ router.post("/kelulusan/submit", verifyGuru, async (req, res) => {
 
     return res.json({
       success: true,
-      message: "Data kelulusan berhasil dikirim ke admin untuk diverifikasi.",
+      message: "Data kelulusan wali kelas berhasil dikirim ke admin.",
       data: inserted,
     });
   } catch (error) {

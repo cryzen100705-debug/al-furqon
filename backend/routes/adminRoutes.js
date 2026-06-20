@@ -268,16 +268,17 @@ router.post("/santri", upload.single("foto"), async (req, res) => {
     const autoPassword = generatePassword(body.nama, body.tanggal_lahir);
 
     const { data: userData, error: userError } = await supabase
-      .from("users")
-      .insert([
-        {
-          email: body.email,
-          password: autoPassword,
-          role: "santri",
-        },
-      ])
-      .select()
-      .single();
+  .from("users")
+  .insert([
+    {
+      nama: body.nama || "",
+      email: body.email,
+      password: autoPassword,
+      role: "santri",
+    },
+  ])
+  .select()
+  .single();
 
     if (userError) {
       return res.status(400).json({
@@ -371,12 +372,15 @@ router.put("/santri/:id", upload.single("foto"), async (req, res) => {
       });
     }
 
-    if (body.user_id && body.email) {
-      await supabase
-        .from("users")
-        .update({ email: body.email })
-        .eq("id", body.user_id);
-    }
+    if (body.user_id) {
+  await supabase
+    .from("users")
+    .update({
+      nama: body.nama || "",
+      email: body.email || "",
+    })
+    .eq("id", body.user_id);
+}
 
     const ortuPayload = buildAdminOrtuPayload(body);
 
