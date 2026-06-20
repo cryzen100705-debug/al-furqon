@@ -755,29 +755,29 @@ router.get("/pembayaran/santri", async (req, res) => {
 router.post("/tagihan", async (req, res) => {
   try {
     const {
-  target_type,
-  santri_id,
-  kelas,
-  jenjang,
-  jenis,
-  nominal,
-  deadline,
-  metode,
-  admin_id,
-  nama_admin,
-} = req.body;
+      target_type,
+      santri_id,
+      kelas,
+      jenjang,
+      jenis,
+      nominal,
+      deadline,
+      metode,
+      admin_id,
+      nama_admin,
+    } = req.body;
 
-const metodePembayaran = String(metode || "transfer")
-  .toLowerCase()
-  .trim();
+    const metodePembayaran = String(metode || "transfer")
+      .toLowerCase()
+      .trim();
 
-const isTunai = metodePembayaran === "tunai";
-const statusPembayaran = isTunai ? "lunas" : "belum_bayar";
-const tanggalBayar = isTunai ? new Date().toISOString() : null;
+    const isTunai = metodePembayaran === "tunai";
+    const statusPembayaran = isTunai ? "lunas" : "belum_bayar";
+    const tanggalBayar = isTunai ? new Date().toISOString() : null;
 
-console.log("CREATE TAGIHAN BODY:", req.body);
-console.log("METODE PEMBAYARAN:", metodePembayaran);
-console.log("STATUS PEMBAYARAN:", statusPembayaran);
+    console.log("CREATE TAGIHAN BODY:", req.body);
+    console.log("METODE PEMBAYARAN:", metodePembayaran);
+    console.log("STATUS PEMBAYARAN:", statusPembayaran);
 
     if (!target_type || !jenis || !nominal || !deadline) {
       return res.status(400).json({
@@ -852,19 +852,21 @@ console.log("STATUS PEMBAYARAN:", statusPembayaran);
     const createdPembayaran = [];
 
     for (const item of targetSantri) {
+      const tagihanPayload = {
+        santri_id: item.id,
+        jenis,
+        nominal: Number(nominal),
+        deadline,
+        status: statusPembayaran,
+        metode: metodePembayaran,
+        tanggal_bayar: tanggalBayar,
+      };
+
+      console.log("INSERT TAGIHAN PAYLOAD:", tagihanPayload);
+
       const { data: tagihanData, error: tagihanError } = await supabase
         .from("tagihan")
-        .insert([
-          {
-  santri_id: item.id,
-  jenis,
-  nominal: Number(nominal),
-  deadline,
-  status: statusPembayaran,
-  metode: metodePembayaran,
-  tanggal_bayar: tanggalBayar,
-}
-        ])
+        .insert([tagihanPayload])
         .select()
         .single();
 
@@ -873,41 +875,48 @@ console.log("STATUS PEMBAYARAN:", statusPembayaran);
           success: false,
           message: `Gagal membuat tagihan untuk ${item.nama}.`,
           error: tagihanError.message,
+          detail: tagihanError.details,
+          hint: tagihanError.hint,
+          code: tagihanError.code,
         });
       }
 
       createdTagihan.push(tagihanData);
 
+      const pembayaranPayload = {
+        santri_id: item.id,
+        tagihan_id: tagihanData.id,
+        jenis,
+        nominal: Number(nominal),
+        status: statusPembayaran,
+        metode: metodePembayaran,
+        bukti_transfer: null,
+        deadline,
+        tanggal_bayar: tanggalBayar,
+      };
+
+      console.log("INSERT PEMBAYARAN PAYLOAD:", pembayaranPayload);
+
       const { data: pembayaranData, error: pembayaranError } = await supabase
-  .from("pembayaran")
-  .insert([
-    {
-  santri_id: item.id,
-  tagihan_id: tagihanData.id,
-  jenis: jenis,
-  nominal: Number(nominal),
-  status: statusPembayaran,
-  metode: metodePembayaran,
-  bukti_transfer: null,
-  deadline: deadline,
-  tanggal_bayar: tanggalBayar,
-},
-  ])
-  .select()
-  .single();
+        .from("pembayaran")
+        .insert([pembayaranPayload])
+        .select()
+        .single();
 
-if (pembayaranError) {
-  console.error("INSERT PEMBAYARAN ERROR:", pembayaranError);
+      if (pembayaranError) {
+        console.error("INSERT PEMBAYARAN ERROR:", pembayaranError);
 
-  return res.status(400).json({
-    success: false,
-    message: `Tagihan berhasil dibuat, tetapi gagal membuat data pembayaran untuk ${item.nama}.`,
-    error: pembayaranError.message,
-    detail: pembayaranError.details,
-    hint: pembayaranError.hint,
-    code: pembayaranError.code,
-  });
-}
+        await supabase.from("tagihan").delete().eq("id", tagihanData.id);
+
+        return res.status(400).json({
+          success: false,
+          message: `Gagal membuat data pembayaran untuk ${item.nama}. Tagihan yang gagal sudah dibatalkan.`,
+          error: pembayaranError.message,
+          detail: pembayaranError.details,
+          hint: pembayaranError.hint,
+          code: pembayaranError.code,
+        });
+      }
 
       createdPembayaran.push(pembayaranData);
     }
@@ -916,10 +925,16 @@ if (pembayaranError) {
       admin_id,
       nama_admin: nama_admin || "Admin Pesantren",
       kategori: "pembayaran",
-      aktivitas: "Membuat tagihan",
-      detail: `Admin membuat tagihan ${jenis} sebesar Rp ${Number(
-        nominal
-      ).toLocaleString("id-ID")} untuk ${targetSantri.length} santri.`,
+      aktivitas: isTunai
+        ? "Mencatat pembayaran tunai"
+        : "Membuat tagihan transfer",
+      detail: isTunai
+        ? `Admin mencatat pembayaran tunai ${jenis} sebesar Rp ${Number(
+            nominal
+          ).toLocaleString("id-ID")} untuk ${targetSantri.length} santri.`
+        : `Admin membuat tagihan transfer ${jenis} sebesar Rp ${Number(
+            nominal
+          ).toLocaleString("id-ID")} untuk ${targetSantri.length} santri.`,
       target_id: null,
       target_nama:
         target_type === "santri"
@@ -930,17 +945,17 @@ if (pembayaranError) {
     });
 
     return res.status(201).json({
-  success: true,
-  message: isTunai
-    ? `Pembayaran tunai berhasil dicatat lunas untuk ${targetSantri.length} santri.`
-    : `Tagihan transfer berhasil dibuat untuk ${targetSantri.length} santri.`,
-  data: {
-    metode: metodePembayaran,
-    status: statusPembayaran,
-    tagihan: createdTagihan,
-    pembayaran: createdPembayaran,
-  },
-});
+      success: true,
+      message: isTunai
+        ? `Pembayaran tunai berhasil dicatat lunas untuk ${targetSantri.length} santri.`
+        : `Tagihan transfer berhasil dibuat untuk ${targetSantri.length} santri.`,
+      data: {
+        metode: metodePembayaran,
+        status: statusPembayaran,
+        tagihan: createdTagihan,
+        pembayaran: createdPembayaran,
+      },
+    });
   } catch (error) {
     console.error("CREATE TAGIHAN ERROR:", error);
 
