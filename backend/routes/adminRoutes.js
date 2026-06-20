@@ -1849,6 +1849,25 @@ const { data: kelasAsal, error: kelasAsalError } = await supabase
         });
       }
 
+      if (!kelasSiswa?.id) {
+  const { error: insertKelasSiswaError } = await supabase
+    .from("kelas_siswa")
+    .insert([
+      {
+        santri_id: santri.id,
+        kelas_id: kelasAsal.id,
+      },
+    ]);
+
+  if (insertKelasSiswaError) {
+    return res.status(500).json({
+      success: false,
+      message: "Gagal membuat relasi kelas_siswa untuk santri tidak lulus.",
+      error: insertKelasSiswaError.message,
+    });
+  }
+}
+
       await supabase.from("riwayat_kelas_santri").insert({
         santri_id: santri.id,
         kelas_asal_id: kelasAsal.id,
@@ -1950,10 +1969,6 @@ if (kelasSiswa?.id) {
 
   updateKelasSiswaError = error;
 } else {
-  /*
-    Jika santri belum punya baris kelas_siswa,
-    buat relasi baru otomatis ke kelas tujuan.
-  */
   const { error } = await supabase.from("kelas_siswa").insert([
     {
       santri_id: santri.id,
@@ -1972,7 +1987,28 @@ if (updateKelasSiswaError) {
   });
 }
 
-    const { error: updateKelulusanError } = await supabase
+const labelKelasTujuan =
+  kelasTujuan.nama_kelas ||
+  `${kelasTujuan.jenjang || ""} kelas ${kelasTujuan.tingkat || ""}`.trim();
+
+const { error: updateSantriError } = await supabase
+  .from("santri")
+  .update({
+    kelas: labelKelasTujuan,
+    jenjang: kelasTujuan.jenjang || santri.jenjang,
+    updated_at: now,
+  })
+  .eq("id", santri.id);
+
+if (updateSantriError) {
+  return res.status(500).json({
+    success: false,
+    message: "Gagal memperbarui data kelas di tabel santri.",
+    error: updateSantriError.message,
+  });
+}
+
+const { error: updateKelulusanError } = await supabase
       .from("kelulusan_santri")
       .update({
         kelas_tujuan_id: kelasTujuan.id,
@@ -1989,15 +2025,6 @@ if (updateKelasSiswaError) {
         error: updateKelulusanError.message,
       });
     }
-
-    if (!kelasSiswa?.id) {
-  await supabase.from("kelas_siswa").insert([
-    {
-      santri_id: santri.id,
-      kelas_id: kelasAsal.id,
-    },
-  ]);
-}
 
     await supabase.from("riwayat_kelas_santri").insert({
       santri_id: santri.id,
