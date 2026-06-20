@@ -1780,11 +1780,22 @@ router.post("/kelulusan/:id/proses-kelas", async (req, res) => {
       });
     }
 
-    const { data: kelasSiswa, error: kelasSiswaError } = await supabase
+  const { data: kelasSiswaList, error: kelasSiswaError } = await supabase
   .from("kelas_siswa")
   .select("*")
   .eq("santri_id", kelulusan.santri_id)
-  .maybeSingle();
+  .order("created_at", { ascending: false })
+  .limit(1);
+
+if (kelasSiswaError) {
+  return res.status(500).json({
+    success: false,
+    message: "Gagal mengecek relasi kelas_siswa santri.",
+    error: kelasSiswaError.message,
+  });
+}
+
+const kelasSiswa = kelasSiswaList?.[0] || null;
 
 if (kelasSiswaError) {
   return res.status(500).json({
@@ -1954,21 +1965,66 @@ const { data: kelasAsal, error: kelasAsalError } = await supabase
     // =========================
     const tingkatTujuan = tingkat + 1;
 
-    const { data: kelasTujuan, error: kelasTujuanError } = await supabase
-      .from("kelas")
-      .select("*")
-      .eq("jenjang", kelasAsal.jenjang)
-      .eq("tingkat", tingkatTujuan)
-      .limit(1)
-      .single();
+    let kelasTujuan = null;
 
-    if (kelasTujuanError || !kelasTujuan) {
-      return res.status(404).json({
-        success: false,
-        message: `Kelas tujuan tingkat ${tingkatTujuan} tidak ditemukan.`,
-        error: kelasTujuanError?.message,
-      });
-    }
+const { data: kelasTujuanList, error: kelasTujuanError } = await supabase
+  .from("kelas")
+  .select("*")
+  .eq("jenjang", kelasAsal.jenjang)
+  .eq("tingkat", String(tingkatTujuan))
+  .eq("status", "aktif")
+  .limit(1);
+
+if (kelasTujuanError) {
+  return res.status(500).json({
+    success: false,
+    message: "Gagal mencari kelas tujuan.",
+    error: kelasTujuanError.message,
+  });
+}
+
+kelasTujuan = kelasTujuanList?.[0] || null;
+
+/*
+  Jika kelas tujuan belum ada,
+  sistem otomatis membuat kelas baru.
+  Contoh:
+  SMP kelas 7 -> dibuat SMP Kelas 8
+  SMK kelas 10 RPL -> dibuat SMK Kelas 11 RPL
+*/
+if (!kelasTujuan) {
+  const namaKelasTujuan = kelasAsal.jurusan
+    ? `${kelasAsal.jenjang} Kelas ${tingkatTujuan} ${kelasAsal.jurusan}`
+    : `${kelasAsal.jenjang} Kelas ${tingkatTujuan}`;
+
+  const { data: kelasBaru, error: createKelasError } = await supabase
+    .from("kelas")
+    .insert([
+      {
+        jenjang: kelasAsal.jenjang,
+        nama_kelas: namaKelasTujuan,
+        tingkat: String(tingkatTujuan),
+        jurusan: kelasAsal.jurusan || null,
+        wali_guru_id: null,
+        tahun_ajaran: kelasAsal.tahun_ajaran || null,
+        semester: kelasAsal.semester || null,
+        deskripsi: `Kelas otomatis dibuat dari proses kenaikan kelas.`,
+        status: "aktif",
+      },
+    ])
+    .select("*")
+    .single();
+
+  if (createKelasError) {
+    return res.status(500).json({
+      success: false,
+      message: `Kelas tujuan tingkat ${tingkatTujuan} belum ada dan gagal dibuat otomatis.`,
+      error: createKelasError.message,
+    });
+  }
+
+  kelasTujuan = kelasBaru;
+}
 
     let updateKelasSiswaError = null;
 
@@ -2007,12 +2063,12 @@ const labelKelasTujuan =
 const { error: updateSantriError } = await supabase
   .from("santri")
   .update({
-    kelas: labelKelasTujuan,
+    kelas: String(tingkatTujuan),
     jenjang: kelasTujuan.jenjang || santri.jenjang,
     updated_at: now,
   })
   .eq("id", santri.id);
-
+  
 if (updateSantriError) {
   return res.status(500).json({
     success: false,
