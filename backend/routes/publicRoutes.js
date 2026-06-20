@@ -455,7 +455,7 @@ const fasilitasPageData = {
   facilities: [
     {
       id: 1,
-      name: "Masjid Al-Barokah",
+      name: "Masjid Al-Furqon",
       desc: "Pusat ibadah, kajian, dzikir, shalat berjamaah, dan pembinaan spiritual santri setiap hari.",
       detail:
         "Masjid menjadi pusat kehidupan pesantren. Santri dibiasakan menjaga ibadah, mengikuti kajian, dan membangun kedekatan dengan Al-Qur’an dalam suasana yang nyaman.",
