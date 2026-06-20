@@ -1081,60 +1081,51 @@ router.put("/pembayaran/cicilan/:id/verify", async (req, res) => {
   }
 });
 
-router.get("/pembayaran/cicilan", async (req, res) => {
+router.put("/pembayaran/cicilan/:id/reject", async (req, res) => {
   try {
-    const { data, error } = await supabase
+    const { id } = req.params;
+    const { catatan_admin } = req.body;
+
+    const { data: cicilan, error: findError } = await supabase
       .from("pembayaran_cicilan")
-      .select(`
-        id,
-        pembayaran_id,
-        tagihan_id,
-        santri_id,
-        nominal_cicilan,
-        metode,
-        bukti_transfer,
-        status,
-        tanggal_bayar,
-        verified_at,
-        catatan_admin,
-        created_at,
+      .select("*")
+      .eq("id", id)
+      .single();
 
-        santri:santri_id (
-          id,
-          nama,
-          nisn,
-          kelas,
-          jenjang
-        ),
+    if (findError || !cicilan) {
+      return res.status(404).json({
+        success: false,
+        message: "Data cicilan tidak ditemukan.",
+        error: findError?.message,
+      });
+    }
 
-        pembayaran:pembayaran_id (
-          id,
-          jenis,
-          nominal,
-          nominal_dibayar,
-          status
-        )
-      `)
-      .order("created_at", { ascending: false });
+    const { error } = await supabase
+      .from("pembayaran_cicilan")
+      .update({
+        status: "ditolak",
+        catatan_admin: catatan_admin || "Cicilan ditolak admin.",
+      })
+      .eq("id", id);
 
     if (error) {
       return res.status(400).json({
         success: false,
-        message: "Gagal mengambil data cicilan.",
+        message: "Gagal menolak cicilan.",
         error: error.message,
       });
     }
 
     return res.json({
       success: true,
-      data: data || [],
+      message: "Cicilan berhasil ditolak.",
     });
   } catch (error) {
-    console.error("GET CICILAN ERROR:", error);
+    console.error("REJECT CICILAN ERROR:", error);
 
     return res.status(500).json({
       success: false,
-      message: "Terjadi kesalahan server saat mengambil cicilan.",
+      message: "Terjadi kesalahan server saat menolak cicilan.",
       error: error.message,
     });
   }

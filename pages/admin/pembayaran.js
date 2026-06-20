@@ -52,7 +52,7 @@ const initialForm = {
 export default function AdminPembayaran() {
   const [data, setData] = useState([]);
   const [santri, setSantri] = useState([]);
-
+  const [cicilanData, setCicilanData] = useState([]);
   const [serverMaintenance, setServerMaintenance] = useState(false);
   const [serverMessage, setServerMessage] = useState("");
 
@@ -73,9 +73,10 @@ export default function AdminPembayaran() {
   const [form, setForm] = useState(initialForm);
 
   useEffect(() => {
-    getData();
-    getSantri();
-  }, []);
+  getData();
+  getSantri();
+  getCicilanData();
+}, []);
 
   const isServerError = (error) => {
     const message = String(error?.message || "");
@@ -89,6 +90,19 @@ export default function AdminPembayaran() {
       message.includes("NEXT_PUBLIC_API_URL")
     );
   };
+
+  const getCicilanData = async () => {
+  try {
+    const result = await fetchJson(`${API_URL}/api/admin/pembayaran/cicilan`, {
+      cache: "no-store",
+    });
+
+    setCicilanData(result.data || []);
+  } catch (error) {
+    console.error("GET CICILAN ERROR:", error);
+    setCicilanData([]);
+  }
+};
 
   const showMaintenancePopup = (
     message = "Server backend belum aktif atau sedang maintenance. Jalankan backend Express terlebih dahulu."
@@ -196,6 +210,78 @@ export default function AdminPembayaran() {
       setLoadingPage(false);
     }
   };
+
+  const verifyCicilan = async (item) => {
+  const yakin = confirm(
+    `Verifikasi cicilan ${item.santri?.nama || "santri"} sebesar ${formatRupiah(
+      item.nominal_cicilan
+    )}?`
+  );
+
+  if (!yakin) return;
+
+  try {
+    setLoadingAction(true);
+
+    const result = await fetchJson(
+      `${API_URL}/api/admin/pembayaran/cicilan/${item.id}/verify`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...getAdminPayload(),
+        }),
+      }
+    );
+
+    alert(result.message || "Cicilan berhasil diverifikasi.");
+    getData();
+    getCicilanData();
+  } catch (error) {
+    console.error(error);
+    alert(error.message || "Gagal verifikasi cicilan.");
+  } finally {
+    setLoadingAction(false);
+  }
+};
+
+const rejectCicilan = async (item) => {
+  const yakin = confirm(
+    `Tolak cicilan ${item.santri?.nama || "santri"} sebesar ${formatRupiah(
+      item.nominal_cicilan
+    )}?`
+  );
+
+  if (!yakin) return;
+
+  try {
+    setLoadingAction(true);
+
+    const result = await fetchJson(
+      `${API_URL}/api/admin/pembayaran/cicilan/${item.id}/reject`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...getAdminPayload(),
+        }),
+      }
+    );
+
+    alert(result.message || "Cicilan berhasil ditolak.");
+    getData();
+    getCicilanData();
+  } catch (error) {
+    console.error(error);
+    alert(error.message || "Gagal menolak cicilan.");
+  } finally {
+    setLoadingAction(false);
+  }
+};
 
   const getSantri = async () => {
     try {
@@ -806,6 +892,96 @@ if (checking) {
                     formatRupiah={formatRupiah}
                   />
                 )}
+
+                {tab === "riwayat" && cicilanData.length > 0 && (
+  <div className="p-4 sm:p-6">
+    <div className="mb-4 rounded-3xl border border-yellow-300 bg-yellow-50 p-5">
+      <h3 className="text-xl font-black text-[#1F1607]">
+        Cicilan Menunggu Verifikasi
+      </h3>
+      <p className="mt-1 text-sm font-semibold text-slate-600">
+        Ini adalah nominal cicilan yang dikirim santri, bukan total tagihan.
+      </p>
+    </div>
+
+    <div className="grid gap-5 md:grid-cols-2">
+      {cicilanData
+        .filter((item) => item.status === "pending")
+        .map((item) => (
+          <div
+            key={item.id}
+            className="rounded-[30px] border border-[#E5D6AA] bg-white p-6 shadow-xl"
+          >
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h3 className="text-2xl font-black text-[#064E3B]">
+                  {item.santri?.nama || "Santri"}
+                </h3>
+
+                <p className="mt-1 text-sm font-bold text-slate-500">
+                  {item.pembayaran?.jenis || "Pembayaran"}
+                </p>
+              </div>
+
+              <span className="rounded-full bg-yellow-100 px-3 py-1 text-xs font-black text-yellow-700">
+                Menunggu Verifikasi
+              </span>
+            </div>
+
+            <div className="mt-5 rounded-3xl bg-emerald-50 p-5">
+              <p className="text-xs font-black uppercase text-slate-500">
+                Nominal Cicilan
+              </p>
+
+              <h2 className="mt-2 text-4xl font-black text-[#064E3B]">
+                {formatRupiah(item.nominal_cicilan)}
+              </h2>
+
+              <p className="mt-2 text-sm font-bold text-slate-600">
+                Total tagihan: {formatRupiah(item.pembayaran?.nominal || 0)}
+              </p>
+
+              <p className="mt-1 text-sm font-bold text-slate-600">
+                Sudah dibayar:{" "}
+                {formatRupiah(item.pembayaran?.nominal_dibayar || 0)}
+              </p>
+            </div>
+
+            {item.bukti_transfer && (
+              <button
+                type="button"
+                onClick={() => setPreviewImage(item.bukti_transfer)}
+                className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 font-black text-emerald-700"
+              >
+                <FaEye />
+                Lihat Bukti Cicilan
+              </button>
+            )}
+
+            <div className="mt-5 grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => verifyCicilan(item)}
+                disabled={loadingAction}
+                className="rounded-2xl bg-[#064E3B] px-4 py-4 font-black text-white"
+              >
+                Verifikasi Cicilan
+              </button>
+
+              <button
+                type="button"
+                onClick={() => rejectCicilan(item)}
+                disabled={loadingAction}
+                className="rounded-2xl bg-red-500 px-4 py-4 font-black text-white"
+              >
+                Tolak
+              </button>
+            </div>
+          </div>
+        ))}
+    </div>
+  </div>
+)}
 
                 {tab === "riwayat" && (
                   <RiwayatPembayaran
