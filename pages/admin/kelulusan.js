@@ -7,6 +7,9 @@ import {
   FaHourglassHalf,
   FaExchangeAlt,
   FaUserGraduate,
+  FaChevronDown,
+  FaChevronRight,
+  FaSchool,
 } from "react-icons/fa";
 import SidebarAdmin from "./sidebar";
 
@@ -99,12 +102,16 @@ export default function AdminKelulusanPage() {
   const [processingId, setProcessingId] = useState("");
   const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState("semua");
+  const [openKelas, setOpenKelas] = useState({});
 
   const fetchKelulusan = async () => {
     try {
       setLoading(true);
 
-      const res = await fetch(`${API_URL}/api/admin/kelulusan`);
+      const res = await fetch(`${API_URL}/api/admin/kelulusan`, {
+        cache: "no-store",
+      });
+
       const result = await res.json();
 
       if (!res.ok || !result.success) {
@@ -134,7 +141,8 @@ export default function AdminKelulusanPage() {
         String(item.nis || "").toLowerCase().includes(keyword) ||
         String(item.nama_guru || "").toLowerCase().includes(keyword) ||
         String(item.nama_kelas || "").toLowerCase().includes(keyword) ||
-        String(item.status_kenaikan || "").toLowerCase().includes(keyword);
+        String(item.status_kenaikan || "").toLowerCase().includes(keyword) ||
+        String(item.status_kelulusan || "").toLowerCase().includes(keyword);
 
       const matchStatus =
         filterStatus === "semua" ||
@@ -144,6 +152,69 @@ export default function AdminKelulusanPage() {
       return matchKeyword && matchStatus;
     });
   }, [dataKelulusan, search, filterStatus]);
+
+  const groupedByKelas = useMemo(() => {
+    const map = new Map();
+
+    filteredData.forEach((item) => {
+      const kelasId =
+        item.kelas?.id ||
+        item.kelas_id ||
+        item.nama_kelas ||
+        item.santri?.kelas ||
+        "tanpa-kelas";
+
+      const namaKelas =
+        item.nama_kelas ||
+        item.kelas?.nama_kelas ||
+        item.santri?.kelas ||
+        "Tanpa Kelas";
+
+      if (!map.has(kelasId)) {
+        map.set(kelasId, {
+          id: kelasId,
+          nama_kelas: namaKelas,
+          jenjang: item.kelas?.jenjang || item.santri?.jenjang || "-",
+          tingkat: item.kelas?.tingkat || item.santri?.kelas || "-",
+          data: [],
+        });
+      }
+
+      map.get(kelasId).data.push(item);
+    });
+
+    return Array.from(map.values()).sort((a, b) => {
+      const jenjangA = String(a.jenjang || "");
+      const jenjangB = String(b.jenjang || "");
+
+      if (jenjangA !== jenjangB) {
+        return jenjangA.localeCompare(jenjangB);
+      }
+
+      return String(a.tingkat || "").localeCompare(String(b.tingkat || ""));
+    });
+  }, [filteredData]);
+
+  const toggleKelas = (kelasId) => {
+    setOpenKelas((prev) => ({
+      ...prev,
+      [kelasId]: !prev[kelasId],
+    }));
+  };
+
+  const openAllKelas = () => {
+    const next = {};
+
+    groupedByKelas.forEach((kelas) => {
+      next[kelas.id] = true;
+    });
+
+    setOpenKelas(next);
+  };
+
+  const closeAllKelas = () => {
+    setOpenKelas({});
+  };
 
   const getAdminId = () => {
     try {
@@ -246,7 +317,8 @@ export default function AdminKelulusanPage() {
   };
 
   const totalPending = dataKelulusan.filter(
-    (item) => String(item.status_verifikasi || "pending") === "pending"
+    (item) =>
+      String(item.status_verifikasi || "pending").toLowerCase() === "pending"
   ).length;
 
   const totalDisetujui = dataKelulusan.filter(
@@ -259,7 +331,8 @@ export default function AdminKelulusanPage() {
 
   const totalBelumDiproses = dataKelulusan.filter(
     (item) =>
-      String(item.status_kenaikan || "belum_diproses") === "belum_diproses"
+      String(item.status_kenaikan || "belum_diproses").toLowerCase() ===
+      "belum_diproses"
   ).length;
 
   return (
@@ -295,8 +368,8 @@ export default function AdminKelulusanPage() {
                 </h1>
 
                 <p className="mt-2 max-w-3xl text-sm leading-relaxed text-emerald-100">
-                  Admin memeriksa data kelulusan dari guru, menyetujui atau
-                  menolak, lalu memproses kenaikan kelas santri.
+                  Admin melihat data kelulusan berdasarkan kelas terlebih
+                  dahulu. Klik kelas untuk melihat daftar santri di dalamnya.
                 </p>
               </div>
 
@@ -350,7 +423,7 @@ export default function AdminKelulusanPage() {
                   type="text"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Cari nama santri, NIS, guru, kelas, atau status..."
+                  placeholder="Cari nama santri, NIS, guru, kelas, kelulusan, atau status..."
                   className="w-full rounded-2xl border border-emerald-100 bg-emerald-50 px-12 py-3 text-sm font-semibold outline-none transition focus:border-emerald-400 focus:bg-white"
                 />
               </div>
@@ -368,168 +441,303 @@ export default function AdminKelulusanPage() {
             </div>
           </div>
 
-          <div className="mt-6 overflow-hidden rounded-[30px] bg-white shadow-sm">
+          <div className="mt-6 rounded-[30px] bg-white p-4 shadow-sm">
             {loading ? (
               <div className="p-8 text-center font-bold text-emerald-700">
                 Mengambil data kelulusan...
               </div>
-            ) : filteredData.length === 0 ? (
+            ) : groupedByKelas.length === 0 ? (
               <div className="p-8 text-center font-bold text-emerald-700">
                 Belum ada data kelulusan.
               </div>
             ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full min-w-[1450px] border-collapse">
-                  <thead>
-                    <tr className="bg-emerald-800 text-left text-xs uppercase tracking-wider text-white">
-                      <th className="px-5 py-4">Santri</th>
-                      <th className="px-5 py-4">Kelas</th>
-                      <th className="px-5 py-4">Guru</th>
-                      <th className="px-5 py-4">Kelulusan</th>
-                      <th className="px-5 py-4">Verifikasi</th>
-                      <th className="px-5 py-4">Kenaikan</th>
-                      <th className="px-5 py-4">Catatan</th>
-                      <th className="px-5 py-4">Aksi</th>
-                    </tr>
-                  </thead>
+              <div className="space-y-4">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <h2 className="text-xl font-black text-emerald-950">
+                      Daftar Kelulusan Berdasarkan Kelas
+                    </h2>
 
-                  <tbody>
-                    {filteredData.map((item) => {
-                      const statusKenaikan =
-                        item.status_kenaikan || "belum_diproses";
+                    <p className="mt-1 text-sm font-semibold text-slate-500">
+                      Klik salah satu kelas untuk melihat daftar santri.
+                    </p>
+                  </div>
 
-                      const bisaProsesKelas =
-                        item.status_verifikasi === "disetujui" &&
-                        statusKenaikan === "belum_diproses";
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={openAllKelas}
+                      className="rounded-xl bg-emerald-700 px-4 py-2 text-xs font-black text-white transition hover:bg-emerald-800"
+                    >
+                      Buka Semua
+                    </button>
 
-                      return (
-                        <tr
-                          key={item.id}
-                          className="border-b border-emerald-50 align-top"
-                        >
-                          <td className="px-5 py-4">
-                            <p className="font-black text-emerald-950">
-                              {item.nama_santri || item.santri?.nama || "-"}
-                            </p>
+                    <button
+                      type="button"
+                      onClick={closeAllKelas}
+                      className="rounded-xl bg-slate-100 px-4 py-2 text-xs font-black text-slate-700 transition hover:bg-slate-200"
+                    >
+                      Tutup Semua
+                    </button>
+                  </div>
+                </div>
 
-                            <p className="mt-1 text-xs font-semibold text-emerald-600">
-                              NIS/NISN: {item.nis || "-"}
-                            </p>
-                          </td>
+                {groupedByKelas.map((kelas) => {
+                  const isOpen = !!openKelas[kelas.id];
 
-                          <td className="px-5 py-4 text-sm font-bold">
-                            {item.nama_kelas || "-"}
-                          </td>
+                  const totalSantri = kelas.data.length;
 
-                          <td className="px-5 py-4 text-sm font-bold">
-                            {item.nama_guru || "-"}
-                          </td>
+                  const totalPendingKelas = kelas.data.filter(
+                    (item) =>
+                      String(
+                        item.status_verifikasi || "pending"
+                      ).toLowerCase() === "pending"
+                  ).length;
 
-                          <td className="px-5 py-4">
-                            <BadgeKelulusan status={item.status_kelulusan} />
-                          </td>
+                  const totalDisetujuiKelas = kelas.data.filter(
+                    (item) => item.status_verifikasi === "disetujui"
+                  ).length;
 
-                          <td className="px-5 py-4">
-                            <BadgeVerifikasi
-                              status={item.status_verifikasi}
-                            />
-                          </td>
+                  const totalDitolakKelas = kelas.data.filter(
+                    (item) => item.status_verifikasi === "ditolak"
+                  ).length;
 
-                          <td className="px-5 py-4">
-                            <BadgeKenaikan status={statusKenaikan} />
+                  const totalBelumDiprosesKelas = kelas.data.filter(
+                    (item) =>
+                      String(
+                        item.status_kenaikan || "belum_diproses"
+                      ).toLowerCase() === "belum_diproses"
+                  ).length;
 
-                            {item.kelas_tujuan?.nama_kelas && (
-                              <p className="mt-2 text-xs font-semibold text-slate-500">
-                                Tujuan: {item.kelas_tujuan.nama_kelas}
-                              </p>
-                            )}
-                          </td>
+                  return (
+                    <div
+                      key={kelas.id}
+                      className="overflow-hidden rounded-[28px] border border-emerald-100 bg-gradient-to-br from-white to-emerald-50 shadow-sm"
+                    >
+                      <button
+                        type="button"
+                        onClick={() => toggleKelas(kelas.id)}
+                        className="flex w-full flex-col gap-4 p-5 text-left transition hover:bg-emerald-50 lg:flex-row lg:items-center lg:justify-between"
+                      >
+                        <div className="flex min-w-0 items-start gap-4">
+                          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-emerald-700 text-xl text-white">
+                            <FaSchool />
+                          </div>
 
-                          <td className="px-5 py-4">
-                            <div className="max-w-sm space-y-2 text-sm">
-                              <div className="rounded-2xl bg-emerald-50 p-3">
-                                <p className="text-xs font-black text-emerald-700">
-                                  Guru
-                                </p>
+                          <div className="min-w-0">
+                            <div className="flex flex-wrap items-center gap-2">
+                              <h3 className="text-xl font-black text-emerald-950">
+                                {kelas.nama_kelas}
+                              </h3>
 
-                                <p className="mt-1 text-slate-600">
-                                  {item.catatan_guru || "-"}
-                                </p>
-                              </div>
-
-                              {item.catatan_admin && (
-                                <div className="rounded-2xl bg-yellow-50 p-3">
-                                  <p className="text-xs font-black text-yellow-700">
-                                    Admin
-                                  </p>
-
-                                  <p className="mt-1 text-slate-600">
-                                    {item.catatan_admin}
-                                  </p>
-                                </div>
-                              )}
+                              <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-black text-emerald-700">
+                                {kelas.jenjang}
+                              </span>
                             </div>
-                          </td>
 
-                          <td className="px-5 py-4">
-                            <div className="flex min-w-[220px] flex-wrap gap-2">
-                              <button
-                                type="button"
-                                disabled={processingId === item.id}
-                                onClick={() =>
-                                  handleVerifikasi(item.id, "disetujui")
-                                }
-                                className="inline-flex items-center gap-2 rounded-xl bg-green-600 px-3 py-2 text-xs font-black text-white transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-60"
-                              >
-                                <FaCheckCircle />
-                                Setujui
-                              </button>
+                            <p className="mt-1 text-sm font-semibold text-slate-500">
+                              Total {totalSantri} santri mengajukan kelulusan
+                            </p>
+                          </div>
+                        </div>
 
-                              <button
-                                type="button"
-                                disabled={processingId === item.id}
-                                onClick={() =>
-                                  handleVerifikasi(item.id, "ditolak")
-                                }
-                                className="inline-flex items-center gap-2 rounded-xl bg-red-600 px-3 py-2 text-xs font-black text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60"
-                              >
-                                <FaTimesCircle />
-                                Tolak
-                              </button>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="rounded-full bg-yellow-100 px-3 py-1 text-xs font-black text-yellow-700">
+                            Pending {totalPendingKelas}
+                          </span>
 
-                              {bisaProsesKelas && (
-                                <button
-                                  type="button"
-                                  disabled={processingId === item.id}
-                                  onClick={() => handleProsesKelas(item.id)}
-                                  className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-3 py-2 text-xs font-black text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
-                                >
-                                  <FaExchangeAlt />
-                                  Proses Kelas
-                                </button>
-                              )}
+                          <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-black text-green-700">
+                            Disetujui {totalDisetujuiKelas}
+                          </span>
 
-                              {!bisaProsesKelas &&
-                                item.status_verifikasi === "disetujui" && (
-                                  <span className="inline-flex items-center gap-2 rounded-xl bg-slate-100 px-3 py-2 text-xs font-black text-slate-600">
-                                    <FaUserGraduate />
-                                    Sudah diproses
-                                  </span>
-                                )}
+                          <span className="rounded-full bg-red-100 px-3 py-1 text-xs font-black text-red-700">
+                            Ditolak {totalDitolakKelas}
+                          </span>
 
-                              {item.status_verifikasi !== "disetujui" && (
-                                <span className="inline-flex items-center gap-2 rounded-xl bg-yellow-50 px-3 py-2 text-xs font-black text-yellow-700">
-                                  <FaHourglassHalf />
-                                  Tunggu setujui
-                                </span>
-                              )}
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
+                          <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-black text-blue-700">
+                            Belum Diproses {totalBelumDiprosesKelas}
+                          </span>
+
+                          <span className="ml-1 flex h-10 w-10 items-center justify-center rounded-xl bg-white text-emerald-700 shadow-sm">
+                            {isOpen ? <FaChevronDown /> : <FaChevronRight />}
+                          </span>
+                        </div>
+                      </button>
+
+                      {isOpen && (
+                        <div className="border-t border-emerald-100 bg-white">
+                          <div className="overflow-x-auto">
+                            <table className="w-full min-w-[1450px] border-collapse">
+                              <thead>
+                                <tr className="bg-emerald-800 text-left text-xs uppercase tracking-wider text-white">
+                                  <th className="px-5 py-4">Santri</th>
+                                  <th className="px-5 py-4">Guru/Wali</th>
+                                  <th className="px-5 py-4">Kelulusan</th>
+                                  <th className="px-5 py-4">Verifikasi</th>
+                                  <th className="px-5 py-4">Kenaikan</th>
+                                  <th className="px-5 py-4">Catatan</th>
+                                  <th className="px-5 py-4">Aksi</th>
+                                </tr>
+                              </thead>
+
+                              <tbody>
+                                {kelas.data.map((item) => {
+                                  const statusKenaikan =
+                                    item.status_kenaikan || "belum_diproses";
+
+                                  const bisaProsesKelas =
+                                    item.status_verifikasi === "disetujui" &&
+                                    statusKenaikan === "belum_diproses";
+
+                                  return (
+                                    <tr
+                                      key={item.id}
+                                      className="border-b border-emerald-50 align-top"
+                                    >
+                                      <td className="px-5 py-4">
+                                        <p className="font-black text-emerald-950">
+                                          {item.nama_santri ||
+                                            item.santri?.nama ||
+                                            "-"}
+                                        </p>
+
+                                        <p className="mt-1 text-xs font-semibold text-emerald-600">
+                                          NIS/NISN: {item.nis || "-"}
+                                        </p>
+                                      </td>
+
+                                      <td className="px-5 py-4 text-sm font-bold">
+                                        {item.nama_guru || "-"}
+                                      </td>
+
+                                      <td className="px-5 py-4">
+                                        <BadgeKelulusan
+                                          status={item.status_kelulusan}
+                                        />
+                                      </td>
+
+                                      <td className="px-5 py-4">
+                                        <BadgeVerifikasi
+                                          status={item.status_verifikasi}
+                                        />
+                                      </td>
+
+                                      <td className="px-5 py-4">
+                                        <BadgeKenaikan
+                                          status={statusKenaikan}
+                                        />
+
+                                        {item.kelas_tujuan?.nama_kelas && (
+                                          <p className="mt-2 text-xs font-semibold text-slate-500">
+                                            Tujuan:{" "}
+                                            {item.kelas_tujuan.nama_kelas}
+                                          </p>
+                                        )}
+                                      </td>
+
+                                      <td className="px-5 py-4">
+                                        <div className="max-w-sm space-y-2 text-sm">
+                                          <div className="rounded-2xl bg-emerald-50 p-3">
+                                            <p className="text-xs font-black text-emerald-700">
+                                              Guru
+                                            </p>
+
+                                            <p className="mt-1 text-slate-600">
+                                              {item.catatan_guru || "-"}
+                                            </p>
+                                          </div>
+
+                                          {item.catatan_admin && (
+                                            <div className="rounded-2xl bg-yellow-50 p-3">
+                                              <p className="text-xs font-black text-yellow-700">
+                                                Admin
+                                              </p>
+
+                                              <p className="mt-1 text-slate-600">
+                                                {item.catatan_admin}
+                                              </p>
+                                            </div>
+                                          )}
+                                        </div>
+                                      </td>
+
+                                      <td className="px-5 py-4">
+                                        <div className="flex min-w-[220px] flex-wrap gap-2">
+                                          <button
+                                            type="button"
+                                            disabled={processingId === item.id}
+                                            onClick={() =>
+                                              handleVerifikasi(
+                                                item.id,
+                                                "disetujui"
+                                              )
+                                            }
+                                            className="inline-flex items-center gap-2 rounded-xl bg-green-600 px-3 py-2 text-xs font-black text-white transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-60"
+                                          >
+                                            <FaCheckCircle />
+                                            Setujui
+                                          </button>
+
+                                          <button
+                                            type="button"
+                                            disabled={processingId === item.id}
+                                            onClick={() =>
+                                              handleVerifikasi(
+                                                item.id,
+                                                "ditolak"
+                                              )
+                                            }
+                                            className="inline-flex items-center gap-2 rounded-xl bg-red-600 px-3 py-2 text-xs font-black text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60"
+                                          >
+                                            <FaTimesCircle />
+                                            Tolak
+                                          </button>
+
+                                          {bisaProsesKelas && (
+                                            <button
+                                              type="button"
+                                              disabled={
+                                                processingId === item.id
+                                              }
+                                              onClick={() =>
+                                                handleProsesKelas(item.id)
+                                              }
+                                              className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-3 py-2 text-xs font-black text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+                                            >
+                                              <FaExchangeAlt />
+                                              Proses Kelas
+                                            </button>
+                                          )}
+
+                                          {!bisaProsesKelas &&
+                                            item.status_verifikasi ===
+                                              "disetujui" && (
+                                              <span className="inline-flex items-center gap-2 rounded-xl bg-slate-100 px-3 py-2 text-xs font-black text-slate-600">
+                                                <FaUserGraduate />
+                                                Sudah diproses
+                                              </span>
+                                            )}
+
+                                          {item.status_verifikasi !==
+                                            "disetujui" && (
+                                            <span className="inline-flex items-center gap-2 rounded-xl bg-yellow-50 px-3 py-2 text-xs font-black text-yellow-700">
+                                              <FaHourglassHalf />
+                                              Menunggu verifikasi
+                                            </span>
+                                          )}
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  );
+                                })}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             )}
           </div>
