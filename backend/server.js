@@ -138,6 +138,13 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/owner", ownerRoutes);
 app.use("/api/guru", guruRoutes);
 
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: "Endpoint tidak ditemukan",
+  });
+});
+
 /* =========================================================
    404 HANDLER
 ========================================================= */
