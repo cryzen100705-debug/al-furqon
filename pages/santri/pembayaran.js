@@ -807,9 +807,41 @@ function PaymentCard({
                 Tagihan pembayaran santri Pondok Pesantren Al-Furqon.
               </p>
 
-              <h1 className="mt-5 text-[clamp(2rem,6vw,4rem)] font-black tracking-[-0.06em] text-[#1F1607]">
-                {formatRupiah(item.nominal)}
-              </h1>
+              <div className="mt-5">
+  {Number(item.nominal_dibayar || 0) > 0 &&
+  Number(item.nominal_dibayar || 0) < Number(item.nominal || 0) ? (
+    <div>
+      <div className="flex flex-wrap items-end gap-3">
+        <span className="text-2xl font-black tracking-[-0.04em] text-slate-400 line-through sm:text-3xl">
+          {formatRupiah(item.nominal)}
+        </span>
+
+        <span className="text-[clamp(2rem,6vw,4rem)] font-black tracking-[-0.06em] text-[#1F1607]">
+          {formatRupiah(
+            Number(item.nominal || 0) - Number(item.nominal_dibayar || 0)
+          )}
+        </span>
+      </div>
+
+      <div className="mt-3 inline-flex flex-wrap items-center gap-2 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-black text-emerald-700">
+        <span>
+          Sudah dibayar: {formatRupiah(item.nominal_dibayar || 0)}
+        </span>
+        <span className="text-slate-400">•</span>
+        <span>
+          Sisa tagihan:{" "}
+          {formatRupiah(
+            Number(item.nominal || 0) - Number(item.nominal_dibayar || 0)
+          )}
+        </span>
+      </div>
+    </div>
+  ) : (
+    <h1 className="text-[clamp(2rem,6vw,4rem)] font-black tracking-[-0.06em] text-[#1F1607]">
+      {formatRupiah(item.nominal)}
+    </h1>
+  )}
+</div>
             </div>
           </div>
 
