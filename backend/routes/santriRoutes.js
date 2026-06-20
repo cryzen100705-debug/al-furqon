@@ -482,7 +482,7 @@ router.post(
   async (req, res) => {
     try {
       const { pembayaran_id } = req.params;
-      const { metode, user_id } = req.body;
+      const { metode, user_id, nominal_bayar } = req.body;
 
       if (!pembayaran_id) {
         return res.status(400).json({
@@ -502,6 +502,13 @@ router.post(
         return res.status(400).json({
           success: false,
           message: "Metode pembayaran wajib dipilih.",
+        });
+      }
+
+      if (!nominal_bayar || Number(nominal_bayar) <= 0) {
+        return res.status(400).json({
+          success: false,
+          message: "Nominal cicilan wajib diisi dan harus lebih dari 0.",
         });
       }
 
@@ -526,8 +533,44 @@ router.post(
         });
       }
 
+      const { data: pembayaran, error: pembayaranError } = await supabase
+        .from("pembayaran")
+        .select("*")
+        .eq("id", pembayaran_id)
+        .eq("santri_id", santri.id)
+        .single();
+
+      if (pembayaranError || !pembayaran) {
+        return res.status(404).json({
+          success: false,
+          message: "Data pembayaran tidak ditemukan.",
+          error: pembayaranError?.message,
+        });
+      }
+
+      if (pembayaran.status === "lunas") {
+        return res.status(400).json({
+          success: false,
+          message: "Tagihan ini sudah lunas.",
+        });
+      }
+
+      const nominalTagihan = Number(pembayaran.nominal || 0);
+      const nominalSudahDibayar = Number(pembayaran.nominal_dibayar || 0);
+      const sisaPembayaran = nominalTagihan - nominalSudahDibayar;
+      const nominalCicilan = Number(nominal_bayar);
+
+      if (nominalCicilan > sisaPembayaran) {
+        return res.status(400).json({
+          success: false,
+          message: `Nominal cicilan melebihi sisa tagihan. Sisa tagihan: Rp ${sisaPembayaran.toLocaleString(
+            "id-ID"
+          )}.`,
+        });
+      }
+
       const fileExt = req.file.originalname.split(".").pop();
-      const fileName = `bukti-${pembayaran_id}-${Date.now()}.${fileExt}`;
+      const fileName = `cicilan-${pembayaran_id}-${Date.now()}.${fileExt}`;
       const filePath = `pembayaran/${santri.id}/${fileName}`;
 
       const { error: uploadError } = await supabase.storage
@@ -540,7 +583,7 @@ router.post(
       if (uploadError) {
         return res.status(500).json({
           success: false,
-          message: "Gagal upload bukti pembayaran.",
+          message: "Gagal upload bukti cicilan.",
           error: uploadError.message,
         });
       }
@@ -551,33 +594,60 @@ router.post(
 
       const buktiUrl = publicUrlData.publicUrl;
 
-      const { data: updated, error: updateError } = await supabase
-        .from("pembayaran")
-        .update({
-          metode,
-          bukti_transfer: buktiUrl,
-          status: "pending",
-        })
-        .eq("id", pembayaran_id)
-        .eq("santri_id", santri.id)
+      const { data: cicilanData, error: cicilanError } = await supabase
+        .from("pembayaran_cicilan")
+        .insert([
+          {
+            pembayaran_id: pembayaran.id,
+            tagihan_id: pembayaran.tagihan_id,
+            santri_id: santri.id,
+            nominal_cicilan: nominalCicilan,
+            metode,
+            bukti_transfer: buktiUrl,
+            status: "pending",
+            tanggal_bayar: new Date().toISOString(),
+          },
+        ])
         .select()
         .single();
 
-      if (updateError) {
-        return res.status(500).json({
+      if (cicilanError) {
+        return res.status(400).json({
           success: false,
-          message: "Gagal update pembayaran.",
-          error: updateError.message,
+          message: "Gagal menyimpan data cicilan.",
+          error: cicilanError.message,
         });
+      }
+
+      await supabase
+        .from("pembayaran")
+        .update({
+          status: "pending",
+          metode,
+          bukti_transfer: buktiUrl,
+          tanggal_bayar: new Date().toISOString(),
+        })
+        .eq("id", pembayaran.id);
+
+      if (pembayaran.tagihan_id) {
+        await supabase
+          .from("tagihan")
+          .update({
+            status: "pending",
+            metode,
+            tanggal_bayar: new Date().toISOString(),
+          })
+          .eq("id", pembayaran.tagihan_id);
       }
 
       return res.json({
         success: true,
-        message: "Bukti pembayaran berhasil dikirim. Menunggu verifikasi admin.",
-        data: updated,
+        message:
+          "Cicilan berhasil dikirim. Menunggu verifikasi admin.",
+        data: cicilanData,
       });
     } catch (error) {
-      console.error("KONFIRMASI PEMBAYARAN BY ID ERROR:", error.message);
+      console.error("KONFIRMASI CICILAN ERROR:", error.message);
 
       return res.status(500).json({
         success: false,
@@ -821,6 +891,7 @@ router.get("/pembayaran/:user_id", async (req, res) => {
         santri_id,
         jenis,
         nominal,
+        nominal_dibayar,
         deadline,
         status,
         metode,

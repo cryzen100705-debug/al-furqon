@@ -99,6 +99,7 @@ export const usePembayaran = () => {
       const formData = new FormData();
 formData.append("user_id", session.user.id);
 formData.append("metode", metode);
+formData.append("nominal_bayar", nominal_bayar);
 formData.append("bukti", file);
 
 const response = await fetch(

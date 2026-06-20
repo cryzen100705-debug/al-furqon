@@ -33,7 +33,7 @@ import {
 
 export default function PembayaranSantri() {
   const fileRefs = useRef({});
-
+  const [selectedAmount, setSelectedAmount] = useState({});
   const { settings } = useSantriSettings();
 
 const isDark = settings.darkMode;
@@ -155,12 +155,13 @@ const theme = {
   };
 
   const handleConfirmPayment = (item) => {
-    bayar({
-      item,
-      metode: selectedMethod[item.id],
-      file: selectedFile[item.id],
-    });
-  };
+  bayar({
+    item,
+    metode: selectedMethod[item.id],
+    file: selectedFile[item.id],
+    nominal_bayar: selectedAmount[item.id],
+  });
+};
 
   const getEmptyMessage = () => {
     if (activeTab === "belum_bayar") {
@@ -605,6 +606,8 @@ if (checking) {
                         selectedMethod={selectedMethod}
                         setSelectedMethod={setSelectedMethod}
                         selectedFile={selectedFile}
+                        selectedAmount={selectedAmount}
+                        setSelectedAmount={setSelectedAmount}
                         setSelectedFile={setSelectedFile}
                         fileRefs={fileRefs}
                         uploadingId={uploadingId}
@@ -743,6 +746,8 @@ function PaymentCard({
   setSelectedMethod,
   selectedFile,
   setSelectedFile,
+  selectedAmount,
+  setSelectedAmount,
   fileRefs,
   uploadingId,
   onConfirm,
@@ -856,6 +861,40 @@ function PaymentCard({
 
               <PaymentInfo method={selectedMethod[item.id]} />
             </div>
+
+            <div>
+  <label className="mb-2 block text-xs font-black uppercase tracking-wide text-slate-500">
+    Nominal Cicilan
+  </label>
+
+  <input
+    type="number"
+    min="1"
+    max={
+      Number(item.nominal || 0) - Number(item.nominal_dibayar || 0)
+    }
+    value={selectedAmount[item.id] || ""}
+    onChange={(e) =>
+      setSelectedAmount({
+        ...selectedAmount,
+        [item.id]: e.target.value,
+      })
+    }
+    placeholder={`Maksimal Rp ${(
+      Number(item.nominal || 0) - Number(item.nominal_dibayar || 0)
+    ).toLocaleString("id-ID")}`}
+    className="h-14 w-full rounded-2xl border border-[#D8C287] bg-white px-4 text-sm font-bold text-slate-700 outline-none transition focus:border-yellow-500 focus:ring-4 focus:ring-yellow-100"
+  />
+
+  <p className="mt-2 text-xs font-bold text-slate-500">
+    Sudah dibayar: Rp{" "}
+    {Number(item.nominal_dibayar || 0).toLocaleString("id-ID")} • Sisa:
+    Rp{" "}
+    {(
+      Number(item.nominal || 0) - Number(item.nominal_dibayar || 0)
+    ).toLocaleString("id-ID")}
+  </p>
+</div>
 
             <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <button

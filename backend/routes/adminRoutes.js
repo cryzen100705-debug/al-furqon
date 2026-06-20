@@ -967,6 +967,120 @@ router.post("/tagihan", async (req, res) => {
   }
 });
 
+router.put("/pembayaran/cicilan/:id/verify", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { catatan_admin } = req.body;
+
+    const { data: cicilan, error: cicilanError } = await supabase
+      .from("pembayaran_cicilan")
+      .select("*")
+      .eq("id", id)
+      .single();
+
+    if (cicilanError || !cicilan) {
+      return res.status(404).json({
+        success: false,
+        message: "Data cicilan tidak ditemukan.",
+        error: cicilanError?.message,
+      });
+    }
+
+    if (cicilan.status === "lunas") {
+      return res.status(400).json({
+        success: false,
+        message: "Cicilan ini sudah diverifikasi.",
+      });
+    }
+
+    const { data: pembayaran, error: pembayaranError } = await supabase
+      .from("pembayaran")
+      .select("*")
+      .eq("id", cicilan.pembayaran_id)
+      .single();
+
+    if (pembayaranError || !pembayaran) {
+      return res.status(404).json({
+        success: false,
+        message: "Data pembayaran utama tidak ditemukan.",
+        error: pembayaranError?.message,
+      });
+    }
+
+    await supabase
+      .from("pembayaran_cicilan")
+      .update({
+        status: "lunas",
+        verified_at: new Date().toISOString(),
+        catatan_admin: catatan_admin || null,
+      })
+      .eq("id", id);
+
+    const { data: cicilanLunas, error: totalError } = await supabase
+      .from("pembayaran_cicilan")
+      .select("nominal_cicilan")
+      .eq("pembayaran_id", cicilan.pembayaran_id)
+      .eq("status", "lunas");
+
+    if (totalError) {
+      return res.status(400).json({
+        success: false,
+        message: "Gagal menghitung total cicilan.",
+        error: totalError.message,
+      });
+    }
+
+    const totalDibayar = (cicilanLunas || []).reduce((sum, item) => {
+      return sum + Number(item.nominal_cicilan || 0);
+    }, 0);
+
+    const nominalTagihan = Number(pembayaran.nominal || 0);
+    const sudahLunas = totalDibayar >= nominalTagihan;
+    const statusAkhir = sudahLunas ? "lunas" : "belum_bayar";
+
+    await supabase
+      .from("pembayaran")
+      .update({
+        nominal_dibayar: totalDibayar,
+        status: statusAkhir,
+        tanggal_bayar: sudahLunas ? new Date().toISOString() : null,
+      })
+      .eq("id", pembayaran.id);
+
+    if (pembayaran.tagihan_id) {
+      await supabase
+        .from("tagihan")
+        .update({
+          nominal_dibayar: totalDibayar,
+          status: statusAkhir,
+          tanggal_bayar: sudahLunas ? new Date().toISOString() : null,
+        })
+        .eq("id", pembayaran.tagihan_id);
+    }
+
+    return res.json({
+      success: true,
+      message: sudahLunas
+        ? "Cicilan diverifikasi. Tagihan sudah lunas."
+        : "Cicilan diverifikasi. Tagihan masih belum lunas.",
+      data: {
+        total_dibayar: totalDibayar,
+        nominal_tagihan: nominalTagihan,
+        sisa: Math.max(nominalTagihan - totalDibayar, 0),
+        status: statusAkhir,
+      },
+    });
+  } catch (error) {
+    console.error("VERIFY CICILAN ERROR:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Terjadi kesalahan server saat verifikasi cicilan.",
+      error: error.message,
+    });
+  }
+});
+
 router.put("/pembayaran/:id/verify", async (req, res) => {
   try {
     const { id } = req.params;
