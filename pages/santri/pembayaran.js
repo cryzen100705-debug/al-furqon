@@ -100,7 +100,8 @@ const theme = {
 };
 
   const [selectedMethod, setSelectedMethod] = useState({});
-  const [selectedFile, setSelectedFile] = useState({});
+const [selectedFile, setSelectedFile] = useState({});
+const [selectedAmount, setSelectedAmount] = useState({});
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
@@ -599,22 +600,23 @@ if (checking) {
                 <div id="daftar-tagihan" className="mt-8 grid gap-6">
                   {filteredTagihan.length > 0 ? (
                     filteredTagihan.map((item, index) => (
+
                       <PaymentCard
-                        key={item.id}
-                        item={item}
-                        index={index}
-                        selectedMethod={selectedMethod}
-                        setSelectedMethod={setSelectedMethod}
-                        selectedFile={selectedFile}
-                        selectedAmount={selectedAmount}
-                        setSelectedAmount={setSelectedAmount}
-                        setSelectedFile={setSelectedFile}
-                        fileRefs={fileRefs}
-                        uploadingId={uploadingId}
-                        onConfirm={handleConfirmPayment}
-                        formatRupiah={formatRupiah}
-                        formatTanggal={formatTanggal}
-                      />
+  key={item.id}
+  item={item}
+  index={index}
+  selectedMethod={selectedMethod}
+  setSelectedMethod={setSelectedMethod}
+  selectedFile={selectedFile}
+  setSelectedFile={setSelectedFile}
+  selectedAmount={selectedAmount}
+  setSelectedAmount={setSelectedAmount}
+  fileRefs={fileRefs}
+  uploadingId={uploadingId}
+  onConfirm={handleConfirmPayment}
+  formatRupiah={formatRupiah}
+  formatTanggal={formatTanggal}
+/>
                     ))
                   ) : (
                     <EmptyState

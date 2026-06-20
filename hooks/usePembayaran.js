@@ -70,7 +70,7 @@ export const usePembayaran = () => {
     }
   };
 
-  const bayar = async ({ item, metode, file }) => {
+  const bayar = async ({ item, metode, file, nominal_bayar }) => {
     try {
       const session = getSession();
 
@@ -88,6 +88,11 @@ export const usePembayaran = () => {
         alert("Pilih metode pembayaran terlebih dahulu.");
         return;
       }
+
+      if (!nominal_bayar || Number(nominal_bayar) <= 0) {
+  alert("Masukkan nominal cicilan terlebih dahulu.");
+  return;
+}
 
       if (!file) {
         alert("Upload bukti pembayaran terlebih dahulu.");
