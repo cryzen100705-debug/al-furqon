@@ -9,7 +9,7 @@ import {
   FaHourglassHalf,
   FaExclamationTriangle,
 } from "react-icons/fa";
-import SidebarAdmin from "../../components/SidebarAdmin";
+import SidebarAdmin from "./sidebar";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 

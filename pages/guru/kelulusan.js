@@ -295,105 +295,142 @@ const payload = {
               </div>
             ) : (
               <div className="overflow-x-auto">
-                <table className="w-full min-w-[1200px] border-collapse">
+                <table className="w-full min-w-[1350px] border-collapse">
                   <thead>
-                    <tr className="bg-emerald-800 text-left text-xs uppercase tracking-wider text-white">
-                      <th className="px-5 py-4">Santri</th>
-                      <th className="px-5 py-4">NIS</th>
-                      <th className="px-5 py-4">Kelas</th>
-                      <th className="px-5 py-4">Status Guru</th>
-                      <th className="px-5 py-4">Status Admin</th>
-                      <th className="px-5 py-4">Catatan Guru</th>
-                    </tr>
-                  </thead>
+  <tr className="bg-emerald-800 text-left text-xs uppercase tracking-wider text-white">
+    <th className="px-5 py-4">Santri</th>
+    <th className="px-5 py-4">NIS</th>
+    <th className="px-5 py-4">Kelas</th>
+    <th className="px-5 py-4">Status Guru</th>
+    <th className="px-5 py-4">Status Admin</th>
+    <th className="px-5 py-4">Catatan Guru</th>
+  </tr>
+</thead>
+<tbody>
+  {filteredSantri.map((item) => {
+    const statusAdmin = item.status_verifikasi || "belum_dikirim";
+    const isLocked =
+      statusAdmin === "pending" ||
+      statusAdmin === "disetujui" ||
+      statusAdmin === "ditolak";
 
-                  <tbody>
-                    {filteredSantri.map((item) => (
-                      <tr
-                        key={item.id}
-                        className="border-b border-emerald-50 align-top"
-                      >
-                        <td className="px-5 py-4">
-  <span
-    className={`inline-flex rounded-full px-3 py-1 text-xs font-black ${
-      item.status_verifikasi === "disetujui"
-        ? "bg-green-100 text-green-700"
-        : item.status_verifikasi === "ditolak"
-        ? "bg-red-100 text-red-700"
-        : item.status_verifikasi === "pending"
-        ? "bg-yellow-100 text-yellow-700"
-        : "bg-slate-100 text-slate-600"
-    }`}
-  >
-    {item.status_verifikasi === "disetujui"
-      ? "Disetujui Admin"
-      : item.status_verifikasi === "ditolak"
-      ? "Ditolak Admin"
-      : item.status_verifikasi === "pending"
-      ? "Menunggu Admin"
-      : "Belum Dikirim"}
-  </span>
+    return (
+      <tr
+        key={item.id}
+        className="border-b border-emerald-50 align-top"
+      >
+        {/* SANTRI */}
+        <td className="px-5 py-5">
+          <div className="min-w-[180px]">
+            <p className="font-black text-emerald-950">
+              {item.nama || "-"}
+            </p>
 
-  {item.catatan_admin && (
-    <p className="mt-2 max-w-xs text-xs leading-relaxed text-slate-500">
-      Catatan admin: {item.catatan_admin}
-    </p>
-  )}
-</td>
+            <p className="mt-1 text-xs font-semibold text-emerald-600">
+              ID: {item.id}
+            </p>
+          </div>
+        </td>
 
-                        <td className="px-5 py-4 text-sm font-bold text-emerald-800">
-                          {item.nis || "-"}
-                        </td>
+        {/* NIS */}
+        <td className="px-5 py-5">
+          <p className="min-w-[120px] text-sm font-black text-emerald-800">
+            {item.nis || item.nisn || "-"}
+          </p>
+        </td>
 
-                        <td className="px-5 py-4 text-sm font-bold text-emerald-800">
-                          {item.kelas_nama || "-"}
-                        </td>
+        {/* KELAS */}
+        <td className="px-5 py-5">
+          <p className="min-w-[130px] text-sm font-black text-emerald-800">
+            {item.kelas_nama || "-"}
+          </p>
+        </td>
 
-                        <td className="px-5 py-4">
-                          <div className="flex flex-wrap gap-2">
-                            <button
-                              type="button"
-                              onClick={() => updateStatus(item.id, "lulus")}
-                              className={`inline-flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-black transition ${
-                                item.status_kelulusan === "lulus"
-                                  ? "bg-green-600 text-white"
-                                  : "bg-green-50 text-green-700 hover:bg-green-100"
-                              }`}
-                            >
-                              <FaUserCheck />
-                              Lulus
-                            </button>
+        {/* STATUS GURU */}
+        <td className="px-5 py-5">
+          <div className="flex min-w-[210px] flex-wrap gap-2">
+            <button
+              type="button"
+              disabled={isLocked}
+              onClick={() => updateStatus(item.id, "lulus")}
+              className={`inline-flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-black transition disabled:cursor-not-allowed disabled:opacity-60 ${
+                item.status_kelulusan === "lulus"
+                  ? "bg-green-600 text-white"
+                  : "bg-green-50 text-green-700 hover:bg-green-100"
+              }`}
+            >
+              <FaUserCheck />
+              Lulus
+            </button>
 
-                            <button
-                              type="button"
-                              onClick={() =>
-                                updateStatus(item.id, "tidak_lulus")
-                              }
-                              className={`inline-flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-black transition ${
-                                item.status_kelulusan === "tidak_lulus"
-                                  ? "bg-red-600 text-white"
-                                  : "bg-red-50 text-red-700 hover:bg-red-100"
-                              }`}
-                            >
-                              <FaUserTimes />
-                              Tidak Lulus
-                            </button>
-                          </div>
-                        </td>
+            <button
+              type="button"
+              disabled={isLocked}
+              onClick={() => updateStatus(item.id, "tidak_lulus")}
+              className={`inline-flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-black transition disabled:cursor-not-allowed disabled:opacity-60 ${
+                item.status_kelulusan === "tidak_lulus"
+                  ? "bg-red-600 text-white"
+                  : "bg-red-50 text-red-700 hover:bg-red-100"
+              }`}
+            >
+              <FaUserTimes />
+              Tidak Lulus
+            </button>
+          </div>
 
-                        <td className="px-5 py-4">
-                          <textarea
-                            value={item.catatan_guru || ""}
-                            onChange={(e) =>
-                              updateCatatan(item.id, e.target.value)
-                            }
-                            placeholder="Catatan wali kelas..."
-                            className="min-h-[76px] w-full rounded-2xl border border-emerald-100 bg-emerald-50 px-3 py-2 text-sm outline-none transition focus:border-emerald-400 focus:bg-white"
-                          />
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
+          {isLocked && (
+            <p className="mt-2 text-xs font-semibold text-slate-500">
+              Data sudah dikirim, menunggu proses admin.
+            </p>
+          )}
+        </td>
+
+        {/* STATUS ADMIN */}
+        <td className="px-5 py-5">
+          <div className="min-w-[170px]">
+            <span
+              className={`inline-flex rounded-full px-4 py-2 text-xs font-black ${
+                statusAdmin === "disetujui"
+                  ? "bg-green-100 text-green-700"
+                  : statusAdmin === "ditolak"
+                  ? "bg-red-100 text-red-700"
+                  : statusAdmin === "pending"
+                  ? "bg-yellow-100 text-yellow-700"
+                  : "bg-slate-100 text-slate-600"
+              }`}
+            >
+              {statusAdmin === "disetujui"
+                ? "Disetujui Admin"
+                : statusAdmin === "ditolak"
+                ? "Ditolak Admin"
+                : statusAdmin === "pending"
+                ? "Menunggu Admin"
+                : "Belum Dikirim"}
+            </span>
+
+            {item.catatan_admin && (
+              <p className="mt-2 max-w-[220px] text-xs leading-relaxed text-slate-500">
+                Catatan admin: {item.catatan_admin}
+              </p>
+            )}
+          </div>
+        </td>
+
+        {/* CATATAN GURU */}
+        <td className="px-5 py-5">
+          <textarea
+            value={item.catatan_guru || ""}
+            disabled={isLocked}
+            onChange={(e) => updateCatatan(item.id, e.target.value)}
+            placeholder="Catatan wali kelas..."
+            className="min-h-[76px] w-[260px] rounded-2xl border border-emerald-100 bg-emerald-50 px-3 py-2 text-sm outline-none transition focus:border-emerald-400 focus:bg-white disabled:cursor-not-allowed disabled:opacity-60"
+          />
+        </td>
+      </tr>
+    );
+  })}
+</tbody>
+                
                 </table>
               </div>
             )}
