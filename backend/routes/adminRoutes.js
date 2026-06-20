@@ -1768,24 +1768,38 @@ router.post("/kelulusan/:id/proses-kelas", async (req, res) => {
     }
 
     const { data: kelasSiswa, error: kelasSiswaError } = await supabase
-      .from("kelas_siswa")
-      .select("*")
-      .eq("santri_id", kelulusan.santri_id)
-      .single();
+  .from("kelas_siswa")
+  .select("*")
+  .eq("santri_id", kelulusan.santri_id)
+  .maybeSingle();
 
-    if (kelasSiswaError || !kelasSiswa) {
-      return res.status(404).json({
-        success: false,
-        message: "Relasi kelas_siswa santri tidak ditemukan.",
-        error: kelasSiswaError?.message,
-      });
-    }
+if (kelasSiswaError) {
+  return res.status(500).json({
+    success: false,
+    message: "Gagal mengecek relasi kelas_siswa santri.",
+    error: kelasSiswaError.message,
+  });
+}
 
-    const { data: kelasAsal, error: kelasAsalError } = await supabase
-      .from("kelas")
-      .select("*")
-      .eq("id", kelasSiswa.kelas_id)
-      .single();
+/*
+  Jika data kelas_siswa belum ada, gunakan kelas_id dari kelulusan_santri.
+  Ini penting untuk data lama yang belum punya relasi kelas_siswa.
+*/
+const kelasAsalId = kelasSiswa?.kelas_id || kelulusan.kelas_id || null;
+
+if (!kelasAsalId) {
+  return res.status(404).json({
+    success: false,
+    message:
+      "Kelas asal santri tidak ditemukan. Pastikan data kelulusan memiliki kelas_id atau santri sudah masuk ke kelas_siswa.",
+  });
+}
+
+const { data: kelasAsal, error: kelasAsalError } = await supabase
+  .from("kelas")
+  .select("*")
+  .eq("id", kelasAsalId)
+  .single();
 
     if (kelasAsalError || !kelasAsal) {
       return res.status(404).json({
@@ -1924,41 +1938,39 @@ router.post("/kelulusan/:id/proses-kelas", async (req, res) => {
       });
     }
 
-    const { error: updateKelasSiswaError } = await supabase
-      .from("kelas_siswa")
-      .update({
-        kelas_id: kelasTujuan.id,
-      })
-      .eq("id", kelasSiswa.id);
+    let updateKelasSiswaError = null;
 
-    if (updateKelasSiswaError) {
-      return res.status(500).json({
-        success: false,
-        message: "Gagal memperbarui kelas_siswa.",
-        error: updateKelasSiswaError.message,
-      });
-    }
+if (kelasSiswa?.id) {
+  const { error } = await supabase
+    .from("kelas_siswa")
+    .update({
+      kelas_id: kelasTujuan.id,
+    })
+    .eq("id", kelasSiswa.id);
 
-    const labelKelasTujuan =
-      kelasTujuan.nama_kelas ||
-      `${kelasTujuan.jenjang || ""} kelas ${kelasTujuan.tingkat || ""}`.trim();
+  updateKelasSiswaError = error;
+} else {
+  /*
+    Jika santri belum punya baris kelas_siswa,
+    buat relasi baru otomatis ke kelas tujuan.
+  */
+  const { error } = await supabase.from("kelas_siswa").insert([
+    {
+      santri_id: santri.id,
+      kelas_id: kelasTujuan.id,
+    },
+  ]);
 
-    const { error: updateSantriError } = await supabase
-      .from("santri")
-      .update({
-        kelas: labelKelasTujuan,
-        jenjang: kelasTujuan.jenjang || santri.jenjang,
-        updated_at: now,
-      })
-      .eq("id", santri.id);
+  updateKelasSiswaError = error;
+}
 
-    if (updateSantriError) {
-      return res.status(500).json({
-        success: false,
-        message: "Gagal memperbarui data kelas di tabel santri.",
-        error: updateSantriError.message,
-      });
-    }
+if (updateKelasSiswaError) {
+  return res.status(500).json({
+    success: false,
+    message: "Gagal memperbarui atau membuat relasi kelas_siswa.",
+    error: updateKelasSiswaError.message,
+  });
+}
 
     const { error: updateKelulusanError } = await supabase
       .from("kelulusan_santri")
@@ -1977,6 +1989,15 @@ router.post("/kelulusan/:id/proses-kelas", async (req, res) => {
         error: updateKelulusanError.message,
       });
     }
+
+    if (!kelasSiswa?.id) {
+  await supabase.from("kelas_siswa").insert([
+    {
+      santri_id: santri.id,
+      kelas_id: kelasAsal.id,
+    },
+  ]);
+}
 
     await supabase.from("riwayat_kelas_santri").insert({
       santri_id: santri.id,
