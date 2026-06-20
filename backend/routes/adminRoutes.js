@@ -1081,6 +1081,65 @@ router.put("/pembayaran/cicilan/:id/verify", async (req, res) => {
   }
 });
 
+router.get("/pembayaran/cicilan", async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from("pembayaran_cicilan")
+      .select(`
+        id,
+        pembayaran_id,
+        tagihan_id,
+        santri_id,
+        nominal_cicilan,
+        metode,
+        bukti_transfer,
+        status,
+        tanggal_bayar,
+        verified_at,
+        catatan_admin,
+        created_at,
+
+        santri:santri_id (
+          id,
+          nama,
+          nisn,
+          kelas,
+          jenjang
+        ),
+
+        pembayaran:pembayaran_id (
+          id,
+          jenis,
+          nominal,
+          nominal_dibayar,
+          status
+        )
+      `)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      return res.status(400).json({
+        success: false,
+        message: "Gagal mengambil data cicilan.",
+        error: error.message,
+      });
+    }
+
+    return res.json({
+      success: true,
+      data: data || [],
+    });
+  } catch (error) {
+    console.error("GET CICILAN ERROR:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Terjadi kesalahan server saat mengambil cicilan.",
+      error: error.message,
+    });
+  }
+});
+
 router.put("/pembayaran/:id/verify", async (req, res) => {
   try {
     const { id } = req.params;
