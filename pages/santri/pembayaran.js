@@ -33,7 +33,6 @@ import {
 
 export default function PembayaranSantri() {
   const fileRefs = useRef({});
-  const [selectedAmount, setSelectedAmount] = useState({});
   const { settings } = useSantriSettings();
 
 const isDark = settings.darkMode;
