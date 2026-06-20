@@ -1,0 +1,387 @@
+import { useEffect, useMemo, useState } from "react";
+import {
+  FaCheckCircle,
+  FaTimesCircle,
+  FaSearch,
+  FaSyncAlt,
+  FaUserGraduate,
+  FaClipboardCheck,
+  FaHourglassHalf,
+  FaExclamationTriangle,
+} from "react-icons/fa";
+import SidebarAdmin from "../../components/SidebarAdmin";
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+
+function Badge({ status }) {
+  const value = String(status || "").toLowerCase();
+
+  if (value === "disetujui") {
+    return (
+      <span className="inline-flex rounded-full bg-green-100 px-3 py-1 text-xs font-black text-green-700">
+        Disetujui
+      </span>
+    );
+  }
+
+  if (value === "ditolak") {
+    return (
+      <span className="inline-flex rounded-full bg-red-100 px-3 py-1 text-xs font-black text-red-700">
+        Ditolak
+      </span>
+    );
+  }
+
+  return (
+    <span className="inline-flex rounded-full bg-yellow-100 px-3 py-1 text-xs font-black text-yellow-700">
+      Pending
+    </span>
+  );
+}
+
+function KelulusanBadge({ status }) {
+  if (status === "lulus") {
+    return (
+      <span className="inline-flex items-center gap-2 rounded-full bg-green-100 px-3 py-1 text-xs font-black text-green-700">
+        <FaCheckCircle />
+        Lulus
+      </span>
+    );
+  }
+
+  return (
+    <span className="inline-flex items-center gap-2 rounded-full bg-red-100 px-3 py-1 text-xs font-black text-red-700">
+      <FaTimesCircle />
+      Tidak Lulus
+    </span>
+  );
+}
+
+export default function AdminKelulusanPage() {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
+
+  const [dataKelulusan, setDataKelulusan] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [processingId, setProcessingId] = useState("");
+  const [search, setSearch] = useState("");
+  const [filterStatus, setFilterStatus] = useState("semua");
+
+  const fetchKelulusan = async () => {
+    try {
+      setLoading(true);
+
+      const res = await fetch(`${API_URL}/api/admin/kelulusan`);
+      const result = await res.json();
+
+      if (!res.ok || !result.success) {
+        throw new Error(result.message || "Gagal mengambil data kelulusan.");
+      }
+
+      setDataKelulusan(result.data || []);
+    } catch (error) {
+      console.error("FETCH ADMIN KELULUSAN ERROR:", error);
+      alert(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchKelulusan();
+  }, []);
+
+  const filteredData = useMemo(() => {
+    const keyword = search.toLowerCase().trim();
+
+    return dataKelulusan.filter((item) => {
+      const matchKeyword =
+        !keyword ||
+        String(item.nama_santri || "").toLowerCase().includes(keyword) ||
+        String(item.nis || "").toLowerCase().includes(keyword) ||
+        String(item.nama_guru || "").toLowerCase().includes(keyword) ||
+        String(item.nama_kelas || "").toLowerCase().includes(keyword);
+
+      const matchStatus =
+        filterStatus === "semua" ||
+        String(item.status_verifikasi || "pending").toLowerCase() ===
+          filterStatus;
+
+      return matchKeyword && matchStatus;
+    });
+  }, [dataKelulusan, search, filterStatus]);
+
+  const handleVerifikasi = async (id, status) => {
+    try {
+      const catatan_admin = prompt(
+        status === "disetujui"
+          ? "Catatan admin untuk persetujuan:"
+          : "Alasan penolakan:"
+      );
+
+      if (catatan_admin === null) return;
+
+      const yakin = confirm(
+        status === "disetujui"
+          ? "Yakin ingin menyetujui kelulusan ini?"
+          : "Yakin ingin menolak kelulusan ini?"
+      );
+
+      if (!yakin) return;
+
+      setProcessingId(id);
+
+      const res = await fetch(`${API_URL}/api/admin/kelulusan/${id}/verifikasi`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          status_verifikasi: status,
+          catatan_admin,
+        }),
+      });
+
+      const result = await res.json();
+
+      if (!res.ok || !result.success) {
+        throw new Error(result.message || "Gagal memverifikasi kelulusan.");
+      }
+
+      alert(result.message);
+      fetchKelulusan();
+    } catch (error) {
+      console.error("VERIFIKASI ERROR:", error);
+      alert(error.message);
+    } finally {
+      setProcessingId("");
+    }
+  };
+
+  const totalPending = dataKelulusan.filter(
+    (item) => String(item.status_verifikasi || "pending") === "pending"
+  ).length;
+
+  const totalDisetujui = dataKelulusan.filter(
+    (item) => item.status_verifikasi === "disetujui"
+  ).length;
+
+  const totalDitolak = dataKelulusan.filter(
+    (item) => item.status_verifikasi === "ditolak"
+  ).length;
+
+  return (
+    <main className="min-h-screen overflow-x-hidden bg-[#F7F4E8] text-emerald-950">
+      <SidebarAdmin
+        open={sidebarOpen}
+        setOpen={setSidebarOpen}
+        collapsed={collapsed}
+        setCollapsed={setCollapsed}
+      />
+
+      <section
+        className={`
+          min-h-screen w-full overflow-x-hidden transition-all duration-300
+          pt-16 md:pt-0
+          ${
+            collapsed
+              ? "md:ml-[92px] md:w-[calc(100%-92px)]"
+              : "md:ml-[270px] md:w-[calc(100%-270px)]"
+          }
+        `}
+      >
+        <div className="mx-auto w-full max-w-none px-4 pb-10 pt-6 sm:px-5 lg:px-7">
+          <div className="overflow-hidden rounded-[34px] bg-gradient-to-br from-emerald-800 to-emerald-950 p-6 text-white shadow-xl lg:p-8">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+              <div>
+                <p className="text-xs font-black uppercase tracking-[0.3em] text-yellow-300">
+                  Verifikasi Admin
+                </p>
+
+                <h1 className="mt-2 text-3xl font-black tracking-tight md:text-4xl">
+                  Verifikasi Kelulusan Santri
+                </h1>
+
+                <p className="mt-2 max-w-2xl text-sm leading-relaxed text-emerald-100">
+                  Admin dapat memeriksa data kelulusan yang dikirim guru wali
+                  kelas, lalu menyetujui atau menolak pengajuan tersebut.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={fetchKelulusan}
+                className="inline-flex items-center justify-center gap-3 rounded-2xl bg-yellow-400 px-5 py-3 font-black text-emerald-950 shadow-lg transition hover:bg-yellow-300"
+              >
+                <FaSyncAlt className={loading ? "animate-spin" : ""} />
+                Refresh
+              </button>
+            </div>
+          </div>
+
+          <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-4">
+            <div className="rounded-[26px] bg-white p-5 shadow-sm">
+              <p className="text-sm font-bold text-emerald-600">Total Data</p>
+              <h2 className="mt-2 text-3xl font-black">{dataKelulusan.length}</h2>
+            </div>
+
+            <div className="rounded-[26px] bg-white p-5 shadow-sm">
+              <p className="text-sm font-bold text-yellow-600">Pending</p>
+              <h2 className="mt-2 text-3xl font-black">{totalPending}</h2>
+            </div>
+
+            <div className="rounded-[26px] bg-white p-5 shadow-sm">
+              <p className="text-sm font-bold text-green-600">Disetujui</p>
+              <h2 className="mt-2 text-3xl font-black">{totalDisetujui}</h2>
+            </div>
+
+            <div className="rounded-[26px] bg-white p-5 shadow-sm">
+              <p className="text-sm font-bold text-red-600">Ditolak</p>
+              <h2 className="mt-2 text-3xl font-black">{totalDitolak}</h2>
+            </div>
+          </div>
+
+          <div className="mt-6 rounded-[28px] bg-white p-4 shadow-sm">
+            <div className="grid gap-3 lg:grid-cols-[1fr_220px]">
+              <div className="relative">
+                <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-emerald-500" />
+                <input
+                  type="text"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Cari nama santri, NIS, guru, atau kelas..."
+                  className="w-full rounded-2xl border border-emerald-100 bg-emerald-50 px-12 py-3 text-sm font-semibold outline-none transition focus:border-emerald-400 focus:bg-white"
+                />
+              </div>
+
+              <select
+                value={filterStatus}
+                onChange={(e) => setFilterStatus(e.target.value)}
+                className="rounded-2xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm font-black outline-none transition focus:border-emerald-400 focus:bg-white"
+              >
+                <option value="semua">Semua Status</option>
+                <option value="pending">Pending</option>
+                <option value="disetujui">Disetujui</option>
+                <option value="ditolak">Ditolak</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="mt-6 overflow-hidden rounded-[30px] bg-white shadow-sm">
+            {loading ? (
+              <div className="p-8 text-center font-bold text-emerald-700">
+                Mengambil data kelulusan...
+              </div>
+            ) : filteredData.length === 0 ? (
+              <div className="p-8 text-center font-bold text-emerald-700">
+                Belum ada data kelulusan.
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full min-w-[1200px] border-collapse">
+                  <thead>
+                    <tr className="bg-emerald-800 text-left text-xs uppercase tracking-wider text-white">
+                      <th className="px-5 py-4">Santri</th>
+                      <th className="px-5 py-4">Kelas</th>
+                      <th className="px-5 py-4">Guru</th>
+                      <th className="px-5 py-4">Kelulusan</th>
+                      <th className="px-5 py-4">Verifikasi</th>
+                      <th className="px-5 py-4">Catatan</th>
+                      <th className="px-5 py-4">Aksi</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    {filteredData.map((item) => (
+                      <tr
+                        key={item.id}
+                        className="border-b border-emerald-50 align-top"
+                      >
+                        <td className="px-5 py-4">
+                          <p className="font-black text-emerald-950">
+                            {item.nama_santri}
+                          </p>
+                          <p className="mt-1 text-xs font-semibold text-emerald-600">
+                            NIS/NISN: {item.nis}
+                          </p>
+                        </td>
+
+                        <td className="px-5 py-4 text-sm font-bold">
+                          {item.nama_kelas}
+                        </td>
+
+                        <td className="px-5 py-4 text-sm font-bold">
+                          {item.nama_guru}
+                        </td>
+
+                        <td className="px-5 py-4">
+                          <KelulusanBadge status={item.status_kelulusan} />
+                        </td>
+
+                        <td className="px-5 py-4">
+                          <Badge status={item.status_verifikasi} />
+                        </td>
+
+                        <td className="px-5 py-4">
+                          <div className="max-w-sm space-y-2 text-sm">
+                            <div className="rounded-2xl bg-emerald-50 p-3">
+                              <p className="text-xs font-black text-emerald-700">
+                                Guru
+                              </p>
+                              <p className="mt-1 text-slate-600">
+                                {item.catatan_guru || "-"}
+                              </p>
+                            </div>
+
+                            {item.catatan_admin && (
+                              <div className="rounded-2xl bg-yellow-50 p-3">
+                                <p className="text-xs font-black text-yellow-700">
+                                  Admin
+                                </p>
+                                <p className="mt-1 text-slate-600">
+                                  {item.catatan_admin}
+                                </p>
+                              </div>
+                            )}
+                          </div>
+                        </td>
+
+                        <td className="px-5 py-4">
+                          <div className="flex flex-wrap gap-2">
+                            <button
+                              type="button"
+                              disabled={processingId === item.id}
+                              onClick={() =>
+                                handleVerifikasi(item.id, "disetujui")
+                              }
+                              className="inline-flex items-center gap-2 rounded-xl bg-green-600 px-3 py-2 text-xs font-black text-white transition hover:bg-green-700 disabled:opacity-60"
+                            >
+                              <FaCheckCircle />
+                              Setujui
+                            </button>
+
+                            <button
+                              type="button"
+                              disabled={processingId === item.id}
+                              onClick={() =>
+                                handleVerifikasi(item.id, "ditolak")
+                              }
+                              className="inline-flex items-center gap-2 rounded-xl bg-red-600 px-3 py-2 text-xs font-black text-white transition hover:bg-red-700 disabled:opacity-60"
+                            >
+                              <FaTimesCircle />
+                              Tolak
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+    </main>
+  );
+}

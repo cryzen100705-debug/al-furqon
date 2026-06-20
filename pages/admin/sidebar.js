@@ -22,6 +22,7 @@ import {
   FaGem,
   FaChartBar,
   FaChalkboardTeacher,
+  FaClipboardCheck,
 } from "react-icons/fa";
 
 export default function SidebarAdmin({
@@ -85,6 +86,12 @@ export default function SidebarAdmin({
         href: "/admin/kelas",
         icon: <FaLayerGroup />,
         desc: "Data kelas & jadwal",
+      },
+      {
+        name: "Kelulusan",
+        href: "/admin/kelulusan",
+        icon: <FaClipboardCheck />,
+        desc: "Verifikasi kelulusan",
       },
       {
         name: "Data Guru",

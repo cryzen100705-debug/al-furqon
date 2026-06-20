@@ -1642,4 +1642,139 @@ router.get("/laporan", async (req, res) => {
   }
 });
 
+// GET semua pengajuan kelulusan untuk admin
+router.get("/kelulusan", async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from("kelulusan_santri")
+      .select("*")
+      .order("submitted_at", { ascending: false });
+
+    if (error) {
+      console.error("GET ADMIN KELULUSAN ERROR:", error);
+
+      return res.status(500).json({
+        success: false,
+        message: "Gagal mengambil data kelulusan.",
+        error: error.message,
+      });
+    }
+
+    const santriIds = [...new Set((data || []).map((item) => item.santri_id).filter(Boolean))];
+    const guruIds = [...new Set((data || []).map((item) => item.guru_id).filter(Boolean))];
+    const kelasIds = [...new Set((data || []).map((item) => item.kelas_id).filter(Boolean))];
+
+    const { data: santriList } = santriIds.length
+      ? await supabase.from("santri").select("*").in("id", santriIds)
+      : { data: [] };
+
+    const { data: guruList } = guruIds.length
+      ? await supabase.from("guru").select("*").in("id", guruIds)
+      : { data: [] };
+
+    const { data: kelasList } = kelasIds.length
+      ? await supabase.from("kelas").select("*").in("id", kelasIds)
+      : { data: [] };
+
+    const santriMap = new Map((santriList || []).map((item) => [item.id, item]));
+    const guruMap = new Map((guruList || []).map((item) => [item.id, item]));
+    const kelasMap = new Map((kelasList || []).map((item) => [item.id, item]));
+
+    const mapped = (data || []).map((item) => {
+      const santri = santriMap.get(item.santri_id);
+      const guru = guruMap.get(item.guru_id);
+      const kelas = kelasMap.get(item.kelas_id);
+
+      return {
+        ...item,
+        santri: santri || null,
+        guru: guru || null,
+        kelas: kelas || null,
+        nama_santri: santri?.nama || "-",
+        nis: santri?.nis || santri?.nisn || "-",
+        nama_guru: guru?.nama || "-",
+        nama_kelas:
+          kelas?.nama_kelas ||
+          kelas?.kelas ||
+          santri?.kelas ||
+          "-",
+      };
+    });
+
+    return res.json({
+      success: true,
+      message: "Data kelulusan berhasil diambil.",
+      data: mapped,
+    });
+  } catch (error) {
+    console.error("ADMIN KELULUSAN ERROR:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Terjadi kesalahan server.",
+      error: error.message,
+    });
+  }
+});
+
+// POST verifikasi kelulusan oleh admin
+router.post("/kelulusan/:id/verifikasi", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status_verifikasi, catatan_admin } = req.body;
+
+    if (!id) {
+      return res.status(400).json({
+        success: false,
+        message: "ID kelulusan wajib dikirim.",
+      });
+    }
+
+    if (!["disetujui", "ditolak"].includes(status_verifikasi)) {
+      return res.status(400).json({
+        success: false,
+        message: "Status verifikasi tidak valid.",
+      });
+    }
+
+    const { data, error } = await supabase
+      .from("kelulusan_santri")
+      .update({
+        status_verifikasi,
+        catatan_admin: catatan_admin || "",
+        verified_at: new Date().toISOString(),
+      })
+      .eq("id", id)
+      .select("*")
+      .single();
+
+    if (error) {
+      console.error("VERIFIKASI KELULUSAN ERROR:", error);
+
+      return res.status(500).json({
+        success: false,
+        message: "Gagal memverifikasi data kelulusan.",
+        error: error.message,
+      });
+    }
+
+    return res.json({
+      success: true,
+      message:
+        status_verifikasi === "disetujui"
+          ? "Kelulusan berhasil disetujui."
+          : "Kelulusan berhasil ditolak.",
+      data,
+    });
+  } catch (error) {
+    console.error("ADMIN VERIFIKASI KELULUSAN ERROR:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Terjadi kesalahan server.",
+      error: error.message,
+    });
+  }
+});
+
 export default router;

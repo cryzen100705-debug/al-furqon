@@ -179,20 +179,26 @@ const payload = {
   ).length;
 
   return (
-    <main className="min-h-screen bg-[#F7F4E8] text-emerald-950">
-      <SidebarGuru
-        open={sidebarOpen}
-        setOpen={setSidebarOpen}
-        collapsed={collapsed}
-        setCollapsed={setCollapsed}
-      />
+  <main className="min-h-screen overflow-x-hidden bg-[#F7F4E8] text-emerald-950">
+    <SidebarGuru
+      open={sidebarOpen}
+      setOpen={setSidebarOpen}
+      collapsed={collapsed}
+      setCollapsed={setCollapsed}
+    />
 
-      <section
-        className={`min-h-screen transition-all duration-300 ${
-          collapsed ? "md:pl-[92px]" : "md:pl-[272px]"
-        }`}
-      >
-        <div className="mx-auto w-full max-w-7xl px-4 pb-10 pt-20 md:px-6 md:pt-8">
+    <section
+      className={`
+        min-h-screen w-full overflow-x-hidden transition-all duration-300
+        pt-16 md:pt-0
+        ${
+          collapsed
+            ? "md:ml-[92px] md:w-[calc(100%-92px)]"
+            : "md:ml-[272px] md:w-[calc(100%-272px)]"
+        }
+      `}
+    >
+      <div className="mx-auto w-full max-w-none px-4 pb-10 pt-6 sm:px-5 lg:px-7">
           <div className="overflow-hidden rounded-[32px] bg-gradient-to-br from-emerald-800 to-emerald-950 p-6 text-white shadow-xl">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
               <div>
@@ -289,13 +295,14 @@ const payload = {
               </div>
             ) : (
               <div className="overflow-x-auto">
-                <table className="w-full min-w-[900px] border-collapse">
+                <table className="w-full min-w-[1200px] border-collapse">
                   <thead>
                     <tr className="bg-emerald-800 text-left text-xs uppercase tracking-wider text-white">
                       <th className="px-5 py-4">Santri</th>
                       <th className="px-5 py-4">NIS</th>
                       <th className="px-5 py-4">Kelas</th>
-                      <th className="px-5 py-4">Status</th>
+                      <th className="px-5 py-4">Status Guru</th>
+                      <th className="px-5 py-4">Status Admin</th>
                       <th className="px-5 py-4">Catatan Guru</th>
                     </tr>
                   </thead>
@@ -307,13 +314,32 @@ const payload = {
                         className="border-b border-emerald-50 align-top"
                       >
                         <td className="px-5 py-4">
-                          <p className="font-black text-emerald-950">
-                            {item.nama || "-"}
-                          </p>
-                          <p className="mt-1 text-xs font-semibold text-emerald-600">
-                            ID: {item.id}
-                          </p>
-                        </td>
+  <span
+    className={`inline-flex rounded-full px-3 py-1 text-xs font-black ${
+      item.status_verifikasi === "disetujui"
+        ? "bg-green-100 text-green-700"
+        : item.status_verifikasi === "ditolak"
+        ? "bg-red-100 text-red-700"
+        : item.status_verifikasi === "pending"
+        ? "bg-yellow-100 text-yellow-700"
+        : "bg-slate-100 text-slate-600"
+    }`}
+  >
+    {item.status_verifikasi === "disetujui"
+      ? "Disetujui Admin"
+      : item.status_verifikasi === "ditolak"
+      ? "Ditolak Admin"
+      : item.status_verifikasi === "pending"
+      ? "Menunggu Admin"
+      : "Belum Dikirim"}
+  </span>
+
+  {item.catatan_admin && (
+    <p className="mt-2 max-w-xs text-xs leading-relaxed text-slate-500">
+      Catatan admin: {item.catatan_admin}
+    </p>
+  )}
+</td>
 
                         <td className="px-5 py-4 text-sm font-bold text-emerald-800">
                           {item.nis || "-"}
