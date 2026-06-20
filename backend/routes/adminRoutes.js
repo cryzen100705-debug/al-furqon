@@ -767,10 +767,17 @@ router.post("/tagihan", async (req, res) => {
   nama_admin,
 } = req.body;
 
-const metodePembayaran = metode || "transfer";
+const metodePembayaran = String(metode || "transfer")
+  .toLowerCase()
+  .trim();
+
 const isTunai = metodePembayaran === "tunai";
 const statusPembayaran = isTunai ? "lunas" : "belum_bayar";
 const tanggalBayar = isTunai ? new Date().toISOString() : null;
+
+console.log("CREATE TAGIHAN BODY:", req.body);
+console.log("METODE PEMBAYARAN:", metodePembayaran);
+console.log("STATUS PEMBAYARAN:", statusPembayaran);
 
     if (!target_type || !jenis || !nominal || !deadline) {
       return res.status(400).json({
@@ -923,13 +930,17 @@ if (pembayaranError) {
     });
 
     return res.status(201).json({
-      success: true,
-      message: `Tagihan berhasil dibuat untuk ${targetSantri.length} santri.`,
-      data: {
-        tagihan: createdTagihan,
-        pembayaran: createdPembayaran,
-      },
-    });
+  success: true,
+  message: isTunai
+    ? `Pembayaran tunai berhasil dicatat lunas untuk ${targetSantri.length} santri.`
+    : `Tagihan transfer berhasil dibuat untuk ${targetSantri.length} santri.`,
+  data: {
+    metode: metodePembayaran,
+    status: statusPembayaran,
+    tagihan: createdTagihan,
+    pembayaran: createdPembayaran,
+  },
+});
   } catch (error) {
     console.error("CREATE TAGIHAN ERROR:", error);
 
