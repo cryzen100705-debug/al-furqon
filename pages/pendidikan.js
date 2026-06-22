@@ -953,7 +953,7 @@ useEffect(() => {
       <Section id="journey" dark>
         <BackgroundArt dark />
 
-        <Container className="flex items-start">
+        <Container className="flex items-center">
           <div className="grid w-full items-center gap-4 lg:grid-cols-[0.78fr_1.22fr]">
             <div>
               <SectionHeader
