@@ -1,7 +1,6 @@
 "use client";
 
 import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -941,30 +940,10 @@ export default function Fasilitas() {
 
 const activeStep = 0;
 
-const jumpToSection = (index) => {
-  if (index < 0 || index >= sections.length) return;
-
-  const target = document.getElementById(sections[index]?.key);
-
-  if (!target) return;
-
-  lockRef.current = true;
-  setActiveSectionIndex(index);
-
-  const targetTop = target.getBoundingClientRect().top + window.scrollY;
-
-  window.scrollTo({
-    top: targetTop,
-    behavior: "smooth",
-  });
-
-  window.setTimeout(() => {
-    lockRef.current = false;
-  }, 820);
-};
-
 useEffect(() => {
   if (!sections.length) return;
+
+  const isMobile = () => window.innerWidth <= 1024;
 
   const getActiveSectionElement = () => {
     return document.getElementById(sections[activeSectionIndex]?.key);
@@ -978,12 +957,14 @@ useEffect(() => {
     return activeSection.querySelector(".fac-container");
   };
 
-  const canMoveSection = (direction) => {
+  const canMoveMobileSection = (direction) => {
+    if (!isMobile()) return true;
+
     const container = getScrollableContainer();
 
     if (!container) return true;
 
-    const hasInnerScroll = container.scrollHeight > container.clientHeight + 4;
+    const hasInnerScroll = container.scrollHeight > container.clientHeight + 8;
 
     if (!hasInnerScroll) return true;
 
@@ -991,16 +972,15 @@ useEffect(() => {
     const atBottom =
       container.scrollTop + container.clientHeight >= container.scrollHeight - 2;
 
-    if (direction > 0) {
-      return atBottom;
-    }
+    if (direction > 0) return atBottom;
 
     return atTop;
   };
 
   const goToNextSection = (direction) => {
     if (lockRef.current) return;
-    if (!canMoveSection(direction)) return;
+
+    if (!canMoveMobileSection(direction)) return;
 
     const nextIndex =
       direction > 0
@@ -1013,13 +993,31 @@ useEffect(() => {
   };
 
   const handleWheel = (event) => {
-    event.preventDefault();
-
     if (Math.abs(event.deltaY) < 12) return;
 
+    /*
+      Desktop/laptop:
+      Jangan cek scroll dalam container.
+      Sekali scroll harus langsung pindah section.
+    */
+    if (!isMobile()) {
+      event.preventDefault();
+
+      const direction = event.deltaY > 0 ? 1 : -1;
+      goToNextSection(direction);
+      return;
+    }
+
+    /*
+      Mobile/tablet dengan mouse:
+      Kalau container masih bisa scroll di dalam, jangan ditahan.
+    */
     const direction = event.deltaY > 0 ? 1 : -1;
 
-    goToNextSection(direction);
+    if (canMoveMobileSection(direction)) {
+      event.preventDefault();
+      goToNextSection(direction);
+    }
   };
 
   const handleKeyDown = (event) => {
@@ -1045,6 +1043,8 @@ useEffect(() => {
   };
 
   const handleTouchMove = (event) => {
+    if (!isMobile()) return;
+
     const currentY = event.touches?.[0]?.clientY || 0;
     const diff = touchStartY.current - currentY;
 
@@ -1052,12 +1052,14 @@ useEffect(() => {
 
     const direction = diff > 0 ? 1 : -1;
 
-    if (canMoveSection(direction)) {
+    if (canMoveMobileSection(direction)) {
       event.preventDefault();
     }
   };
 
   const handleTouchEnd = (event) => {
+    if (!isMobile()) return;
+
     const touchEndY = event.changedTouches?.[0]?.clientY || 0;
     const diff = touchStartY.current - touchEndY;
 
