@@ -261,8 +261,8 @@ export default function SantriDashboard() {
         animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
         transition={{ duration: 0.55, ease: EASE }}
         className={`min-h-screen transition-all duration-300 pt-16 md:pt-0 ${
-          collapsed ? "md:ml-[90px]" : "md:ml-[280px]"
-        }`}
+  collapsed ? "md:ml-[86px]" : "md:ml-[260px]"
+}`}
       >
         <section className="relative min-h-screen overflow-hidden">
           <div className={`absolute inset-0 ${theme.mainBg}`} />
@@ -279,14 +279,14 @@ export default function SantriDashboard() {
             />
 
             <div
-              className={`mx-auto w-full max-w-[1700px] ${
-                isCompact
-                  ? "px-3 py-4 sm:px-5 lg:px-6"
-                  : "px-4 py-5 sm:px-6 lg:px-8 xl:px-10"
-              }`}
-            >
-              <div className="grid grid-cols-1 gap-5 2xl:grid-cols-[minmax(0,1fr)_380px]">
-                <div className="min-w-0 space-y-5">
+  className={`mx-auto w-full max-w-[1420px] ${
+    isCompact
+      ? "px-3 py-3 sm:px-4 lg:px-5"
+      : "px-3 py-4 sm:px-5 lg:px-6 xl:px-7"
+  }`}
+>
+              <div className="grid grid-cols-1 gap-4 2xl:grid-cols-[minmax(0,1fr)_340px]">
+                <div className="min-w-0 space-y-4">
                   <HeroPanel
                     santri={santri}
                     loading={loading}
@@ -303,7 +303,7 @@ export default function SantriDashboard() {
                     pemberitahuanInfo={pemberitahuanInfo}
                   />
 
-                  <div className="grid grid-cols-1 gap-5 xl:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
+                  <div className="grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
                     <AgendaPanel
                       theme={theme}
                       pembayaranInfo={pembayaranInfo}
@@ -318,7 +318,7 @@ export default function SantriDashboard() {
                     <MotivationPanel />
                   </div>
 
-                  <div className="grid grid-cols-1 gap-5 md:grid-cols-2 2xl:grid-cols-4">
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2 2xl:grid-cols-4">
                     {menus.map((item, index) => (
                       <ActionCard
                         key={item.title}
@@ -331,7 +331,7 @@ export default function SantriDashboard() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 gap-5 md:grid-cols-2 2xl:grid-cols-1">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 2xl:grid-cols-1">
                   <ProfilePanel
                     santri={santri}
                     loading={loading}
@@ -426,29 +426,35 @@ function HeroPanel({
   return (
     <section
       className={`relative overflow-hidden border shadow-2xl backdrop-blur-2xl ${
-        isCompact ? "rounded-[26px] p-4" : "rounded-[32px] p-4 sm:p-5 lg:p-6"
+        isCompact
+          ? "rounded-[22px] p-3 sm:p-4"
+          : "rounded-[24px] p-3 sm:p-4 lg:p-5"
       } ${theme.surfaceStrong}`}
     >
       <div className={`absolute inset-0 ${theme.heroOverlay}`} />
       <div className="absolute inset-0 bg-[url('/pattern.png')] opacity-[0.06]" />
-      <div className="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-yellow-300/20 blur-3xl" />
-      <div className="absolute -bottom-24 -left-24 h-80 w-80 rounded-full bg-emerald-300/20 blur-3xl" />
+      <div className="absolute -right-20 -top-20 h-56 w-56 rounded-full bg-yellow-300/20 blur-3xl" />
+      <div className="absolute -bottom-24 -left-24 h-64 w-64 rounded-full bg-emerald-300/20 blur-3xl" />
 
-      <div className="relative z-10 grid grid-cols-1 gap-5 xl:grid-cols-[minmax(0,1fr)_340px]">
-        <div className="min-w-0">
+      <div className="relative z-10 grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(260px,300px)]">
+        <div className="min-w-0 overflow-hidden">
           <motion.div
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.12, ease: EASE }}
-            className={`inline-flex max-w-full items-center gap-3 rounded-full border px-4 py-2 backdrop-blur-xl ${
+            className={`inline-flex max-w-full items-center gap-2 rounded-full border px-3 py-1.5 backdrop-blur-xl ${
               isDark
                 ? "border-yellow-300/20 bg-yellow-300/10"
                 : "border-emerald-700/15 bg-emerald-50"
             }`}
           >
-            <FaSun className={isDark ? "text-yellow-300" : "text-emerald-700"} />
+            <FaSun
+              className={`shrink-0 ${
+                isDark ? "text-yellow-300" : "text-emerald-700"
+              }`}
+            />
             <span
-              className={`truncate text-[10px] font-black uppercase tracking-[0.24em] sm:text-xs ${
+              className={`truncate text-[9px] font-black uppercase tracking-[0.2em] sm:text-[10px] ${
                 isDark ? "text-yellow-100" : "text-emerald-800"
               }`}
             >
@@ -460,10 +466,10 @@ function HeroPanel({
             initial={{ opacity: 0, y: 24, filter: "blur(8px)" }}
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             transition={{ delay: 0.2, duration: 0.65, ease: EASE }}
-            className={`mt-4 font-black leading-[0.92] tracking-[-0.06em] ${
+            className={`mt-3 max-w-full break-words font-black leading-[0.94] tracking-[-0.055em] ${
               isCompact
-                ? "text-[clamp(2rem,5.2vw,4.2rem)]"
-                : "text-[clamp(2.2rem,5.6vw,5rem)]"
+                ? "text-[clamp(1.75rem,4vw,3.2rem)]"
+                : "text-[clamp(1.9rem,4.25vw,3.6rem)]"
             }`}
           >
             Assalamu’alaikum,
@@ -476,18 +482,18 @@ function HeroPanel({
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.55, ease: EASE }}
-            className={`mt-4 max-w-3xl leading-relaxed ${theme.heroText} ${
-              isCompact ? "text-xs sm:text-sm" : "text-sm sm:text-base"
+            className={`mt-3 max-w-2xl leading-relaxed ${theme.heroText} ${
+              isCompact ? "text-xs" : "text-xs sm:text-sm"
             }`}
           >
             Pantau pembayaran, pemberitahuan, dokumen, nilai, dan profil santri
             dalam satu dashboard yang lebih nyaman, cepat, dan informatif.
           </motion.p>
 
-          <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+          <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
             <Link
               href="/santri/pembayaran"
-              className="inline-flex min-h-[48px] items-center justify-center gap-3 rounded-2xl bg-yellow-400 px-6 text-sm font-black text-emerald-950 shadow-lg shadow-yellow-950/20 transition hover:-translate-y-0.5 hover:bg-yellow-300"
+              className="inline-flex min-h-[42px] items-center justify-center gap-2 rounded-2xl bg-yellow-400 px-5 text-xs font-black text-emerald-950 shadow-lg shadow-yellow-950/20 transition hover:-translate-y-0.5 hover:bg-yellow-300 sm:text-sm"
             >
               Lihat Pembayaran
               <FaArrowRight />
@@ -495,14 +501,14 @@ function HeroPanel({
 
             <Link
               href="/santri/pemberitahuan"
-              className="inline-flex min-h-[48px] items-center justify-center gap-3 rounded-2xl border border-white/10 bg-white/10 px-6 text-sm font-black text-white backdrop-blur-xl transition hover:-translate-y-0.5 hover:bg-white/20"
+              className="inline-flex min-h-[42px] items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/10 px-5 text-xs font-black text-white backdrop-blur-xl transition hover:-translate-y-0.5 hover:bg-white/20 sm:text-sm"
             >
               Pemberitahuan
               <FaBell />
             </Link>
           </div>
 
-          <div className="mt-5 grid grid-cols-2 gap-3 md:grid-cols-4">
+          <div className="mt-4 grid grid-cols-2 gap-2 md:grid-cols-4">
             {quickStats.map((item, index) => (
               <MetricCard
                 key={item.title}
@@ -515,7 +521,7 @@ function HeroPanel({
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-3">
+        <div className="grid grid-cols-1 gap-2">
           <StatusGlass
             icon={<FaMoneyBillWave />}
             title="Status Pembayaran"
@@ -567,20 +573,20 @@ function MetricCard({ item, index, theme, loading }) {
       initial={{ opacity: 0, y: 22 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.42 + index * 0.06, ease: EASE }}
-      className={`min-w-0 rounded-2xl border p-3 sm:p-4 backdrop-blur-xl transition hover:-translate-y-1 ${theme.surface}`}
+      className={`min-w-0 rounded-2xl border p-2.5 backdrop-blur-xl transition hover:-translate-y-1 sm:p-3 ${theme.surface}`}
     >
       <div
-        className={`mb-3 flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br ${item.color} text-base text-white shadow-lg sm:h-11 sm:w-11 sm:text-lg`}
+        className={`mb-2 flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br ${item.color} text-sm text-white shadow-lg sm:h-10 sm:w-10 sm:text-base`}
       >
         {item.icon}
       </div>
 
-      <p className={`text-[11px] font-semibold sm:text-xs ${theme.muted}`}>
+      <p className={`text-[10px] font-semibold sm:text-[11px] ${theme.muted}`}>
         {item.title}
       </p>
 
       <h3
-        className={`mt-1 truncate text-lg font-black sm:text-xl ${theme.title}`}
+        className={`mt-0.5 truncate text-base font-black sm:text-lg ${theme.title}`}
       >
         {loading ? "..." : item.value}
       </h3>
@@ -598,11 +604,11 @@ function StatusGlass({ icon, title, value, status, href }) {
   return (
     <Link
       href={href}
-      className="group rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-xl transition hover:-translate-y-1 hover:bg-white/15"
+      className="group min-h-[104px] rounded-2xl border border-white/10 bg-white/10 p-3 backdrop-blur-xl transition hover:-translate-y-1 hover:bg-white/15"
     >
-      <div className="flex items-center gap-3">
+      <div className="flex items-start gap-3">
         <div
-          className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl ${
+          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-sm ${
             style[status] || style.success
           }`}
         >
@@ -610,15 +616,15 @@ function StatusGlass({ icon, title, value, status, href }) {
         </div>
 
         <div className="min-w-0 flex-1">
-          <p className="text-[10px] font-black uppercase tracking-[0.22em] text-yellow-300 sm:text-xs">
+          <p className="text-[9px] font-black uppercase tracking-[0.18em] text-yellow-300 sm:text-[10px]">
             {title}
           </p>
-          <h3 className="mt-1 text-sm font-bold text-white sm:text-base">
+          <h3 className="mt-1 text-sm font-bold leading-snug text-white">
             {value}
           </h3>
         </div>
 
-        <FaArrowRight className="shrink-0 text-yellow-300 transition group-hover:translate-x-1" />
+        <FaArrowRight className="mt-1 shrink-0 text-sm text-yellow-300 transition group-hover:translate-x-1" />
       </div>
     </Link>
   );
