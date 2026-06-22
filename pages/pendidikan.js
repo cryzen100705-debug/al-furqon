@@ -448,26 +448,50 @@ function BackendNotice({ show, onRetry, checking }) {
   );
 }
 
-function ChapterDots() {
-  const items = [
-    ["01", "#hero"],
-    ["02", "#values"],
-    ["03", "#journey"],
-    ["04", "#timeline"],
-    ["05", "#cta"],
-  ];
+function EducationProgressBar({ sections, activeSection }) {
+  const progress = ((activeSection + 1) / sections.length) * 100;
 
   return (
-    <div className="chapter-dots">
-      {items.map(([label, href]) => (
-        <a key={href} href={href} className="chapter-dot">
-          {label}
-        </a>
-      ))}
+    <div className="fixed bottom-0 left-0 z-[260] w-full">
+      <div className="h-1.5 w-full bg-emerald-950/25 backdrop-blur-md">
+        <motion.div
+          animate={{ width: `${progress}%` }}
+          transition={{ duration: 0.38, ease: EASE }}
+          className="h-full bg-gradient-to-r from-yellow-400 via-yellow-300 to-emerald-300 shadow-[0_0_20px_rgba(250,204,21,0.75)]"
+        />
+      </div>
+
+      <div className="pointer-events-none h-[env(safe-area-inset-bottom)] bg-emerald-950/20" />
     </div>
   );
 }
 
+function SideDots({ sections, activeSection, jumpToSection }) {
+  return (
+    <div className="fixed right-5 top-1/2 z-[260] hidden -translate-y-1/2 flex-col gap-3 xl:flex">
+      {sections.map((section, index) => (
+        <button
+          key={section.key}
+          type="button"
+          onClick={() => jumpToSection(index)}
+          className="group flex items-center justify-end gap-3"
+        >
+          <span className="rounded-full bg-emerald-950/85 px-3 py-1 text-[11px] font-black text-yellow-300 opacity-0 shadow-xl backdrop-blur transition group-hover:opacity-100">
+            {section.label}
+          </span>
+
+          <span
+            className={`h-3 w-3 rounded-full border transition ${
+              activeSection === index
+                ? "scale-150 border-yellow-300 bg-yellow-300 shadow-[0_0_20px_rgba(250,204,21,0.8)]"
+                : "border-white/30 bg-white/20"
+            }`}
+          />
+        </button>
+      ))}
+    </div>
+  );
+}
 export default function Pendidikan() {
   const [pageData, setPageData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -475,6 +499,7 @@ export default function Pendidikan() {
   const [checking, setChecking] = useState(false);
   const [active, setActive] = useState(0);
   const [currentQuote, setCurrentQuote] = useState(0);
+  const [activeSectionIndex, setActiveSectionIndex] = useState(0);
 
   const { scrollY } = useScroll();
 
@@ -613,6 +638,30 @@ export default function Pendidikan() {
   const activeData = education[active] || education[0];
   const quoteData = education[currentQuote] || education[0];
 
+  const sections = useMemo(
+  () => [
+    { key: "hero", label: "Hero" },
+    { key: "values", label: "Nilai" },
+    { key: "journey", label: "Jenjang" },
+    { key: "timeline", label: "Alur" },
+    { key: "cta", label: "Daftar" },
+  ],
+  []
+);
+
+const jumpToSection = (index) => {
+  const target = document.getElementById(sections[index]?.key);
+
+  if (!target) return;
+
+  target.scrollIntoView({
+    behavior: "smooth",
+    block: "start",
+  });
+
+  setActiveSectionIndex(index);
+};
+
   useEffect(() => {
     if (!education?.length) return;
 
@@ -623,13 +672,57 @@ export default function Pendidikan() {
     return () => clearInterval(interval);
   }, [education]);
 
+  useEffect(() => {
+  if (!sections.length) return;
+
+  const handleScroll = () => {
+    const viewportMiddle = window.innerHeight / 2;
+
+    let currentIndex = 0;
+
+    sections.forEach((section, index) => {
+      const element = document.getElementById(section.key);
+
+      if (!element) return;
+
+      const rect = element.getBoundingClientRect();
+
+      if (rect.top <= viewportMiddle && rect.bottom >= viewportMiddle) {
+        currentIndex = index;
+      }
+    });
+
+    setActiveSectionIndex(currentIndex);
+  };
+
+  handleScroll();
+
+  window.addEventListener("scroll", handleScroll, { passive: true });
+  window.addEventListener("resize", handleScroll);
+
+  return () => {
+    window.removeEventListener("scroll", handleScroll);
+    window.removeEventListener("resize", handleScroll);
+  };
+}, [sections]);
+
   if (loading) return <LoadingPage />;
 
   return (
     <main className="edu-page overflow-x-hidden bg-[#041b15] text-emerald-950">
       <ScrollProgress />
-      <Navbar />
-      <ChapterDots />
+<Navbar />
+
+<EducationProgressBar
+  sections={sections}
+  activeSection={activeSectionIndex}
+/>
+
+<SideDots
+  sections={sections}
+  activeSection={activeSectionIndex}
+  jumpToSection={jumpToSection}
+/>
 
       <BackendNotice
         show={usingFallback}
@@ -1122,40 +1215,6 @@ export default function Pendidikan() {
     overflow-x: hidden;
     background: #041b15;
   }
-
-  .chapter-dots {
-  position: fixed;
-  right: 1.1rem;
-  top: 50%;
-  z-index: 9998;
-  display: flex;
-  transform: translateY(-50%);
-  flex-direction: column;
-  gap: 0.65rem;
-}
-
-.chapter-dot {
-  display: flex;
-  width: 2.45rem;
-  height: 2.45rem;
-  align-items: center;
-  justify-content: center;
-  border-radius: 999px;
-  border: 1px solid rgba(250, 204, 21, 0.35);
-  background: rgba(4, 27, 21, 0.82);
-  color: #facc15;
-  font-size: 0.65rem;
-  font-weight: 900;
-  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.25);
-  backdrop-filter: blur(14px);
-  transition: 0.25s ease;
-}
-
-.chapter-dot:hover {
-  transform: scale(1.12);
-  background: #facc15;
-  color: #052e22;
-}
 
   /*
     FIX UTAMA:
