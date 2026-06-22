@@ -3,7 +3,7 @@
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   AnimatePresence,
   motion,
@@ -690,25 +690,72 @@ function BackendNotice({ show, onRetry, checking }) {
   );
 }
 
-function ChapterDots() {
-  const items = [
-    ["01", "#hero"],
-    ["02", "#spotlight"],
-    ["03", "#explorer"],
-    ["04", "#cinematic"],
-    ["05", "#cta"],
-  ];
+function ProgressBar({ sections = [], activeSection = 0, activeStep = 0 }) {
+  const totalSteps =
+    sections.reduce((sum, item) => sum + Number(item.total || 1), 0) || 1;
+
+  const safeActiveSection = Math.min(
+    Math.max(activeSection, 0),
+    sections.length - 1
+  );
+
+  const passed = sections
+    .slice(0, safeActiveSection)
+    .reduce((sum, item) => sum + Number(item.total || 1), 0);
+
+  const currentSectionTotal = Number(
+    sections[safeActiveSection]?.total || 1
+  );
+
+  const safeStep = Math.min(Math.max(activeStep, 0), currentSectionTotal - 1);
+
+  const progress = ((passed + safeStep + 1) / totalSteps) * 100;
 
   return (
-    <div className="fixed right-5 top-1/2 z-[80] hidden -translate-y-1/2 flex-col gap-3 2xl:flex">
-      {items.map(([label, href]) => (
-        <a
-          key={href}
-          href={href}
-          className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-emerald-950/85 text-[10px] font-black text-yellow-300 shadow-lg backdrop-blur-xl transition hover:scale-110 hover:bg-yellow-400 hover:text-emerald-950"
+    <div className="fixed bottom-0 left-0 z-[260] w-full">
+      <div className="h-1.5 w-full bg-emerald-950/25 backdrop-blur-md">
+        <motion.div
+          animate={{ width: `${progress}%` }}
+          transition={{ duration: 0.38, ease: EASE }}
+          className="h-full bg-gradient-to-r from-yellow-400 via-yellow-300 to-emerald-300 shadow-[0_0_20px_rgba(250,204,21,0.75)]"
+        />
+      </div>
+
+      <div className="pointer-events-none h-[env(safe-area-inset-bottom)] bg-emerald-950/20" />
+    </div>
+  );
+}
+
+function SideDots({
+  sections = [],
+  activeSection = 0,
+  activeStep = 0,
+  jumpToSection,
+}) {
+  return (
+    <div className="fixed right-5 top-1/2 z-[260] hidden -translate-y-1/2 flex-col gap-3 xl:flex">
+      {sections.map((section, index) => (
+        <button
+          key={section.key}
+          type="button"
+          onClick={() => jumpToSection(index)}
+          className="group flex items-center justify-end gap-3"
         >
-          {label}
-        </a>
+          <span className="rounded-full bg-emerald-950/85 px-3 py-1 text-[11px] font-black text-yellow-300 opacity-0 shadow-xl backdrop-blur transition group-hover:opacity-100">
+            {section.label}
+            {activeSection === index && Number(section.total || 1) > 1
+              ? ` ${activeStep + 1}/${section.total}`
+              : ""}
+          </span>
+
+          <span
+            className={`h-3 w-3 rounded-full border transition ${
+              activeSection === index
+                ? "scale-150 border-yellow-300 bg-yellow-300 shadow-[0_0_20px_rgba(250,204,21,0.8)]"
+                : "border-white/30 bg-white/20"
+            }`}
+          />
+        </button>
       ))}
     </div>
   );
@@ -722,6 +769,9 @@ export default function Fasilitas() {
 
   const [activeIndex, setActiveIndex] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState("Semua");
+  const [activeSectionIndex, setActiveSectionIndex] = useState(0);
+  const lockRef = useRef(false);
+  const touchStartY = useRef(0);
 
   const isDesktop = useIsDesktop();
   const reduce = useReducedMotion();
@@ -878,6 +928,196 @@ export default function Fasilitas() {
   const featured =
     facilities.find((item) => item.featured) || facilities[0] || activeFacility;
 
+    const sections = useMemo(
+  () => [
+    { key: "hero", label: "Fasilitas", total: 1 },
+    { key: "spotlight", label: "Unggulan", total: 1 },
+    { key: "explorer", label: "Jelajah", total: 1 },
+    { key: "cinematic", label: "Cinematic", total: 1 },
+    { key: "cta", label: "Daftar", total: 1 },
+  ],
+  []
+);
+
+const activeStep = 0;
+
+const jumpToSection = (index) => {
+  if (index < 0 || index >= sections.length) return;
+
+  const target = document.getElementById(sections[index]?.key);
+
+  if (!target) return;
+
+  lockRef.current = true;
+  setActiveSectionIndex(index);
+
+  const targetTop = target.getBoundingClientRect().top + window.scrollY;
+
+  window.scrollTo({
+    top: targetTop,
+    behavior: "smooth",
+  });
+
+  window.setTimeout(() => {
+    lockRef.current = false;
+  }, 820);
+};
+
+useEffect(() => {
+  if (!sections.length) return;
+
+  const getActiveSectionElement = () => {
+    return document.getElementById(sections[activeSectionIndex]?.key);
+  };
+
+  const getScrollableContainer = () => {
+    const activeSection = getActiveSectionElement();
+
+    if (!activeSection) return null;
+
+    return activeSection.querySelector(".fac-container");
+  };
+
+  const canMoveSection = (direction) => {
+    const container = getScrollableContainer();
+
+    if (!container) return true;
+
+    const hasInnerScroll = container.scrollHeight > container.clientHeight + 4;
+
+    if (!hasInnerScroll) return true;
+
+    const atTop = container.scrollTop <= 2;
+    const atBottom =
+      container.scrollTop + container.clientHeight >= container.scrollHeight - 2;
+
+    if (direction > 0) {
+      return atBottom;
+    }
+
+    return atTop;
+  };
+
+  const goToNextSection = (direction) => {
+    if (lockRef.current) return;
+    if (!canMoveSection(direction)) return;
+
+    const nextIndex =
+      direction > 0
+        ? Math.min(activeSectionIndex + 1, sections.length - 1)
+        : Math.max(activeSectionIndex - 1, 0);
+
+    if (nextIndex === activeSectionIndex) return;
+
+    jumpToSection(nextIndex);
+  };
+
+  const handleWheel = (event) => {
+    event.preventDefault();
+
+    if (Math.abs(event.deltaY) < 12) return;
+
+    const direction = event.deltaY > 0 ? 1 : -1;
+
+    goToNextSection(direction);
+  };
+
+  const handleKeyDown = (event) => {
+    const downKeys = ["ArrowDown", "PageDown", " ", "Spacebar"];
+    const upKeys = ["ArrowUp", "PageUp"];
+
+    if (![...downKeys, ...upKeys].includes(event.key)) return;
+
+    event.preventDefault();
+
+    if (downKeys.includes(event.key)) {
+      goToNextSection(1);
+      return;
+    }
+
+    if (upKeys.includes(event.key)) {
+      goToNextSection(-1);
+    }
+  };
+
+  const handleTouchStart = (event) => {
+    touchStartY.current = event.touches?.[0]?.clientY || 0;
+  };
+
+  const handleTouchMove = (event) => {
+    const currentY = event.touches?.[0]?.clientY || 0;
+    const diff = touchStartY.current - currentY;
+
+    if (Math.abs(diff) < 12) return;
+
+    const direction = diff > 0 ? 1 : -1;
+
+    if (canMoveSection(direction)) {
+      event.preventDefault();
+    }
+  };
+
+  const handleTouchEnd = (event) => {
+    const touchEndY = event.changedTouches?.[0]?.clientY || 0;
+    const diff = touchStartY.current - touchEndY;
+
+    if (Math.abs(diff) < 55) return;
+
+    const direction = diff > 0 ? 1 : -1;
+
+    goToNextSection(direction);
+  };
+
+  window.addEventListener("wheel", handleWheel, { passive: false });
+  window.addEventListener("keydown", handleKeyDown, { passive: false });
+  window.addEventListener("touchstart", handleTouchStart, { passive: true });
+  window.addEventListener("touchmove", handleTouchMove, { passive: false });
+  window.addEventListener("touchend", handleTouchEnd, { passive: true });
+
+  return () => {
+    window.removeEventListener("wheel", handleWheel);
+    window.removeEventListener("keydown", handleKeyDown);
+    window.removeEventListener("touchstart", handleTouchStart);
+    window.removeEventListener("touchmove", handleTouchMove);
+    window.removeEventListener("touchend", handleTouchEnd);
+  };
+}, [activeSectionIndex, sections]);
+
+useEffect(() => {
+  if (!sections.length) return;
+
+  const handleScroll = () => {
+    if (lockRef.current) return;
+
+    const viewportMiddle = window.innerHeight / 2;
+    let currentIndex = 0;
+
+    sections.forEach((section, index) => {
+      const element = document.getElementById(section.key);
+
+      if (!element) return;
+
+      const rect = element.getBoundingClientRect();
+
+      if (rect.top <= viewportMiddle && rect.bottom >= viewportMiddle) {
+        currentIndex = index;
+      }
+    });
+
+    setActiveSectionIndex(currentIndex);
+  };
+
+  handleScroll();
+
+  window.addEventListener("scroll", handleScroll, { passive: true });
+  window.addEventListener("resize", handleScroll);
+
+  return () => {
+    window.removeEventListener("scroll", handleScroll);
+    window.removeEventListener("resize", handleScroll);
+  };
+}, [sections]);
+
   const selectCategory = (category) => {
     setSelectedCategory(category);
     setActiveIndex(0);
@@ -901,10 +1141,21 @@ export default function Fasilitas() {
 
   return (
     <main className="fac-page overflow-x-hidden bg-[#041b15] text-emerald-950">
-      <ScrollProgress />
-      <CursorGlow />
-      <Navbar />
-      <ChapterDots />
+<CursorGlow />
+<Navbar />
+
+<ProgressBar
+  sections={sections}
+  activeSection={activeSectionIndex}
+  activeStep={activeStep}
+/>
+
+<SideDots
+  sections={sections}
+  activeSection={activeSectionIndex}
+  activeStep={activeStep}
+  jumpToSection={jumpToSection}
+/>
 
       <BackendNotice
         show={usingFallback}
@@ -1441,7 +1692,6 @@ export default function Fasilitas() {
         </Container>
       </Section>
 
-      <Footer />
     </main>
   );
 }
