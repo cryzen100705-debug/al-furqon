@@ -961,22 +961,28 @@ const jumpToSection = (index) => {
     });
   }
 
-  const targetTop = target.getBoundingClientRect().top + window.scrollY;
-
-  window.scrollTo({
-    top: targetTop,
+  target.scrollIntoView({
     behavior: "smooth",
+    block: "start",
   });
 
   window.setTimeout(() => {
     lockRef.current = false;
-  }, 850);
+  }, 780);
 };
 
 useEffect(() => {
   if (!sections.length) return;
 
-  const isMobile = () => window.innerWidth <= 1024;
+  const isInteractiveElement = (target) => {
+    if (!target?.closest) return false;
+
+    return Boolean(
+      target.closest(
+        "button, input, textarea, select, [role='button'], [data-no-section-swipe='true']"
+      )
+    );
+  };
 
   const getActiveSection = () => {
     return document.getElementById(
@@ -985,34 +991,34 @@ useEffect(() => {
   };
 
   const getActiveContainer = () => {
-    const activeSection = getActiveSection();
-    if (!activeSection) return null;
-
-    return activeSection.querySelector(".fac-container");
+    return getActiveSection()?.querySelector(".fac-container") || null;
   };
 
-  const canMoveSection = (direction) => {
-    if (!isMobile()) return true;
-
+  const canScrollInsideSection = (direction) => {
+    const section = getActiveSection();
     const container = getActiveContainer();
-    if (!container) return true;
 
-    const hasInnerScroll = container.scrollHeight > container.clientHeight + 10;
+    if (!section || !container) return false;
 
-    if (!hasInnerScroll) return true;
+    /*
+      HERO jangan scroll internal.
+      Kalau user scroll dari hero, langsung pindah section.
+    */
+    if (section.id === "hero") return false;
 
-    const atTop = container.scrollTop <= 2;
-    const atBottom =
-      container.scrollTop + container.clientHeight >= container.scrollHeight - 4;
+    const maxScroll = container.scrollHeight - container.clientHeight;
 
-    if (direction > 0) return atBottom;
+    if (maxScroll <= 12) return false;
 
-    return atTop;
+    if (direction > 0) {
+      return container.scrollTop < maxScroll - 6;
+    }
+
+    return container.scrollTop > 6;
   };
 
   const moveSection = (direction) => {
     if (lockRef.current) return;
-    if (!canMoveSection(direction)) return;
 
     const currentIndex = activeSectionRef.current;
 
@@ -1028,19 +1034,16 @@ useEffect(() => {
 
   const handleWheel = (event) => {
     if (Math.abs(event.deltaY) < 10) return;
+    if (isInteractiveElement(event.target)) return;
 
     const direction = event.deltaY > 0 ? 1 : -1;
 
-    if (!isMobile()) {
-      event.preventDefault();
-      moveSection(direction);
+    if (canScrollInsideSection(direction)) {
       return;
     }
 
-    if (canMoveSection(direction)) {
-      event.preventDefault();
-      moveSection(direction);
-    }
+    event.preventDefault();
+    moveSection(direction);
   };
 
   const handleKeyDown = (event) => {
@@ -1049,14 +1052,14 @@ useEffect(() => {
 
     if (![...downKeys, ...upKeys].includes(event.key)) return;
 
-    event.preventDefault();
+    const direction = downKeys.includes(event.key) ? 1 : -1;
 
-    if (downKeys.includes(event.key)) {
-      moveSection(1);
+    if (canScrollInsideSection(direction)) {
       return;
     }
 
-    moveSection(-1);
+    event.preventDefault();
+    moveSection(direction);
   };
 
   const handleTouchStart = (event) => {
@@ -1064,29 +1067,35 @@ useEffect(() => {
   };
 
   const handleTouchMove = (event) => {
-    if (!isMobile()) return;
+    if (isInteractiveElement(event.target)) return;
 
     const currentY = event.touches?.[0]?.clientY || 0;
     const diff = touchStartY.current - currentY;
 
-    if (Math.abs(diff) < 12) return;
+    if (Math.abs(diff) < 10) return;
 
     const direction = diff > 0 ? 1 : -1;
 
-    if (canMoveSection(direction)) {
-      event.preventDefault();
+    if (canScrollInsideSection(direction)) {
+      return;
     }
+
+    event.preventDefault();
   };
 
   const handleTouchEnd = (event) => {
-    if (!isMobile()) return;
+    if (isInteractiveElement(event.target)) return;
 
     const endY = event.changedTouches?.[0]?.clientY || 0;
     const diff = touchStartY.current - endY;
 
-    if (Math.abs(diff) < 55) return;
+    if (Math.abs(diff) < 52) return;
 
     const direction = diff > 0 ? 1 : -1;
+
+    if (canScrollInsideSection(direction)) {
+      return;
+    }
 
     moveSection(direction);
   };
