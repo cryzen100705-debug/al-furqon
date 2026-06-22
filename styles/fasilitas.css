@@ -1369,3 +1369,237 @@ body,
     height: 145px !important;
   }
 }
+
+/* =========================================================
+   FIX EXPLORER LAPTOP - JELAJAH FASILITAS TIDAK TERPOTONG
+   Tempel PALING BAWAH styles/fasilitas.css
+========================================================= */
+
+/* Section explorer diberi ruang yang lebih akurat */
+@media (min-width: 1025px) {
+  .fac-page #explorer.fac-section {
+    height: 100dvh !important;
+    min-height: 100dvh !important;
+    max-height: 100dvh !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+  }
+
+  .fac-page #explorer .fac-container {
+    width: min(92vw, 1180px) !important;
+    max-width: min(92vw, 1180px) !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+
+    padding-top: calc(var(--fac-navbar-h, 88px) + 8px) !important;
+    padding-bottom: calc(18px + env(safe-area-inset-bottom)) !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    align-items: stretch !important;
+
+    overflow: hidden !important;
+  }
+
+  /* Header explorer diperkecil agar tidak makan tinggi layar */
+  .fac-page #explorer .max-w-5xl {
+    max-width: 760px !important;
+  }
+
+  .fac-page #explorer .fac-section-title {
+    font-size: clamp(1.3rem, 2.05vw, 2.05rem) !important;
+    line-height: 1 !important;
+  }
+
+  .fac-page #explorer .max-w-3xl {
+    max-width: 620px !important;
+  }
+
+  .fac-page #explorer .max-w-3xl p,
+  .fac-page #explorer p {
+    font-size: 0.66rem !important;
+    line-height: 1.38 !important;
+  }
+
+  .fac-page #explorer .mb-4 {
+    margin-bottom: 0.25rem !important;
+  }
+
+  .fac-page #explorer .mt-3,
+  .fac-page #explorer .mt-4 {
+    margin-top: 0.35rem !important;
+  }
+
+  .fac-page #explorer .mt-7,
+  .fac-page #explorer .mt-8 {
+    margin-top: 0.45rem !important;
+  }
+
+  /* Filter kategori dibuat lebih kecil */
+  .fac-page #explorer .no-scrollbar.mx-auto {
+    max-width: 100% !important;
+    gap: 0.35rem !important;
+    padding-bottom: 0.15rem !important;
+  }
+
+  .fac-page #explorer .rounded-full.px-5.py-3 {
+    min-height: 30px !important;
+    padding: 0.38rem 0.75rem !important;
+    font-size: 0.62rem !important;
+  }
+
+  /* Area utama explorer dibuat pas dalam layar */
+  .fac-page #explorer .mt-4.grid {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    height: auto !important;
+
+    display: grid !important;
+    grid-template-columns: minmax(260px, 0.8fr) minmax(0, 1.2fr) !important;
+    align-items: stretch !important;
+    gap: 0.65rem !important;
+
+    overflow: hidden !important;
+  }
+
+  /* List kiri boleh scroll sendiri jika item banyak */
+  .fac-page #explorer .mt-4.grid > .no-scrollbar:first-child {
+    height: 100% !important;
+    max-height: 100% !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.35rem !important;
+    padding-bottom: 0 !important;
+  }
+
+  .fac-page #explorer .mt-4.grid > .no-scrollbar:first-child button {
+    min-height: 46px !important;
+    padding: 0.48rem 0.55rem !important;
+    border-radius: 0.78rem !important;
+  }
+
+  .fac-page #explorer .mt-4.grid > .no-scrollbar:first-child button .h-9.w-9,
+  .fac-page #explorer .mt-4.grid > .no-scrollbar:first-child button .h-10.w-10,
+  .fac-page #explorer .mt-4.grid > .no-scrollbar:first-child button .h-12.w-12 {
+    width: 2rem !important;
+    height: 2rem !important;
+    border-radius: 0.72rem !important;
+    font-size: 0.78rem !important;
+  }
+
+  .fac-page #explorer .mt-4.grid > .no-scrollbar:first-child button p {
+    font-size: 0.48rem !important;
+    line-height: 1 !important;
+    letter-spacing: 0.14em !important;
+  }
+
+  .fac-page #explorer .mt-4.grid > .no-scrollbar:first-child button h3 {
+    font-size: 0.76rem !important;
+    line-height: 1.05 !important;
+  }
+
+  /* Card kanan dibuat lebih pendek */
+  .fac-page #explorer .mt-4.grid > div:last-child {
+    min-height: 0 !important;
+    height: 100% !important;
+    overflow: hidden !important;
+  }
+
+  .fac-page #explorer .mt-4.grid > div:last-child > div {
+    height: 100% !important;
+    max-height: 100% !important;
+    overflow: hidden !important;
+  }
+
+  .fac-page .fac-explorer-image {
+    height: clamp(125px, 21vh, 180px) !important;
+    min-height: 0 !important;
+  }
+
+  .fac-page #explorer .p-5,
+  .fac-page #explorer .sm\:p-6,
+  .fac-page #explorer .lg\:p-8 {
+    padding: 0.65rem !important;
+  }
+
+  .fac-page #explorer .fac-card-title {
+    font-size: clamp(1.1rem, 1.8vw, 1.55rem) !important;
+    line-height: 1 !important;
+  }
+
+  .fac-page #explorer .grid.grid-cols-2 {
+    gap: 0.35rem !important;
+    margin-top: 0.45rem !important;
+  }
+
+  .fac-page #explorer .grid.grid-cols-2 > div {
+    padding: 0.4rem !important;
+    border-radius: 0.7rem !important;
+  }
+
+  .fac-page #explorer .grid.grid-cols-2 svg {
+    font-size: 0.75rem !important;
+  }
+
+  .fac-page #explorer a[href*="wa.me"] {
+    min-height: 32px !important;
+    padding: 0.42rem 0.75rem !important;
+    font-size: 0.62rem !important;
+  }
+}
+
+/* Khusus laptop pendek seperti tinggi 720-820px */
+@media (min-width: 1025px) and (max-height: 820px) {
+  .fac-page #explorer .fac-container {
+    padding-top: calc(var(--fac-navbar-h, 88px) + 4px) !important;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom)) !important;
+  }
+
+  .fac-page #explorer .fac-section-title {
+    font-size: clamp(1.15rem, 1.8vw, 1.75rem) !important;
+  }
+
+  .fac-page #explorer .max-w-3xl p,
+  .fac-page #explorer p {
+    font-size: 0.62rem !important;
+  }
+
+  .fac-page #explorer .rounded-full.px-5.py-3 {
+    min-height: 28px !important;
+    padding: 0.32rem 0.62rem !important;
+    font-size: 0.58rem !important;
+  }
+
+  .fac-page #explorer .mt-4.grid {
+    grid-template-columns: minmax(245px, 0.78fr) minmax(0, 1.22fr) !important;
+    gap: 0.55rem !important;
+  }
+
+  .fac-page #explorer .mt-4.grid > .no-scrollbar:first-child button {
+    min-height: 42px !important;
+    padding: 0.4rem 0.5rem !important;
+  }
+
+  .fac-page .fac-explorer-image {
+    height: clamp(105px, 18vh, 150px) !important;
+  }
+
+  .fac-page #explorer .p-5,
+  .fac-page #explorer .sm\:p-6,
+  .fac-page #explorer .lg\:p-8 {
+    padding: 0.55rem !important;
+  }
+
+  .fac-page #explorer .fac-card-title {
+    font-size: clamp(1rem, 1.55vw, 1.35rem) !important;
+  }
+
+  .fac-page #explorer .grid.grid-cols-2 > div {
+    padding: 0.34rem !important;
+  }
+}
