@@ -1051,3 +1051,359 @@ a {
     font-size: 0.66rem !important;
   }
 }
+
+/* =========================================================
+   FIX HERO FASILITAS - LEBIH PREMIUM & SEIMBANG
+   Taruh PALING BAWAH fasilitas.css
+========================================================= */
+
+/* Hero jangan terlalu gelap dan jangan terlalu kosong */
+#hero.fac-hero-section {
+  padding-top: calc(var(--fac-navbar-h, 88px) + 1rem) !important;
+  padding-bottom: 1.2rem !important;
+  overflow: hidden !important;
+}
+
+/* Background lebih cinematic */
+#hero > .absolute.inset-0.bg-gradient-to-r {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(3, 19, 15, 0.98) 0%,
+      rgba(4, 35, 28, 0.94) 38%,
+      rgba(6, 78, 59, 0.62) 100%
+    ) !important;
+}
+
+#hero > .absolute.inset-0.bg-black\/42 {
+  background: rgba(0, 0, 0, 0.18) !important;
+}
+
+/* Container hero */
+#hero .fac-container {
+  width: min(100% - 7vw, 1320px) !important;
+  height: calc(var(--fac-vh, 100dvh) - var(--fac-navbar-h, 88px) - 2.2rem) !important;
+  min-height: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  align-items: center !important;
+  overflow: visible !important;
+}
+
+/* Grid hero dibuat lebih seimbang */
+#hero .grid.w-full.items-center {
+  height: 100% !important;
+  grid-template-columns: minmax(0, 0.95fr) minmax(430px, 0.85fr) !important;
+  gap: clamp(2rem, 4vw, 5rem) !important;
+  align-items: center !important;
+}
+
+/* Text kiri */
+#hero .fac-hero-title {
+  max-width: 780px !important;
+  font-size: clamp(3rem, 5.2vw, 5.8rem) !important;
+  line-height: 0.88 !important;
+  letter-spacing: -0.075em !important;
+  text-shadow: 0 22px 70px rgba(0, 0, 0, 0.48);
+}
+
+#hero .fac-hero-title span {
+  filter: drop-shadow(0 16px 34px rgba(250, 204, 21, 0.2));
+}
+
+#hero .fac-hero-title + p {
+  max-width: 760px !important;
+  font-size: clamp(0.95rem, 1.05vw, 1.12rem) !important;
+  line-height: 1.7 !important;
+  color: rgba(236, 253, 245, 0.94) !important;
+}
+
+/* Arabic badge */
+#hero .mb-4.inline-flex {
+  margin-bottom: 1rem !important;
+  border-color: rgba(250, 204, 21, 0.35) !important;
+  background: rgba(250, 204, 21, 0.1) !important;
+  box-shadow: 0 18px 45px rgba(250, 204, 21, 0.08);
+}
+
+/* Tombol */
+#hero .mx-auto.mt-7.flex {
+  margin-top: 1.25rem !important;
+}
+
+#hero .mx-auto.mt-7.flex span {
+  min-height: 50px !important;
+  padding: 0.85rem 1.55rem !important;
+  font-size: 0.9rem !important;
+}
+
+/* Stats */
+#hero .mt-7.grid {
+  max-width: 720px !important;
+  margin-top: 1.25rem !important;
+  gap: 0.85rem !important;
+}
+
+#hero .mt-7.grid > div {
+  position: relative;
+  overflow: hidden;
+  min-height: 86px !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.06)) !important;
+  border-radius: 1.35rem !important;
+  padding: 1rem 0.85rem !important;
+  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.2);
+}
+
+#hero .mt-7.grid > div::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at top left, rgba(250, 204, 21, 0.18), transparent 45%);
+  pointer-events: none;
+}
+
+#hero .mt-7.grid p:first-child {
+  position: relative;
+  z-index: 1;
+  font-size: clamp(1.25rem, 1.8vw, 2rem) !important;
+}
+
+#hero .mt-7.grid p:last-child {
+  position: relative;
+  z-index: 1;
+  font-size: clamp(0.72rem, 0.9vw, 0.88rem) !important;
+}
+
+/* Card kanan dibuat besar, bukan kecil melayang */
+#hero .fac-hero-showcase {
+  width: min(100%, 560px) !important;
+  max-width: 560px !important;
+  margin-left: auto !important;
+  transform: none !important;
+  transform-origin: center !important;
+}
+
+/* Bungkus card kanan */
+#hero .fac-hero-showcase .relative.overflow-hidden.rounded-\[2rem\] {
+  border-radius: 2.4rem !important;
+  padding: 0.75rem !important;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.07)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  box-shadow:
+    0 38px 100px rgba(0, 0, 0, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16) !important;
+}
+
+/* Gambar kanan diperbesar */
+#hero .fac-hero-preview {
+  height: clamp(380px, 52vh, 540px) !important;
+  width: 100% !important;
+  object-fit: cover !important;
+}
+
+/* Garis kuning samping card kanan lebih elegan */
+#hero .fac-hero-showcase .absolute.-left-5 {
+  left: -0.8rem !important;
+  top: 14% !important;
+  height: 72% !important;
+  width: 0.95rem !important;
+  border-radius: 999px !important;
+  background: linear-gradient(180deg, #facc15, #d97706) !important;
+  box-shadow: 0 0 45px rgba(250, 204, 21, 0.5);
+}
+
+/* Lingkaran kanan jangan terlalu dominan */
+#hero .fac-hero-showcase .absolute.-right-6,
+#hero .fac-hero-showcase .absolute.-bottom-8 {
+  opacity: 0.55 !important;
+}
+
+/* Isi card kanan */
+#hero .fac-hero-showcase .absolute.left-4.top-4 {
+  left: 1.15rem !important;
+  top: 1.15rem !important;
+  padding: 0.6rem 1rem !important;
+  font-size: 0.62rem !important;
+}
+
+#hero .fac-hero-showcase .absolute.bottom-0.left-0.right-0 {
+  padding: 1.35rem !important;
+}
+
+#hero .fac-hero-showcase h3 {
+  font-size: clamp(2rem, 3vw, 3.35rem) !important;
+  line-height: 0.95 !important;
+}
+
+#hero .fac-hero-showcase p {
+  font-size: clamp(0.82rem, 0.95vw, 1rem) !important;
+  line-height: 1.55 !important;
+}
+
+/* Laptop pendek */
+@media (min-width: 1025px) and (max-height: 850px) {
+  #hero .fac-container {
+    width: min(100% - 6vw, 1260px) !important;
+    height: calc(var(--fac-vh, 100dvh) - var(--fac-navbar-h, 88px) - 1.5rem) !important;
+  }
+
+  #hero .grid.w-full.items-center {
+    grid-template-columns: minmax(0, 1fr) minmax(390px, 0.78fr) !important;
+    gap: clamp(1.4rem, 3vw, 3.2rem) !important;
+  }
+
+  #hero .fac-hero-title {
+    font-size: clamp(2.65rem, 4.8vw, 4.85rem) !important;
+  }
+
+  #hero .fac-hero-title + p {
+    font-size: 0.92rem !important;
+    line-height: 1.58 !important;
+  }
+
+  #hero .mx-auto.mt-7.flex,
+  #hero .mt-7.grid {
+    margin-top: 0.95rem !important;
+  }
+
+  #hero .mx-auto.mt-7.flex span {
+    min-height: 46px !important;
+    padding: 0.72rem 1.25rem !important;
+    font-size: 0.82rem !important;
+  }
+
+  #hero .mt-7.grid > div {
+    min-height: 72px !important;
+    padding: 0.7rem !important;
+  }
+
+  #hero .fac-hero-showcase {
+    max-width: 470px !important;
+  }
+
+  #hero .fac-hero-preview {
+    height: clamp(300px, 47vh, 410px) !important;
+  }
+}
+
+/* Tablet: fokuskan ke teks */
+@media (max-width: 1024px) {
+  #hero.fac-hero-section {
+    padding-top: calc(var(--fac-navbar-h, 88px) + 1rem) !important;
+    padding-bottom: 1.5rem !important;
+  }
+
+  #hero .fac-container {
+    width: min(100% - 2rem, 820px) !important;
+    height: calc(var(--fac-vh, 100dvh) - var(--fac-navbar-h, 88px) - 2rem) !important;
+    overflow: hidden !important;
+  }
+
+  #hero .grid.w-full.items-center {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  #hero .grid.w-full.items-center > div:first-child {
+    max-width: 760px !important;
+    text-align: center !important;
+  }
+
+  #hero .fac-hero-title {
+    margin-inline: auto !important;
+    font-size: clamp(2.3rem, 9vw, 4.5rem) !important;
+  }
+
+  #hero .fac-hero-title + p {
+    margin-inline: auto !important;
+  }
+
+  #hero .fac-hero-showcase {
+    display: none !important;
+  }
+
+  #hero .mt-7.grid {
+    margin-inline: auto !important;
+  }
+}
+
+/* HP */
+@media (max-width: 640px) {
+  #hero.fac-hero-section {
+    padding-top: calc(var(--fac-navbar-h, 88px) + 0.75rem) !important;
+    padding-bottom: 1rem !important;
+  }
+
+  #hero .fac-container {
+    width: calc(100% - 1.2rem) !important;
+  }
+
+  #hero .mb-4.inline-flex {
+    margin-bottom: 0.75rem !important;
+    padding: 0.5rem 0.75rem !important;
+    font-size: 0.72rem !important;
+    line-height: 1.45 !important;
+  }
+
+  #hero .fac-hero-title {
+    font-size: clamp(2rem, 12vw, 3rem) !important;
+    line-height: 0.92 !important;
+  }
+
+  #hero .fac-hero-title + p {
+    font-size: 0.84rem !important;
+    line-height: 1.62 !important;
+  }
+
+  #hero .mx-auto.mt-7.flex {
+    width: 100% !important;
+    margin-top: 1rem !important;
+  }
+
+  #hero .mx-auto.mt-7.flex span {
+    width: 100% !important;
+    min-height: 46px !important;
+    padding: 0.72rem 1rem !important;
+    font-size: 0.78rem !important;
+  }
+
+  #hero .mt-7.grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    width: 100% !important;
+    gap: 0.5rem !important;
+    margin-top: 1rem !important;
+  }
+
+  #hero .mt-7.grid > div {
+    min-height: 68px !important;
+    padding: 0.6rem 0.4rem !important;
+    border-radius: 1rem !important;
+  }
+
+  #hero .mt-7.grid p:first-child {
+    font-size: 1.05rem !important;
+  }
+
+  #hero .mt-7.grid p:last-child {
+    font-size: 0.62rem !important;
+  }
+}
+
+/* HP kecil */
+@media (max-width: 430px) {
+  #hero .fac-hero-title {
+    font-size: clamp(1.75rem, 11vw, 2.45rem) !important;
+  }
+
+  #hero .fac-hero-title + p {
+    font-size: 0.78rem !important;
+  }
+
+  #hero .mt-7.grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+}
