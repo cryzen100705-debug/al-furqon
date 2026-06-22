@@ -235,23 +235,6 @@ function SafeImage({ src, alt, className = "", fallback = FALLBACK_IMAGE }) {
   );
 }
 
-function ScrollProgress() {
-  const { scrollYProgress } = useScroll();
-
-  const scaleX = useSpring(scrollYProgress, {
-    stiffness: 130,
-    damping: 28,
-    restDelta: 0.001,
-  });
-
-  return (
-    <motion.div
-      style={{ scaleX }}
-      className="fixed left-0 top-0 z-[9999] h-1.5 w-full origin-left bg-gradient-to-r from-yellow-400 via-emerald-300 to-yellow-400"
-    />
-  );
-}
-
 function BackgroundArt({ dark = false }) {
   const reduce = useReducedMotion();
 
@@ -709,20 +692,19 @@ const jumpToSection = (index) => {
   if (loading) return <LoadingPage />;
 
   return (
-    <main className="edu-page overflow-x-hidden bg-[#041b15] text-emerald-950">
-      <ScrollProgress />
-<Navbar />
+  <main className="edu-page overflow-x-hidden bg-[#041b15] text-emerald-950">
+    <Navbar />
 
-<EducationProgressBar
-  sections={sections}
-  activeSection={activeSectionIndex}
-/>
+    <EducationProgressBar
+      sections={sections}
+      activeSection={activeSectionIndex}
+    />
 
-<SideDots
-  sections={sections}
-  activeSection={activeSectionIndex}
-  jumpToSection={jumpToSection}
-/>
+    <SideDots
+      sections={sections}
+      activeSection={activeSectionIndex}
+      jumpToSection={jumpToSection}
+    />
 
       <BackendNotice
         show={usingFallback}
