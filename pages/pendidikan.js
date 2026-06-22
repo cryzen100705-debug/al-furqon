@@ -954,7 +954,7 @@ useEffect(() => {
         <BackgroundArt dark />
 
         <Container className="flex items-center">
-          <div className="grid w-full items-start gap-6 lg:grid-cols-[0.62fr_1.38fr]">
+          <div className="grid w-full items-center gap-4 lg:grid-cols-[0.78fr_1.22fr]">
             <div>
               <SectionHeader
                 dark
@@ -995,7 +995,7 @@ useEffect(() => {
                   <button
                     key={item.level}
                     onClick={() => setActive(index)}
-                    className={`group relative overflow-hidden rounded-[1.35rem] border p-3.5 text-left transition xl:p-4 ${
+                    className={`group relative overflow-hidden rounded-[1.15rem] border p-3 text-left transition xl:p-3.5 ${
                       active === index
                         ? "border-yellow-300 bg-yellow-400 text-emerald-950 shadow-xl shadow-yellow-950/20"
                         : "border-white/10 bg-white/10 text-white hover:-translate-y-1 hover:bg-white/15"
@@ -1003,7 +1003,7 @@ useEffect(() => {
                   >
                     <div className="relative z-10 flex items-center gap-3">
                       <div
-                        className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-xl ${
+                        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-base ${
                           active === index
                             ? "bg-emerald-950 text-yellow-300"
                             : "bg-white/10 text-yellow-300"
@@ -1017,7 +1017,7 @@ useEffect(() => {
                           Tahap {item.level}
                         </p>
 
-                        <h3 className="mt-1 truncate text-xl font-black xl:text-2xl">
+                        <h3 className="mt-1 truncate text-lg font-black xl:text-xl">
                           {item.title}
                         </h3>
                       </div>
@@ -1064,7 +1064,7 @@ useEffect(() => {
                     </div>
                   </div>
 
-                  <div className="relative overflow-hidden bg-emerald-950/90 p-5 lg:p-6 xl:p-7">
+                  <div className="relative overflow-hidden bg-emerald-950/90 p-4 lg:p-5 xl:p-5">
                     <div className="absolute -right-20 -top-20 h-52 w-52 rounded-full bg-yellow-300/10 blur-3xl" />
 
                     <div className="relative z-10">
@@ -1088,7 +1088,7 @@ useEffect(() => {
                         {activeData.focus.map((focus) => (
                           <div
                             key={focus}
-                            className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/10 p-3"
+                            className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/10 p-2.5"
                           >
                             <FaCheckCircle className="shrink-0 text-yellow-300" />
                             <span className="text-sm font-semibold text-white">
@@ -1098,7 +1098,7 @@ useEffect(() => {
                         ))}
                       </div>
 
-                      <div className="mt-5 rounded-3xl border border-yellow-300/20 bg-yellow-300/10 p-4">
+                      <div className="mt-4 rounded-2xl border border-yellow-300/20 bg-yellow-300/10 p-3.5">
                         <p className="text-[10px] font-black uppercase tracking-[0.24em] text-yellow-300">
                           Output Pendidikan
                         </p>
@@ -1237,6 +1237,11 @@ useEffect(() => {
             <Footer />
 
 <style jsx global>{`
+
+#journey .edu-container {
+  padding-top: clamp(0.7rem, 1.4vh, 1.1rem);
+  padding-bottom: clamp(0.7rem, 1.4vh, 1.1rem);
+}
   :root {
   --edu-navbar-h: 92px;
   --edu-vh: 100svh;
@@ -1386,33 +1391,45 @@ useEffect(() => {
 }
 
 .edu-hero-showcase {
-  transform: scale(0.92);
+  transform: scale(0.78);
   transform-origin: center right;
 }
 
 .edu-hero-preview-new {
-  height: clamp(300px, 46vh, 500px);
+  height: clamp(240px, 36vh, 380px);
 }
 
+#hero .mt-7.grid > div {
+  padding: 0.75rem !important;
+  border-radius: 1rem !important;
+}
+
+#hero .mt-7.grid p:first-child {
+  font-size: clamp(0.95rem, 1.4vw, 1.25rem) !important;
+}
+
+#hero .mt-7.grid p:last-child {
+  font-size: 0.78rem !important;
+}
   /*
     Ukuran font dibuat responsif dan tidak terlalu besar,
     jadi tidak kepotong pada laptop kecil, tablet, dan HP.
   */
   .edu-hero-title {
-    font-size: clamp(2.1rem, 7.2vw, 6.2rem);
-  }
+  font-size: clamp(2rem, 5.4vw, 4.6rem);
+}
 
-  .edu-section-title {
-    font-size: clamp(1.9rem, 4.8vw, 4.6rem);
-  }
+.edu-section-title {
+  font-size: clamp(1.7rem, 3.4vw, 3.1rem);
+}
 
-  .edu-detail-title {
-    font-size: clamp(1.65rem, 3.7vw, 3.6rem);
-  }
+.edu-detail-title {
+  font-size: clamp(1.55rem, 2.8vw, 2.8rem);
+}
 
-  .edu-card-title {
-    font-size: clamp(2rem, 5.4vw, 4.5rem);
-  }
+.edu-card-title {
+  font-size: clamp(1.9rem, 4vw, 3.4rem);
+}
 
   .edu-hero-preview-new {
     height: clamp(320px, 50vh, 560px);
@@ -1440,9 +1457,6 @@ useEffect(() => {
     section tetap 100% layar minimum,
     tapi tidak memotong konten.
   */
-  .edu-section > .edu-container {
-    overflow: visible;
-  }
 
   .edu-page img {
     max-width: 100%;
@@ -1466,37 +1480,112 @@ useEffect(() => {
     height: var(--edu-vh);
     min-height: var(--edu-vh);
     max-height: var(--edu-vh);
-    padding-top: calc(var(--edu-navbar-h) + 0.35rem);
-    padding-bottom: 0.5rem;
+    padding-top: calc(var(--edu-navbar-h) + 0.15rem);
+    padding-bottom: 0.35rem;
   }
 
   #hero .edu-hero-title {
-    font-size: clamp(2.5rem, 5.9vw, 5.2rem);
+    font-size: clamp(2rem, 5vw, 4.3rem);
   }
 
   #hero p {
-    font-size: 0.95rem;
-    line-height: 1.6;
+    font-size: 0.9rem;
+    line-height: 1.55;
   }
 
   #hero .edu-hero-layout {
-    gap: 1rem;
+    gap: 0.8rem;
   }
 
-  #hero .mx-auto.mt-7.flex {
-    margin-top: 1rem;
-  }
-
+  #hero .mx-auto.mt-7.flex,
   #hero .mt-7.grid {
-    margin-top: 1rem;
+    margin-top: 0.8rem;
   }
 
   .edu-hero-showcase {
-    transform: scale(0.86);
+    transform: scale(0.74);
   }
 
   .edu-hero-preview-new {
-    height: clamp(280px, 42vh, 420px);
+    height: clamp(230px, 35vh, 360px);
+  }
+}
+
+@media (min-width: 1025px) and (max-height: 850px) {
+  :root {
+    --edu-section-y: 0.45rem;
+    --edu-page-x: clamp(1rem, 3vw, 3.5rem);
+  }
+
+  .edu-section {
+    padding-top: 0.55rem;
+    padding-bottom: 0.55rem;
+  }
+
+  .edu-hero-section {
+    padding-top: calc(var(--edu-navbar-h) + 0.1rem);
+    padding-bottom: 0.35rem;
+  }
+
+  #hero .edu-hero-layout {
+    gap: 0.7rem;
+  }
+
+  #hero .edu-hero-title {
+    font-size: clamp(2.1rem, 5vw, 4.2rem);
+  }
+
+  #hero p {
+    font-size: 0.88rem;
+    line-height: 1.55;
+  }
+
+  #hero .inline-flex.rounded-full {
+    padding: 0.45rem 0.8rem;
+    font-size: 0.78rem;
+  }
+
+  #hero .mx-auto.mt-7.flex {
+    margin-top: 0.75rem;
+  }
+
+  #hero .mx-auto.mt-7.flex a {
+    padding: 0.7rem 1.25rem;
+    font-size: 0.82rem;
+  }
+
+  #hero .mt-7.grid {
+    margin-top: 0.75rem;
+    gap: 0.65rem;
+  }
+
+  .edu-hero-showcase {
+    transform: scale(0.72);
+  }
+
+  .edu-hero-preview-new {
+    height: clamp(220px, 34vh, 340px);
+  }
+
+  #journey .edu-section-title {
+    font-size: clamp(1.9rem, 3.5vw, 3.4rem);
+  }
+
+  #journey p {
+    font-size: 0.88rem;
+    line-height: 1.55;
+  }
+
+  #journey .grid.w-full {
+    gap: 0.9rem;
+  }
+
+  .edu-journey-image {
+    min-height: clamp(220px, 36vh, 360px);
+  }
+
+  .edu-detail-title {
+    font-size: clamp(1.7rem, 2.8vw, 2.8rem);
   }
 }
 
