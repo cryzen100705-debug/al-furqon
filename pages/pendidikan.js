@@ -791,9 +791,9 @@ useEffect(() => {
 
   <Container
   style={{ y: heroTextY, opacity: heroOpacity }}
-  className="flex items-center justify-center"
+  className="flex items-start justify-center"
 >
-    <div className="edu-hero-layout grid w-full items-center gap-7 lg:grid-cols-[1.02fr_0.98fr]">
+    <div className="edu-hero-layout grid w-full items-center gap-4 lg:grid-cols-[1.05fr_0.95fr]">
       <motion.div
         initial={{ opacity: 0, y: 34, filter: "blur(10px)" }}
         animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
@@ -1185,7 +1185,7 @@ useEffect(() => {
       <Section id="cta" dark>
         <BackgroundArt dark />
 
-        <Container className="flex items-center justify-center text-center">
+        <Container className="flex items-start justify-center text-center">
           <Reveal className="mx-auto w-full max-w-6xl">
             <GlassCard dark className="p-6 sm:p-8 lg:p-10 xl:p-12">
               <motion.div
@@ -1656,17 +1656,6 @@ useEffect(() => {
   }
 
   @media (max-width: 768px) {
-
-   .chapter-dots {
-    right: 0.55rem;
-    gap: 0.45rem;
-  }
-
-  .chapter-dot {
-    width: 2rem;
-    height: 2rem;
-    font-size: 0.56rem;
-  }
     
     :root {
       --edu-page-x: 0.8rem;
@@ -1972,6 +1961,226 @@ useEffect(() => {
       height: clamp(190px, 27vh, 280px);
     }
   }
+
+  /* =========================================================
+   FINAL COMPACT FIX PENDIDIKAN
+   taruh PALING BAWAH agar menimpa CSS lama
+========================================================= */
+
+:root {
+  --edu-section-y: 0.45rem;
+  --edu-page-x: clamp(1rem, 3.2vw, 4rem);
+}
+
+.edu-section {
+  height: var(--edu-vh);
+  min-height: var(--edu-vh);
+  max-height: var(--edu-vh);
+  padding-top: 0.45rem !important;
+  padding-bottom: 0.45rem !important;
+}
+
+.edu-hero-section {
+  padding-top: calc(var(--edu-navbar-h) + 0.05rem) !important;
+  padding-bottom: 0.25rem !important;
+}
+
+.edu-container {
+  width: min(100% - calc(var(--edu-page-x) * 2), 1240px) !important;
+  height: 100%;
+}
+
+#hero .edu-container {
+  align-items: flex-start !important;
+}
+
+#hero .edu-hero-layout {
+  height: 100%;
+  align-items: center;
+  gap: clamp(0.8rem, 1.4vw, 1.4rem) !important;
+  padding-top: clamp(0.35rem, 1vh, 0.8rem);
+}
+
+#hero .inline-flex.rounded-full {
+  padding: 0.38rem 0.75rem !important;
+  font-size: 0.72rem !important;
+  line-height: 1.35 !important;
+}
+
+#hero .mb-4 {
+  margin-bottom: 0.45rem !important;
+}
+
+.edu-hero-title {
+  font-size: clamp(2rem, 4.75vw, 4.05rem) !important;
+  line-height: 0.9 !important;
+  letter-spacing: -0.06em !important;
+}
+
+#hero p {
+  margin-top: 0.65rem !important;
+  max-width: 44rem !important;
+  font-size: 0.88rem !important;
+  line-height: 1.52 !important;
+}
+
+#hero .mx-auto.mt-7.flex {
+  margin-top: 0.75rem !important;
+}
+
+#hero .mx-auto.mt-7.flex a {
+  padding: 0.68rem 1.25rem !important;
+  font-size: 0.8rem !important;
+}
+
+#hero .mt-7.grid {
+  margin-top: 0.75rem !important;
+  max-width: 34rem !important;
+  gap: 0.6rem !important;
+}
+
+#hero .mt-7.grid > div {
+  padding: 0.65rem 0.7rem !important;
+  border-radius: 1rem !important;
+}
+
+#hero .mt-7.grid p:first-child {
+  font-size: 1.05rem !important;
+}
+
+#hero .mt-7.grid p:last-child {
+  font-size: 0.72rem !important;
+  line-height: 1.25 !important;
+}
+
+.edu-hero-showcase {
+  transform: scale(0.68) !important;
+  transform-origin: center right !important;
+}
+
+.edu-hero-preview-new {
+  height: clamp(210px, 31vh, 320px) !important;
+}
+
+/* Section title umum dibuat lebih kecil */
+.edu-section-title {
+  font-size: clamp(1.65rem, 3vw, 2.85rem) !important;
+  line-height: 0.98 !important;
+}
+
+.edu-detail-title {
+  font-size: clamp(1.45rem, 2.35vw, 2.3rem) !important;
+}
+
+.edu-card-title {
+  font-size: clamp(1.7rem, 3.2vw, 2.7rem) !important;
+}
+
+/* Journey compact */
+#journey .edu-container {
+  align-items: center !important;
+  padding-top: 0.25rem !important;
+  padding-bottom: 0.25rem !important;
+}
+
+#journey .grid.w-full {
+  gap: 0.75rem !important;
+}
+
+#journey .edu-section-title {
+  font-size: clamp(1.75rem, 3.05vw, 2.85rem) !important;
+}
+
+#journey p {
+  font-size: 0.82rem !important;
+  line-height: 1.48 !important;
+}
+
+#journey .mt-6 {
+  margin-top: 0.75rem !important;
+}
+
+#journey button {
+  padding: 0.65rem !important;
+  border-radius: 1rem !important;
+}
+
+.edu-journey-image {
+  min-height: clamp(190px, 31vh, 300px) !important;
+}
+
+#journey .bg-emerald-950\/90 {
+  padding: 0.9rem !important;
+}
+
+#journey .mt-5 {
+  margin-top: 0.75rem !important;
+}
+
+#journey .mt-4 {
+  margin-top: 0.65rem !important;
+}
+
+#journey .sm\:grid-cols-2 {
+  gap: 0.55rem !important;
+}
+
+#journey .sm\:grid-cols-2 > div {
+  padding: 0.6rem !important;
+}
+
+/* Timeline compact */
+#timeline .edu-container {
+  justify-content: center !important;
+}
+
+#timeline .mt-8 {
+  margin-top: 1rem !important;
+}
+
+.edu-timeline-image {
+  height: clamp(150px, 23vh, 230px) !important;
+}
+
+#timeline .p-4,
+#timeline .sm\:p-5 {
+  padding: 0.8rem !important;
+}
+
+/* Untuk layar laptop pendek seperti screenshot */
+@media (min-width: 1025px) and (max-height: 900px) {
+  .edu-hero-section {
+    padding-top: calc(var(--edu-navbar-h) - 0.15rem) !important;
+  }
+
+  #hero .edu-hero-layout {
+    padding-top: 0 !important;
+  }
+
+  .edu-hero-title {
+    font-size: clamp(2rem, 4.35vw, 3.75rem) !important;
+  }
+
+  #hero p {
+    font-size: 0.82rem !important;
+  }
+
+  .edu-hero-showcase {
+    transform: scale(0.62) !important;
+  }
+
+  .edu-hero-preview-new {
+    height: clamp(190px, 28vh, 290px) !important;
+  }
+
+  .edu-section-title {
+    font-size: clamp(1.55rem, 2.75vw, 2.55rem) !important;
+  }
+
+  .edu-journey-image {
+    min-height: clamp(170px, 29vh, 270px) !important;
+  }
+}
 
   @media (prefers-reduced-motion: reduce) {
     *,
