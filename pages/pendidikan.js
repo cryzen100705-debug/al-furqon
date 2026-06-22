@@ -645,14 +645,14 @@ const jumpToSection = (index) => {
   lockRef.current = true;
   setActiveSectionIndex(index);
 
-  target.scrollIntoView({
+  window.scrollTo({
+    top: target.offsetTop,
     behavior: "smooth",
-    block: "start",
   });
 
   window.setTimeout(() => {
     lockRef.current = false;
-  }, 850);
+  }, 780);
 };
 
 useEffect(() => {
@@ -674,9 +674,28 @@ useEffect(() => {
   const handleWheel = (event) => {
     event.preventDefault();
 
-    const direction = event.deltaY > 0 ? 1 : -1;
+    if (Math.abs(event.deltaY) < 12) return;
 
+    const direction = event.deltaY > 0 ? 1 : -1;
     goToNextSection(direction);
+  };
+
+  const handleKeyDown = (event) => {
+    const downKeys = ["ArrowDown", "PageDown", " ", "Spacebar"];
+    const upKeys = ["ArrowUp", "PageUp"];
+
+    if (![...downKeys, ...upKeys].includes(event.key)) return;
+
+    event.preventDefault();
+
+    if (downKeys.includes(event.key)) {
+      goToNextSection(1);
+      return;
+    }
+
+    if (upKeys.includes(event.key)) {
+      goToNextSection(-1);
+    }
   };
 
   const handleTouchStart = (event) => {
@@ -690,24 +709,17 @@ useEffect(() => {
     if (Math.abs(diff) < 45) return;
 
     const direction = diff > 0 ? 1 : -1;
-
     goToNextSection(direction);
   };
 
-  window.addEventListener("wheel", handleWheel, {
-    passive: false,
-  });
-
-  window.addEventListener("touchstart", handleTouchStart, {
-    passive: true,
-  });
-
-  window.addEventListener("touchend", handleTouchEnd, {
-    passive: true,
-  });
+  window.addEventListener("wheel", handleWheel, { passive: false });
+  window.addEventListener("keydown", handleKeyDown, { passive: false });
+  window.addEventListener("touchstart", handleTouchStart, { passive: true });
+  window.addEventListener("touchend", handleTouchEnd, { passive: true });
 
   return () => {
     window.removeEventListener("wheel", handleWheel);
+    window.removeEventListener("keydown", handleKeyDown);
     window.removeEventListener("touchstart", handleTouchStart);
     window.removeEventListener("touchend", handleTouchEnd);
   };
@@ -791,8 +803,9 @@ useEffect(() => {
 
   <Container
   style={{ y: heroTextY, opacity: heroOpacity }}
-  className="flex items-start justify-center"
+  className="flex items-center justify-center"
 >
+
     <div className="edu-hero-layout grid w-full items-center gap-4 lg:grid-cols-[1.05fr_0.95fr]">
       <motion.div
         initial={{ opacity: 0, y: 34, filter: "blur(10px)" }}
@@ -1185,7 +1198,7 @@ useEffect(() => {
       <Section id="cta" dark>
         <BackgroundArt dark />
 
-        <Container className="flex items-start justify-center text-center">
+        <Container className="flex items-center justify-center text-center">
           <Reveal className="mx-auto w-full max-w-6xl">
             <GlassCard dark className="p-6 sm:p-8 lg:p-10 xl:p-12">
               <motion.div
@@ -1991,14 +2004,14 @@ useEffect(() => {
 }
 
 #hero .edu-container {
-  align-items: flex-start !important;
+  align-items: center !important;
 }
 
 #hero .edu-hero-layout {
   height: 100%;
   align-items: center;
   gap: clamp(0.8rem, 1.4vw, 1.4rem) !important;
-  padding-top: clamp(0.35rem, 1vh, 0.8rem);
+  padding-top: 0 !important;
 }
 
 #hero .inline-flex.rounded-full {
@@ -2180,6 +2193,24 @@ useEffect(() => {
   .edu-journey-image {
     min-height: clamp(170px, 29vh, 270px) !important;
   }
+}
+
+#values .edu-container,
+#journey .edu-container,
+#timeline .edu-container,
+#cta .edu-container {
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+#values .edu-container,
+#timeline .edu-container {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+#cta .edu-container {
+  display: flex !important;
 }
 
   @media (prefers-reduced-motion: reduce) {
