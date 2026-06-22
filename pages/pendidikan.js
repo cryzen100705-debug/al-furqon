@@ -662,7 +662,10 @@ const jumpToSection = (index) => {
 useEffect(() => {
   if (!sections.length) return;
 
+  const isDesktopLock = () => window.innerWidth >= 1025;
+
   const goToNextSection = (direction) => {
+    if (!isDesktopLock()) return;
     if (lockRef.current) return;
 
     const nextIndex =
@@ -676,6 +679,8 @@ useEffect(() => {
   };
 
   const handleWheel = (event) => {
+    if (!isDesktopLock()) return;
+
     event.preventDefault();
 
     if (Math.abs(event.deltaY) < 12) return;
@@ -685,6 +690,8 @@ useEffect(() => {
   };
 
   const handleKeyDown = (event) => {
+    if (!isDesktopLock()) return;
+
     const downKeys = ["ArrowDown", "PageDown", " ", "Spacebar"];
     const upKeys = ["ArrowUp", "PageUp"];
 
@@ -702,30 +709,12 @@ useEffect(() => {
     }
   };
 
-  const handleTouchStart = (event) => {
-    touchStartY.current = event.touches?.[0]?.clientY || 0;
-  };
-
-  const handleTouchEnd = (event) => {
-    const touchEndY = event.changedTouches?.[0]?.clientY || 0;
-    const diff = touchStartY.current - touchEndY;
-
-    if (Math.abs(diff) < 45) return;
-
-    const direction = diff > 0 ? 1 : -1;
-    goToNextSection(direction);
-  };
-
   window.addEventListener("wheel", handleWheel, { passive: false });
   window.addEventListener("keydown", handleKeyDown, { passive: false });
-  window.addEventListener("touchstart", handleTouchStart, { passive: true });
-  window.addEventListener("touchend", handleTouchEnd, { passive: true });
 
   return () => {
     window.removeEventListener("wheel", handleWheel);
     window.removeEventListener("keydown", handleKeyDown);
-    window.removeEventListener("touchstart", handleTouchStart);
-    window.removeEventListener("touchend", handleTouchEnd);
   };
 }, [activeSectionIndex, sections]);
 
@@ -2439,6 +2428,219 @@ useEffect(() => {
 
   .edu-journey-image {
     min-height: clamp(165px, 27vh, 255px) !important;
+  }
+}
+
+/* =========================================================
+   MOBILE FIX
+   Di HP jangan paksa 100vh, karena isi panjang akan kepotong
+========================================================= */
+
+@media (max-width: 1024px) {
+  html,
+  body,
+  #__next {
+    height: auto !important;
+    min-height: 100% !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+  }
+
+  .edu-page {
+    overflow-x: hidden !important;
+    overflow-y: visible !important;
+    scroll-snap-type: none !important;
+  }
+
+  .edu-section {
+    height: auto !important;
+    min-height: 100svh !important;
+    max-height: none !important;
+    overflow: visible !important;
+    scroll-snap-align: none !important;
+    scroll-snap-stop: normal !important;
+    padding-top: calc(var(--edu-navbar-h) + 1rem) !important;
+    padding-bottom: 2.25rem !important;
+  }
+
+  .edu-hero-section {
+    min-height: 100svh !important;
+    padding-top: calc(var(--edu-navbar-h) + 1rem) !important;
+    padding-bottom: 2.5rem !important;
+  }
+
+  .edu-container {
+    width: min(100% - 1.1rem, 940px) !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+    display: flex !important;
+  }
+
+  #hero .edu-container,
+  #values .edu-container,
+  #journey .edu-container,
+  #timeline .edu-container,
+  #cta .edu-container {
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  #hero .edu-hero-layout {
+    height: auto !important;
+    min-height: 0 !important;
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+
+  .edu-hero-showcase {
+    display: none !important;
+  }
+
+  .edu-hero-title {
+    font-size: clamp(2.2rem, 12vw, 3.25rem) !important;
+    line-height: 0.92 !important;
+  }
+
+  .edu-section-title {
+    font-size: clamp(1.75rem, 8.5vw, 2.7rem) !important;
+    line-height: 1 !important;
+  }
+
+  .edu-detail-title {
+    font-size: clamp(1.45rem, 7vw, 2rem) !important;
+  }
+
+  .edu-card-title {
+    font-size: clamp(1.8rem, 9vw, 2.55rem) !important;
+  }
+
+  .edu-page p {
+    font-size: 0.82rem !important;
+    line-height: 1.55 !important;
+  }
+
+  #hero .mt-7.grid {
+    grid-template-columns: 1fr 1fr 1fr !important;
+    max-width: 100% !important;
+  }
+
+  #values .mt-7,
+  #timeline .mt-8 {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 0.85rem !important;
+    width: 100% !important;
+  }
+
+  #values .rounded-\[1\.6rem\],
+  #timeline .rounded-\[1\.6rem\] {
+    border-radius: 1.25rem !important;
+  }
+
+  #journey .grid.w-full {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+
+  #journey .no-scrollbar {
+    display: flex !important;
+    overflow-x: auto !important;
+    padding-bottom: 0.5rem !important;
+  }
+
+  #journey .hidden.gap-3.lg\:grid {
+    display: none !important;
+  }
+
+  #journey .overflow-hidden.rounded-\[1\.6rem\] {
+    border-radius: 1.25rem !important;
+  }
+
+  #journey .grid.lg\:grid-cols-\[0\.82fr_1\.18fr\] {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+  }
+
+  .edu-journey-image {
+    min-height: 260px !important;
+    height: auto !important;
+  }
+
+  #journey .bg-emerald-950\/90 {
+    padding: 1rem !important;
+  }
+
+  #journey .sm\:grid-cols-2 {
+    grid-template-columns: 1fr !important;
+  }
+
+  .edu-timeline-image {
+    height: 230px !important;
+  }
+
+  #cta .p-6,
+  #cta .sm\:p-8,
+  #cta .lg\:p-10,
+  #cta .xl\:p-12 {
+    padding: 1.25rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .edu-section {
+    min-height: auto !important;
+    padding-top: calc(var(--edu-navbar-h) + 0.85rem) !important;
+    padding-bottom: 2rem !important;
+  }
+
+  .edu-hero-section {
+    min-height: 100svh !important;
+  }
+
+  .edu-container {
+    width: calc(100% - 0.85rem) !important;
+  }
+
+  #hero .inline-flex.rounded-full {
+    font-size: 0.64rem !important;
+    padding: 0.45rem 0.65rem !important;
+    letter-spacing: 0.08em !important;
+  }
+
+  #hero .edu-hero-title {
+    font-size: clamp(2rem, 12.5vw, 2.75rem) !important;
+  }
+
+  #hero .mx-auto.mt-7.flex {
+    flex-direction: column !important;
+    width: 100% !important;
+  }
+
+  #hero .mx-auto.mt-7.flex a {
+    width: 100% !important;
+  }
+
+  #hero .mt-7.grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  #values .p-4,
+  #values .sm\:p-5 {
+    padding: 1rem !important;
+  }
+
+  #journey .no-scrollbar button {
+    min-width: 105px !important;
+  }
+
+  .edu-journey-image {
+    min-height: 235px !important;
+  }
+
+  .edu-timeline-image {
+    height: 210px !important;
   }
 }
 
