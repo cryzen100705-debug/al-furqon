@@ -560,6 +560,20 @@ router.post(
       const sisaPembayaran = nominalTagihan - nominalSudahDibayar;
       const nominalCicilan = Number(nominal_bayar);
 
+      if (sisaPembayaran <= 0) {
+  return res.status(400).json({
+    success: false,
+    message: "Tagihan ini sudah tidak memiliki sisa pembayaran.",
+  });
+}
+
+if (!Number.isFinite(nominalCicilan)) {
+  return res.status(400).json({
+    success: false,
+    message: "Nominal pembayaran tidak valid.",
+  });
+}
+
       if (nominalCicilan > sisaPembayaran) {
         return res.status(400).json({
           success: false,

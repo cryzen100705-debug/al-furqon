@@ -154,12 +154,41 @@ const [selectedAmount, setSelectedAmount] = useState({});
     });
   };
 
-  const handleConfirmPayment = (item) => {
+const handleConfirmPayment = (item) => {
+  const nominalTagihan = Number(item.nominal || 0);
+  const nominalDibayar = Number(item.nominal_dibayar || 0);
+  const sisaTagihan = Math.max(nominalTagihan - nominalDibayar, 0);
+  const nominalBayar = Number(selectedAmount[item.id] || 0);
+
+  if (!selectedMethod[item.id]) {
+    alert("Pilih metode pembayaran terlebih dahulu.");
+    return;
+  }
+
+  if (!selectedFile[item.id]) {
+    alert("Upload bukti pembayaran terlebih dahulu.");
+    return;
+  }
+
+  if (!nominalBayar || nominalBayar <= 0) {
+    alert("Nominal pembayaran wajib diisi dan harus lebih dari 0.");
+    return;
+  }
+
+  if (nominalBayar > sisaTagihan) {
+    alert(
+      `Nominal pembayaran tidak boleh melebihi sisa tagihan.\n\nSisa tagihan: ${formatRupiah(
+        sisaTagihan
+      )}`
+    );
+    return;
+  }
+
   bayar({
     item,
     metode: selectedMethod[item.id],
     file: selectedFile[item.id],
-    nominal_bayar: selectedAmount[item.id],
+    nominal_bayar: nominalBayar,
   });
 };
 
@@ -901,23 +930,64 @@ function PaymentCard({
   </label>
 
   <input
-    type="number"
-    min="1"
-    max={
-      Number(item.nominal || 0) - Number(item.nominal_dibayar || 0)
-    }
-    value={selectedAmount[item.id] || ""}
-    onChange={(e) =>
+  type="number"
+  min="1"
+  max={Math.max(
+    Number(item.nominal || 0) - Number(item.nominal_dibayar || 0),
+    0
+  )}
+  value={selectedAmount[item.id] || ""}
+  onChange={(e) => {
+    const sisaTagihan = Math.max(
+      Number(item.nominal || 0) - Number(item.nominal_dibayar || 0),
+      0
+    );
+
+    const value = e.target.value;
+
+    if (value === "") {
       setSelectedAmount({
         ...selectedAmount,
-        [item.id]: e.target.value,
-      })
+        [item.id]: "",
+      });
+      return;
     }
-    placeholder={`Maksimal Rp ${(
-      Number(item.nominal || 0) - Number(item.nominal_dibayar || 0)
-    ).toLocaleString("id-ID")}`}
-    className="h-14 w-full rounded-2xl border border-[#D8C287] bg-white px-4 text-sm font-bold text-slate-700 outline-none transition focus:border-yellow-500 focus:ring-4 focus:ring-yellow-100"
-  />
+
+    const nominalInput = Number(value);
+
+    if (nominalInput <= 0) {
+      setSelectedAmount({
+        ...selectedAmount,
+        [item.id]: "",
+      });
+      return;
+    }
+
+    if (nominalInput > sisaTagihan) {
+      setSelectedAmount({
+        ...selectedAmount,
+        [item.id]: sisaTagihan,
+      });
+
+      alert(
+        `Nominal pembayaran tidak boleh lebih dari sisa tagihan: Rp ${sisaTagihan.toLocaleString(
+          "id-ID"
+        )}`
+      );
+      return;
+    }
+
+    setSelectedAmount({
+      ...selectedAmount,
+      [item.id]: value,
+    });
+  }}
+  placeholder={`Maksimal Rp ${Math.max(
+    Number(item.nominal || 0) - Number(item.nominal_dibayar || 0),
+    0
+  ).toLocaleString("id-ID")}`}
+  className="h-14 w-full rounded-2xl border border-[#D8C287] bg-white px-4 text-sm font-bold text-slate-700 outline-none transition focus:border-yellow-500 focus:ring-4 focus:ring-yellow-100"
+/>
 
   <p className="mt-2 text-xs font-bold text-slate-500">
     Sudah dibayar: Rp{" "}
@@ -940,11 +1010,17 @@ function PaymentCard({
               </button>
 
               <button
-                type="button"
-                onClick={() => onConfirm(item)}
-                disabled={uploadingId === item.id}
-                className="inline-flex h-12 items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-[#064E3B] to-emerald-700 px-6 font-black text-white shadow-lg transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
-              >
+  type="button"
+  onClick={() => onConfirm(item)}
+  disabled={
+    uploadingId === item.id ||
+    !selectedAmount[item.id] ||
+    Number(selectedAmount[item.id]) <= 0 ||
+    Number(selectedAmount[item.id]) >
+      Math.max(Number(item.nominal || 0) - Number(item.nominal_dibayar || 0), 0)
+  }
+  className="inline-flex h-12 items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-[#064E3B] to-emerald-700 px-6 font-black text-white shadow-lg transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
+>
                 <FaCreditCard />
                 {uploadingId === item.id
                   ? "Mengirim..."

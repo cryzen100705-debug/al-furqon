@@ -40,7 +40,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 const FALLBACK_IMAGE = "/hero-santri.jpg";
 
-const ADMIN_WHATSAPP_NUMBER = "6283899601027";
+const ADMIN_WHATSAPP_NUMBER = "08999155698";
 const ADMIN_WHATSAPP_MESSAGE =
   "Assalamu'alaikum Admin Pesantren Al-Furqon, saya ingin bertanya mengenai fasilitas pesantren.";
 
