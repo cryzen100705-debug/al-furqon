@@ -940,6 +940,32 @@ export default function Fasilitas() {
 
 const activeStep = 0;
 
+const jumpToSection = (index) => {
+  if (index < 0 || index >= sections.length) return;
+
+  const target = document.getElementById(sections[index]?.key);
+
+  if (!target) return;
+
+  lockRef.current = true;
+  setActiveSectionIndex(index);
+
+  const container = target.querySelector(".fac-container");
+
+  if (container) {
+    container.scrollTop = 0;
+  }
+
+  window.scrollTo({
+    top: target.offsetTop,
+    behavior: "smooth",
+  });
+
+  window.setTimeout(() => {
+    lockRef.current = false;
+  }, 720);
+};
+
 useEffect(() => {
   if (!sections.length) return;
 
