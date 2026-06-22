@@ -708,3 +708,524 @@ a {
     transition-duration: 0.001ms !important;
   }
 }
+
+/* =========================================================
+   FINAL COMPACT FIX FASILITAS
+   Perkecil card, font, gambar, tombol agar semua muat layar
+   Tempel PALING BAWAH fasilitas.css
+========================================================= */
+
+:root {
+  --fac-page-x: clamp(0.75rem, 2.4vw, 3rem);
+  --fac-progress-h: 8px;
+}
+
+/* Section dibuat lebih hemat ruang */
+.fac-section {
+  padding-top: calc(var(--fac-navbar-h) + 0.2rem) !important;
+  padding-bottom: calc(var(--fac-progress-h) + 0.45rem) !important;
+}
+
+/* Container jangan terlalu lebar dan jangan bikin isi keluar */
+.fac-container {
+  width: min(100% - calc(var(--fac-page-x) * 2), 1180px) !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+/* Semua teks dibuat lebih kecil */
+.fac-hero-title {
+  font-size: clamp(1.65rem, 3.35vw, 2.85rem) !important;
+  line-height: 0.93 !important;
+}
+
+.fac-section-title {
+  font-size: clamp(1.2rem, 2vw, 1.8rem) !important;
+  line-height: 1 !important;
+}
+
+.fac-card-title {
+  font-size: clamp(1.25rem, 2.15vw, 1.9rem) !important;
+  line-height: 1 !important;
+}
+
+.fac-page p {
+  font-size: 0.74rem !important;
+  line-height: 1.42 !important;
+}
+
+/* Badge dan label */
+.fac-page .inline-flex.rounded-full,
+.fac-page [class*="tracking-"] {
+  font-size: 0.62rem !important;
+}
+
+/* Margin umum dipadatkan */
+.fac-section .mt-8 {
+  margin-top: 0.55rem !important;
+}
+
+.fac-section .mt-7 {
+  margin-top: 0.5rem !important;
+}
+
+.fac-section .mt-6 {
+  margin-top: 0.45rem !important;
+}
+
+.fac-section .mt-5 {
+  margin-top: 0.42rem !important;
+}
+
+.fac-section .mt-4 {
+  margin-top: 0.35rem !important;
+}
+
+.fac-section .mb-4 {
+  margin-bottom: 0.45rem !important;
+}
+
+/* =========================================================
+   HERO COMPACT
+========================================================= */
+
+.fac-hero-section .grid {
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 0.75fr) !important;
+  gap: 0.75rem !important;
+}
+
+.fac-hero-section .inline-flex {
+  padding: 0.32rem 0.65rem !important;
+  font-size: 0.68rem !important;
+  line-height: 1.25 !important;
+}
+
+.fac-hero-section .mx-auto.mt-7.flex {
+  margin-top: 0.55rem !important;
+}
+
+.fac-hero-section .mt-7.grid {
+  margin-top: 0.55rem !important;
+  gap: 0.45rem !important;
+  max-width: 31rem !important;
+}
+
+.fac-hero-section .mt-7.grid > div {
+  padding: 0.5rem !important;
+  border-radius: 0.85rem !important;
+}
+
+.fac-hero-section .mt-7.grid p:first-child {
+  font-size: 1rem !important;
+}
+
+.fac-hero-section .mt-7.grid p:last-child {
+  font-size: 0.62rem !important;
+}
+
+.fac-hero-showcase {
+  transform: scale(0.44) !important;
+  transform-origin: center right !important;
+}
+
+.fac-hero-preview {
+  height: clamp(125px, 18vh, 190px) !important;
+}
+
+/* =========================================================
+   SPOTLIGHT COMPACT
+========================================================= */
+
+#spotlight .grid {
+  grid-template-columns: minmax(230px, 0.65fr) minmax(0, 1.35fr) !important;
+  gap: 0.75rem !important;
+}
+
+#spotlight .grid.gap-3 {
+  gap: 0.5rem !important;
+}
+
+#spotlight .p-4 {
+  padding: 0.58rem !important;
+}
+
+#spotlight .h-12.w-12 {
+  width: 2.25rem !important;
+  height: 2.25rem !important;
+  border-radius: 0.8rem !important;
+  font-size: 0.95rem !important;
+}
+
+#spotlight h3 {
+  font-size: 0.86rem !important;
+}
+
+.fac-spotlight-image {
+  height: clamp(145px, 26vh, 245px) !important;
+}
+
+/* =========================================================
+   EXPLORER COMPACT
+   Ini bagian yang terlihat terlalu besar di screenshot
+========================================================= */
+
+#explorer .fac-container {
+  justify-content: center !important;
+}
+
+/* Header explorer lebih kecil */
+#explorer .max-w-5xl {
+  max-width: 820px !important;
+}
+
+#explorer .mb-4 {
+  margin-bottom: 0.35rem !important;
+}
+
+#explorer .fac-section-title {
+  font-size: clamp(1.25rem, 2.1vw, 1.85rem) !important;
+}
+
+#explorer .max-w-3xl {
+  max-width: 680px !important;
+}
+
+/* Tombol kategori dibuat kecil */
+#explorer .no-scrollbar.mx-auto.mt-7 {
+  margin-top: 0.45rem !important;
+  gap: 0.45rem !important;
+  max-width: 820px !important;
+  padding-bottom: 0.2rem !important;
+}
+
+#explorer .no-scrollbar.mx-auto.mt-7 button {
+  padding: 0.45rem 0.85rem !important;
+  font-size: 0.68rem !important;
+  border-radius: 999px !important;
+}
+
+/* Grid utama explorer dibuat lebih pendek dan compact */
+#explorer .mt-8.grid {
+  margin-top: 0.55rem !important;
+  width: 100% !important;
+  grid-template-columns: minmax(210px, 0.36fr) minmax(0, 1fr) !important;
+  gap: 0.65rem !important;
+  align-items: stretch !important;
+  max-height: calc(
+    var(--fac-vh) - var(--fac-navbar-h) - var(--fac-progress-h) - 7.2rem
+  ) !important;
+}
+
+/* List kiri bisa scroll kecil kalau item banyak */
+#explorer .mt-8.grid > .no-scrollbar:first-child {
+  max-height: 100% !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  gap: 0.45rem !important;
+  padding-bottom: 0 !important;
+}
+
+/* Card kiri diperkecil */
+#explorer .mt-8.grid > .no-scrollbar:first-child button {
+  min-width: 0 !important;
+  padding: 0.55rem !important;
+  border-radius: 0.9rem !important;
+}
+
+#explorer .mt-8.grid > .no-scrollbar:first-child button .h-12.w-12 {
+  width: 2.25rem !important;
+  height: 2.25rem !important;
+  border-radius: 0.75rem !important;
+  font-size: 0.9rem !important;
+}
+
+#explorer .mt-8.grid > .no-scrollbar:first-child button p {
+  font-size: 0.55rem !important;
+  letter-spacing: 0.16em !important;
+}
+
+#explorer .mt-8.grid > .no-scrollbar:first-child button h3 {
+  font-size: 0.86rem !important;
+  line-height: 1.05 !important;
+}
+
+/* Card detail kanan diperkecil */
+#explorer .mt-8.grid > div:last-child,
+#explorer .mt-8.grid > div:last-child > div,
+#explorer .mt-8.grid > div:last-child .overflow-hidden {
+  min-height: 0 !important;
+}
+
+#explorer .rounded-\[1\.6rem\] {
+  border-radius: 1rem !important;
+}
+
+.fac-explorer-image {
+  height: clamp(130px, 22vh, 225px) !important;
+}
+
+/* Isi detail kanan */
+#explorer .p-5,
+#explorer .sm\:p-6,
+#explorer .lg\:p-8 {
+  padding: 0.85rem !important;
+}
+
+#explorer .grid.grid-cols-2 {
+  gap: 0.45rem !important;
+}
+
+#explorer .grid.grid-cols-2 > div {
+  padding: 0.6rem !important;
+  border-radius: 0.8rem !important;
+}
+
+#explorer .grid.grid-cols-2 svg,
+#explorer .grid.grid-cols-2 .text-yellow-300 {
+  font-size: 0.9rem !important;
+}
+
+#explorer .grid.grid-cols-2 p,
+#explorer .grid.grid-cols-2 span {
+  font-size: 0.68rem !important;
+}
+
+/* Tombol Tanya Admin */
+#explorer a[href*="wa.me"],
+#explorer .inline-flex[href*="wa.me"] {
+  padding: 0.65rem 1.1rem !important;
+  font-size: 0.75rem !important;
+}
+
+/* =========================================================
+   CINEMATIC COMPACT
+========================================================= */
+
+#cinematic .fac-section-title {
+  font-size: clamp(1.3rem, 2.2vw, 1.9rem) !important;
+}
+
+#cinematic .mx-auto.mt-8 {
+  margin-top: 0.55rem !important;
+}
+
+.fac-cinematic-image {
+  height: clamp(145px, 27vh, 255px) !important;
+}
+
+#cinematic .mt-5 {
+  margin-top: 0.55rem !important;
+}
+
+/* Tombol panah cinematic */
+#cinematic button {
+  width: 2.4rem !important;
+  height: 2.4rem !important;
+}
+
+/* =========================================================
+   CTA COMPACT
+========================================================= */
+
+#cta .p-6,
+#cta .sm\:p-8,
+#cta .lg\:p-10,
+#cta .xl\:p-12 {
+  padding: clamp(0.9rem, 1.6vw, 1.45rem) !important;
+}
+
+#cta .fac-section-title {
+  font-size: clamp(1.35rem, 2.4vw, 2rem) !important;
+}
+
+#cta .mt-7,
+#cta .mt-8 {
+  margin-top: 0.55rem !important;
+}
+
+/* =========================================================
+   KHUSUS LAPTOP PENDEK
+========================================================= */
+
+@media (min-width: 1025px) and (max-height: 820px) {
+  .fac-section {
+    padding-top: calc(var(--fac-navbar-h) + 0.05rem) !important;
+    padding-bottom: calc(var(--fac-progress-h) + 0.25rem) !important;
+  }
+
+  .fac-hero-title {
+    font-size: clamp(1.55rem, 3.05vw, 2.55rem) !important;
+  }
+
+  .fac-section-title {
+    font-size: clamp(1.1rem, 1.85vw, 1.6rem) !important;
+  }
+
+  .fac-card-title {
+    font-size: clamp(1.12rem, 2vw, 1.65rem) !important;
+  }
+
+  .fac-page p {
+    font-size: 0.68rem !important;
+    line-height: 1.38 !important;
+  }
+
+  #explorer .mt-8.grid {
+    max-height: calc(
+      var(--fac-vh) - var(--fac-navbar-h) - var(--fac-progress-h) - 6.3rem
+    ) !important;
+  }
+
+  .fac-explorer-image {
+    height: clamp(115px, 19vh, 190px) !important;
+  }
+
+  .fac-spotlight-image {
+    height: clamp(125px, 23vh, 215px) !important;
+  }
+
+  .fac-cinematic-image {
+    height: clamp(125px, 24vh, 220px) !important;
+  }
+
+  #explorer .mt-8.grid > .no-scrollbar:first-child button {
+    padding: 0.45rem !important;
+  }
+
+  #explorer .mt-8.grid > .no-scrollbar:first-child button .h-12.w-12 {
+    width: 2rem !important;
+    height: 2rem !important;
+  }
+}
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 1024px) {
+  .fac-section {
+    padding-top: calc(var(--fac-navbar-h) + 0.45rem) !important;
+    padding-bottom: calc(1.15rem + env(safe-area-inset-bottom)) !important;
+  }
+
+  .fac-container {
+    width: calc(100% - 0.75rem) !important;
+    overflow-y: auto !important;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+  }
+
+  .fac-hero-section .fac-container {
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .fac-section .grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  #explorer .mt-8.grid {
+    max-height: none !important;
+    grid-template-columns: 1fr !important;
+  }
+
+  #explorer .mt-8.grid > .no-scrollbar:first-child {
+    display: flex !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+  }
+
+  #explorer .mt-8.grid > .no-scrollbar:first-child button {
+    min-width: 170px !important;
+  }
+
+  .fac-explorer-image {
+    height: 190px !important;
+  }
+
+  .fac-spotlight-image {
+    height: 205px !important;
+  }
+
+  .fac-cinematic-image {
+    height: 205px !important;
+  }
+}
+
+/* =========================================================
+   HP
+========================================================= */
+
+@media (max-width: 480px) {
+  .fac-section {
+    padding-top: calc(var(--fac-navbar-h) + 0.35rem) !important;
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom)) !important;
+  }
+
+  .fac-container {
+    width: calc(100% - 0.55rem) !important;
+  }
+
+  .fac-hero-title {
+    font-size: clamp(1.35rem, 8.8vw, 1.95rem) !important;
+  }
+
+  .fac-section-title {
+    font-size: clamp(1rem, 6.3vw, 1.45rem) !important;
+  }
+
+  .fac-card-title {
+    font-size: clamp(1.1rem, 6.8vw, 1.6rem) !important;
+  }
+
+  .fac-page p {
+    font-size: 0.7rem !important;
+    line-height: 1.45 !important;
+  }
+
+  #explorer .no-scrollbar.mx-auto.mt-7 button {
+    padding: 0.38rem 0.7rem !important;
+    font-size: 0.6rem !important;
+  }
+
+  #explorer .mt-8.grid > .no-scrollbar:first-child button {
+    min-width: 140px !important;
+    padding: 0.45rem !important;
+  }
+
+  #explorer .mt-8.grid > .no-scrollbar:first-child button .h-12.w-12 {
+    width: 2rem !important;
+    height: 2rem !important;
+  }
+
+  #explorer .mt-8.grid > .no-scrollbar:first-child button h3 {
+    font-size: 0.78rem !important;
+  }
+
+  .fac-explorer-image {
+    height: 155px !important;
+  }
+
+  .fac-spotlight-image {
+    height: 165px !important;
+  }
+
+  .fac-cinematic-image {
+    height: 165px !important;
+  }
+
+  #explorer .p-5,
+  #explorer .sm\:p-6,
+  #explorer .lg\:p-8 {
+    padding: 0.65rem !important;
+  }
+
+  #explorer .grid.grid-cols-2 {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 0.35rem !important;
+  }
+
+  #explorer .grid.grid-cols-2 > div {
+    padding: 0.45rem !important;
+  }
+}
