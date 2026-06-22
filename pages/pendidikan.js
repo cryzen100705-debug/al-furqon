@@ -458,13 +458,9 @@ function ChapterDots() {
   ];
 
   return (
-    <div className="fixed right-5 top-1/2 z-[80] hidden -translate-y-1/2 flex-col gap-3 2xl:flex">
+    <div className="chapter-dots">
       {items.map(([label, href]) => (
-        <a
-          key={href}
-          href={href}
-          className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-emerald-950/85 text-[10px] font-black text-yellow-300 shadow-lg backdrop-blur-xl transition hover:scale-110 hover:bg-yellow-400 hover:text-emerald-950"
-        >
+        <a key={href} href={href} className="chapter-dot">
           {label}
         </a>
       ))}
@@ -1127,6 +1123,40 @@ export default function Pendidikan() {
     background: #041b15;
   }
 
+  .chapter-dots {
+  position: fixed;
+  right: 1.1rem;
+  top: 50%;
+  z-index: 9998;
+  display: flex;
+  transform: translateY(-50%);
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.chapter-dot {
+  display: flex;
+  width: 2.45rem;
+  height: 2.45rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid rgba(250, 204, 21, 0.35);
+  background: rgba(4, 27, 21, 0.82);
+  color: #facc15;
+  font-size: 0.65rem;
+  font-weight: 900;
+  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(14px);
+  transition: 0.25s ease;
+}
+
+.chapter-dot:hover {
+  transform: scale(1.12);
+  background: #facc15;
+  color: #052e22;
+}
+
   /*
     FIX UTAMA:
     Semua section dibuat 100% layar perangkat.
@@ -1411,6 +1441,18 @@ export default function Pendidikan() {
   }
 
   @media (max-width: 768px) {
+
+   .chapter-dots {
+    right: 0.55rem;
+    gap: 0.45rem;
+  }
+
+  .chapter-dot {
+    width: 2rem;
+    height: 2rem;
+    font-size: 0.56rem;
+  }
+    
     :root {
       --edu-page-x: 0.8rem;
       --edu-section-y: 2rem;
