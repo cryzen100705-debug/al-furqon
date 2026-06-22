@@ -2957,6 +2957,370 @@ useEffect(() => {
       transition-duration: 0.001ms !important;
     }
   }
+
+  /* =========================================================
+   HERO PENDIDIKAN PREMIUM FIX
+   Tempel PALING BAWAH di style jsx global pendidikan.js
+========================================================= */
+
+/* Hero dibuat lebih seimbang: kiri teks, kanan visual besar */
+#hero.edu-hero-section {
+  padding-top: calc(var(--edu-navbar-h, 92px) + 0.8rem) !important;
+  padding-bottom: 1.1rem !important;
+  overflow: hidden !important;
+}
+
+/* Overlay jangan terlalu gelap dan jangan bikin background kusam */
+#hero > .absolute.inset-0.bg-gradient-to-r {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(3, 19, 15, 0.98) 0%,
+      rgba(4, 37, 29, 0.92) 42%,
+      rgba(6, 78, 59, 0.58) 100%
+    ) !important;
+}
+
+#hero > .absolute.inset-0.bg-black\/38 {
+  background: rgba(0, 0, 0, 0.18) !important;
+}
+
+#hero > .absolute.inset-0.bg-\[radial-gradient\(circle_at_18\%_32\%\,rgba\(250\,204\,21\,0\.16\)\,transparent_28\%\)\,radial-gradient\(circle_at_80\%_55\%\,rgba\(16\,185\,129\,0\.16\)\,transparent_34\%\)\] {
+  opacity: 0.95 !important;
+}
+
+/* Container hero jangan terlalu sempit */
+#hero .edu-container {
+  width: min(100% - 8vw, 1320px) !important;
+  height: calc(
+    var(--edu-vh, 100dvh) - var(--edu-navbar-h, 92px) - 2rem
+  ) !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: visible !important;
+}
+
+/* Layout hero lebih rapi */
+#hero .edu-hero-layout {
+  height: 100% !important;
+  grid-template-columns: minmax(0, 0.95fr) minmax(420px, 0.82fr) !important;
+  gap: clamp(1.8rem, 4vw, 4.5rem) !important;
+  align-items: center !important;
+}
+
+/* Bagian text dibuat lebih mewah tapi tetap padat */
+#hero .edu-hero-title {
+  max-width: 760px !important;
+  font-size: clamp(3rem, 5.4vw, 6rem) !important;
+  line-height: 0.88 !important;
+  letter-spacing: -0.075em !important;
+  text-shadow: 0 20px 70px rgba(0, 0, 0, 0.45);
+}
+
+#hero .edu-hero-title span {
+  filter: drop-shadow(0 16px 35px rgba(250, 204, 21, 0.18));
+}
+
+#hero .edu-hero-title + p,
+#hero p.max-w-3xl {
+  max-width: 760px !important;
+  font-size: clamp(0.95rem, 1.05vw, 1.12rem) !important;
+  line-height: 1.7 !important;
+  color: rgba(236, 253, 245, 0.92) !important;
+}
+
+/* Arabic badge */
+#hero .mb-4.inline-flex {
+  max-width: 100%;
+  border-color: rgba(250, 204, 21, 0.32) !important;
+  background: rgba(250, 204, 21, 0.09) !important;
+  box-shadow: 0 18px 45px rgba(250, 204, 21, 0.08);
+}
+
+/* Tombol */
+#hero .mx-auto.mt-7.flex a {
+  min-height: 50px !important;
+  padding: 0.85rem 1.55rem !important;
+  font-size: 0.9rem !important;
+}
+
+/* Stats lebih premium */
+#hero .mt-7.grid {
+  max-width: 680px !important;
+  gap: 0.85rem !important;
+}
+
+#hero .mt-7.grid > div {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0.06)) !important;
+  padding: 1rem !important;
+  border-radius: 1.35rem !important;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.18);
+}
+
+#hero .mt-7.grid > div::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at top left, rgba(250, 204, 21, 0.18), transparent 45%);
+  pointer-events: none;
+}
+
+#hero .mt-7.grid p:first-child {
+  position: relative;
+  z-index: 1;
+  font-size: clamp(1.25rem, 1.8vw, 2rem) !important;
+}
+
+#hero .mt-7.grid p:last-child {
+  position: relative;
+  z-index: 1;
+  font-size: clamp(0.72rem, 0.9vw, 0.9rem) !important;
+}
+
+/* Visual kanan dibesarkan, bukan scale kecil */
+.edu-hero-showcase {
+  width: min(100%, 560px) !important;
+  max-width: 560px !important;
+  transform: none !important;
+  transform-origin: center !important;
+  margin-left: auto !important;
+}
+
+/* Card kanan dibuat cinematic */
+.edu-hero-showcase > div:last-child {
+  border-radius: 2.4rem !important;
+  padding: 0.75rem !important;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.06)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  box-shadow:
+    0 38px 100px rgba(0, 0, 0, 0.38),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
+}
+
+/* Gambar kanan jangan kecil */
+.edu-hero-preview-new {
+  height: clamp(380px, 52vh, 540px) !important;
+  object-fit: cover !important;
+}
+
+/* Ornament kanan lebih halus */
+.edu-hero-showcase .absolute.-left-5 {
+  left: -0.8rem !important;
+  top: 14% !important;
+  height: 72% !important;
+  width: 0.95rem !important;
+  border-radius: 999px !important;
+  background: linear-gradient(180deg, #facc15, #d97706) !important;
+  box-shadow: 0 0 40px rgba(250, 204, 21, 0.45);
+}
+
+.edu-hero-showcase .absolute.-right-6,
+.edu-hero-showcase .absolute.-bottom-8 {
+  opacity: 0.75 !important;
+}
+
+/* Isi card kanan */
+.edu-hero-showcase .absolute.left-4.top-4 {
+  left: 1.15rem !important;
+  top: 1.15rem !important;
+  padding: 0.6rem 1rem !important;
+  font-size: 0.62rem !important;
+}
+
+.edu-hero-showcase .absolute.bottom-0.left-0.right-0 {
+  padding: 1.35rem !important;
+}
+
+.edu-hero-showcase h3 {
+  font-size: clamp(2rem, 3vw, 3.4rem) !important;
+}
+
+.edu-hero-showcase p {
+  font-size: clamp(0.85rem, 1vw, 1rem) !important;
+  line-height: 1.6 !important;
+}
+
+/* Side dots jangan terlalu mengganggu tampilan hero */
+#hero ~ .fixed.right-5,
+.edu-page .fixed.right-5 {
+  right: 1.2rem !important;
+}
+
+/* Laptop kecil */
+@media (min-width: 1025px) and (max-height: 850px) {
+  #hero .edu-container {
+    width: min(100% - 7vw, 1260px) !important;
+    height: calc(var(--edu-vh, 100dvh) - var(--edu-navbar-h, 92px) - 1.4rem) !important;
+  }
+
+  #hero .edu-hero-layout {
+    grid-template-columns: minmax(0, 1fr) minmax(390px, 0.78fr) !important;
+    gap: clamp(1.2rem, 3vw, 3rem) !important;
+  }
+
+  #hero .edu-hero-title {
+    font-size: clamp(2.65rem, 4.8vw, 4.85rem) !important;
+  }
+
+  #hero .edu-hero-title + p,
+  #hero p.max-w-3xl {
+    font-size: 0.92rem !important;
+    line-height: 1.58 !important;
+  }
+
+  #hero .mx-auto.mt-7.flex,
+  #hero .mt-7.grid {
+    margin-top: 0.95rem !important;
+  }
+
+  #hero .mx-auto.mt-7.flex a {
+    min-height: 46px !important;
+    padding: 0.72rem 1.25rem !important;
+    font-size: 0.82rem !important;
+  }
+
+  #hero .mt-7.grid > div {
+    padding: 0.75rem !important;
+  }
+
+  .edu-hero-showcase {
+    max-width: 470px !important;
+  }
+
+  .edu-hero-preview-new {
+    height: clamp(300px, 47vh, 410px) !important;
+  }
+}
+
+/* Tablet dan HP: fokus ke teks, visual kanan disembunyikan */
+@media (max-width: 1024px) {
+  #hero.edu-hero-section {
+    padding-top: calc(var(--edu-navbar-h, 92px) + 1rem) !important;
+    padding-bottom: 1.5rem !important;
+  }
+
+  #hero .edu-container {
+    width: min(100% - 2rem, 820px) !important;
+    height: calc(var(--edu-vh, 100dvh) - var(--edu-navbar-h, 92px) - 2rem) !important;
+    overflow: hidden !important;
+  }
+
+  #hero .edu-hero-layout {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  #hero .edu-hero-layout > div:first-child {
+    max-width: 760px !important;
+    text-align: center !important;
+  }
+
+  #hero .edu-hero-title {
+    margin-inline: auto !important;
+    font-size: clamp(2.3rem, 9vw, 4.6rem) !important;
+  }
+
+  #hero .edu-hero-title + p,
+  #hero p.max-w-3xl {
+    margin-inline: auto !important;
+  }
+
+  .edu-hero-showcase {
+    display: none !important;
+  }
+
+  #hero .mt-7.grid {
+    margin-inline: auto !important;
+  }
+}
+
+/* HP */
+@media (max-width: 640px) {
+  #hero.edu-hero-section {
+    padding-top: calc(var(--edu-navbar-h, 88px) + 0.75rem) !important;
+    padding-bottom: 1rem !important;
+  }
+
+  #hero .edu-container {
+    width: calc(100% - 1.2rem) !important;
+  }
+
+  #hero .mb-4.inline-flex {
+    margin-bottom: 0.75rem !important;
+    padding: 0.5rem 0.75rem !important;
+    font-size: 0.72rem !important;
+    line-height: 1.45 !important;
+  }
+
+  #hero .edu-hero-title {
+    font-size: clamp(2rem, 12vw, 3rem) !important;
+    line-height: 0.92 !important;
+  }
+
+  #hero .edu-hero-title + p,
+  #hero p.max-w-3xl {
+    font-size: 0.84rem !important;
+    line-height: 1.62 !important;
+  }
+
+  #hero .mx-auto.mt-7.flex {
+    width: 100% !important;
+    margin-top: 1rem !important;
+  }
+
+  #hero .mx-auto.mt-7.flex a {
+    width: 100% !important;
+    min-height: 46px !important;
+    padding: 0.72rem 1rem !important;
+    font-size: 0.78rem !important;
+  }
+
+  #hero .mt-7.grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    width: 100% !important;
+    gap: 0.5rem !important;
+    margin-top: 1rem !important;
+  }
+
+  #hero .mt-7.grid > div {
+    padding: 0.65rem 0.4rem !important;
+    border-radius: 1rem !important;
+  }
+
+  #hero .mt-7.grid p:first-child {
+    font-size: 1.05rem !important;
+  }
+
+  #hero .mt-7.grid p:last-child {
+    font-size: 0.62rem !important;
+  }
+}
+
+/* HP kecil */
+@media (max-width: 430px) {
+  #hero .edu-hero-title {
+    font-size: clamp(1.75rem, 11vw, 2.45rem) !important;
+  }
+
+  #hero .edu-hero-title + p,
+  #hero p.max-w-3xl {
+    font-size: 0.78rem !important;
+  }
+
+  #hero .mt-7.grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  #hero .mt-7.grid > div {
+    padding: 0.55rem !important;
+  }
+}
 `}</style>
     </main>
   );
