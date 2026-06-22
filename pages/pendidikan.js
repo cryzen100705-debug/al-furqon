@@ -686,11 +686,41 @@ const jumpToSection = (index) => {
 useEffect(() => {
   if (!sections.length) return;
 
-  const isDesktopLock = () => window.innerWidth >= 1025;
+  const getActiveSectionElement = () => {
+    return document.getElementById(sections[activeSectionIndex]?.key);
+  };
+
+  const getScrollableContainer = () => {
+    const activeSection = getActiveSectionElement();
+
+    if (!activeSection) return null;
+
+    return activeSection.querySelector(".edu-container");
+  };
+
+  const canMoveSection = (direction) => {
+    const container = getScrollableContainer();
+
+    if (!container) return true;
+
+    const hasInnerScroll = container.scrollHeight > container.clientHeight + 4;
+
+    if (!hasInnerScroll) return true;
+
+    const atTop = container.scrollTop <= 2;
+    const atBottom =
+      container.scrollTop + container.clientHeight >= container.scrollHeight - 2;
+
+    if (direction > 0) {
+      return atBottom;
+    }
+
+    return atTop;
+  };
 
   const goToNextSection = (direction) => {
-    if (!isDesktopLock()) return;
     if (lockRef.current) return;
+    if (!canMoveSection(direction)) return;
 
     const nextIndex =
       direction > 0
@@ -703,19 +733,16 @@ useEffect(() => {
   };
 
   const handleWheel = (event) => {
-    if (!isDesktopLock()) return;
-
     event.preventDefault();
 
     if (Math.abs(event.deltaY) < 12) return;
 
     const direction = event.deltaY > 0 ? 1 : -1;
+
     goToNextSection(direction);
   };
 
   const handleKeyDown = (event) => {
-    if (!isDesktopLock()) return;
-
     const downKeys = ["ArrowDown", "PageDown", " ", "Spacebar"];
     const upKeys = ["ArrowUp", "PageUp"];
 
@@ -733,12 +760,46 @@ useEffect(() => {
     }
   };
 
+  const handleTouchStart = (event) => {
+    touchStartY.current = event.touches?.[0]?.clientY || 0;
+  };
+
+  const handleTouchMove = (event) => {
+    const currentY = event.touches?.[0]?.clientY || 0;
+    const diff = touchStartY.current - currentY;
+
+    if (Math.abs(diff) < 12) return;
+
+    const direction = diff > 0 ? 1 : -1;
+
+    if (canMoveSection(direction)) {
+      event.preventDefault();
+    }
+  };
+
+  const handleTouchEnd = (event) => {
+    const touchEndY = event.changedTouches?.[0]?.clientY || 0;
+    const diff = touchStartY.current - touchEndY;
+
+    if (Math.abs(diff) < 55) return;
+
+    const direction = diff > 0 ? 1 : -1;
+
+    goToNextSection(direction);
+  };
+
   window.addEventListener("wheel", handleWheel, { passive: false });
   window.addEventListener("keydown", handleKeyDown, { passive: false });
+  window.addEventListener("touchstart", handleTouchStart, { passive: true });
+  window.addEventListener("touchmove", handleTouchMove, { passive: false });
+  window.addEventListener("touchend", handleTouchEnd, { passive: true });
 
   return () => {
     window.removeEventListener("wheel", handleWheel);
     window.removeEventListener("keydown", handleKeyDown);
+    window.removeEventListener("touchstart", handleTouchStart);
+    window.removeEventListener("touchmove", handleTouchMove);
+    window.removeEventListener("touchend", handleTouchEnd);
   };
 }, [activeSectionIndex, sections]);
 
@@ -794,17 +855,17 @@ useEffect(() => {
     <Navbar />
 
     <ProgressBar
-  sections={sections}
-  activeSection={activeSectionIndex}
-  activeStep={activeStep}
-/>
+      sections={sections}
+      activeSection={activeSectionIndex}
+      activeStep={activeStep}
+    />
 
-<SideDots
-  sections={sections}
-  activeSection={activeSectionIndex}
-  activeStep={activeStep}
-  jumpToSection={jumpToSection}
-/>
+    <SideDots
+      sections={sections}
+      activeSection={activeSectionIndex}
+      activeStep={activeStep}
+      jumpToSection={jumpToSection}
+    />
 
       <BackendNotice
         show={usingFallback}
@@ -2472,7 +2533,6 @@ useEffect(() => {
   html,
   body,
   #__next {
-    height: auto !important;
     min-height: 100% !important;
     overflow-x: hidden !important;
     overflow-y: auto !important;
@@ -2480,15 +2540,11 @@ useEffect(() => {
 
   .edu-page {
     overflow-x: hidden !important;
-    overflow-y: visible !important;
-    scroll-snap-type: none !important;
   }
 
   .edu-section {
-    height: auto !important;
     min-height: 100svh !important;
     max-height: none !important;
-    overflow: visible !important;
     scroll-snap-align: none !important;
     scroll-snap-stop: normal !important;
     padding-top: calc(var(--edu-navbar-h) + 1rem) !important;
@@ -2503,7 +2559,6 @@ useEffect(() => {
 
   .edu-container {
     width: min(100% - 1.1rem, 940px) !important;
-    height: auto !important;
     min-height: 0 !important;
     max-height: none !important;
     overflow: visible !important;
@@ -2520,7 +2575,6 @@ useEffect(() => {
   }
 
   #hero .edu-hero-layout {
-    height: auto !important;
     min-height: 0 !important;
     grid-template-columns: 1fr !important;
     gap: 1rem !important;
@@ -2673,6 +2727,223 @@ useEffect(() => {
 
   .edu-timeline-image {
     height: 210px !important;
+  }
+}
+
+/* =========================================================
+   MOBILE LOCK SCROLL FIX
+   HP tetap lock-scroll, tapi isi section bisa discroll internal
+========================================================= */
+
+@media (max-width: 1024px) {
+  html,
+  body,
+  #__next {
+    width: 100% !important;
+    height: auto !important;
+    min-height: 100% !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    background: #041b15 !important;
+  }
+
+  .edu-page {
+    width: 100% !important;
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+    scroll-snap-type: y mandatory !important;
+    overscroll-behavior-y: contain !important;
+  }
+
+  .edu-section {
+    width: 100% !important;
+    height: var(--edu-vh) !important;
+    min-height: var(--edu-vh) !important;
+    max-height: var(--edu-vh) !important;
+    overflow: hidden !important;
+    scroll-snap-align: start !important;
+    scroll-snap-stop: always !important;
+
+    padding-top: calc(var(--edu-navbar-h) + 0.75rem) !important;
+    padding-bottom: calc(1.6rem + env(safe-area-inset-bottom)) !important;
+
+    display: flex !important;
+    align-items: stretch !important;
+  }
+
+  .edu-container {
+    width: calc(100% - 1rem) !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    max-height: 100% !important;
+
+    margin-inline: auto !important;
+    display: flex !important;
+
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    overscroll-behavior: contain !important;
+    -webkit-overflow-scrolling: touch !important;
+
+    scrollbar-width: none !important;
+  }
+
+  .edu-container::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  #hero .edu-container,
+  #values .edu-container,
+  #journey .edu-container,
+  #timeline .edu-container,
+  #cta .edu-container {
+    align-items: flex-start !important;
+    justify-content: center !important;
+  }
+
+  #hero .edu-hero-layout {
+    height: auto !important;
+    min-height: 0 !important;
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+    padding-top: 0 !important;
+    padding-bottom: 1rem !important;
+  }
+
+  .edu-hero-showcase {
+    display: none !important;
+  }
+
+  .edu-hero-title {
+    font-size: clamp(2rem, 11.5vw, 3rem) !important;
+    line-height: 0.92 !important;
+  }
+
+  .edu-section-title {
+    font-size: clamp(1.65rem, 8vw, 2.5rem) !important;
+    line-height: 1 !important;
+  }
+
+  .edu-detail-title {
+    font-size: clamp(1.45rem, 7vw, 2rem) !important;
+  }
+
+  .edu-card-title {
+    font-size: clamp(1.85rem, 9vw, 2.6rem) !important;
+  }
+
+  .edu-page p {
+    font-size: 0.82rem !important;
+    line-height: 1.55 !important;
+  }
+
+  #hero .inline-flex.rounded-full {
+    font-size: 0.64rem !important;
+    padding: 0.45rem 0.65rem !important;
+    letter-spacing: 0.08em !important;
+  }
+
+  #hero .mx-auto.mt-7.flex {
+    width: 100% !important;
+    flex-direction: column !important;
+    margin-top: 0.9rem !important;
+  }
+
+  #hero .mx-auto.mt-7.flex a {
+    width: 100% !important;
+    padding: 0.78rem 1rem !important;
+  }
+
+  #hero .mt-7.grid {
+    grid-template-columns: 1fr !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-top: 0.9rem !important;
+  }
+
+  #values .mt-7,
+  #timeline .mt-8 {
+    width: 100% !important;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 0.85rem !important;
+  }
+
+  #values .p-4,
+  #values .sm\:p-5 {
+    padding: 1rem !important;
+  }
+
+  #journey .grid.w-full {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+    align-items: start !important;
+  }
+
+  #journey .no-scrollbar {
+    display: flex !important;
+    overflow-x: auto !important;
+    padding-bottom: 0.5rem !important;
+  }
+
+  #journey .hidden.gap-3.lg\:grid {
+    display: none !important;
+  }
+
+  #journey .grid.lg\:grid-cols-\[0\.82fr_1\.18fr\] {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+  }
+
+  #journey .overflow-hidden.rounded-\[1\.6rem\] {
+    border-radius: 1.25rem !important;
+  }
+
+  .edu-journey-image {
+    min-height: 235px !important;
+    height: auto !important;
+  }
+
+  #journey .bg-emerald-950\/90 {
+    padding: 1rem !important;
+  }
+
+  #journey .sm\:grid-cols-2 {
+    grid-template-columns: 1fr !important;
+  }
+
+  .edu-timeline-image {
+    height: 210px !important;
+  }
+
+  #cta .p-6,
+  #cta .sm\:p-8,
+  #cta .lg\:p-10,
+  #cta .xl\:p-12 {
+    padding: 1.25rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .edu-section {
+    padding-top: calc(var(--edu-navbar-h) + 0.6rem) !important;
+    padding-bottom: calc(1.4rem + env(safe-area-inset-bottom)) !important;
+  }
+
+  .edu-container {
+    width: calc(100% - 0.75rem) !important;
+  }
+
+  #journey .no-scrollbar button {
+    min-width: 105px !important;
+  }
+
+  .edu-journey-image {
+    min-height: 220px !important;
+  }
+
+  .edu-timeline-image {
+    height: 200px !important;
   }
 }
 
