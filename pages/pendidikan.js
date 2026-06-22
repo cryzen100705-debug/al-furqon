@@ -430,10 +430,26 @@ function BackendNotice({ show, onRetry, checking }) {
   );
 }
 
-function EducationProgressBar({ sections = [], activeSection = 0 }) {
-  const total = sections.length || 1;
-  const safeActive = Math.min(Math.max(activeSection, 0), total - 1);
-  const progress = ((safeActive + 1) / total) * 100;
+function ProgressBar({ sections = [], activeSection = 0, activeStep = 0 }) {
+  const totalSteps =
+    sections.reduce((sum, item) => sum + Number(item.total || 1), 0) || 1;
+
+  const safeActiveSection = Math.min(
+    Math.max(activeSection, 0),
+    sections.length - 1
+  );
+
+  const passed = sections
+    .slice(0, safeActiveSection)
+    .reduce((sum, item) => sum + Number(item.total || 1), 0);
+
+  const currentSectionTotal = Number(
+    sections[safeActiveSection]?.total || 1
+  );
+
+  const safeStep = Math.min(Math.max(activeStep, 0), currentSectionTotal - 1);
+
+  const progress = ((passed + safeStep + 1) / totalSteps) * 100;
 
   return (
     <div className="fixed bottom-0 left-0 z-[260] w-full">
@@ -450,7 +466,12 @@ function EducationProgressBar({ sections = [], activeSection = 0 }) {
   );
 }
 
-function SideDots({ sections, activeSection, jumpToSection }) {
+function SideDots({
+  sections = [],
+  activeSection = 0,
+  activeStep = 0,
+  jumpToSection,
+}) {
   return (
     <div className="fixed right-5 top-1/2 z-[260] hidden -translate-y-1/2 flex-col gap-3 xl:flex">
       {sections.map((section, index) => (
@@ -462,6 +483,9 @@ function SideDots({ sections, activeSection, jumpToSection }) {
         >
           <span className="rounded-full bg-emerald-950/85 px-3 py-1 text-[11px] font-black text-yellow-300 opacity-0 shadow-xl backdrop-blur transition group-hover:opacity-100">
             {section.label}
+            {activeSection === index && Number(section.total || 1) > 1
+              ? ` ${activeStep + 1}/${section.total}`
+              : ""}
           </span>
 
           <span
@@ -476,8 +500,6 @@ function SideDots({ sections, activeSection, jumpToSection }) {
     </div>
   );
 }
-
-
 
 export default function Pendidikan() {
   const [pageData, setPageData] = useState(null);
@@ -628,14 +650,16 @@ export default function Pendidikan() {
 
   const sections = useMemo(
   () => [
-    { key: "hero", label: "Hero" },
-    { key: "values", label: "Nilai" },
-    { key: "journey", label: "Jenjang" },
-    { key: "timeline", label: "Alur" },
-    { key: "cta", label: "Daftar" },
+    { key: "hero", label: "Pendidikan", total: 1 },
+    { key: "values", label: "Nilai", total: 1 },
+    { key: "journey", label: "Jenjang", total: 1 },
+    { key: "timeline", label: "Alur", total: 1 },
+    { key: "cta", label: "Daftar", total: 1 },
   ],
   []
 );
+
+const activeStep = 0;
 
 const jumpToSection = (index) => {
   if (index < 0 || index >= sections.length) return;
@@ -769,10 +793,18 @@ useEffect(() => {
   <main className="edu-page overflow-x-hidden bg-[#041b15] text-emerald-950">
     <Navbar />
 
-    <EducationProgressBar
-      sections={sections}
-      activeSection={activeSectionIndex}
-    />
+    <ProgressBar
+  sections={sections}
+  activeSection={activeSectionIndex}
+  activeStep={activeStep}
+/>
+
+<SideDots
+  sections={sections}
+  activeSection={activeSectionIndex}
+  activeStep={activeStep}
+  jumpToSection={jumpToSection}
+/>
 
       <BackendNotice
         show={usingFallback}
