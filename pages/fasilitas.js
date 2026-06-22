@@ -944,26 +944,26 @@ const jumpToSection = (index) => {
   if (index < 0 || index >= sections.length) return;
 
   const target = document.getElementById(sections[index]?.key);
-
   if (!target) return;
 
   lockRef.current = true;
   setActiveSectionIndex(index);
 
-  const container = target.querySelector(".fac-container");
-
-  if (container) {
-    container.scrollTop = 0;
+  const innerContainer = target.querySelector(".fac-container");
+  if (innerContainer) {
+    innerContainer.scrollTop = 0;
   }
 
+  const targetTop = target.getBoundingClientRect().top + window.scrollY;
+
   window.scrollTo({
-    top: target.offsetTop,
+    top: targetTop,
     behavior: "smooth",
   });
 
   window.setTimeout(() => {
     lockRef.current = false;
-  }, 720);
+  }, 850);
 };
 
 useEffect(() => {
@@ -977,7 +977,6 @@ useEffect(() => {
 
   const getScrollableContainer = () => {
     const activeSection = getActiveSectionElement();
-
     if (!activeSection) return null;
 
     return activeSection.querySelector(".fac-container");
@@ -987,23 +986,22 @@ useEffect(() => {
     if (!isMobile()) return true;
 
     const container = getScrollableContainer();
-
     if (!container) return true;
 
-    const hasInnerScroll = container.scrollHeight > container.clientHeight + 8;
+    const hasInnerScroll = container.scrollHeight > container.clientHeight + 10;
 
     if (!hasInnerScroll) return true;
 
     const atTop = container.scrollTop <= 2;
     const atBottom =
-      container.scrollTop + container.clientHeight >= container.scrollHeight - 2;
+      container.scrollTop + container.clientHeight >= container.scrollHeight - 3;
 
     if (direction > 0) return atBottom;
 
     return atTop;
   };
 
-  const goToNextSection = (direction) => {
+  const moveSection = (direction) => {
     if (lockRef.current) return;
 
     if (!canMoveMobileSection(direction)) return;
@@ -1019,30 +1017,19 @@ useEffect(() => {
   };
 
   const handleWheel = (event) => {
-    if (Math.abs(event.deltaY) < 12) return;
+    if (Math.abs(event.deltaY) < 10) return;
 
-    /*
-      Desktop/laptop:
-      Jangan cek scroll dalam container.
-      Sekali scroll harus langsung pindah section.
-    */
+    const direction = event.deltaY > 0 ? 1 : -1;
+
     if (!isMobile()) {
       event.preventDefault();
-
-      const direction = event.deltaY > 0 ? 1 : -1;
-      goToNextSection(direction);
+      moveSection(direction);
       return;
     }
 
-    /*
-      Mobile/tablet dengan mouse:
-      Kalau container masih bisa scroll di dalam, jangan ditahan.
-    */
-    const direction = event.deltaY > 0 ? 1 : -1;
-
     if (canMoveMobileSection(direction)) {
       event.preventDefault();
-      goToNextSection(direction);
+      moveSection(direction);
     }
   };
 
@@ -1055,13 +1042,11 @@ useEffect(() => {
     event.preventDefault();
 
     if (downKeys.includes(event.key)) {
-      goToNextSection(1);
+      moveSection(1);
       return;
     }
 
-    if (upKeys.includes(event.key)) {
-      goToNextSection(-1);
-    }
+    moveSection(-1);
   };
 
   const handleTouchStart = (event) => {
@@ -1086,14 +1071,14 @@ useEffect(() => {
   const handleTouchEnd = (event) => {
     if (!isMobile()) return;
 
-    const touchEndY = event.changedTouches?.[0]?.clientY || 0;
-    const diff = touchStartY.current - touchEndY;
+    const endY = event.changedTouches?.[0]?.clientY || 0;
+    const diff = touchStartY.current - endY;
 
     if (Math.abs(diff) < 55) return;
 
     const direction = diff > 0 ? 1 : -1;
 
-    goToNextSection(direction);
+    moveSection(direction);
   };
 
   window.addEventListener("wheel", handleWheel, { passive: false });
@@ -1252,15 +1237,15 @@ useEffect(() => {
               </p>
 
               <div className="mx-auto mt-7 flex max-w-md flex-col gap-3 sm:flex-row lg:mx-0 lg:max-w-none">
-                <MagneticButton href="#explorer">
-                  Jelajahi Fasilitas
-                  <FaArrowRight />
-                </MagneticButton>
+                <MagneticButton onClick={() => jumpToSection(2)}>
+  Jelajahi Fasilitas
+  <FaArrowRight />
+</MagneticButton>
 
-                <MagneticButton href="#spotlight" variant="secondary">
-                  <FaPlay />
-                  Lihat Unggulan
-                </MagneticButton>
+<MagneticButton onClick={() => jumpToSection(1)} variant="secondary">
+  <FaPlay />
+  Lihat Unggulan
+</MagneticButton>
               </div>
 
               <div className="mt-7 grid max-w-xl grid-cols-2 gap-3 sm:grid-cols-4">

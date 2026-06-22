@@ -1024,3 +1024,24 @@ html {
     height: 205px !important;
   }
 }
+
+/* =========================================================
+   FIX SCROLL FASILITAS
+   JS yang mengatur pindah section, bukan CSS scroll-snap
+========================================================= */
+
+.fac-page {
+  scroll-snap-type: none !important;
+  overscroll-behavior-y: none !important;
+}
+
+.fac-section {
+  scroll-snap-align: none !important;
+  scroll-snap-stop: normal !important;
+}
+
+html,
+body,
+#__next {
+  overscroll-behavior-y: none !important;
+}
