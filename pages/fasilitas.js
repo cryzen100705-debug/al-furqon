@@ -950,6 +950,7 @@ const jumpToSection = (index) => {
   setActiveSectionIndex(index);
 
   const innerContainer = target.querySelector(".fac-container");
+
   if (innerContainer) {
     innerContainer.scrollTop = 0;
   }
@@ -963,7 +964,7 @@ const jumpToSection = (index) => {
 
   window.setTimeout(() => {
     lockRef.current = false;
-  }, 850);
+  }, 780);
 };
 
 useEffect(() => {
@@ -971,30 +972,41 @@ useEffect(() => {
 
   const isMobile = () => window.innerWidth <= 1024;
 
-  const getActiveSectionElement = () => {
+  const getActiveSection = () => {
     return document.getElementById(sections[activeSectionIndex]?.key);
   };
 
-  const getScrollableContainer = () => {
-    const activeSection = getActiveSectionElement();
+  const getActiveContainer = () => {
+    const activeSection = getActiveSection();
     if (!activeSection) return null;
 
     return activeSection.querySelector(".fac-container");
   };
 
-  const canMoveMobileSection = (direction) => {
-    if (!isMobile()) return true;
+  const canMoveSection = (direction) => {
+    const container = getActiveContainer();
 
-    const container = getScrollableContainer();
     if (!container) return true;
 
-    const hasInnerScroll = container.scrollHeight > container.clientHeight + 10;
+    /*
+      Desktop:
+      Jangan cek inner scroll.
+      Sekali scroll harus langsung pindah section.
+    */
+    if (!isMobile()) return true;
+
+    /*
+      Mobile:
+      Kalau isi section masih bisa discroll,
+      biarkan scroll bagian dalam dulu.
+    */
+    const hasInnerScroll = container.scrollHeight > container.clientHeight + 12;
 
     if (!hasInnerScroll) return true;
 
     const atTop = container.scrollTop <= 2;
     const atBottom =
-      container.scrollTop + container.clientHeight >= container.scrollHeight - 3;
+      container.scrollTop + container.clientHeight >= container.scrollHeight - 4;
 
     if (direction > 0) return atBottom;
 
@@ -1003,8 +1015,7 @@ useEffect(() => {
 
   const moveSection = (direction) => {
     if (lockRef.current) return;
-
-    if (!canMoveMobileSection(direction)) return;
+    if (!canMoveSection(direction)) return;
 
     const nextIndex =
       direction > 0
@@ -1027,7 +1038,7 @@ useEffect(() => {
       return;
     }
 
-    if (canMoveMobileSection(direction)) {
+    if (canMoveSection(direction)) {
       event.preventDefault();
       moveSection(direction);
     }
@@ -1063,7 +1074,7 @@ useEffect(() => {
 
     const direction = diff > 0 ? 1 : -1;
 
-    if (canMoveMobileSection(direction)) {
+    if (canMoveSection(direction)) {
       event.preventDefault();
     }
   };
@@ -1690,14 +1701,14 @@ useEffect(() => {
               </div>
 
               <div className="mx-auto mt-8 flex w-full max-w-md flex-col justify-center gap-4 sm:max-w-none sm:flex-row">
-                <MagneticButton href="#explorer">
-                  Lihat Fasilitas
+                <MagneticButton onClick={() => jumpToSection(2)}>
+                  Jelajahi Fasilitas
                   <FaArrowRight />
                 </MagneticButton>
 
-                <MagneticButton href={WHATSAPP_ADMIN_URL} variant="secondary">
-                  Hubungi Admin
-                  <FaHandSparkles />
+                <MagneticButton onClick={() => jumpToSection(1)} variant="secondary">
+                  <FaPlay />
+                  Lihat Unggulan
                 </MagneticButton>
               </div>
             </GlassCard>

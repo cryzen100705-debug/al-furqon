@@ -1,26 +1,35 @@
+/* =========================================================
+   FASILITAS.CSS FINAL
+   Responsive + lock scroll JS friendly
+   Desktop: scroll pindah section
+   Mobile: isi section bisa scroll internal
+========================================================= */
+
 :root {
   --fac-vh: 100svh;
-  --fac-navbar-h: 88px;
+  --fac-navbar-h: 92px;
+  --fac-page-x: clamp(0.7rem, 3vw, 4rem);
+  --fac-progress-h: 10px;
 }
 
+/* RESET DASAR */
 html,
 body,
 #__next {
-  width: 100%;
-  max-width: 100%;
+  width: 100% !important;
+  min-height: 100% !important;
+  margin: 0 !important;
   overflow-x: hidden !important;
   overflow-y: auto !important;
-  height: auto !important;
-  min-height: 100% !important;
+  background: #041b15 !important;
 }
 
 html {
-  scroll-behavior: smooth;
+  scroll-behavior: smooth !important;
 }
 
 body {
-  background: #041b15;
-  overscroll-behavior-y: auto !important;
+  overscroll-behavior-y: none !important;
 }
 
 img,
@@ -40,669 +49,43 @@ a {
   color: #064e3b;
 }
 
-.fac-page {
-  --fac-safe-top: calc(var(--fac-navbar-h) + clamp(10px, 1.8svh, 22px));
-  --fac-safe-bottom: clamp(22px, 4svh, 44px);
-  --fac-content-min: calc(
-    var(--fac-vh) - var(--fac-safe-top) - var(--fac-safe-bottom)
-  );
-}
-
-.fac-section {
-  min-height: var(--fac-vh);
-  height: auto;
-  max-height: none;
-  scroll-margin-top: 0;
-}
-
-.fac-container {
-  width: min(92vw, 1240px) !important;
-  max-width: min(92vw, 1240px) !important;
-  min-height: var(--fac-content-min);
-  height: auto;
-  max-height: none;
-  padding-top: var(--fac-safe-top);
-  padding-bottom: var(--fac-safe-bottom);
-  box-sizing: border-box;
-  overflow: visible;
-}
-
-.fac-hero-title {
-  font-size: clamp(1.75rem, min(3.7vw, 5.4svh), 3.9rem);
-}
-
-.fac-section-title {
-  font-size: clamp(1.35rem, min(2.55vw, 4svh), 2.45rem);
-}
-
-.fac-card-title {
-  font-size: clamp(1.5rem, min(3.25vw, 4.6svh), 2.8rem);
-}
-
-.fac-hero-preview {
-  height: clamp(210px, 31svh, 320px);
-}
-
-.fac-spotlight-image {
-  height: clamp(230px, 35svh, 360px);
-}
-
-.fac-explorer-image {
-  height: clamp(225px, 34svh, 350px);
-}
-
-.fac-cinematic-image {
-  height: clamp(250px, 42svh, 410px);
-}
-
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-.fac-section button,
-.fac-section a {
-  will-change: transform;
-}
-
-.fac-section img {
-  transform: translateZ(0);
-}
-
-@media (min-width: 1280px) and (max-height: 900px) {
-  .fac-page {
-    --fac-safe-top: calc(var(--fac-navbar-h) + 8px);
-    --fac-safe-bottom: clamp(14px, 2.4svh, 28px);
-  }
-
-  .fac-container {
-    width: min(91vw, 1180px) !important;
-    max-width: min(91vw, 1180px) !important;
-  }
-
-  .fac-hero-title {
-    font-size: clamp(1.55rem, min(3.2vw, 4.8svh), 3.35rem);
-  }
-
-  .fac-section-title {
-    font-size: clamp(1.2rem, min(2.15vw, 3.35svh), 2.1rem);
-  }
-
-  .fac-card-title {
-    font-size: clamp(1.3rem, min(2.7vw, 3.9svh), 2.35rem);
-  }
-
-  .fac-hero-preview {
-    height: clamp(185px, 27svh, 285px);
-  }
-
-  .fac-spotlight-image,
-  .fac-explorer-image {
-    height: clamp(205px, 31svh, 310px);
-  }
-
-  .fac-cinematic-image {
-    height: clamp(230px, 38svh, 370px);
-  }
-}
-
-@media (min-width: 1024px) and (max-height: 760px) {
-  .fac-page {
-    --fac-safe-top: calc(var(--fac-navbar-h) + 6px);
-    --fac-safe-bottom: 16px;
-  }
-
-  .fac-hero-title {
-    font-size: clamp(1.38rem, min(2.75vw, 4.1svh), 2.75rem);
-  }
-
-  .fac-section-title {
-    font-size: clamp(1.08rem, min(1.95vw, 3svh), 1.85rem);
-  }
-
-  .fac-card-title {
-    font-size: clamp(1.2rem, min(2.45vw, 3.45svh), 2.1rem);
-  }
-
-  .fac-hero-preview {
-    height: clamp(170px, 24svh, 250px);
-  }
-
-  .fac-spotlight-image,
-  .fac-explorer-image {
-    height: clamp(180px, 28svh, 280px);
-  }
-
-  .fac-cinematic-image {
-    height: clamp(210px, 34svh, 330px);
-  }
-}
-
-@media (max-width: 1023px) {
-  html {
-    scroll-behavior: auto;
-  }
-
-  .fac-page {
-    --fac-safe-top: calc(var(--fac-navbar-h) + clamp(14px, 2.4svh, 22px));
-    --fac-safe-bottom: clamp(28px, 5svh, 46px);
-  }
-
-  .fac-section:first-of-type .fac-container {
-    min-height: var(--fac-content-min);
-  }
-
-  .fac-hero-title {
-    font-size: clamp(1.6rem, 7.4vw, 3rem);
-  }
-
-  .fac-section-title {
-    font-size: clamp(1.25rem, 5.8vw, 2.2rem);
-  }
-
-  .fac-card-title {
-    font-size: clamp(1.45rem, 6.5vw, 2.65rem);
-  }
-
-  .fac-hero-preview {
-    height: clamp(205px, 30svh, 300px);
-  }
-
-  .fac-spotlight-image,
-  .fac-explorer-image {
-    height: clamp(215px, 32svh, 315px);
-  }
-
-  .fac-cinematic-image {
-    height: clamp(235px, 38svh, 340px);
-  }
-}
-
-@media (max-width: 640px) {
-  .fac-page {
-    --fac-safe-top: calc(var(--fac-navbar-h) + 14px);
-    --fac-safe-bottom: 32px;
-  }
-
-  .fac-container {
-    width: 92vw !important;
-    max-width: 92vw !important;
-  }
-
-  .fac-hero-title {
-    font-size: clamp(1.38rem, 8vw, 2.28rem);
-    line-height: 0.96;
-  }
-
-  .fac-section-title {
-    font-size: clamp(1.1rem, 6vw, 1.78rem);
-    line-height: 1.05;
-  }
-
-  .fac-card-title {
-    font-size: clamp(1.3rem, 6.8vw, 2.15rem);
-    line-height: 1.02;
-  }
-
-  .fac-hero-preview {
-    height: clamp(185px, 27svh, 260px);
-  }
-
-  .fac-spotlight-image,
-  .fac-explorer-image {
-    height: clamp(195px, 29svh, 275px);
-  }
-
-  .fac-cinematic-image {
-    height: clamp(225px, 35svh, 310px);
-  }
-
-  .fac-section .grid {
-    gap: 1rem;
-  }
-
-  .fac-section p {
-    line-height: 1.65;
-  }
-}
-
-@media (max-width: 430px) {
-  .fac-page {
-    --fac-safe-top: calc(var(--fac-navbar-h) + 12px);
-    --fac-safe-bottom: 28px;
-  }
-
-  .fac-container {
-    width: 91vw !important;
-    max-width: 91vw !important;
-  }
-
-  .fac-hero-title {
-    font-size: clamp(1.22rem, 7.4vw, 1.92rem);
-  }
-
-  .fac-section-title {
-    font-size: clamp(1rem, 5.5vw, 1.5rem);
-  }
-
-  .fac-card-title {
-    font-size: clamp(1.15rem, 6.2vw, 1.9rem);
-  }
-
-  .fac-hero-preview {
-    height: 185px;
-  }
-
-  .fac-spotlight-image,
-  .fac-explorer-image {
-    height: 195px;
-  }
-
-  .fac-cinematic-image {
-    height: 230px;
-  }
-}
-
-@media (max-width: 360px) {
-  .fac-container {
-    width: 92vw !important;
-    max-width: 92vw !important;
-  }
-
-  .fac-hero-title {
-    font-size: 1.28rem;
-  }
-
-  .fac-section-title {
-    font-size: 1.12rem;
-  }
-
-  .fac-card-title {
-    font-size: 1.28rem;
-  }
-
-  .fac-spotlight-image,
-  .fac-explorer-image,
-  .fac-cinematic-image {
-    height: 190px;
-  }
-}
-
-/* =========================================================
-   FASILITAS SAME AS HOME / PENDIDIKAN
-   section lock-scroll + indicator bawah + mobile internal scroll
-========================================================= */
-
-:root {
-  --fac-navbar-h: 92px;
-  --fac-vh: 100svh;
-  --fac-page-x: clamp(1rem, 3.2vw, 4rem);
-  --fac-progress-h: 10px;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
-html,
-body,
-#__next {
-  width: 100%;
-  min-height: 100%;
-  margin: 0;
-  overflow-x: hidden !important;
-  background: #041b15;
-}
-
-.fac-page {
-  width: 100%;
-  max-width: 100vw;
-  overflow-x: hidden !important;
-  scroll-snap-type: y mandatory;
-  background: #041b15;
-}
-
-.fac-section {
-  width: 100% !important;
-  height: var(--fac-vh) !important;
-  min-height: var(--fac-vh) !important;
-  max-height: var(--fac-vh) !important;
-  box-sizing: border-box !important;
-  padding-top: calc(var(--fac-navbar-h) + clamp(0.45rem, 1vh, 0.85rem)) !important;
-  padding-bottom: calc(var(--fac-progress-h) + clamp(0.9rem, 1.8vh, 1.4rem)) !important;
-  display: flex !important;
-  align-items: stretch !important;
-  overflow: hidden !important;
-  scroll-snap-align: start !important;
-  scroll-snap-stop: always !important;
-}
-
-.fac-container {
-  width: min(100% - calc(var(--fac-page-x) * 2), 1240px) !important;
-  height: 100% !important;
-  min-height: 0 !important;
-  max-height: 100% !important;
-  margin-inline: auto !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  overflow: hidden !important;
-}
-
-#explorer .fac-container,
-#cinematic .fac-container {
-  flex-direction: column !important;
-}
-
-.fac-hero-title {
-  font-size: clamp(2rem, 4.55vw, 3.9rem) !important;
-  line-height: 0.9 !important;
-}
-
-.fac-section-title {
-  font-size: clamp(1.55rem, 2.75vw, 2.55rem) !important;
-  line-height: 0.98 !important;
-}
-
-.fac-card-title {
-  font-size: clamp(1.7rem, 3.2vw, 2.75rem) !important;
-  line-height: 0.95 !important;
-}
-
-.fac-hero-showcase {
-  transform: scale(0.64) !important;
-  transform-origin: center right !important;
-}
-
-.fac-hero-preview {
-  height: clamp(190px, 28vh, 300px) !important;
-}
-
-.fac-spotlight-image {
-  height: clamp(250px, 48vh, 480px) !important;
-}
-
-.fac-explorer-image {
-  height: clamp(240px, 38vh, 380px) !important;
-}
-
-.fac-cinematic-image {
-  height: clamp(260px, 45vh, 440px) !important;
-}
-
-.fac-section .mt-8 {
-  margin-top: clamp(0.9rem, 1.6vh, 1.25rem) !important;
-}
-
-.fac-section .mt-7 {
-  margin-top: clamp(0.8rem, 1.5vh, 1.15rem) !important;
-}
-
-.fac-section .mt-5 {
-  margin-top: clamp(0.7rem, 1.3vh, 1rem) !important;
-}
-
-@media (min-width: 1025px) and (max-height: 850px) {
-  .fac-section {
-    padding-top: calc(var(--fac-navbar-h) + 0.35rem) !important;
-    padding-bottom: calc(var(--fac-progress-h) + 0.85rem) !important;
-  }
-
-  .fac-hero-title {
-    font-size: clamp(2rem, 4.25vw, 3.55rem) !important;
-  }
-
-  .fac-page p {
-    font-size: 0.82rem !important;
-    line-height: 1.5 !important;
-  }
-
-  .fac-hero-showcase {
-    transform: scale(0.58) !important;
-  }
-
-  .fac-hero-preview {
-    height: clamp(175px, 25vh, 270px) !important;
-  }
-
-  .fac-section-title {
-    font-size: clamp(1.5rem, 2.45vw, 2.35rem) !important;
-  }
-
-  .fac-spotlight-image {
-    height: clamp(220px, 42vh, 390px) !important;
-  }
-
-  .fac-explorer-image {
-    height: clamp(200px, 32vh, 320px) !important;
-  }
-
-  .fac-cinematic-image {
-    height: clamp(220px, 38vh, 360px) !important;
-  }
-}
-
-/* HP tetap lock-scroll, isi section scroll internal */
-@media (max-width: 1024px) {
-  html,
-  body,
-  #__next {
-    width: 100% !important;
-    height: auto !important;
-    min-height: 100% !important;
-    overflow-x: hidden !important;
-    overflow-y: auto !important;
-    background: #041b15 !important;
-  }
-
-  .fac-page {
-    width: 100% !important;
-    max-width: 100vw !important;
-    overflow-x: hidden !important;
-    scroll-snap-type: y mandatory !important;
-    overscroll-behavior-y: contain !important;
-  }
-
-  .fac-section {
-    width: 100% !important;
-    height: var(--fac-vh) !important;
-    min-height: var(--fac-vh) !important;
-    max-height: var(--fac-vh) !important;
-    overflow: hidden !important;
-    scroll-snap-align: start !important;
-    scroll-snap-stop: always !important;
-    padding-top: calc(var(--fac-navbar-h) + 0.75rem) !important;
-    padding-bottom: calc(1.6rem + env(safe-area-inset-bottom)) !important;
-    display: flex !important;
-    align-items: stretch !important;
-  }
-
-  .fac-container {
-    width: calc(100% - 1rem) !important;
-    height: 100% !important;
-    min-height: 0 !important;
-    max-height: 100% !important;
-    margin-inline: auto !important;
-    display: flex !important;
-    align-items: flex-start !important;
-    justify-content: center !important;
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-    overscroll-behavior: contain !important;
-    -webkit-overflow-scrolling: touch !important;
-    scrollbar-width: none !important;
-  }
-
-  .fac-container::-webkit-scrollbar {
-    display: none !important;
-  }
-
-  .fac-hero-section .fac-container {
-    align-items: center !important;
-  }
-
-  .fac-hero-showcase {
-    display: none !important;
-  }
-
-  .fac-hero-title {
-    font-size: clamp(2rem, 11.5vw, 3rem) !important;
-    line-height: 0.92 !important;
-  }
-
-  .fac-section-title {
-    font-size: clamp(1.65rem, 8vw, 2.5rem) !important;
-    line-height: 1 !important;
-  }
-
-  .fac-card-title {
-    font-size: clamp(1.85rem, 9vw, 2.6rem) !important;
-  }
-
-  .fac-page p {
-    font-size: 0.82rem !important;
-    line-height: 1.55 !important;
-  }
-
-  .fac-section .grid {
-    grid-template-columns: 1fr !important;
-  }
-
-  .fac-section .rounded-\[1\.6rem\],
-  .fac-section .rounded-\[1\.7rem\] {
-    border-radius: 1.25rem !important;
-  }
-
-  .fac-spotlight-image {
-    height: 250px !important;
-  }
-
-  .fac-explorer-image {
-    height: 235px !important;
-  }
-
-  .fac-cinematic-image {
-    height: 240px !important;
-  }
-
-  #explorer .no-scrollbar {
-    display: flex !important;
-    overflow-x: auto !important;
-    padding-bottom: 0.5rem !important;
-  }
-
-  #explorer .no-scrollbar button {
-    min-width: max-content !important;
-  }
-
-  #cta .p-6,
-  #cta .sm\:p-8,
-  #cta .lg\:p-10,
-  #cta .xl\:p-12 {
-    padding: 1.25rem !important;
-  }
-}
-
-@media (max-width: 480px) {
-  .fac-section {
-    padding-top: calc(var(--fac-navbar-h) + 0.6rem) !important;
-    padding-bottom: calc(1.4rem + env(safe-area-inset-bottom)) !important;
-  }
-
-  .fac-container {
-    width: calc(100% - 0.75rem) !important;
-  }
-
-  .fac-hero-title {
-    font-size: clamp(1.9rem, 12vw, 2.75rem) !important;
-  }
-
-  .fac-section-title {
-    font-size: clamp(1.55rem, 8.5vw, 2.25rem) !important;
-  }
-
-  .fac-spotlight-image {
-    height: 225px !important;
-  }
-
-  .fac-explorer-image {
-    height: 215px !important;
-  }
-
-  .fac-cinematic-image {
-    height: 220px !important;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.001ms !important;
-    animation-iteration-count: 1 !important;
-    scroll-behavior: auto !important;
-    transition-duration: 0.001ms !important;
-  }
-}
-
-/* =========================================================
-   FINAL FIX FASILITAS
-   tampilan compact + scroll lock tidak tertahan
-========================================================= */
-
-:root {
-  --fac-navbar-h: 92px;
-  --fac-vh: 100svh;
-  --fac-page-x: clamp(1rem, 3.2vw, 4rem);
-  --fac-progress-h: 10px;
-}
-
-html,
-body,
-#__next {
-  width: 100% !important;
-  min-height: 100% !important;
-  margin: 0 !important;
-  overflow-x: hidden !important;
-  background: #041b15 !important;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
+/* PAGE */
 .fac-page {
   width: 100% !important;
   max-width: 100vw !important;
   overflow-x: hidden !important;
   background: #041b15 !important;
-  scroll-snap-type: y mandatory !important;
+
+  /*
+    Jangan pakai CSS scroll-snap,
+    karena pindah section sudah diatur JS jumpToSection()
+  */
+  scroll-snap-type: none !important;
+  overscroll-behavior-y: none !important;
 }
 
+/* SECTION */
 .fac-section {
   width: 100% !important;
   height: var(--fac-vh) !important;
   min-height: var(--fac-vh) !important;
   max-height: var(--fac-vh) !important;
-  box-sizing: border-box !important;
 
+  box-sizing: border-box !important;
   padding-top: calc(var(--fac-navbar-h) + 0.35rem) !important;
-  padding-bottom: calc(var(--fac-progress-h) + 0.75rem) !important;
+  padding-bottom: calc(var(--fac-progress-h) + 0.7rem) !important;
 
   display: flex !important;
   align-items: stretch !important;
   overflow: hidden !important;
 
-  scroll-snap-align: start !important;
-  scroll-snap-stop: always !important;
+  scroll-snap-align: none !important;
+  scroll-snap-stop: normal !important;
 }
 
+/* CONTAINER */
 .fac-container {
-  width: min(100% - calc(var(--fac-page-x) * 2), 1240px) !important;
+  width: min(100% - calc(var(--fac-page-x) * 2), 1220px) !important;
   height: 100% !important;
   min-height: 0 !important;
   max-height: 100% !important;
@@ -717,7 +100,7 @@ html {
   overflow: hidden !important;
 }
 
-/* Biar desktop tidak dianggap punya scroll dalam */
+/* Desktop: jangan ada inner scroll */
 @media (min-width: 1025px) {
   .fac-container {
     overflow: hidden !important;
@@ -737,22 +120,25 @@ html {
   justify-content: center !important;
 }
 
-/* Ukuran lebih compact */
+/* =========================================================
+   TYPOGRAPHY
+========================================================= */
+
 .fac-hero-title {
-  font-size: clamp(2rem, 4.2vw, 3.55rem) !important;
-  line-height: 0.9 !important;
-  letter-spacing: -0.06em !important;
+  font-size: clamp(1.9rem, 4vw, 3.35rem) !important;
+  line-height: 0.92 !important;
+  letter-spacing: -0.055em !important;
 }
 
 .fac-section-title {
-  font-size: clamp(1.45rem, 2.45vw, 2.25rem) !important;
-  line-height: 0.98 !important;
-  letter-spacing: -0.05em !important;
+  font-size: clamp(1.35rem, 2.35vw, 2.15rem) !important;
+  line-height: 1 !important;
+  letter-spacing: -0.045em !important;
 }
 
 .fac-card-title {
-  font-size: clamp(1.55rem, 2.8vw, 2.45rem) !important;
-  line-height: 0.95 !important;
+  font-size: clamp(1.45rem, 2.65vw, 2.35rem) !important;
+  line-height: 0.98 !important;
 }
 
 .fac-page p {
@@ -760,6 +146,7 @@ html {
   line-height: 1.5 !important;
 }
 
+/* Margin compact */
 .fac-section .mt-8 {
   margin-top: 0.85rem !important;
 }
@@ -768,159 +155,209 @@ html {
   margin-top: 0.75rem !important;
 }
 
+.fac-section .mt-6 {
+  margin-top: 0.7rem !important;
+}
+
 .fac-section .mt-5 {
   margin-top: 0.65rem !important;
 }
 
-/* Hero */
+.fac-section .mt-4 {
+  margin-top: 0.55rem !important;
+}
+
+.fac-section .mb-4 {
+  margin-bottom: 0.65rem !important;
+}
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.fac-hero-section .grid {
+  gap: clamp(0.8rem, 1.5vw, 1.25rem) !important;
+}
+
 .fac-hero-showcase {
-  transform: scale(0.58) !important;
+  transform: scale(0.56) !important;
   transform-origin: center right !important;
 }
 
 .fac-hero-preview {
-  height: clamp(165px, 24vh, 260px) !important;
-}
-
-.fac-hero-section .grid {
-  gap: clamp(0.8rem, 1.6vw, 1.35rem) !important;
+  height: clamp(150px, 23vh, 245px) !important;
 }
 
 .fac-hero-section .inline-flex {
-  padding-top: 0.45rem !important;
-  padding-bottom: 0.45rem !important;
+  padding-top: 0.4rem !important;
+  padding-bottom: 0.4rem !important;
 }
 
 .fac-hero-section .rounded-2xl {
   border-radius: 1rem !important;
 }
 
-/* Spotlight */
+.fac-hero-section .mt-7.grid {
+  gap: 0.6rem !important;
+}
+
+.fac-hero-section .mt-7.grid > div {
+  padding: 0.65rem !important;
+}
+
+/* =========================================================
+   SPOTLIGHT
+========================================================= */
+
 #spotlight .grid {
-  gap: clamp(1rem, 1.8vw, 1.5rem) !important;
+  gap: clamp(0.8rem, 1.6vw, 1.3rem) !important;
 }
 
 #spotlight .grid.gap-3 {
-  gap: 0.7rem !important;
+  gap: 0.65rem !important;
 }
 
 #spotlight .p-4 {
-  padding: 0.85rem !important;
+  padding: 0.8rem !important;
 }
 
 .fac-spotlight-image {
-  height: clamp(210px, 38vh, 360px) !important;
+  height: clamp(190px, 35vh, 325px) !important;
 }
 
-/* Explorer */
+/* =========================================================
+   EXPLORER
+========================================================= */
+
 #explorer .fac-container {
   justify-content: center !important;
 }
 
 #explorer .mt-8 {
-  margin-top: 0.9rem !important;
+  margin-top: 0.8rem !important;
 }
 
 #explorer .grid {
-  gap: 1rem !important;
+  gap: 0.9rem !important;
 }
 
 #explorer button {
-  padding: 0.72rem !important;
+  padding: 0.68rem !important;
   border-radius: 1rem !important;
 }
 
 .fac-explorer-image {
-  height: clamp(190px, 30vh, 300px) !important;
+  height: clamp(175px, 29vh, 285px) !important;
 }
 
-/* Cinematic */
-#cinematic .fac-container {
-  justify-content: center !important;
-}
+/* =========================================================
+   CINEMATIC
+========================================================= */
 
 #cinematic .mx-auto.mt-8 {
-  margin-top: 0.9rem !important;
-}
-
-.fac-cinematic-image {
-  height: clamp(210px, 36vh, 340px) !important;
-}
-
-#cinematic .mt-5 {
   margin-top: 0.8rem !important;
 }
 
-/* CTA */
+.fac-cinematic-image {
+  height: clamp(190px, 34vh, 320px) !important;
+}
+
+#cinematic .mt-5 {
+  margin-top: 0.75rem !important;
+}
+
+/* =========================================================
+   CTA
+========================================================= */
+
 #cta .p-6,
 #cta .sm\:p-8,
 #cta .lg\:p-10,
 #cta .xl\:p-12 {
-  padding: clamp(1.1rem, 2vw, 2rem) !important;
+  padding: clamp(1rem, 2vw, 1.8rem) !important;
 }
 
 #cta .mt-7,
 #cta .mt-8 {
-  margin-top: 0.9rem !important;
+  margin-top: 0.85rem !important;
 }
+
+/* =========================================================
+   SCROLLBAR HIDE
+========================================================= */
+
+.no-scrollbar::-webkit-scrollbar,
+.fac-container::-webkit-scrollbar {
+  display: none !important;
+}
+
+.no-scrollbar,
+.fac-container {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}
+
+/* =========================================================
+   LAPTOP PENDEK
+========================================================= */
 
 @media (min-width: 1025px) and (max-height: 850px) {
   .fac-section {
     padding-top: calc(var(--fac-navbar-h) + 0.2rem) !important;
-    padding-bottom: calc(var(--fac-progress-h) + 0.55rem) !important;
+    padding-bottom: calc(var(--fac-progress-h) + 0.5rem) !important;
   }
 
   .fac-hero-title {
-    font-size: clamp(1.9rem, 3.75vw, 3.2rem) !important;
+    font-size: clamp(1.75rem, 3.55vw, 3rem) !important;
   }
 
   .fac-section-title {
-    font-size: clamp(1.35rem, 2.25vw, 2.05rem) !important;
+    font-size: clamp(1.25rem, 2.1vw, 1.95rem) !important;
   }
 
   .fac-card-title {
-    font-size: clamp(1.45rem, 2.55vw, 2.2rem) !important;
+    font-size: clamp(1.35rem, 2.4vw, 2.05rem) !important;
   }
 
   .fac-page p {
-    font-size: 0.78rem !important;
-    line-height: 1.45 !important;
+    font-size: 0.76rem !important;
+    line-height: 1.42 !important;
   }
 
   .fac-hero-showcase {
-    transform: scale(0.52) !important;
+    transform: scale(0.5) !important;
   }
 
   .fac-hero-preview {
-    height: clamp(150px, 22vh, 235px) !important;
+    height: clamp(140px, 21vh, 220px) !important;
   }
 
   .fac-spotlight-image {
-    height: clamp(190px, 34vh, 320px) !important;
+    height: clamp(175px, 31vh, 285px) !important;
   }
 
   .fac-explorer-image {
-    height: clamp(175px, 28vh, 270px) !important;
+    height: clamp(160px, 26vh, 255px) !important;
   }
 
   .fac-cinematic-image {
-    height: clamp(190px, 32vh, 300px) !important;
+    height: clamp(175px, 30vh, 280px) !important;
   }
 }
 
-/* Mobile: tetap lock section, isi section bisa scroll internal */
-@media (max-width: 1024px) {
-  .fac-page {
-    scroll-snap-type: y mandatory !important;
-    overscroll-behavior-y: contain !important;
-  }
+/* =========================================================
+   TABLET & HP
+   Section tetap 1 layar, isi scroll internal
+========================================================= */
 
+@media (max-width: 1024px) {
   .fac-section {
     height: var(--fac-vh) !important;
     min-height: var(--fac-vh) !important;
     max-height: var(--fac-vh) !important;
+
     overflow: hidden !important;
-    padding-top: calc(var(--fac-navbar-h) + 0.7rem) !important;
+    padding-top: calc(var(--fac-navbar-h) + 0.65rem) !important;
     padding-bottom: calc(1.45rem + env(safe-area-inset-bottom)) !important;
   }
 
@@ -928,17 +365,14 @@ html {
     width: calc(100% - 0.9rem) !important;
     height: 100% !important;
     max-height: 100% !important;
+
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+
     overflow-y: auto !important;
     overflow-x: hidden !important;
     overscroll-behavior: contain !important;
     -webkit-overflow-scrolling: touch !important;
-    scrollbar-width: none !important;
-    align-items: flex-start !important;
-    justify-content: flex-start !important;
-  }
-
-  .fac-container::-webkit-scrollbar {
-    display: none !important;
   }
 
   .fac-hero-section .fac-container {
@@ -955,15 +389,16 @@ html {
   }
 
   .fac-hero-title {
-    font-size: clamp(1.85rem, 10.5vw, 2.75rem) !important;
+    font-size: clamp(1.8rem, 10vw, 2.6rem) !important;
+    line-height: 0.95 !important;
   }
 
   .fac-section-title {
-    font-size: clamp(1.45rem, 7.8vw, 2.25rem) !important;
+    font-size: clamp(1.35rem, 7.2vw, 2.1rem) !important;
   }
 
   .fac-card-title {
-    font-size: clamp(1.6rem, 8.5vw, 2.35rem) !important;
+    font-size: clamp(1.45rem, 7.6vw, 2.2rem) !important;
   }
 
   .fac-page p {
@@ -972,15 +407,15 @@ html {
   }
 
   .fac-spotlight-image {
-    height: 230px !important;
+    height: 220px !important;
   }
 
   .fac-explorer-image {
-    height: 215px !important;
+    height: 205px !important;
   }
 
   .fac-cinematic-image {
-    height: 225px !important;
+    height: 215px !important;
   }
 
   #explorer .no-scrollbar {
@@ -992,7 +427,21 @@ html {
   #explorer .no-scrollbar button {
     min-width: max-content !important;
   }
+
+  #explorer .grid {
+    gap: 0.75rem !important;
+  }
+
+  #spotlight .grid,
+  #explorer .grid,
+  #cinematic .grid {
+    gap: 0.8rem !important;
+  }
 }
+
+/* =========================================================
+   HP KECIL
+========================================================= */
 
 @media (max-width: 480px) {
   .fac-section {
@@ -1005,43 +454,83 @@ html {
   }
 
   .fac-hero-title {
-    font-size: clamp(1.75rem, 11vw, 2.45rem) !important;
+    font-size: clamp(1.65rem, 10.5vw, 2.35rem) !important;
   }
 
   .fac-section-title {
+    font-size: clamp(1.25rem, 7.5vw, 1.9rem) !important;
+  }
+
+  .fac-card-title {
     font-size: clamp(1.35rem, 8vw, 2rem) !important;
   }
 
+  .fac-page p {
+    font-size: 0.78rem !important;
+  }
+
   .fac-spotlight-image {
-    height: 210px !important;
+    height: 195px !important;
   }
 
   .fac-explorer-image {
-    height: 200px !important;
+    height: 185px !important;
   }
 
   .fac-cinematic-image {
-    height: 205px !important;
+    height: 195px !important;
+  }
+
+  .fac-section .rounded-\[1\.6rem\],
+  .fac-section .rounded-\[1\.7rem\],
+  .fac-section .rounded-\[2rem\] {
+    border-radius: 1.1rem !important;
+  }
+
+  #hero .mt-7.grid,
+  .fac-hero-section .mt-7.grid {
+    grid-template-columns: 1fr 1fr !important;
   }
 }
 
 /* =========================================================
-   FIX SCROLL FASILITAS
-   JS yang mengatur pindah section, bukan CSS scroll-snap
+   HP SANGAT KECIL
 ========================================================= */
 
-.fac-page {
-  scroll-snap-type: none !important;
-  overscroll-behavior-y: none !important;
+@media (max-width: 360px) {
+  .fac-container {
+    width: calc(100% - 0.55rem) !important;
+  }
+
+  .fac-hero-title {
+    font-size: 1.55rem !important;
+  }
+
+  .fac-section-title {
+    font-size: 1.25rem !important;
+  }
+
+  .fac-card-title {
+    font-size: 1.35rem !important;
+  }
+
+  .fac-spotlight-image,
+  .fac-explorer-image,
+  .fac-cinematic-image {
+    height: 175px !important;
+  }
 }
 
-.fac-section {
-  scroll-snap-align: none !important;
-  scroll-snap-stop: normal !important;
-}
+/* =========================================================
+   REDUCE MOTION
+========================================================= */
 
-html,
-body,
-#__next {
-  overscroll-behavior-y: none !important;
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
 }
