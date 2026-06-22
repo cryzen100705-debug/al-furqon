@@ -1020,19 +1020,18 @@ function PaymentCard({
                 <FaFileUpload />
                 Pilih Bukti
               </button>
-
               <button
-  type="button"
-  onClick={() => onConfirm(item)}
-  disabled={
-  uploadingId === item.id ||
-  !selectedAmount[item.id] ||
-  parseNumberInput(selectedAmount[item.id]) <= 0 ||
-  parseNumberInput(selectedAmount[item.id]) >
-    Math.max(Number(item.nominal || 0) - Number(item.nominal_dibayar || 0), 0)
-}
-  className="inline-flex h-12 items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-[#064E3B] to-emerald-700 px-6 font-black text-white shadow-lg transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
->
+                type="button"
+                onClick={() => onConfirm(item)}
+                disabled={
+                uploadingId === item.id ||
+                !selectedAmount[item.id] ||
+                parseNumberInput(selectedAmount[item.id]) <= 0 ||
+                parseNumberInput(selectedAmount[item.id]) >
+                  Math.max(Number(item.nominal || 0) - Number(item.nominal_dibayar || 0), 0)
+              }
+                className="inline-flex h-12 items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-[#064E3B] to-emerald-700 px-6 font-black text-white shadow-lg transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
+              >
                 <FaCreditCard />
                 {uploadingId === item.id
                   ? "Mengirim..."
