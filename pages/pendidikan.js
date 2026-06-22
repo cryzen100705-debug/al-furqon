@@ -1238,10 +1238,6 @@ useEffect(() => {
 
 <style jsx global>{`
 
-#journey .edu-container {
-  padding-top: clamp(0.7rem, 1.4vh, 1.1rem);
-  padding-bottom: clamp(0.7rem, 1.4vh, 1.1rem);
-}
   :root {
   --edu-navbar-h: 92px;
   --edu-vh: 100svh;
