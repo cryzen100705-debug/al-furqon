@@ -631,7 +631,7 @@ function MagneticButton({ children, href, onClick, variant = "primary" }) {
       }}
       style={isDesktop && !reduce ? { x: springX, y: springY } : undefined}
       whileTap={{ scale: 0.96 }}
-      className={`group inline-flex w-full items-center justify-center gap-3 rounded-full px-6 py-3.5 text-sm font-black transition hover:-translate-y-1 sm:w-auto sm:px-8 ${className}`}
+      className={`group inline-flex w-full items-center justify-center gap-3 rounded-full px-5 py-3.5 text-sm font-black transition hover:-translate-y-1 sm:w-auto sm:px-8 ${className}`}
     >
       {children}
     </motion.span>
@@ -940,6 +940,8 @@ export default function Fasilitas() {
 
 const activeStep = 0;
 
+const activeSectionRef = useRef(0);
+
 const jumpToSection = (index) => {
   if (index < 0 || index >= sections.length) return;
 
@@ -947,12 +949,16 @@ const jumpToSection = (index) => {
   if (!target) return;
 
   lockRef.current = true;
+  activeSectionRef.current = index;
   setActiveSectionIndex(index);
 
   const innerContainer = target.querySelector(".fac-container");
 
   if (innerContainer) {
-    innerContainer.scrollTop = 0;
+    innerContainer.scrollTo({
+      top: 0,
+      behavior: "auto",
+    });
   }
 
   const targetTop = target.getBoundingClientRect().top + window.scrollY;
@@ -964,7 +970,7 @@ const jumpToSection = (index) => {
 
   window.setTimeout(() => {
     lockRef.current = false;
-  }, 780);
+  }, 850);
 };
 
 useEffect(() => {
@@ -973,7 +979,9 @@ useEffect(() => {
   const isMobile = () => window.innerWidth <= 1024;
 
   const getActiveSection = () => {
-    return document.getElementById(sections[activeSectionIndex]?.key);
+    return document.getElementById(
+      sections[activeSectionRef.current]?.key || sections[0]?.key
+    );
   };
 
   const getActiveContainer = () => {
@@ -984,23 +992,12 @@ useEffect(() => {
   };
 
   const canMoveSection = (direction) => {
-    const container = getActiveContainer();
-
-    if (!container) return true;
-
-    /*
-      Desktop:
-      Jangan cek inner scroll.
-      Sekali scroll harus langsung pindah section.
-    */
     if (!isMobile()) return true;
 
-    /*
-      Mobile:
-      Kalau isi section masih bisa discroll,
-      biarkan scroll bagian dalam dulu.
-    */
-    const hasInnerScroll = container.scrollHeight > container.clientHeight + 12;
+    const container = getActiveContainer();
+    if (!container) return true;
+
+    const hasInnerScroll = container.scrollHeight > container.clientHeight + 10;
 
     if (!hasInnerScroll) return true;
 
@@ -1017,12 +1014,14 @@ useEffect(() => {
     if (lockRef.current) return;
     if (!canMoveSection(direction)) return;
 
+    const currentIndex = activeSectionRef.current;
+
     const nextIndex =
       direction > 0
-        ? Math.min(activeSectionIndex + 1, sections.length - 1)
-        : Math.max(activeSectionIndex - 1, 0);
+        ? Math.min(currentIndex + 1, sections.length - 1)
+        : Math.max(currentIndex - 1, 0);
 
-    if (nextIndex === activeSectionIndex) return;
+    if (nextIndex === currentIndex) return;
 
     jumpToSection(nextIndex);
   };
@@ -1105,7 +1104,7 @@ useEffect(() => {
     window.removeEventListener("touchmove", handleTouchMove);
     window.removeEventListener("touchend", handleTouchEnd);
   };
-}, [activeSectionIndex, sections]);
+}, [sections]);
 
 useEffect(() => {
   if (!sections.length) return;
@@ -1114,7 +1113,7 @@ useEffect(() => {
     if (lockRef.current) return;
 
     const viewportMiddle = window.innerHeight / 2;
-    let currentIndex = 0;
+    let currentIndex = activeSectionRef.current;
 
     sections.forEach((section, index) => {
       const element = document.getElementById(section.key);
@@ -1128,6 +1127,7 @@ useEffect(() => {
       }
     });
 
+    activeSectionRef.current = currentIndex;
     setActiveSectionIndex(currentIndex);
   };
 
@@ -1404,12 +1404,12 @@ useEffect(() => {
             desc="Setiap fasilitas ditampilkan dalam bentuk explorer interaktif agar halaman terasa hidup, bukan sekadar daftar gambar biasa."
           />
 
-          <div className="no-scrollbar mx-auto mt-7 flex max-w-5xl gap-3 overflow-x-auto pb-2 lg:flex-wrap lg:justify-center">
+          <div className="no-scrollbar mx-auto mt-4 flex max-w-4xl gap-2 overflow-x-auto pb-1 lg:flex-wrap lg:justify-center">
             {categories.map((category) => (
               <button
                 key={category}
                 onClick={() => selectCategory(category)}
-                className={`shrink-0 rounded-full border px-5 py-3 text-sm font-black transition ${
+                className={`shrink-0 rounded-full border px-3.5 py-2 text-[11px] font-black transition sm:px-4 sm:text-xs ${
                   selectedCategory === category
                     ? "border-emerald-950 bg-emerald-950 text-white shadow-xl"
                     : "border-emerald-100 bg-white/80 text-emerald-900 hover:bg-white"
@@ -1420,13 +1420,13 @@ useEffect(() => {
             ))}
           </div>
 
-          <div className="mt-8 grid gap-7 lg:grid-cols-[0.58fr_1.42fr]">
+          <div className="mt-4 grid w-full gap-3 lg:grid-cols-[0.36fr_1fr]">
             <div className="no-scrollbar flex gap-3 overflow-x-auto pb-2 lg:grid lg:overflow-visible">
               {filteredFacilities.map((item, index) => (
                 <button
                   key={item.id || item.name}
                   onClick={() => setActiveIndex(index)}
-                  className={`group min-w-[245px] rounded-[1.35rem] border p-3.5 text-left transition lg:min-w-0 ${
+                  className={`group min-w-[150px] rounded-2xl border p-2.5 text-left transition lg:min-w-0 ${
                     activeIndex === index
                       ? "border-yellow-300 bg-emerald-950 text-white shadow-2xl"
                       : "border-emerald-100 bg-white/85 text-emerald-950 shadow-lg hover:-translate-y-1 hover:bg-white"
@@ -1434,7 +1434,7 @@ useEffect(() => {
                 >
                   <div className="flex items-center gap-3">
                     <div
-                      className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-xl transition ${
+                      className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-sm transition ${
                         activeIndex === index
                           ? "bg-yellow-400 text-emerald-950"
                           : "bg-emerald-100 text-emerald-800 group-hover:bg-emerald-900 group-hover:text-yellow-300"
@@ -1454,7 +1454,7 @@ useEffect(() => {
                         {item.category}
                       </p>
 
-                      <h3 className="mt-1 truncate text-lg font-black">
+                      <h3 className="mt-1 truncate text-sm font-black">
                         {item.name}
                       </h3>
                     </div>

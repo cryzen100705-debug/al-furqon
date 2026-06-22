@@ -445,23 +445,6 @@ a {
     --fac-safe-bottom: calc(22px + env(safe-area-inset-bottom));
   }
 
-  .fac-section {
-    height: auto;
-    min-height: var(--fac-vh);
-    max-height: none;
-    overflow: visible !important;
-  }
-
-  .fac-container {
-    width: min(100%, 820px) !important;
-    max-width: min(100%, 820px) !important;
-    height: auto;
-    min-height: var(--fac-content-h);
-    max-height: none;
-    padding-inline: clamp(18px, 4vw, 34px);
-    overflow: visible;
-  }
-
   .fac-hero-title {
     font-size: clamp(2rem, 8vw, 4rem);
   }
@@ -760,5 +743,311 @@ a {
     animation-iteration-count: 1 !important;
     scroll-behavior: auto !important;
     transition-duration: 0.001ms !important;
+  }
+}
+
+/* =========================================================
+   FIX FINAL FASILITAS
+   Perkecil layout + scroll lock stabil
+========================================================= */
+
+:root {
+  --fac-vh: 100svh;
+  --fac-progress-h: 8px;
+  --fac-page-x: clamp(0.65rem, 2.4vw, 2.6rem);
+}
+
+.fac-page {
+  scroll-snap-type: none !important;
+  overscroll-behavior-y: none !important;
+}
+
+.fac-section {
+  width: 100% !important;
+  height: var(--fac-vh) !important;
+  min-height: var(--fac-vh) !important;
+  max-height: var(--fac-vh) !important;
+  overflow: hidden !important;
+  padding-top: calc(var(--fac-navbar-h) + 0.15rem) !important;
+  padding-bottom: calc(var(--fac-progress-h) + 0.35rem) !important;
+}
+
+.fac-container {
+  width: min(100% - calc(var(--fac-page-x) * 2), 1160px) !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  max-height: 100% !important;
+  overflow: hidden !important;
+}
+
+.fac-hero-title {
+  font-size: clamp(1.55rem, 3.1vw, 2.65rem) !important;
+  line-height: 0.94 !important;
+}
+
+.fac-section-title {
+  font-size: clamp(1.1rem, 1.85vw, 1.65rem) !important;
+  line-height: 1 !important;
+}
+
+.fac-card-title {
+  font-size: clamp(1.15rem, 2vw, 1.7rem) !important;
+  line-height: 1 !important;
+}
+
+.fac-page p {
+  font-size: 0.68rem !important;
+  line-height: 1.38 !important;
+}
+
+.fac-section .mt-8 {
+  margin-top: 0.45rem !important;
+}
+
+.fac-section .mt-7 {
+  margin-top: 0.42rem !important;
+}
+
+.fac-section .mt-6 {
+  margin-top: 0.38rem !important;
+}
+
+.fac-section .mt-5 {
+  margin-top: 0.35rem !important;
+}
+
+.fac-section .mt-4 {
+  margin-top: 0.3rem !important;
+}
+
+/* HERO */
+.fac-hero-section .grid {
+  gap: 0.65rem !important;
+}
+
+.fac-hero-section .inline-flex {
+  padding: 0.3rem 0.6rem !important;
+  font-size: 0.62rem !important;
+  line-height: 1.25 !important;
+}
+
+.fac-hero-showcase {
+  transform: scale(0.42) !important;
+  transform-origin: center right !important;
+}
+
+.fac-hero-preview {
+  height: clamp(115px, 17vh, 180px) !important;
+}
+
+.fac-hero-section .mt-7.grid > div {
+  padding: 0.45rem !important;
+}
+
+/* SPOTLIGHT */
+#spotlight .grid {
+  gap: 0.65rem !important;
+}
+
+#spotlight .p-4 {
+  padding: 0.55rem !important;
+}
+
+#spotlight .h-12.w-12 {
+  width: 2rem !important;
+  height: 2rem !important;
+  border-radius: 0.75rem !important;
+  font-size: 0.85rem !important;
+}
+
+#spotlight h3 {
+  font-size: 0.8rem !important;
+}
+
+.fac-spotlight-image {
+  height: clamp(130px, 24vh, 220px) !important;
+}
+
+/* EXPLORER */
+#explorer .fac-container {
+  justify-content: center !important;
+}
+
+#explorer .max-w-5xl {
+  max-width: 780px !important;
+}
+
+#explorer .max-w-3xl {
+  max-width: 620px !important;
+}
+
+#explorer .mb-4 {
+  margin-bottom: 0.3rem !important;
+}
+
+#explorer .no-scrollbar.mx-auto.mt-4 {
+  margin-top: 0.35rem !important;
+}
+
+#explorer .mt-4.grid {
+  max-height: calc(
+    var(--fac-vh) - var(--fac-navbar-h) - var(--fac-progress-h) - 6.2rem
+  ) !important;
+  align-items: stretch !important;
+}
+
+#explorer .mt-4.grid > .no-scrollbar:first-child {
+  max-height: 100% !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  gap: 0.35rem !important;
+  padding-bottom: 0 !important;
+}
+
+#explorer .mt-4.grid > .no-scrollbar:first-child button {
+  padding: 0.45rem !important;
+  border-radius: 0.85rem !important;
+}
+
+#explorer .mt-4.grid > .no-scrollbar:first-child button .h-9.w-9 {
+  width: 2rem !important;
+  height: 2rem !important;
+}
+
+#explorer .mt-4.grid > .no-scrollbar:first-child button p {
+  font-size: 0.5rem !important;
+  letter-spacing: 0.14em !important;
+}
+
+#explorer .mt-4.grid > .no-scrollbar:first-child button h3 {
+  font-size: 0.78rem !important;
+  line-height: 1.05 !important;
+}
+
+.fac-explorer-image {
+  height: clamp(115px, 20vh, 195px) !important;
+}
+
+#explorer .p-5,
+#explorer .sm\:p-6,
+#explorer .lg\:p-8 {
+  padding: 0.7rem !important;
+}
+
+#explorer .grid.grid-cols-2 {
+  gap: 0.35rem !important;
+}
+
+#explorer .grid.grid-cols-2 > div {
+  padding: 0.45rem !important;
+  border-radius: 0.75rem !important;
+}
+
+#explorer a[href*="wa.me"] {
+  padding: 0.55rem 0.9rem !important;
+  font-size: 0.68rem !important;
+}
+
+/* CINEMATIC */
+.fac-cinematic-image {
+  height: clamp(130px, 25vh, 225px) !important;
+}
+
+#cinematic button {
+  width: 2.25rem !important;
+  height: 2.25rem !important;
+}
+
+/* CTA */
+#cta .p-6,
+#cta .sm\:p-8,
+#cta .lg\:p-10,
+#cta .xl\:p-12 {
+  padding: clamp(0.8rem, 1.4vw, 1.25rem) !important;
+}
+
+/* TABLET DAN HP */
+@media (max-width: 1024px) {
+  .fac-section {
+    height: var(--fac-vh) !important;
+    min-height: var(--fac-vh) !important;
+    max-height: var(--fac-vh) !important;
+    overflow: hidden !important;
+    padding-top: calc(var(--fac-navbar-h) + 0.4rem) !important;
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom)) !important;
+  }
+
+  .fac-container {
+    width: calc(100% - 0.7rem) !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+    overscroll-behavior: contain !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  .fac-hero-section .fac-container {
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .fac-hero-showcase {
+    display: none !important;
+  }
+
+  .fac-section .grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  #explorer .mt-4.grid {
+    max-height: none !important;
+    grid-template-columns: 1fr !important;
+  }
+
+  #explorer .mt-4.grid > .no-scrollbar:first-child {
+    display: flex !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+  }
+
+  #explorer .mt-4.grid > .no-scrollbar:first-child button {
+    min-width: 135px !important;
+  }
+
+  .fac-explorer-image {
+    height: 155px !important;
+  }
+
+  .fac-spotlight-image {
+    height: 165px !important;
+  }
+
+  .fac-cinematic-image {
+    height: 165px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .fac-container {
+    width: calc(100% - 0.5rem) !important;
+  }
+
+  .fac-hero-title {
+    font-size: clamp(1.25rem, 8vw, 1.85rem) !important;
+  }
+
+  .fac-section-title {
+    font-size: clamp(0.95rem, 5.8vw, 1.35rem) !important;
+  }
+
+  .fac-card-title {
+    font-size: clamp(1rem, 6.2vw, 1.45rem) !important;
+  }
+
+  .fac-page p {
+    font-size: 0.66rem !important;
   }
 }
