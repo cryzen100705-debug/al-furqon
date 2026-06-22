@@ -1,18 +1,23 @@
 /* =========================================================
-   FASILITAS.CSS FINAL
-   Responsive + lock scroll JS friendly
-   Desktop: scroll pindah section
-   Mobile: isi section bisa scroll internal
+   FASILITAS.CSS FINAL RESPONSIVE
+   Cocok untuk laptop, desktop, tablet, HP, dan layar kecil
+   Catatan:
+   - Scroll lock dikontrol JS, jadi CSS scroll-snap dimatikan
+   - Desktop: section 100% layar, isi dibuat compact
+   - Mobile/tablet: section tetap 1 layar, isi bisa scroll internal
 ========================================================= */
 
 :root {
   --fac-vh: 100svh;
   --fac-navbar-h: 92px;
-  --fac-page-x: clamp(0.7rem, 3vw, 4rem);
+  --fac-page-x: clamp(0.75rem, 3vw, 4rem);
   --fac-progress-h: 10px;
 }
 
-/* RESET DASAR */
+/* =========================================================
+   RESET
+========================================================= */
+
 html,
 body,
 #__next {
@@ -49,22 +54,21 @@ a {
   color: #064e3b;
 }
 
-/* PAGE */
+/* =========================================================
+   PAGE DAN SECTION UTAMA
+========================================================= */
+
 .fac-page {
   width: 100% !important;
   max-width: 100vw !important;
   overflow-x: hidden !important;
   background: #041b15 !important;
 
-  /*
-    Jangan pakai CSS scroll-snap,
-    karena pindah section sudah diatur JS jumpToSection()
-  */
+  /* JS yang mengatur pindah section, bukan CSS scroll-snap */
   scroll-snap-type: none !important;
   overscroll-behavior-y: none !important;
 }
 
-/* SECTION */
 .fac-section {
   width: 100% !important;
   height: var(--fac-vh) !important;
@@ -83,7 +87,6 @@ a {
   scroll-snap-stop: normal !important;
 }
 
-/* CONTAINER */
 .fac-container {
   width: min(100% - calc(var(--fac-page-x) * 2), 1220px) !important;
   height: 100% !important;
@@ -100,19 +103,14 @@ a {
   overflow: hidden !important;
 }
 
-/* Desktop: jangan ada inner scroll */
+/* Desktop: jangan ada scroll dalam container */
 @media (min-width: 1025px) {
   .fac-container {
     overflow: hidden !important;
   }
 }
 
-/* Layout section */
-#explorer .fac-container,
-#cinematic .fac-container {
-  flex-direction: column !important;
-}
-
+/* Struktur section */
 #hero .fac-container,
 #spotlight .fac-container,
 #cta .fac-container {
@@ -120,24 +118,31 @@ a {
   justify-content: center !important;
 }
 
+#explorer .fac-container,
+#cinematic .fac-container {
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
 /* =========================================================
-   TYPOGRAPHY
+   TYPOGRAPHY RESPONSIVE
 ========================================================= */
 
 .fac-hero-title {
-  font-size: clamp(1.9rem, 4vw, 3.35rem) !important;
+  font-size: clamp(1.85rem, 3.9vw, 3.35rem) !important;
   line-height: 0.92 !important;
   letter-spacing: -0.055em !important;
 }
 
 .fac-section-title {
-  font-size: clamp(1.35rem, 2.35vw, 2.15rem) !important;
+  font-size: clamp(1.35rem, 2.3vw, 2.15rem) !important;
   line-height: 1 !important;
   letter-spacing: -0.045em !important;
 }
 
 .fac-card-title {
-  font-size: clamp(1.45rem, 2.65vw, 2.35rem) !important;
+  font-size: clamp(1.45rem, 2.6vw, 2.35rem) !important;
   line-height: 0.98 !important;
 }
 
@@ -172,20 +177,11 @@ a {
 }
 
 /* =========================================================
-   HERO
+   HERO SECTION
 ========================================================= */
 
 .fac-hero-section .grid {
   gap: clamp(0.8rem, 1.5vw, 1.25rem) !important;
-}
-
-.fac-hero-showcase {
-  transform: scale(0.56) !important;
-  transform-origin: center right !important;
-}
-
-.fac-hero-preview {
-  height: clamp(150px, 23vh, 245px) !important;
 }
 
 .fac-hero-section .inline-flex {
@@ -205,8 +201,17 @@ a {
   padding: 0.65rem !important;
 }
 
+.fac-hero-showcase {
+  transform: scale(0.56) !important;
+  transform-origin: center right !important;
+}
+
+.fac-hero-preview {
+  height: clamp(150px, 23vh, 245px) !important;
+}
+
 /* =========================================================
-   SPOTLIGHT
+   SPOTLIGHT SECTION
 ========================================================= */
 
 #spotlight .grid {
@@ -222,16 +227,12 @@ a {
 }
 
 .fac-spotlight-image {
-  height: clamp(190px, 35vh, 325px) !important;
+  height: clamp(190px, 34vh, 320px) !important;
 }
 
 /* =========================================================
-   EXPLORER
+   EXPLORER SECTION
 ========================================================= */
-
-#explorer .fac-container {
-  justify-content: center !important;
-}
 
 #explorer .mt-8 {
   margin-top: 0.8rem !important;
@@ -247,27 +248,27 @@ a {
 }
 
 .fac-explorer-image {
-  height: clamp(175px, 29vh, 285px) !important;
+  height: clamp(175px, 28vh, 285px) !important;
 }
 
 /* =========================================================
-   CINEMATIC
+   CINEMATIC SECTION
 ========================================================= */
 
 #cinematic .mx-auto.mt-8 {
   margin-top: 0.8rem !important;
 }
 
-.fac-cinematic-image {
-  height: clamp(190px, 34vh, 320px) !important;
-}
-
 #cinematic .mt-5 {
   margin-top: 0.75rem !important;
 }
 
+.fac-cinematic-image {
+  height: clamp(190px, 34vh, 320px) !important;
+}
+
 /* =========================================================
-   CTA
+   CTA SECTION
 ========================================================= */
 
 #cta .p-6,
@@ -298,30 +299,62 @@ a {
 }
 
 /* =========================================================
-   LAPTOP PENDEK
+   DESKTOP LEBAR
 ========================================================= */
 
-@media (min-width: 1025px) and (max-height: 850px) {
-  .fac-section {
-    padding-top: calc(var(--fac-navbar-h) + 0.2rem) !important;
-    padding-bottom: calc(var(--fac-progress-h) + 0.5rem) !important;
+@media (min-width: 1440px) {
+  .fac-container {
+    width: min(100% - 7rem, 1280px) !important;
   }
 
   .fac-hero-title {
-    font-size: clamp(1.75rem, 3.55vw, 3rem) !important;
+    font-size: clamp(2.2rem, 3.7vw, 3.7rem) !important;
   }
 
   .fac-section-title {
-    font-size: clamp(1.25rem, 2.1vw, 1.95rem) !important;
+    font-size: clamp(1.6rem, 2.4vw, 2.45rem) !important;
+  }
+
+  .fac-hero-showcase {
+    transform: scale(0.62) !important;
+  }
+
+  .fac-hero-preview {
+    height: clamp(180px, 25vh, 280px) !important;
+  }
+
+  .fac-spotlight-image {
+    height: clamp(230px, 38vh, 370px) !important;
+  }
+
+  .fac-explorer-image {
+    height: clamp(220px, 32vh, 330px) !important;
+  }
+
+  .fac-cinematic-image {
+    height: clamp(240px, 38vh, 380px) !important;
+  }
+}
+
+/* =========================================================
+   LAPTOP NORMAL
+========================================================= */
+
+@media (min-width: 1025px) and (max-width: 1280px) {
+  :root {
+    --fac-page-x: clamp(1rem, 2.3vw, 2.2rem);
+  }
+
+  .fac-hero-title {
+    font-size: clamp(1.8rem, 3.6vw, 3rem) !important;
+  }
+
+  .fac-section-title {
+    font-size: clamp(1.3rem, 2.25vw, 2rem) !important;
   }
 
   .fac-card-title {
-    font-size: clamp(1.35rem, 2.4vw, 2.05rem) !important;
-  }
-
-  .fac-page p {
-    font-size: 0.76rem !important;
-    line-height: 1.42 !important;
+    font-size: clamp(1.35rem, 2.45vw, 2.15rem) !important;
   }
 
   .fac-hero-showcase {
@@ -346,11 +379,74 @@ a {
 }
 
 /* =========================================================
-   TABLET & HP
-   Section tetap 1 layar, isi scroll internal
+   LAPTOP PENDEK
+========================================================= */
+
+@media (min-width: 1025px) and (max-height: 850px) {
+  .fac-section {
+    padding-top: calc(var(--fac-navbar-h) + 0.2rem) !important;
+    padding-bottom: calc(var(--fac-progress-h) + 0.5rem) !important;
+  }
+
+  .fac-hero-title {
+    font-size: clamp(1.75rem, 3.5vw, 2.9rem) !important;
+  }
+
+  .fac-section-title {
+    font-size: clamp(1.25rem, 2.05vw, 1.9rem) !important;
+  }
+
+  .fac-card-title {
+    font-size: clamp(1.3rem, 2.35vw, 2rem) !important;
+  }
+
+  .fac-page p {
+    font-size: 0.76rem !important;
+    line-height: 1.42 !important;
+  }
+
+  .fac-section .mt-8 {
+    margin-top: 0.65rem !important;
+  }
+
+  .fac-section .mt-7 {
+    margin-top: 0.6rem !important;
+  }
+
+  .fac-section .mt-5 {
+    margin-top: 0.55rem !important;
+  }
+
+  .fac-hero-showcase {
+    transform: scale(0.48) !important;
+  }
+
+  .fac-hero-preview {
+    height: clamp(135px, 20vh, 210px) !important;
+  }
+
+  .fac-spotlight-image {
+    height: clamp(165px, 30vh, 270px) !important;
+  }
+
+  .fac-explorer-image {
+    height: clamp(155px, 25vh, 245px) !important;
+  }
+
+  .fac-cinematic-image {
+    height: clamp(165px, 29vh, 260px) !important;
+  }
+}
+
+/* =========================================================
+   TABLET LANDSCAPE / TABLET BESAR
 ========================================================= */
 
 @media (max-width: 1024px) {
+  :root {
+    --fac-page-x: 0.9rem;
+  }
+
   .fac-section {
     height: var(--fac-vh) !important;
     min-height: var(--fac-vh) !important;
@@ -389,33 +485,39 @@ a {
   }
 
   .fac-hero-title {
-    font-size: clamp(1.8rem, 10vw, 2.6rem) !important;
+    font-size: clamp(1.8rem, 8vw, 2.9rem) !important;
     line-height: 0.95 !important;
   }
 
   .fac-section-title {
-    font-size: clamp(1.35rem, 7.2vw, 2.1rem) !important;
+    font-size: clamp(1.35rem, 5.8vw, 2.25rem) !important;
   }
 
   .fac-card-title {
-    font-size: clamp(1.45rem, 7.6vw, 2.2rem) !important;
+    font-size: clamp(1.45rem, 6.4vw, 2.3rem) !important;
   }
 
   .fac-page p {
-    font-size: 0.8rem !important;
+    font-size: 0.82rem !important;
     line-height: 1.55 !important;
   }
 
   .fac-spotlight-image {
-    height: 220px !important;
+    height: 240px !important;
   }
 
   .fac-explorer-image {
-    height: 205px !important;
+    height: 225px !important;
   }
 
   .fac-cinematic-image {
-    height: 215px !important;
+    height: 235px !important;
+  }
+
+  #spotlight .grid,
+  #explorer .grid,
+  #cinematic .grid {
+    gap: 0.85rem !important;
   }
 
   #explorer .no-scrollbar {
@@ -427,15 +529,65 @@ a {
   #explorer .no-scrollbar button {
     min-width: max-content !important;
   }
+}
 
-  #explorer .grid {
-    gap: 0.75rem !important;
+/* =========================================================
+   TABLET / HP
+========================================================= */
+
+@media (max-width: 768px) {
+  .fac-section {
+    padding-top: calc(var(--fac-navbar-h) + 0.55rem) !important;
+    padding-bottom: calc(1.3rem + env(safe-area-inset-bottom)) !important;
   }
 
-  #spotlight .grid,
-  #explorer .grid,
-  #cinematic .grid {
-    gap: 0.8rem !important;
+  .fac-container {
+    width: calc(100% - 0.8rem) !important;
+  }
+
+  .fac-hero-title {
+    font-size: clamp(1.65rem, 9.5vw, 2.55rem) !important;
+  }
+
+  .fac-section-title {
+    font-size: clamp(1.25rem, 7vw, 2rem) !important;
+  }
+
+  .fac-card-title {
+    font-size: clamp(1.35rem, 7.5vw, 2.1rem) !important;
+  }
+
+  .fac-page p {
+    font-size: 0.79rem !important;
+  }
+
+  .fac-spotlight-image {
+    height: 215px !important;
+  }
+
+  .fac-explorer-image {
+    height: 200px !important;
+  }
+
+  .fac-cinematic-image {
+    height: 210px !important;
+  }
+
+  .fac-section .rounded-\[1\.6rem\],
+  .fac-section .rounded-\[1\.7rem\],
+  .fac-section .rounded-\[2rem\] {
+    border-radius: 1.15rem !important;
+  }
+
+  #hero .mt-7.grid,
+  .fac-hero-section .mt-7.grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  .fac-section .p-5,
+  .fac-section .sm\:p-6,
+  .fac-section .lg\:p-8 {
+    padding: 1rem !important;
   }
 }
 
@@ -445,51 +597,69 @@ a {
 
 @media (max-width: 480px) {
   .fac-section {
-    padding-top: calc(var(--fac-navbar-h) + 0.55rem) !important;
-    padding-bottom: calc(1.25rem + env(safe-area-inset-bottom)) !important;
+    padding-top: calc(var(--fac-navbar-h) + 0.5rem) !important;
+    padding-bottom: calc(1.15rem + env(safe-area-inset-bottom)) !important;
   }
 
   .fac-container {
-    width: calc(100% - 0.7rem) !important;
+    width: calc(100% - 0.65rem) !important;
   }
 
   .fac-hero-title {
-    font-size: clamp(1.65rem, 10.5vw, 2.35rem) !important;
+    font-size: clamp(1.5rem, 10vw, 2.2rem) !important;
   }
 
   .fac-section-title {
-    font-size: clamp(1.25rem, 7.5vw, 1.9rem) !important;
+    font-size: clamp(1.15rem, 7.3vw, 1.75rem) !important;
   }
 
   .fac-card-title {
-    font-size: clamp(1.35rem, 8vw, 2rem) !important;
+    font-size: clamp(1.25rem, 7.8vw, 1.9rem) !important;
   }
 
   .fac-page p {
-    font-size: 0.78rem !important;
+    font-size: 0.76rem !important;
+    line-height: 1.5 !important;
+  }
+
+  .fac-section .mt-8 {
+    margin-top: 0.65rem !important;
+  }
+
+  .fac-section .mt-7 {
+    margin-top: 0.6rem !important;
+  }
+
+  .fac-section .mt-5 {
+    margin-top: 0.5rem !important;
   }
 
   .fac-spotlight-image {
-    height: 195px !important;
-  }
-
-  .fac-explorer-image {
     height: 185px !important;
   }
 
-  .fac-cinematic-image {
-    height: 195px !important;
+  .fac-explorer-image {
+    height: 175px !important;
   }
 
-  .fac-section .rounded-\[1\.6rem\],
-  .fac-section .rounded-\[1\.7rem\],
-  .fac-section .rounded-\[2rem\] {
-    border-radius: 1.1rem !important;
+  .fac-cinematic-image {
+    height: 185px !important;
   }
 
   #hero .mt-7.grid,
   .fac-hero-section .mt-7.grid {
     grid-template-columns: 1fr 1fr !important;
+    gap: 0.5rem !important;
+  }
+
+  .fac-hero-section .mt-7.grid > div {
+    padding: 0.55rem !important;
+  }
+
+  .fac-section .rounded-\[1\.6rem\],
+  .fac-section .rounded-\[1\.7rem\],
+  .fac-section .rounded-\[2rem\] {
+    border-radius: 1rem !important;
   }
 }
 
@@ -499,25 +669,29 @@ a {
 
 @media (max-width: 360px) {
   .fac-container {
-    width: calc(100% - 0.55rem) !important;
+    width: calc(100% - 0.5rem) !important;
   }
 
   .fac-hero-title {
-    font-size: 1.55rem !important;
+    font-size: 1.45rem !important;
   }
 
   .fac-section-title {
-    font-size: 1.25rem !important;
+    font-size: 1.15rem !important;
   }
 
   .fac-card-title {
-    font-size: 1.35rem !important;
+    font-size: 1.25rem !important;
+  }
+
+  .fac-page p {
+    font-size: 0.72rem !important;
   }
 
   .fac-spotlight-image,
   .fac-explorer-image,
   .fac-cinematic-image {
-    height: 175px !important;
+    height: 165px !important;
   }
 }
 
