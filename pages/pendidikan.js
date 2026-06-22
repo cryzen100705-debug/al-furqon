@@ -3,7 +3,7 @@
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   AnimatePresence,
   motion,
@@ -475,6 +475,65 @@ function SideDots({ sections, activeSection, jumpToSection }) {
     </div>
   );
 }
+
+useEffect(() => {
+  if (!sections.length) return;
+
+  const goToNextSection = (direction) => {
+    if (lockRef.current) return;
+
+    const nextIndex =
+      direction > 0
+        ? Math.min(activeSectionIndex + 1, sections.length - 1)
+        : Math.max(activeSectionIndex - 1, 0);
+
+    if (nextIndex === activeSectionIndex) return;
+
+    jumpToSection(nextIndex);
+  };
+
+  const handleWheel = (event) => {
+    event.preventDefault();
+
+    const direction = event.deltaY > 0 ? 1 : -1;
+
+    goToNextSection(direction);
+  };
+
+  const handleTouchStart = (event) => {
+    touchStartY.current = event.touches?.[0]?.clientY || 0;
+  };
+
+  const handleTouchEnd = (event) => {
+    const touchEndY = event.changedTouches?.[0]?.clientY || 0;
+    const diff = touchStartY.current - touchEndY;
+
+    if (Math.abs(diff) < 45) return;
+
+    const direction = diff > 0 ? 1 : -1;
+
+    goToNextSection(direction);
+  };
+
+  window.addEventListener("wheel", handleWheel, {
+    passive: false,
+  });
+
+  window.addEventListener("touchstart", handleTouchStart, {
+    passive: true,
+  });
+
+  window.addEventListener("touchend", handleTouchEnd, {
+    passive: true,
+  });
+
+  return () => {
+    window.removeEventListener("wheel", handleWheel);
+    window.removeEventListener("touchstart", handleTouchStart);
+    window.removeEventListener("touchend", handleTouchEnd);
+  };
+}, [activeSectionIndex, sections]);
+
 export default function Pendidikan() {
   const [pageData, setPageData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -483,7 +542,8 @@ export default function Pendidikan() {
   const [active, setActive] = useState(0);
   const [currentQuote, setCurrentQuote] = useState(0);
   const [activeSectionIndex, setActiveSectionIndex] = useState(0);
-
+  const lockRef = useRef(false);
+  const touchStartY = useRef(0);
   const { scrollY } = useScroll();
 
   const heroImageScale = useTransform(scrollY, [0, 900], [1, 1.06]);
@@ -633,18 +693,24 @@ export default function Pendidikan() {
 );
 
 const jumpToSection = (index) => {
+  if (index < 0 || index >= sections.length) return;
+
   const target = document.getElementById(sections[index]?.key);
 
   if (!target) return;
+
+  lockRef.current = true;
+  setActiveSectionIndex(index);
 
   target.scrollIntoView({
     behavior: "smooth",
     block: "start",
   });
 
-  setActiveSectionIndex(index);
+  window.setTimeout(() => {
+    lockRef.current = false;
+  }, 850);
 };
-
   useEffect(() => {
     if (!education?.length) return;
 
@@ -659,8 +725,9 @@ const jumpToSection = (index) => {
   if (!sections.length) return;
 
   const handleScroll = () => {
-    const viewportMiddle = window.innerHeight / 2;
+    if (lockRef.current) return;
 
+    const viewportMiddle = window.innerHeight / 2;
     let currentIndex = 0;
 
     sections.forEach((section, index) => {
@@ -698,12 +765,6 @@ const jumpToSection = (index) => {
     <EducationProgressBar
       sections={sections}
       activeSection={activeSectionIndex}
-    />
-
-    <SideDots
-      sections={sections}
-      activeSection={activeSectionIndex}
-      jumpToSection={jumpToSection}
     />
 
       <BackendNotice
@@ -1198,6 +1259,19 @@ const jumpToSection = (index) => {
     background: #041b15;
   }
 
+  html {
+  scroll-behavior: smooth;
+}
+
+.edu-page {
+  scroll-snap-type: y mandatory;
+}
+
+.edu-section {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
   /*
     FIX UTAMA:
     Semua section dibuat 100% layar perangkat.
@@ -1205,13 +1279,26 @@ const jumpToSection = (index) => {
   */
   .edu-section {
   width: 100%;
+  height: var(--edu-vh);
   min-height: var(--edu-vh);
+  max-height: var(--edu-vh);
   box-sizing: border-box;
   padding-top: var(--edu-section-y);
   padding-bottom: var(--edu-section-y);
   display: flex;
   align-items: stretch;
   overflow: hidden;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+.edu-container {
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.edu-container::-webkit-scrollbar {
+  display: none;
 }
 
 /* HERO BENAR-BENAR 100% LAYAR */
