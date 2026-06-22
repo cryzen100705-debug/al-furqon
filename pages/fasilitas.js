@@ -526,12 +526,12 @@ function SectionHeader({ badge, title, desc, dark = false, align = "center" }) {
 
         {desc && (
           <p
-            className={`mt-4 max-w-3xl text-sm leading-relaxed sm:text-base lg:text-[1.05rem] ${
-              align === "center" ? "mx-auto" : ""
-            } ${dark ? "text-emerald-100" : "text-slate-600"}`}
-          >
-            {desc}
-          </p>
+  className={`mt-3 max-w-3xl text-xs leading-relaxed sm:text-sm lg:text-[0.9rem] ${
+    align === "center" ? "mx-auto" : ""
+  } ${dark ? "text-emerald-100" : "text-slate-600"}`}
+>
+  {desc}
+</p>
         )}
       </div>
     </Reveal>
