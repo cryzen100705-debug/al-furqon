@@ -1104,11 +1104,11 @@ export default function Pendidikan() {
 
 <style jsx global>{`
   :root {
-    --edu-navbar-h: 92px;
-    --edu-vh: 100svh;
-    --edu-page-x: clamp(0.75rem, 3vw, 4.5rem);
-    --edu-section-y: clamp(1rem, 3vh, 2.5rem);
-  }
+  --edu-navbar-h: 92px;
+  --edu-vh: 100svh;
+  --edu-page-x: clamp(0.75rem, 3vw, 4.5rem);
+  --edu-section-y: clamp(0.6rem, 1.6vh, 1.2rem);
+}
 
   html,
   body,
@@ -1151,6 +1151,43 @@ export default function Pendidikan() {
   padding-top: calc(var(--edu-navbar-h) + 0.35rem);
   padding-bottom: 0.75rem;
   overflow: hidden;
+}
+
+/* Jarak section selain hero dibuat lebih rapat */
+#values,
+#journey,
+#timeline,
+#cta {
+  padding-top: clamp(0.8rem, 2vh, 1.5rem);
+  padding-bottom: clamp(0.8rem, 2vh, 1.5rem);
+}
+
+#values .edu-container,
+#journey .edu-container,
+#timeline .edu-container,
+#cta .edu-container {
+  align-items: center;
+}
+
+/* Kurangi jarak antara judul section dan isi */
+.edu-section .mt-7 {
+  margin-top: clamp(1rem, 2vh, 1.6rem) !important;
+}
+
+.edu-section .mt-8 {
+  margin-top: clamp(1rem, 2vh, 1.7rem) !important;
+}
+
+.edu-section .mt-6 {
+  margin-top: clamp(0.8rem, 1.6vh, 1.3rem) !important;
+}
+
+.edu-section .mt-5 {
+  margin-top: clamp(0.7rem, 1.4vh, 1.1rem) !important;
+}
+
+.edu-section .mt-4 {
+  margin-top: clamp(0.55rem, 1.2vh, 0.9rem) !important;
 }
 
 .edu-container {
@@ -1329,10 +1366,10 @@ export default function Pendidikan() {
     }
 
     .edu-section {
-      min-height: var(--edu-vh);
-      padding-top: 2.8rem;
-      padding-bottom: 2.8rem;
-    }
+  min-height: var(--edu-vh);
+  padding-top: 1.2rem;
+  padding-bottom: 1.2rem;
+}
 
     .edu-hero-section {
       min-height: var(--edu-vh);
@@ -1380,10 +1417,10 @@ export default function Pendidikan() {
     }
 
     .edu-section {
-      min-height: var(--edu-vh);
-      padding-top: 2.2rem;
-      padding-bottom: 2.2rem;
-    }
+  min-height: var(--edu-vh);
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
 
     .edu-hero-section {
       min-height: var(--edu-vh);
@@ -1473,10 +1510,10 @@ export default function Pendidikan() {
     }
 
     .edu-section {
-      min-height: var(--edu-vh);
-      padding-top: 1.8rem;
-      padding-bottom: 1.8rem;
-    }
+  min-height: var(--edu-vh);
+  padding-top: 0.8rem;
+  padding-bottom: 0.8rem;
+}
 
     .edu-hero-section {
       min-height: var(--edu-vh);
