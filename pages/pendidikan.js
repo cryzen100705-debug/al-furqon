@@ -327,7 +327,7 @@ function Section({ children, dark = false, id = "", className = "" }) {
   return (
     <section
       id={id}
-      className={`edu-section relative flex w-full overflow-hidden ${
+      className={`edu-section relative w-full overflow-hidden ${
         dark ? "bg-[#041b15] text-white" : "bg-[#f7f1df] text-emerald-950"
       } ${className}`}
     >
@@ -656,9 +656,9 @@ export default function Pendidikan() {
   <BackgroundArt dark />
 
   <Container
-    style={{ y: heroTextY, opacity: heroOpacity }}
-    className="flex items-center"
-  >
+  style={{ y: heroTextY, opacity: heroOpacity }}
+  className="flex items-center justify-center"
+>
     <div className="edu-hero-layout grid w-full items-center gap-7 lg:grid-cols-[1.02fr_0.98fr]">
       <motion.div
         initial={{ opacity: 0, y: 34, filter: "blur(10px)" }}
@@ -1105,8 +1105,9 @@ export default function Pendidikan() {
 <style jsx global>{`
   :root {
     --edu-navbar-h: 92px;
-    --edu-page-x: clamp(1rem, 4vw, 4.5rem);
-    --edu-section-y: clamp(3rem, 6vw, 5.5rem);
+    --edu-vh: 100svh;
+    --edu-page-x: clamp(0.75rem, 3vw, 4.5rem);
+    --edu-section-y: clamp(1rem, 3vh, 2.5rem);
   }
 
   html,
@@ -1114,6 +1115,7 @@ export default function Pendidikan() {
   #__next {
     width: 100%;
     min-height: 100%;
+    margin: 0;
     overflow-x: hidden !important;
     background: #041b15;
   }
@@ -1125,57 +1127,74 @@ export default function Pendidikan() {
     background: #041b15;
   }
 
-  /* FIX UTAMA:
-     Section biasa tidak lagi punya padding-top besar.
-     Jadi tidak ada area kosong di atas setiap section. */
+  /*
+    FIX UTAMA:
+    Semua section dibuat 100% layar perangkat.
+    Isi di dalamnya ikut mengecil/membesar sesuai ukuran layar.
+  */
   .edu-section {
-    min-height: auto;
+    width: 100%;
+    min-height: var(--edu-vh);
+    height: auto;
+    box-sizing: border-box;
     padding-top: var(--edu-section-y);
     padding-bottom: var(--edu-section-y);
-    box-sizing: border-box;
+    display: flex;
+    align-items: stretch;
   }
 
-  /* Hanya hero yang diberi jarak navbar */
+  /*
+    Hero tetap 100% layar,
+    tapi dikurangi tinggi navbar supaya kontennya tidak ketutup.
+  */
   .edu-hero-section {
-    min-height: 100svh;
-    padding-top: max(
-      calc(var(--edu-navbar-h) + 1rem),
-      clamp(6.2rem, 12vw, 8.5rem)
-    );
-    padding-bottom: clamp(3rem, 6vw, 5.5rem);
+    min-height: var(--edu-vh);
+    padding-top: calc(var(--edu-navbar-h) + clamp(0.5rem, 2vh, 1.5rem));
+    padding-bottom: clamp(0.8rem, 2.5vh, 2.5rem);
   }
 
   .edu-container {
-    width: min(100% - calc(var(--edu-page-x) * 2), 1240px);
+    width: min(100% - calc(var(--edu-page-x) * 2), 1320px);
     min-width: 0;
+    min-height: 0;
+    margin-inline: auto;
+    display: flex;
   }
 
+  .edu-hero-layout {
+    min-height: 0;
+  }
+
+  /*
+    Ukuran font dibuat responsif dan tidak terlalu besar,
+    jadi tidak kepotong pada laptop kecil, tablet, dan HP.
+  */
   .edu-hero-title {
-    font-size: clamp(2.35rem, 8vw, 6.6rem);
+    font-size: clamp(2.1rem, 7.2vw, 6.2rem);
   }
 
   .edu-section-title {
-    font-size: clamp(2rem, 5.8vw, 5rem);
+    font-size: clamp(1.9rem, 4.8vw, 4.6rem);
   }
 
   .edu-detail-title {
-    font-size: clamp(1.85rem, 4.2vw, 4rem);
+    font-size: clamp(1.65rem, 3.7vw, 3.6rem);
   }
 
   .edu-card-title {
-    font-size: clamp(2rem, 6vw, 4.8rem);
+    font-size: clamp(2rem, 5.4vw, 4.5rem);
   }
 
   .edu-hero-preview-new {
-    height: clamp(360px, 58vh, 640px);
+    height: clamp(320px, 50vh, 560px);
   }
 
   .edu-journey-image {
-    min-height: clamp(260px, 42vh, 560px);
+    min-height: clamp(260px, 42vh, 520px);
   }
 
   .edu-timeline-image {
-    height: clamp(230px, 32vh, 340px);
+    height: clamp(210px, 29vh, 320px);
   }
 
   .no-scrollbar::-webkit-scrollbar {
@@ -1187,54 +1206,118 @@ export default function Pendidikan() {
     scrollbar-width: none;
   }
 
+  /*
+    Supaya kalau isi terlalu panjang di layar kecil,
+    section tetap 100% layar minimum,
+    tapi tidak memotong konten.
+  */
+  .edu-section > .edu-container {
+    overflow: visible;
+  }
+
+  .edu-page img {
+    max-width: 100%;
+  }
+
+  .edu-page h1,
+  .edu-page h2,
+  .edu-page h3,
+  .edu-page p {
+    word-break: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .edu-page a,
+  .edu-page button {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  @media (max-width: 1280px) {
+    :root {
+      --edu-page-x: clamp(1rem, 2.5vw, 2.5rem);
+      --edu-section-y: clamp(1rem, 2.5vh, 2rem);
+    }
+
+    .edu-hero-title {
+      font-size: clamp(2.2rem, 6.7vw, 5.5rem);
+    }
+
+    .edu-section-title {
+      font-size: clamp(1.9rem, 4.4vw, 4rem);
+    }
+
+    .edu-hero-preview-new {
+      height: clamp(300px, 46vh, 500px);
+    }
+  }
+
   @media (max-width: 1024px) {
+    :root {
+      --edu-page-x: 1rem;
+      --edu-section-y: 2.3rem;
+    }
+
     .edu-section {
-      padding-top: 3.8rem;
-      padding-bottom: 3.8rem;
+      min-height: var(--edu-vh);
+      padding-top: 2.8rem;
+      padding-bottom: 2.8rem;
     }
 
     .edu-hero-section {
-      min-height: auto;
-      padding-top: max(
-        calc(var(--edu-navbar-h) + 0.9rem),
-        6rem
-      );
-      padding-bottom: 3.8rem;
+      min-height: var(--edu-vh);
+      padding-top: calc(var(--edu-navbar-h) + 1rem);
+      padding-bottom: 2rem;
+    }
+
+    .edu-container {
+      width: min(100% - 2rem, 940px);
     }
 
     .edu-hero-layout {
       grid-template-columns: 1fr !important;
+      align-content: center;
     }
 
-    .edu-container {
-      width: min(100% - 2rem, 900px);
+    #hero .edu-container {
+      align-items: center;
     }
 
-    #journey .edu-container {
-      align-items: stretch;
+    #journey .edu-container,
+    #values .edu-container,
+    #timeline .edu-container,
+    #cta .edu-container {
+      align-items: center;
     }
 
     #journey .grid {
       gap: 1.2rem;
     }
+
+    .edu-hero-title {
+      font-size: clamp(2.2rem, 9vw, 4.7rem);
+    }
+
+    .edu-section-title {
+      font-size: clamp(1.9rem, 7vw, 3.4rem);
+    }
   }
 
   @media (max-width: 768px) {
     :root {
-      --edu-page-x: 1rem;
+      --edu-page-x: 0.8rem;
+      --edu-section-y: 2rem;
     }
 
     .edu-section {
-      padding-top: 3rem;
-      padding-bottom: 3rem;
+      min-height: var(--edu-vh);
+      padding-top: 2.2rem;
+      padding-bottom: 2.2rem;
     }
 
     .edu-hero-section {
-      padding-top: max(
-        calc(var(--edu-navbar-h) + 0.8rem),
-        5.7rem
-      );
-      padding-bottom: 3rem;
+      min-height: var(--edu-vh);
+      padding-top: calc(var(--edu-navbar-h) + 0.8rem);
+      padding-bottom: 1.8rem;
     }
 
     .edu-container {
@@ -1242,49 +1325,37 @@ export default function Pendidikan() {
     }
 
     .edu-hero-title {
-      font-size: clamp(2.05rem, 12vw, 3.4rem);
+      font-size: clamp(2rem, 11vw, 3.45rem);
       line-height: 0.92;
       letter-spacing: -0.055em;
     }
 
     .edu-section-title {
-      font-size: clamp(1.85rem, 9vw, 3rem);
+      font-size: clamp(1.75rem, 8.5vw, 2.9rem);
       line-height: 1;
       letter-spacing: -0.045em;
     }
 
     .edu-detail-title {
-      font-size: clamp(1.65rem, 8vw, 2.4rem);
+      font-size: clamp(1.5rem, 7.5vw, 2.35rem);
       line-height: 1.05;
     }
 
     .edu-card-title {
-      font-size: clamp(2rem, 12vw, 3.2rem);
+      font-size: clamp(2rem, 11vw, 3rem);
     }
 
-    .edu-journey-image {
-      min-height: 280px;
-    }
-
-    .edu-timeline-image {
-      height: 240px;
-    }
-
-    .edu-page h1,
-    .edu-page h2,
-    .edu-page h3,
     .edu-page p {
-      word-break: normal;
-      overflow-wrap: anywhere;
-    }
-
-    .edu-page a,
-    .edu-page button {
-      -webkit-tap-highlight-color: transparent;
+      font-size: 0.88rem;
+      line-height: 1.6;
     }
 
     #hero .edu-container {
-      align-items: flex-start;
+      align-items: center;
+    }
+
+    #hero .edu-hero-layout {
+      gap: 1rem;
     }
 
     #hero .mt-7.grid {
@@ -1314,20 +1385,32 @@ export default function Pendidikan() {
     #journey .sm\\:grid-cols-2 {
       grid-template-columns: 1fr;
     }
+
+    .edu-journey-image {
+      min-height: 250px;
+    }
+
+    .edu-timeline-image {
+      height: 220px;
+    }
   }
 
   @media (max-width: 480px) {
+    :root {
+      --edu-page-x: 0.55rem;
+      --edu-section-y: 1.6rem;
+    }
+
     .edu-section {
-      padding-top: 2.4rem;
-      padding-bottom: 2.6rem;
+      min-height: var(--edu-vh);
+      padding-top: 1.8rem;
+      padding-bottom: 1.8rem;
     }
 
     .edu-hero-section {
-      padding-top: max(
-        calc(var(--edu-navbar-h) + 0.6rem),
-        5.3rem
-      );
-      padding-bottom: 2.7rem;
+      min-height: var(--edu-vh);
+      padding-top: calc(var(--edu-navbar-h) + 0.5rem);
+      padding-bottom: 1.5rem;
     }
 
     .edu-container {
@@ -1335,20 +1418,21 @@ export default function Pendidikan() {
     }
 
     .edu-hero-title {
-      font-size: clamp(1.9rem, 13vw, 2.75rem);
+      font-size: clamp(1.85rem, 12vw, 2.7rem);
+      line-height: 0.94;
     }
 
     .edu-section-title {
-      font-size: clamp(1.7rem, 10vw, 2.35rem);
+      font-size: clamp(1.6rem, 9vw, 2.25rem);
     }
 
     .edu-detail-title {
-      font-size: clamp(1.55rem, 9vw, 2.05rem);
+      font-size: clamp(1.45rem, 8vw, 2rem);
     }
 
     .edu-page p {
-      font-size: 0.82rem;
-      line-height: 1.65;
+      font-size: 0.8rem;
+      line-height: 1.58;
     }
 
     .edu-page .rounded-full {
@@ -1360,32 +1444,34 @@ export default function Pendidikan() {
     .edu-page .tracking-\\[0\\.24em\\],
     .edu-page .tracking-\\[0\\.22em\\],
     .edu-page .tracking-\\[0\\.18em\\] {
-      letter-spacing: 0.12em;
+      letter-spacing: 0.11em;
     }
 
     #hero .inline-flex.rounded-full {
-      font-size: 0.68rem;
-      line-height: 1.5;
-      padding: 0.55rem 0.8rem;
+      font-size: 0.66rem;
+      line-height: 1.45;
+      padding: 0.5rem 0.75rem;
     }
 
     #hero .mx-auto.mt-7.flex {
       width: 100%;
+      margin-top: 1.2rem;
     }
 
     #hero .mx-auto.mt-7.flex a {
       width: 100%;
-      padding: 0.85rem 1rem;
-      font-size: 0.78rem;
+      padding: 0.8rem 1rem;
+      font-size: 0.76rem;
     }
 
     #hero .mt-7.grid {
       grid-template-columns: 1fr;
+      margin-top: 1.2rem;
     }
 
     #values .grid,
     #timeline .grid {
-      gap: 0.9rem;
+      gap: 0.8rem;
     }
 
     #journey .no-scrollbar {
@@ -1394,12 +1480,12 @@ export default function Pendidikan() {
     }
 
     #journey .no-scrollbar button {
-      min-width: 108px;
+      min-width: 106px;
       padding: 0.7rem;
     }
 
     #journey .edu-journey-image {
-      min-height: 245px;
+      min-height: 220px;
     }
 
     #journey .absolute.bottom-0.left-0.p-5 {
@@ -1416,7 +1502,7 @@ export default function Pendidikan() {
     }
 
     #cta .p-6 {
-      padding: 1.2rem;
+      padding: 1.15rem;
     }
 
     #cta a {
@@ -1424,10 +1510,10 @@ export default function Pendidikan() {
     }
   }
 
-  @media (max-width: 360px) {
+  @media (max-width: 380px) {
     .edu-section {
-      padding-top: 2rem;
-      padding-bottom: 2.3rem;
+      padding-top: 1.5rem;
+      padding-bottom: 1.5rem;
     }
 
     .edu-container {
@@ -1439,19 +1525,52 @@ export default function Pendidikan() {
     }
 
     .edu-section-title {
-      font-size: 1.75rem;
+      font-size: 1.68rem;
     }
 
     .edu-page p {
-      font-size: 0.78rem;
+      font-size: 0.76rem;
     }
 
     #journey .no-scrollbar button {
-      min-width: 96px;
+      min-width: 94px;
     }
 
     #journey .edu-journey-image {
-      min-height: 220px;
+      min-height: 205px;
+    }
+  }
+
+  @media (max-height: 720px) and (min-width: 769px) {
+    .edu-section {
+      min-height: var(--edu-vh);
+      padding-top: 1.2rem;
+      padding-bottom: 1.2rem;
+    }
+
+    .edu-hero-section {
+      padding-top: calc(var(--edu-navbar-h) + 0.7rem);
+      padding-bottom: 1rem;
+    }
+
+    .edu-hero-title {
+      font-size: clamp(2.1rem, 6vw, 5rem);
+    }
+
+    .edu-section-title {
+      font-size: clamp(1.8rem, 4.2vw, 3.8rem);
+    }
+
+    .edu-hero-preview-new {
+      height: clamp(290px, 44vh, 440px);
+    }
+
+    .edu-journey-image {
+      min-height: clamp(230px, 38vh, 440px);
+    }
+
+    .edu-timeline-image {
+      height: clamp(190px, 27vh, 280px);
     }
   }
 
