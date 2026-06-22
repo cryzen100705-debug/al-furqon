@@ -9,7 +9,6 @@ import {
   motion,
   useReducedMotion,
   useScroll,
-  useSpring,
   useTransform,
 } from "framer-motion";
 import {
@@ -476,63 +475,7 @@ function SideDots({ sections, activeSection, jumpToSection }) {
   );
 }
 
-useEffect(() => {
-  if (!sections.length) return;
 
-  const goToNextSection = (direction) => {
-    if (lockRef.current) return;
-
-    const nextIndex =
-      direction > 0
-        ? Math.min(activeSectionIndex + 1, sections.length - 1)
-        : Math.max(activeSectionIndex - 1, 0);
-
-    if (nextIndex === activeSectionIndex) return;
-
-    jumpToSection(nextIndex);
-  };
-
-  const handleWheel = (event) => {
-    event.preventDefault();
-
-    const direction = event.deltaY > 0 ? 1 : -1;
-
-    goToNextSection(direction);
-  };
-
-  const handleTouchStart = (event) => {
-    touchStartY.current = event.touches?.[0]?.clientY || 0;
-  };
-
-  const handleTouchEnd = (event) => {
-    const touchEndY = event.changedTouches?.[0]?.clientY || 0;
-    const diff = touchStartY.current - touchEndY;
-
-    if (Math.abs(diff) < 45) return;
-
-    const direction = diff > 0 ? 1 : -1;
-
-    goToNextSection(direction);
-  };
-
-  window.addEventListener("wheel", handleWheel, {
-    passive: false,
-  });
-
-  window.addEventListener("touchstart", handleTouchStart, {
-    passive: true,
-  });
-
-  window.addEventListener("touchend", handleTouchEnd, {
-    passive: true,
-  });
-
-  return () => {
-    window.removeEventListener("wheel", handleWheel);
-    window.removeEventListener("touchstart", handleTouchStart);
-    window.removeEventListener("touchend", handleTouchEnd);
-  };
-}, [activeSectionIndex, sections]);
 
 export default function Pendidikan() {
   const [pageData, setPageData] = useState(null);
@@ -711,6 +654,65 @@ const jumpToSection = (index) => {
     lockRef.current = false;
   }, 850);
 };
+
+useEffect(() => {
+  if (!sections.length) return;
+
+  const goToNextSection = (direction) => {
+    if (lockRef.current) return;
+
+    const nextIndex =
+      direction > 0
+        ? Math.min(activeSectionIndex + 1, sections.length - 1)
+        : Math.max(activeSectionIndex - 1, 0);
+
+    if (nextIndex === activeSectionIndex) return;
+
+    jumpToSection(nextIndex);
+  };
+
+  const handleWheel = (event) => {
+    event.preventDefault();
+
+    const direction = event.deltaY > 0 ? 1 : -1;
+
+    goToNextSection(direction);
+  };
+
+  const handleTouchStart = (event) => {
+    touchStartY.current = event.touches?.[0]?.clientY || 0;
+  };
+
+  const handleTouchEnd = (event) => {
+    const touchEndY = event.changedTouches?.[0]?.clientY || 0;
+    const diff = touchStartY.current - touchEndY;
+
+    if (Math.abs(diff) < 45) return;
+
+    const direction = diff > 0 ? 1 : -1;
+
+    goToNextSection(direction);
+  };
+
+  window.addEventListener("wheel", handleWheel, {
+    passive: false,
+  });
+
+  window.addEventListener("touchstart", handleTouchStart, {
+    passive: true,
+  });
+
+  window.addEventListener("touchend", handleTouchEnd, {
+    passive: true,
+  });
+
+  return () => {
+    window.removeEventListener("wheel", handleWheel);
+    window.removeEventListener("touchstart", handleTouchStart);
+    window.removeEventListener("touchend", handleTouchEnd);
+  };
+}, [activeSectionIndex, sections]);
+
   useEffect(() => {
     if (!education?.length) return;
 
