@@ -1133,37 +1133,69 @@ export default function Pendidikan() {
     Isi di dalamnya ikut mengecil/membesar sesuai ukuran layar.
   */
   .edu-section {
-    width: 100%;
-    min-height: var(--edu-vh);
-    height: auto;
-    box-sizing: border-box;
-    padding-top: var(--edu-section-y);
-    padding-bottom: var(--edu-section-y);
-    display: flex;
-    align-items: stretch;
-  }
+  width: 100%;
+  min-height: var(--edu-vh);
+  box-sizing: border-box;
+  padding-top: var(--edu-section-y);
+  padding-bottom: var(--edu-section-y);
+  display: flex;
+  align-items: stretch;
+  overflow: hidden;
+}
 
-  /*
-    Hero tetap 100% layar,
-    tapi dikurangi tinggi navbar supaya kontennya tidak ketutup.
-  */
-  .edu-hero-section {
-    min-height: var(--edu-vh);
-    padding-top: calc(var(--edu-navbar-h) + clamp(0.5rem, 2vh, 1.5rem));
-    padding-bottom: clamp(0.8rem, 2.5vh, 2.5rem);
-  }
+/* HERO BENAR-BENAR 100% LAYAR */
+.edu-hero-section {
+  height: var(--edu-vh);
+  min-height: var(--edu-vh);
+  max-height: var(--edu-vh);
+  padding-top: calc(var(--edu-navbar-h) + 0.35rem);
+  padding-bottom: 0.75rem;
+  overflow: hidden;
+}
 
-  .edu-container {
-    width: min(100% - calc(var(--edu-page-x) * 2), 1320px);
-    min-width: 0;
-    min-height: 0;
-    margin-inline: auto;
-    display: flex;
-  }
+.edu-container {
+  width: min(100% - calc(var(--edu-page-x) * 2), 1320px);
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  margin-inline: auto;
+  display: flex;
+}
 
   .edu-hero-layout {
-    min-height: 0;
-  }
+  min-height: 0;
+  height: 100%;
+  align-items: center;
+}
+
+#hero .edu-hero-layout > div {
+  min-height: 0;
+}
+
+#hero .edu-hero-title {
+  margin-top: clamp(0.45rem, 1.2vh, 1rem);
+}
+
+#hero p {
+  margin-top: clamp(0.65rem, 1.4vh, 1.25rem);
+}
+
+#hero .mx-auto.mt-7.flex {
+  margin-top: clamp(0.8rem, 2vh, 1.5rem);
+}
+
+#hero .mt-7.grid {
+  margin-top: clamp(0.8rem, 2vh, 1.5rem);
+}
+
+.edu-hero-showcase {
+  transform: scale(0.92);
+  transform-origin: center right;
+}
+
+.edu-hero-preview-new {
+  height: clamp(300px, 46vh, 500px);
+}
 
   /*
     Ukuran font dibuat responsif dan tidak terlalu besar,
@@ -1231,6 +1263,45 @@ export default function Pendidikan() {
   .edu-page button {
     -webkit-tap-highlight-color: transparent;
   }
+
+  @media (min-width: 1025px) and (max-height: 900px) {
+  .edu-hero-section {
+    height: var(--edu-vh);
+    min-height: var(--edu-vh);
+    max-height: var(--edu-vh);
+    padding-top: calc(var(--edu-navbar-h) + 0.35rem);
+    padding-bottom: 0.5rem;
+  }
+
+  #hero .edu-hero-title {
+    font-size: clamp(2.5rem, 5.9vw, 5.2rem);
+  }
+
+  #hero p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  #hero .edu-hero-layout {
+    gap: 1rem;
+  }
+
+  #hero .mx-auto.mt-7.flex {
+    margin-top: 1rem;
+  }
+
+  #hero .mt-7.grid {
+    margin-top: 1rem;
+  }
+
+  .edu-hero-showcase {
+    transform: scale(0.86);
+  }
+
+  .edu-hero-preview-new {
+    height: clamp(280px, 42vh, 420px);
+  }
+}
 
   @media (max-width: 1280px) {
     :root {
@@ -1542,6 +1613,37 @@ export default function Pendidikan() {
   }
 
   @media (max-height: 720px) and (min-width: 769px) {
+
+  #hero .edu-hero-title {
+  font-size: clamp(2rem, 5.4vw, 4.4rem);
+}
+
+#hero p {
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+#hero .inline-flex.rounded-full {
+  padding-top: 0.45rem;
+  padding-bottom: 0.45rem;
+}
+
+#hero .mx-auto.mt-7.flex a {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+
+#hero .mt-7.grid > div {
+  padding: 0.55rem;
+}
+
+.edu-hero-showcase {
+  transform: scale(0.84);
+}
+
+.edu-hero-preview-new {
+  height: clamp(260px, 40vh, 380px);
+}
     .edu-section {
       min-height: var(--edu-vh);
       padding-top: 1.2rem;
@@ -1549,9 +1651,12 @@ export default function Pendidikan() {
     }
 
     .edu-hero-section {
-      padding-top: calc(var(--edu-navbar-h) + 0.7rem);
-      padding-bottom: 1rem;
-    }
+  height: var(--edu-vh);
+  min-height: var(--edu-vh);
+  max-height: var(--edu-vh);
+  padding-top: calc(var(--edu-navbar-h) + 0.25rem);
+  padding-bottom: 0.45rem;
+}
 
     .edu-hero-title {
       font-size: clamp(2.1rem, 6vw, 5rem);
