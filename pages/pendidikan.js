@@ -1148,8 +1148,8 @@ export default function Pendidikan() {
   height: var(--edu-vh);
   min-height: var(--edu-vh);
   max-height: var(--edu-vh);
-  padding-top: calc(var(--edu-navbar-h) + 0.35rem);
-  padding-bottom: 0.75rem;
+  padding-top: calc(var(--edu-navbar-h) + 0.25rem);
+  padding-bottom: 0.5rem;
   overflow: hidden;
 }
 
