@@ -76,17 +76,17 @@ router.post(
         });
       }
 
-      if (!["SMP", "SMK", "TAKHASSUS"].includes(jenjangNormal)) {
+      if (!["MTS", "SMK", "TAKHASSUS"].includes(jenjangNormal)) {
         return res.status(400).json({
           success: false,
-          message: "Jenjang tidak valid. Pilih SMP, SMK, atau Takhassus.",
+          message: "Jenjang tidak valid. Pilih MTS, SMK, atau Takhassus.",
         });
       }
 
       if (jenjangNormal !== "TAKHASSUS" && !kelasNormal) {
         return res.status(400).json({
           success: false,
-          message: "Kelas wajib dipilih untuk jenjang SMP atau SMK.",
+          message: "Kelas wajib dipilih untuk jenjang MTS atau SMK.",
         });
       }
 
@@ -158,8 +158,8 @@ router.post(
         user_id: userData.id,
         nama,
         jenjang:
-          jenjangNormal === "SMP"
-            ? "SMP"
+          jenjangNormal === "MTS"
+            ? "MTS"
             : jenjangNormal === "SMK"
               ? "SMK"
               : "Takhassus",

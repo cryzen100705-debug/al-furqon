@@ -92,9 +92,9 @@ export default function PendaftaranWizard() {
     }
 
     if (form.jenjang === "SMK" && !form.jurusan) {
-  alert("Pilih jurusan SMK dulu");
-  return;
-}
+      alert("Pilih jurusan SMK dulu");
+      return;
+    }
 
     if (!buktiTransfer) {
       alert("Upload bukti pembayaran dulu");
@@ -321,7 +321,7 @@ console.log("API_URL =", API_URL);
                         </label>
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                          {["SMP", "SMK", "Takhassus"].map((item) => (
+                          {["MTS", "SMK", "Takhassus"].map((item) => (
                             <button
                               type="button"
                               key={item}
@@ -340,7 +340,7 @@ console.log("API_URL =", API_URL);
                               }`}
                             >
                               <div className="text-5xl mb-4">
-                                {item === "SMP"
+                                {item === "MTS"
                                   ? "📘"
                                   : item === "SMK"
                                     ? "🛠️"
@@ -350,8 +350,8 @@ console.log("API_URL =", API_URL);
                               <h3 className="font-black text-xl">{item}</h3>
 
                               <p className="text-sm mt-3 opacity-80 leading-relaxed">
-                                {item === "SMP" &&
-                                  "Program pendidikan tingkat SMP berbasis pesantren."}
+                                {item === "MTS" &&
+                                  "Program pendidikan tingkat MTS berbasis pesantren."}
 
                                 {item === "SMK" &&
                                   "Program kejuruan dan keterampilan santri modern."}
@@ -371,7 +371,7 @@ console.log("API_URL =", API_URL);
       </label>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {form.jenjang === "SMP" &&
+        {form.jenjang === "MTS" &&
           ["7", "8", "9"].map((item) => (
             <ClassButton
               key={item}
@@ -439,7 +439,7 @@ console.log("API_URL =", API_URL);
   <div className="mt-6 rounded-2xl border border-yellow-400/30 bg-yellow-400/10 p-5 text-yellow-100">
     <p className="font-semibold">Program Takhassus</p>
     <p className="text-sm mt-1 opacity-90">
-      Program Takhassus tidak menggunakan kelas seperti SMP atau SMK.
+      Program Takhassus tidak menggunakan kelas seperti MTS atau SMK.
     </p>
   </div>
 )}
