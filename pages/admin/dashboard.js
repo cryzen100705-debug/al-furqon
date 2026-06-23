@@ -183,20 +183,23 @@ export default function AdminDashboard() {
     return "bg-slate-100 text-slate-700 border-slate-200";
   };
 
+  const totalSantriValid = useMemo(() => {
+  return Number(dashboard.santriAktif || 0) + Number(dashboard.santriPending || 0);
+}, [dashboard.santriAktif, dashboard.santriPending]);
+
   const progressAktif = useMemo(() => {
-    if (!dashboard.totalSantri) return 0;
-    return Math.round((dashboard.santriAktif / dashboard.totalSantri) * 100);
-  }, [dashboard]);
+  if (!totalSantriValid) return 0;
+  return Math.round((Number(dashboard.santriAktif || 0) / totalSantriValid) * 100);
+}, [dashboard.santriAktif, totalSantriValid]);
 
-  const progressPending = useMemo(() => {
-    if (!dashboard.totalSantri) return 0;
-    return Math.round((dashboard.santriPending / dashboard.totalSantri) * 100);
-  }, [dashboard]);
+const progressPending = useMemo(() => {
+  if (!totalSantriValid) return 0;
+  return Math.round((Number(dashboard.santriPending || 0) / totalSantriValid) * 100);
+}, [dashboard.santriPending, totalSantriValid]);
 
-  const progressDitolak = useMemo(() => {
-    if (!dashboard.totalSantri) return 0;
-    return Math.round((dashboard.santriDitolak / dashboard.totalSantri) * 100);
-  }, [dashboard]);
+const progressDitolak = useMemo(() => {
+  return 0;
+}, []);
 
   const workScore = useMemo(() => {
     const pendingPenalty = Math.min(45, Number(dashboard.santriPending || 0) * 5);
@@ -243,13 +246,13 @@ export default function AdminDashboard() {
 
   const stats = [
     {
-      title: "Total Santri",
-      value: dashboard.totalSantri,
-      desc: "Seluruh santri terdata",
-      icon: <FaUsers />,
-      color: "emerald",
-      note: `${dashboard.santriAktif} aktif`,
-    },
+  title: "Total Santri",
+  value: totalSantriValid,
+  desc: "Santri aktif dan pending",
+  icon: <FaUsers />,
+  color: "emerald",
+  note: `${dashboard.santriAktif} aktif • ${dashboard.santriPending} pending`,
+},
     {
       title: "Butuh Verifikasi",
       value: dashboard.santriPending,
