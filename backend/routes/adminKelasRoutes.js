@@ -272,9 +272,10 @@ router.get("/kelas/options", verifyAdmin, async (req, res) => {
         .order("nama_ruang", { ascending: true }),
 
       supabase
-        .from("santri")
-        .select("id, nama, jenjang, kelas, status")
-        .order("nama", { ascending: true }),
+  .from("santri")
+  .select("id, nama, jenjang, kelas, jurusan, status")
+  .in("status", ["aktif", "pending"])
+  .order("nama", { ascending: true }),
     ]);
 
     if (guruResult.error) {

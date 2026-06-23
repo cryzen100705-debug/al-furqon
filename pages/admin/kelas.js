@@ -439,8 +439,9 @@ const normalizeStatus = (value) => {
   return String(value || "").toLowerCase().trim();
 };
 
-const isSantriAktif = (santri) => {
-  return normalizeStatus(santri.status) === "aktif";
+const isSantriBolehMasukKelas = (santri) => {
+  const status = normalizeStatus(santri.status);
+  return status === "aktif" || status === "pending";
 };
 
 const isSantriMatchKelas = (santri) => {
@@ -450,13 +451,13 @@ const isSantriMatchKelas = (santri) => {
 
   const santriJenjang = normalizeJenjang(santri.jenjang);
   const santriKelas = normalizeText(santri.kelas);
-  const santriStatus = normalizeStatus(santri.status);
+  const santriJurusan = normalizeText(santri.jurusan);
 
   if (!form.jenjang || !form.kelas) {
     return false;
   }
 
-  if (santriStatus !== "aktif") {
+  if (!isSantriBolehMasukKelas(santri)) {
     return false;
   }
 
@@ -468,19 +469,22 @@ const isSantriMatchKelas = (santri) => {
     return false;
   }
 
-  if (formJenjang === "smk" && formJurusan) {
-  const santriJurusan = normalizeText(santri.jurusan);
-  return santriJurusan === formJurusan;
-}
+  if (formJenjang === "smk") {
+    if (!formJurusan) {
+      return false;
+    }
+
+    return santriJurusan === formJurusan;
+  }
 
   return true;
 };
 
 const visibleSantriList = useMemo(() => {
   return santriList.filter((santri) => {
-    if (!isSantriAktif(santri)) {
-      return false;
-    }
+    if (!isSantriBolehMasukKelas(santri)) {
+  return false;
+}
 
     if (!form.jenjang) {
       return true;
@@ -524,8 +528,8 @@ const tarikSantriOtomatis = () => {
         : "Santri Tidak Ditemukan",
     message:
       matchedIds.length > 0
-        ? `${matchedIds.length} santri aktif berhasil dimasukkan ke ${namaKelas}. Santri berbeda jenjang, berbeda kelas, ditolak, atau pending tidak ikut ditarik.`
-        : `Belum ada santri aktif yang cocok dengan ${namaKelas}.`,
+        ? `${matchedIds.length} santri aktif/pending berhasil dimasukkan ke ${namaKelas}. Santri berbeda jenjang, berbeda kelas, berbeda jurusan, ditolak, atau nonaktif tidak ikut ditarik.`
+        : `Belum ada santri aktif/pending yang cocok dengan ${namaKelas}.`,
   });
 };
   const filteredKelas = useMemo(() => {
@@ -1583,7 +1587,7 @@ if (!adminUser) {
                   <div className="max-h-80 space-y-2 overflow-y-auto pr-2">
                     {visibleSantriList.length === 0 ? (
                     <p className="rounded-2xl border border-dashed border-white/10 p-4 text-sm text-emerald-100/50">
-                        Tidak ada santri aktif yang cocok dengan pilihan jenjang dan kelas ini.
+                        Tidak ada santri aktif atau pending yang cocok dengan pilihan jenjang, kelas, dan jurusan ini.
                     </p>
                     ) : (
                     visibleSantriList.map((santri) => {
