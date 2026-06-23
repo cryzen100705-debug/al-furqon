@@ -469,8 +469,9 @@ const isSantriMatchKelas = (santri) => {
   }
 
   if (formJenjang === "smk" && formJurusan) {
-    return santriKelas.includes(formJurusan);
-  }
+  const santriJurusan = normalizeText(santri.jurusan);
+  return santriJurusan === formJurusan;
+}
 
   return true;
 };
@@ -787,7 +788,10 @@ const tarikSantriOtomatis = () => {
         ...form,
         nama_kelas: buildNamaKelas(form),
         tingkat: form.kelas,
-        jurusan: form.jenjang === "SMK" ? form.jurusan : null,
+        jurusan:
+  String(form.jenjang || "").trim().toUpperCase() === "SMK"
+    ? String(form.jurusan || "").trim().toUpperCase()
+    : null,
         mapelList,
         siswaList,
       };

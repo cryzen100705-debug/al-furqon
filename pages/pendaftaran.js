@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 import { motion, AnimatePresence } from "framer-motion";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "";
+const JURUSAN_SMK_OPTIONS = ["TKJ", "RPL", "DKV", "OTKP", "AKL", "BDP"];
 
 export default function PendaftaranWizard() {
   const router = useRouter();
@@ -23,6 +24,7 @@ export default function PendaftaranWizard() {
     nama: "",
     jenjang: "",
     kelas: "",
+    jurusan: "",
     metode: "",
     jenisKelamin: "",
     nisn: "",
@@ -48,11 +50,26 @@ export default function PendaftaranWizard() {
   const steps = ["Data Santri", "Data Orang Tua", "Pembayaran", "Selesai"];
 
   const handleChange = (e) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value,
-    });
-  };
+  const { name, value } = e.target;
+
+  setForm((prev) => {
+    const updated = {
+      ...prev,
+      [name]: value,
+    };
+
+    if (name === "jenjang") {
+      updated.kelas = value === "Takhassus" ? "Takhassus" : "";
+      updated.jurusan = "";
+    }
+
+    if (name === "kelas") {
+      updated.jurusan = "";
+    }
+
+    return updated;
+  });
+};
 
   const next = () => setStep((s) => Math.min(s + 1, 4));
   const back = () => setStep((s) => Math.max(s - 1, 1));
@@ -74,6 +91,11 @@ export default function PendaftaranWizard() {
       return;
     }
 
+    if (form.jenjang === "SMK" && !form.jurusan) {
+  alert("Pilih jurusan SMK dulu");
+  return;
+}
+
     if (!buktiTransfer) {
       alert("Upload bukti pembayaran dulu");
       return;
@@ -81,13 +103,28 @@ export default function PendaftaranWizard() {
 
     setLoading(true);
 
-    const payload = new FormData();
+    if (form.jenjang === "SMK" && !form.jurusan) {
+  alert("Pilih jurusan SMK dulu");
+  return;
+}
 
-    Object.entries(form).forEach(([key, value]) => {
-      payload.append(key, value || "");
-    });
+const payload = new FormData();
 
-    payload.append("paid", paid ? "true" : "false");
+Object.entries(form).forEach(([key, value]) => {
+  payload.append(key, value || "");
+});
+
+// Paksa jurusan ikut terkirim
+payload.set("jenjang", form.jenjang || "");
+payload.set("kelas", form.kelas || "");
+payload.set("jurusan", form.jenjang === "SMK" ? form.jurusan || "" : "");
+
+payload.append("paid", paid ? "true" : "false");
+
+console.log("FORM SEBELUM DIKIRIM:", form);
+console.log("FORMDATA JURUSAN:", payload.get("jurusan"));
+console.log("FORMDATA JENJANG:", payload.get("jenjang"));
+console.log("FORMDATA KELAS:", payload.get("kelas"));
 
     if (foto) {
       payload.append("foto", foto);
@@ -289,12 +326,13 @@ console.log("API_URL =", API_URL);
                               type="button"
                               key={item}
                               onClick={() => {
-                              setForm({
-                                ...form,
-                                jenjang: item,
-                                kelas: item === "Takhassus" ? "Takhassus" : "",
-                              });
-                            }}
+  setForm((prev) => ({
+    ...prev,
+    jenjang: item,
+    kelas: item === "Takhassus" ? "Takhassus" : "",
+    jurusan: "",
+  }));
+}}
                               className={`p-6 rounded-3xl border transition-all duration-300 backdrop-blur-xl ${
                                 form.jenjang === item
                                   ? "bg-yellow-400 text-black border-yellow-300 scale-105 shadow-[0_10px_35px_rgba(250,204,21,0.35)]"
@@ -326,42 +364,74 @@ console.log("API_URL =", API_URL);
                         </div>
 
                         {form.jenjang && form.jenjang !== "Takhassus" && (
-  <div className="mt-6">
-    <label className="text-sm text-green-100 mb-4 block">
-      Pilih Kelas
-    </label>
+  <div className="mt-6 space-y-6">
+    <div>
+      <label className="text-sm text-green-100 mb-4 block">
+        Pilih Kelas
+      </label>
 
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-      {form.jenjang === "SMP" &&
-        ["7", "8", "9"].map((item) => (
-          <ClassButton
-            key={item}
-            label={`Kelas ${item}`}
-            active={form.kelas === item}
-            onClick={() =>
-              setForm({
-                ...form,
-                kelas: item,
-              })
-            }
-          />
-        ))}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {form.jenjang === "SMP" &&
+          ["7", "8", "9"].map((item) => (
+            <ClassButton
+              key={item}
+              label={`Kelas ${item}`}
+              active={form.kelas === item}
+              onClick={() =>
+                setForm((prev) => ({
+                  ...prev,
+                  kelas: item,
+                  jurusan: "",
+                }))
+              }
+            />
+          ))}
 
-      {form.jenjang === "SMK" &&
-        ["10", "11", "12"].map((item) => (
-          <ClassButton
-            key={item}
-            label={`Kelas ${item}`}
-            active={form.kelas === item}
-            onClick={() =>
-              setForm({
-                ...form,
-                kelas: item,
-              })
-            }
-          />
-        ))}
+        {form.jenjang === "SMK" &&
+          ["10", "11", "12"].map((item) => (
+            <ClassButton
+              key={item}
+              label={`Kelas ${item}`}
+              active={form.kelas === item}
+              onClick={() =>
+                setForm((prev) => ({
+                  ...prev,
+                  kelas: item,
+                  jurusan: "",
+                }))
+              }
+            />
+          ))}
+      </div>
     </div>
+
+    {form.jenjang === "SMK" && form.kelas && (
+      <div>
+        <label className="text-sm text-green-100 mb-4 block">
+          Pilih Jurusan SMK
+        </label>
+
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          {JURUSAN_SMK_OPTIONS.map((item) => (
+            <ClassButton
+              key={item}
+              label={item}
+              active={form.jurusan === item}
+              onClick={() =>
+                setForm((prev) => ({
+                  ...prev,
+                  jurusan: item,
+                }))
+              }
+            />
+          ))}
+        </div>
+
+        <p className="mt-3 text-xs text-green-100/70">
+          Jurusan hanya muncul jika calon santri memilih jenjang SMK.
+        </p>
+      </div>
+    )}
   </div>
 )}
 
@@ -636,6 +706,11 @@ console.log("API_URL =", API_URL);
                               alert("Pilih metode pembayaran dulu");
                               return;
                             }
+
+                            if (form.jenjang === "SMK" && !form.jurusan) {
+  alert("Pilih jurusan SMK dulu");
+  return;
+}
 
                             if (!buktiTransfer) {
                               alert("Upload bukti pembayaran dulu");
