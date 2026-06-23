@@ -9,8 +9,8 @@ const cleanText = (value) => {
   return String(value || "").trim();
 };
 
-const normalizeJenjang = (value) => {
-  return cleanText(value).toLowerCase();
+const normalizeUpper = (value) => {
+  return cleanText(value).toUpperCase();
 };
 
 router.get("/", (req, res) => {
@@ -38,32 +38,27 @@ router.post(
 
       const form = req.body || {};
 
-      console.log("REQ BODY PENDAFTARAN:", req.body);
-      console.log("JENJANG:", form.jenjang);
-      console.log("KELAS:", form.kelas);
-      console.log("JURUSAN:", form.jurusan);
+      const fotoFile = req.files?.foto?.[0] || null;
+      const buktiFile = req.files?.buktiTransfer?.[0] || null;
 
       const nama = cleanText(form.nama);
       const email = cleanText(form.email).toLowerCase();
       const tanggalLahir = cleanText(form.tanggalLahir);
 
-      const jenjangRaw = cleanText(form.jenjang);
-      const jenjangNormal = normalizeJenjang(form.jenjang);
+      const jenjangNormal = normalizeUpper(form.jenjang);
+      const kelasNormal = cleanText(form.kelas);
+      const jurusanNormal = normalizeUpper(form.jurusan);
+      const metodeNormal = cleanText(form.metode).toLowerCase();
 
-      const kelas = cleanText(form.kelas);
-      const jurusan = cleanText(form.jurusan).toUpperCase();
-      const metode = cleanText(form.metode);
-
-      const fotoFile = req.files?.foto?.[0] || null;
-      const buktiFile = req.files?.buktiTransfer?.[0] || null;
-
-      console.log("DATA PENDAFTARAN MASUK:", {
+      console.log("REQ BODY PENDAFTARAN:", req.body);
+      console.log("DATA NORMAL:", {
         nama,
         email,
-        jenjang: jenjangRaw,
-        kelas,
-        jurusan,
-        metode,
+        tanggalLahir,
+        jenjangNormal,
+        kelasNormal,
+        jurusanNormal,
+        metodeNormal,
         paid: form.paid,
       });
 
@@ -74,29 +69,26 @@ router.post(
         });
       }
 
-      if (!jenjangRaw) {
+      if (!jenjangNormal) {
         return res.status(400).json({
           success: false,
           message: "Jenjang wajib dipilih.",
         });
       }
 
-      if (!["smp", "smk", "takhassus"].includes(jenjangNormal)) {
+      if (!["SMP", "SMK", "TAKHASSUS"].includes(jenjangNormal)) {
         return res.status(400).json({
           success: false,
           message: "Jenjang tidak valid. Pilih SMP, SMK, atau Takhassus.",
         });
       }
 
-      if (jenjangNormal !== "takhassus" && !kelas) {
+      if (jenjangNormal !== "TAKHASSUS" && !kelasNormal) {
         return res.status(400).json({
           success: false,
           message: "Kelas wajib dipilih untuk jenjang SMP atau SMK.",
         });
       }
-
-      const jenjangNormal = String(form.jenjang || "").trim().toUpperCase();
-      const jurusanNormal = String(form.jurusan || "").trim().toUpperCase();
 
       if (jenjangNormal === "SMK" && !jurusanNormal) {
         return res.status(400).json({
@@ -105,7 +97,7 @@ router.post(
         });
       }
 
-      if (!metode) {
+      if (!metodeNormal) {
         return res.status(400).json({
           success: false,
           message: "Metode pembayaran wajib dipilih.",
@@ -145,10 +137,10 @@ router.post(
         .from("users")
         .insert([
           {
+            nama,
             email,
             password: autoPassword,
             role: "santri",
-            nama,
           },
         ])
         .select()
@@ -166,13 +158,13 @@ router.post(
         user_id: userData.id,
         nama,
         jenjang:
-          jenjangNormal === "smp"
+          jenjangNormal === "SMP"
             ? "SMP"
-            : jenjangNormal === "smk"
+            : jenjangNormal === "SMK"
               ? "SMK"
               : "Takhassus",
-        kelas: jenjangNormal === "takhassus" ? "Takhassus" : kelas,
-        jurusan: jenjangNormal === "smk" ? jurusan : null,
+        kelas: jenjangNormal === "TAKHASSUS" ? "Takhassus" : kelasNormal,
+        jurusan: jenjangNormal === "SMK" ? jurusanNormal : null,
         jenis_kelamin: cleanText(form.jenisKelamin),
         nisn: cleanText(form.nisn),
         nik: cleanText(form.nik),
@@ -195,38 +187,10 @@ router.post(
       console.log("PAYLOAD SANTRI KE SUPABASE:", santriPayload);
 
       const { data: santriData, error: santriError } = await supabase
-  .from("santri")
-  .insert([
-    {
-      user_id: userData.id,
-      nama: form.nama,
-      jenjang: form.jenjang,
-      kelas: form.jenjang === "Takhassus" ? "Takhassus" : form.kelas,
-      jurusan:
-        String(form.jenjang || "").trim().toUpperCase() === "SMK"
-          ? String(form.jurusan || "").trim().toUpperCase()
-          : null,
-      jenis_kelamin: form.jenisKelamin,
-      nisn: form.nisn,
-      nik: form.nik,
-      tempat_lahir: form.tempatLahir,
-      tanggal_lahir: form.tanggalLahir,
-      agama: form.agama,
-      alamat: form.alamat,
-      kota: form.kota,
-      provinsi: form.provinsi,
-      kode_pos: form.kodePos,
-      telepon: form.telepon,
-      email: form.email,
-      asal_sekolah: form.asalSekolah,
-      status: "pending",
-      cita_cita: form.citaCita,
-      hobi: form.hobi,
-      foto: fotoUrl,
-    },
-  ])
-  .select()
-  .single();
+        .from("santri")
+        .insert([santriPayload])
+        .select()
+        .single();
 
       if (santriError) {
         await supabase.from("users").delete().eq("id", userData.id);
@@ -262,7 +226,7 @@ router.post(
           nominal: 150000,
           status: "lunas",
           jenis: "pendaftaran",
-          metode,
+          metode: metodeNormal,
           bukti_transfer: buktiUrl,
           tanggal_bayar: new Date().toISOString(),
           nominal_dibayar: 150000,
