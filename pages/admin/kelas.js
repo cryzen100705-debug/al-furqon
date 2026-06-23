@@ -441,6 +441,9 @@ const normalizeStatus = (value) => {
 
 const isSantriBolehMasukKelas = (santri) => {
   const status = normalizeStatus(santri.status);
+
+  // Santri aktif dan pending tetap bisa ditarik ke kelas.
+  // Santri ditolak/nonaktif tidak ikut.
   return status === "aktif" || status === "pending";
 };
 
@@ -469,8 +472,13 @@ const isSantriMatchKelas = (santri) => {
     return false;
   }
 
+  // Khusus SMK, santri juga harus sama jurusannya
   if (formJenjang === "smk") {
     if (!formJurusan) {
+      return false;
+    }
+
+    if (!santriJurusan) {
       return false;
     }
 
@@ -483,19 +491,20 @@ const isSantriMatchKelas = (santri) => {
 const visibleSantriList = useMemo(() => {
   return santriList.filter((santri) => {
     if (!isSantriBolehMasukKelas(santri)) {
-  return false;
-}
+      return false;
+    }
 
     if (!form.jenjang) {
       return true;
     }
 
-    if (normalizeJenjang(santri.jenjang) !== normalizeJenjang(form.jenjang)) {
-      return false;
-    }
-
     if (!form.kelas) {
       return true;
+    }
+
+    // Jika SMK, wajib pilih jurusan dulu agar daftar santri sesuai jurusan
+    if (form.jenjang === "SMK" && !form.jurusan) {
+      return false;
     }
 
     return isSantriMatchKelas(santri);
@@ -1578,16 +1587,16 @@ if (!adminUser) {
 
                   <div className="mb-4 rounded-2xl border border-yellow-300/20 bg-yellow-300/10 p-4 text-xs leading-relaxed text-yellow-100">
                     Sistem akan mencocokkan data santri berdasarkan{" "}
-                    <b>jenjang</b> dan <b>kelas</b>. Contoh: Santri dengan
-                    jenjang <b>SMP</b> dan kelas <b>7</b> akan otomatis masuk
-                    ke kelas <b>SMP Kelas 7</b>. Jurusan hanya muncul untuk
-                    jenjang <b>SMK</b>.
+<b>jenjang</b>, <b>kelas</b>, dan khusus SMK juga berdasarkan{" "}
+<b>jurusan</b>. Contoh: Santri dengan jenjang <b>SMK</b>, kelas{" "}
+<b>10</b>, dan jurusan <b>RPL</b> hanya akan muncul pada kelas{" "}
+<b>SMK Kelas 10 RPL</b>.
                   </div>
 
                   <div className="max-h-80 space-y-2 overflow-y-auto pr-2">
                     {visibleSantriList.length === 0 ? (
                     <p className="rounded-2xl border border-dashed border-white/10 p-4 text-sm text-emerald-100/50">
-                        Tidak ada santri aktif atau pending yang cocok dengan pilihan jenjang, kelas, dan jurusan ini.
+                        Tidak ada santri aktif atau pending yang cocok dengan pilihan jenjang, kelas, dan jurusan ini. Untuk SMK, pastikan jurusan santri di tabel santri sudah terisi.
                     </p>
                     ) : (
                     visibleSantriList.map((santri) => {
@@ -1614,10 +1623,13 @@ if (!adminUser) {
                             </div>
 
                             <p className="mt-1 text-xs text-emerald-100/50">
-                                {santri.jenjang || "Jenjang belum diisi"} •{" "}
-                                {santri.kelas || "Kelas belum diisi"} •{" "}
-                                {santri.status || "aktif"}
-                            </p>
+  {santri.jenjang || "Jenjang belum diisi"} •{" "}
+  Kelas {santri.kelas || "belum diisi"}
+  {santri.jenjang === "SMK" && santri.jurusan
+    ? ` • Jurusan ${santri.jurusan}`
+    : ""}{" "}
+  • {santri.status || "aktif"}
+</p>
                             </div>
 
                             <input

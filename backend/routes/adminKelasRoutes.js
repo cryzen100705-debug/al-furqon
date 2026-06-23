@@ -368,16 +368,17 @@ router.get("/kelas", verifyAdmin, async (req, res) => {
           )
         ),
         kelas_siswa (
-          id,
-          santri_id,
-          santri:santri_id (
-            id,
-            nama,
-            jenjang,
-            kelas,
-            status
-          )
-        )
+  id,
+  santri_id,
+  santri:santri_id (
+    id,
+    nama,
+    jenjang,
+    kelas,
+    jurusan,
+    status
+  )
+)
       `
       )
       .order("created_at", { ascending: false });
