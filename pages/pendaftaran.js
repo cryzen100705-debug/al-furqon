@@ -1072,10 +1072,10 @@ function SuccessBox({ status, router }) {
 
         <button
           type="button"
-          onClick={() => router.push("/")}
+          onClick={() => router.push("/login")}
           className="mt-6 rounded-full bg-green-900 px-7 py-3 text-sm font-black text-white shadow-lg shadow-green-900/20 transition hover:bg-green-800 active:scale-[0.98]"
         >
-          Kembali ke Beranda
+          Kembali ke Halaman Login
         </button>
       </div>
     </div>
