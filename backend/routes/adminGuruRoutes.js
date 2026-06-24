@@ -1,7 +1,11 @@
 import express from "express";
 import { supabase } from "../config/supabase.js";
+import upload from "../middleware/upload.js";
+import { uploadToStorage } from "../helpers/helpers.js";
 
 const router = express.Router();
+
+const cleanText = (value) => String(value || "").trim();
 
 async function verifyAdmin(req, res, next) {
   try {
@@ -49,31 +53,29 @@ router.get("/guru", verifyAdmin, async (req, res) => {
     const { data, error } = await supabase
       .from("guru")
       .select(`
-  id,
-  user_id,
-  nama,
-  nip,
-  nuptk,
-  mapel,
-  no_hp,
-  alamat,
-  tempat_lahir,
-  tanggal_lahir,
-  jenis_kelamin,
-  pendidikan_terakhir,
-  status_kepegawaian,
-  tanggal_bergabung,
-  wali_kelas,
-  catatan,
-  foto,
-  status,
-  created_at,
-  users (
-    id,
-    email,
-    role
-  )
-`)
+        id,
+        user_id,
+        nama,
+        nip,
+        nuptk,
+        no_hp,
+        alamat,
+        tempat_lahir,
+        tanggal_lahir,
+        jenis_kelamin,
+        pendidikan_terakhir,
+        status_kepegawaian,
+        tanggal_bergabung,
+        catatan,
+        foto,
+        status,
+        created_at,
+        users:user_id (
+          id,
+          email,
+          role
+        )
+      `)
       .order("created_at", { ascending: false });
 
     if (error) {
@@ -87,7 +89,7 @@ router.get("/guru", verifyAdmin, async (req, res) => {
     return res.json({
       success: true,
       message: "Data guru berhasil diambil.",
-      data,
+      data: data || [],
     });
   } catch (error) {
     return res.status(500).json({
@@ -98,42 +100,34 @@ router.get("/guru", verifyAdmin, async (req, res) => {
   }
 });
 
-router.post("/guru", verifyAdmin, async (req, res) => {
+router.post("/guru", verifyAdmin, upload.single("foto"), async (req, res) => {
   try {
-    const {
-  nama,
-  email,
-  password,
-  nip,
-  nuptk,
-  mapel,
-  no_hp,
-  alamat,
-  tempat_lahir,
-  tanggal_lahir,
-  jenis_kelamin,
-  pendidikan_terakhir,
-  status_kepegawaian,
-  tanggal_bergabung,
-  wali_kelas,
-  catatan,
-} = req.body;
+    const body = req.body || {};
 
-    if (!nama || !email || !tanggal_lahir) {
-  return res.status(400).json({
-    success: false,
-    message: "Nama, email, dan tanggal lahir wajib diisi.",
-  });
-}
+    const nama = cleanText(body.nama);
+    const email = cleanText(body.email).toLowerCase();
+    const tanggalLahir = cleanText(body.tanggal_lahir);
 
-const autoPassword = String(tanggal_lahir).replaceAll("-", "");
-const finalPassword = password || autoPassword;
+    if (!nama || !email || !tanggalLahir) {
+      return res.status(400).json({
+        success: false,
+        message: "Nama, email, dan tanggal lahir wajib diisi.",
+      });
+    }
 
-    const { data: existingUser } = await supabase
+    const { data: existingUser, error: existingUserError } = await supabase
       .from("users")
       .select("id")
       .eq("email", email)
       .maybeSingle();
+
+    if (existingUserError) {
+      return res.status(500).json({
+        success: false,
+        message: "Gagal mengecek email guru.",
+        error: existingUserError.message,
+      });
+    }
 
     if (existingUser) {
       return res.status(409).json({
@@ -142,15 +136,24 @@ const finalPassword = password || autoPassword;
       });
     }
 
+    let fotoUrl = null;
+
+    if (req.file) {
+      fotoUrl = await uploadToStorage("foto-guru", req.file, "guru");
+    }
+
+    const autoPassword = String(tanggalLahir).replaceAll("-", "");
+    const finalPassword = cleanText(body.password) || autoPassword;
+
     const { data: newUser, error: userError } = await supabase
       .from("users")
       .insert([
         {
-  nama,
-  email,
-  password: finalPassword,
-  role: "guru",
-},
+          nama,
+          email,
+          password: finalPassword,
+          role: "guru",
+        },
       ])
       .select()
       .single();
@@ -163,28 +166,27 @@ const finalPassword = password || autoPassword;
       });
     }
 
+    const guruPayload = {
+      user_id: newUser.id,
+      nama,
+      nip: cleanText(body.nip) || null,
+      nuptk: cleanText(body.nuptk) || null,
+      no_hp: cleanText(body.no_hp) || null,
+      alamat: cleanText(body.alamat) || null,
+      tempat_lahir: cleanText(body.tempat_lahir) || null,
+      tanggal_lahir: tanggalLahir || null,
+      jenis_kelamin: cleanText(body.jenis_kelamin) || null,
+      pendidikan_terakhir: cleanText(body.pendidikan_terakhir) || null,
+      status_kepegawaian: cleanText(body.status_kepegawaian) || null,
+      tanggal_bergabung: cleanText(body.tanggal_bergabung) || null,
+      catatan: cleanText(body.catatan) || null,
+      foto: fotoUrl,
+      status: "aktif",
+    };
+
     const { data: newGuru, error: guruError } = await supabase
       .from("guru")
-      .insert([
-        {
-  user_id: newUser.id,
-  nama,
-  nip: nip || null,
-  nuptk: nuptk || null,
-  mapel: mapel || null,
-  no_hp: no_hp || null,
-  alamat: alamat || null,
-  tempat_lahir: tempat_lahir || null,
-  tanggal_lahir: tanggal_lahir || null,
-  jenis_kelamin: jenis_kelamin || null,
-  pendidikan_terakhir: pendidikan_terakhir || null,
-  status_kepegawaian: status_kepegawaian || null,
-  tanggal_bergabung: tanggal_bergabung || null,
-  wali_kelas: wali_kelas || null,
-  catatan: catatan || null,
-  status: "aktif",
-},
-      ])
+      .insert([guruPayload])
       .select()
       .single();
 
@@ -195,6 +197,9 @@ const finalPassword = password || autoPassword;
         success: false,
         message: "User berhasil dibuat, tetapi data guru gagal dibuat.",
         error: guruError.message,
+        detail: guruError.details || null,
+        hint: guruError.hint || null,
+        code: guruError.code || null,
       });
     }
 
@@ -204,9 +209,12 @@ const finalPassword = password || autoPassword;
       data: {
         user: newUser,
         guru: newGuru,
+        password: finalPassword,
       },
     });
   } catch (error) {
+    console.error("CREATE GURU ERROR:", error);
+
     return res.status(500).json({
       success: false,
       message: "Terjadi kesalahan server.",
@@ -232,17 +240,21 @@ router.delete("/guru/:id", verifyAdmin, async (req, res) => {
       });
     }
 
-    const { error: deleteError } = await supabase
-      .from("users")
+    const { error: deleteGuruError } = await supabase
+      .from("guru")
       .delete()
-      .eq("id", guru.user_id);
+      .eq("id", id);
 
-    if (deleteError) {
+    if (deleteGuruError) {
       return res.status(500).json({
         success: false,
-        message: "Gagal menghapus akun guru.",
-        error: deleteError.message,
+        message: "Gagal menghapus data guru.",
+        error: deleteGuruError.message,
       });
+    }
+
+    if (guru.user_id) {
+      await supabase.from("users").delete().eq("id", guru.user_id);
     }
 
     return res.json({
