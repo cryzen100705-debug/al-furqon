@@ -50,6 +50,7 @@ const emptyForm = {
   agama: "",
   jenjang: "",
   kelas: "",
+  jurusan: "",
   jenis_kelamin: "",
   telepon: "",
   email: "",
@@ -183,15 +184,50 @@ export default function SantriPage() {
     e.preventDefault();
 
     if (!form.nama.trim()) {
-      alert("Nama santri wajib diisi");
-      return;
-    }
+  alert("Nama santri wajib diisi");
+  return;
+}
 
-    if (!form.email.trim()) {
-      alert("Email wajib diisi");
-      return;
-    }
+if (!form.jenis_kelamin) {
+  alert("Jenis kelamin wajib dipilih");
+  return;
+}
 
+if (!form.jenjang) {
+  alert("Jenjang pendidikan wajib dipilih");
+  return;
+}
+
+if (form.jenjang !== "Takhassus" && !form.kelas) {
+  alert("Kelas wajib dipilih");
+  return;
+}
+
+if (form.jenjang === "SMK" && !form.jurusan) {
+  alert("Jurusan SMK wajib dipilih");
+  return;
+}
+
+if (!form.ayah_nama.trim()) {
+  alert("Nama ayah wajib diisi");
+  return;
+}
+
+  if (!form.ibu_nama.trim()) {
+    alert("Nama ibu wajib diisi");
+    return;
+  }
+
+  if (!form.telepon.trim()) {
+    alert("Nomor HP wajib diisi");
+    return;
+  }
+
+  if (!form.email.trim()) {
+    alert("Email wajib diisi");
+    return;
+  }
+  
     try {
       setSaving(true);
 
@@ -282,6 +318,7 @@ export default function SantriPage() {
       agama: item.agama || "",
       jenjang: item.jenjang || "",
       kelas: item.kelas || "",
+      jurusan: item.jurusan || "",
       jenis_kelamin: item.jenis_kelamin || "",
       telepon: item.telepon || "",
       email: item.email || "",
@@ -387,7 +424,7 @@ export default function SantriPage() {
       tampil: filteredSantri.length,
       putra: santri.filter((s) => s.jenis_kelamin === "Laki-laki").length,
       putri: santri.filter((s) => s.jenis_kelamin === "Perempuan").length,
-      smp: santri.filter((s) => s.jenjang === "SMP").length,
+      mts: santri.filter((s) => s.jenjang === "MTS").length,
       smk: santri.filter((s) => s.jenjang === "SMK").length,
       takhassus: santri.filter((s) => s.jenjang === "Takhassus").length,
     };
@@ -492,7 +529,7 @@ if (checking) {
                 <StatCard title="Total Aktif" value={stats.total} icon={<FaUsers />} color="bg-green-600 text-white" />
                 <StatCard title="Putra" value={stats.putra} icon={<FaUserGraduate />} color="bg-blue-600 text-white" />
                 <StatCard title="Putri" value={stats.putri} icon={<FaVenusMars />} color="bg-pink-500 text-white" />
-                <StatCard title="SMP" value={stats.smp} icon={<FaSchool />} color="bg-emerald-600 text-white" />
+                <StatCard title="MTS" value={stats.mts} icon={<FaSchool />} color="bg-emerald-600 text-white" />
                 <StatCard title="SMK" value={stats.smk} icon={<FaChild />} color="bg-yellow-400 text-green-950" />
                 <StatCard title="Takhassus" value={stats.takhassus} icon={<FaBookOpen />} color="bg-purple-600 text-white" />
               </div>
@@ -554,7 +591,7 @@ if (checking) {
                       className="h-12 rounded-2xl border border-[#D8C287] bg-white/80 px-4 text-sm font-semibold text-slate-700 outline-none transition focus:border-yellow-500 focus:bg-white focus:ring-4 focus:ring-yellow-100"
                     >
                       <option value="">Semua Jenjang</option>
-                      <option value="SMP">SMP</option>
+                      <option value="MTS">MTS</option>
                       <option value="SMK">SMK</option>
                       <option value="Takhassus">Takhassus</option>
                     </select>
@@ -878,20 +915,39 @@ function FormModal({
   onSubmit,
   onUpload,
 }) {
+  const jurusanOptions = ["TKJ", "RPL", "DKV", "OTKP", "AKL", "BDP"];
+
+  const pilihJenjang = (jenjang) => {
+    setForm({
+      ...form,
+      jenjang,
+      kelas: jenjang === "Takhassus" ? "Takhassus" : "",
+      jurusan: "",
+    });
+  };
+
+  const pilihKelas = (kelas) => {
+    setForm({
+      ...form,
+      kelas,
+      jurusan: "",
+    });
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 p-0 backdrop-blur-md sm:items-center sm:p-4">
-      <div className="flex max-h-[95vh] w-full max-w-5xl flex-col overflow-hidden rounded-t-[32px] bg-[#FFFDF6] shadow-2xl sm:max-h-[92vh] sm:rounded-[34px]">
+      <div className="flex max-h-[95vh] w-full max-w-6xl flex-col overflow-hidden rounded-t-[32px] bg-[#FFFDF6] shadow-2xl sm:max-h-[92vh] sm:rounded-[34px]">
         <div className="relative flex items-center justify-between overflow-hidden bg-gradient-to-br from-[#041B14] via-[#0B3B2E] to-[#4A3410] p-5 text-white sm:p-6">
           <div className="absolute inset-0 bg-[url('/pattern.png')] opacity-[0.07]" />
           <div className="absolute -right-16 -top-16 h-44 w-44 rounded-full bg-yellow-300/20 blur-3xl" />
 
           <div className="relative z-10">
             <h2 className="text-xl font-black sm:text-2xl">
-              {editId ? "Edit Data Santri" : "Tambah Santri Baru"}
+              {editId ? "Edit Data Santri" : "Tambah Santri Manual"}
             </h2>
 
             <p className="mt-1 text-xs text-white/80 sm:text-sm">
-              Isi data dengan lengkap dan benar.
+              Form ini disamakan dengan form pendaftaran santri baru.
             </p>
           </div>
 
@@ -908,36 +964,44 @@ function FormModal({
           onSubmit={onSubmit}
           className="flex-1 space-y-5 overflow-y-auto p-4 sm:p-6"
         >
-          <FormSection title="Data Utama" icon="👤">
-            <FormGrid>
-              <Input label="Nama Santri" value={form.nama} onChange={(v) => setForm({ ...form, nama: v })} required />
-              <Input label="NISN" value={form.nisn} onChange={(v) => setForm({ ...form, nisn: v })} />
-              <Input label="NIK" value={form.nik} onChange={(v) => setForm({ ...form, nik: v })} />
-              <Input label="Tempat Lahir" value={form.tempat_lahir} onChange={(v) => setForm({ ...form, tempat_lahir: v })} />
-              <Input type="date" label="Tanggal Lahir" value={form.tanggal_lahir} onChange={(v) => setForm({ ...form, tanggal_lahir: v })} />
-              <Input label="Agama" value={form.agama} onChange={(v) => setForm({ ...form, agama: v })} />
-            </FormGrid>
-          </FormSection>
+          <FormSection title="Data Santri" icon="👨‍🎓">
+            <div className="mb-4 flex flex-col gap-4 sm:flex-row sm:items-center">
+              <div className="flex h-28 w-28 shrink-0 items-center justify-center overflow-hidden rounded-3xl border border-[#D8C287] bg-white">
+                {form.foto ? (
+                  <img
+                    src={form.foto}
+                    alt="Foto Santri"
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <FaCamera className="text-3xl text-slate-400" />
+                )}
+              </div>
 
-          <FormSection title="Pendidikan" icon="🏫">
-            <FormGrid>
-              <Select
-                label="Jenjang"
-                value={form.jenjang}
-                onChange={(v) =>
-                  setForm({
-                    ...form,
-                    jenjang: v,
-                    kelas: v === "Takhassus" ? "" : form.kelas,
-                  })
-                }
-                options={["SMP", "SMK", "Takhassus"]}
-              />
+              <div className="flex-1">
+                <label className="mb-2 block text-xs font-black uppercase tracking-[0.14em] text-slate-600">
+                  Foto Santri
+                </label>
 
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="w-full rounded-2xl border border-[#D8C287] bg-white p-3 text-sm"
+                  onChange={(e) => onUpload(e.target.files?.[0])}
+                />
+
+                <p className="mt-2 text-xs text-slate-500">
+                  Gunakan foto yang jelas. Format gambar: JPG, PNG, atau WEBP.
+                </p>
+              </div>
+            </div>
+
+            <FormGrid>
               <Input
-                label={form.jenjang === "Takhassus" ? "Marhalah" : "Kelas"}
-                value={form.kelas}
-                onChange={(v) => setForm({ ...form, kelas: v })}
+                label="Nama Lengkap"
+                value={form.nama}
+                onChange={(v) => setForm({ ...form, nama: v })}
+                required
               />
 
               <Select
@@ -946,10 +1010,126 @@ function FormModal({
                 onChange={(v) => setForm({ ...form, jenis_kelamin: v })}
                 options={["Laki-laki", "Perempuan"]}
               />
+            </FormGrid>
+          </FormSection>
 
-              <Input label="Asal Sekolah" value={form.asal_sekolah} onChange={(v) => setForm({ ...form, asal_sekolah: v })} />
-              <Input label="Cita-cita" value={form.cita_cita} onChange={(v) => setForm({ ...form, cita_cita: v })} />
+          <FormSection title="Jenjang Pendidikan" icon="🏫">
+            <div className="grid gap-3 sm:grid-cols-3">
+              {["MTS", "SMK", "Takhassus"].map((item) => (
+                <button
+                  key={item}
+                  type="button"
+                  onClick={() => pilihJenjang(item)}
+                  className={`rounded-3xl border p-4 text-left transition ${
+                    form.jenjang === item
+                      ? "border-yellow-400 bg-yellow-50 shadow-md"
+                      : "border-[#D8C287] bg-white hover:border-green-500 hover:bg-green-50"
+                  }`}
+                >
+                  <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-green-100 text-2xl">
+                    {item === "MTS" ? "📘" : item === "SMK" ? "🛠️" : "🕌"}
+                  </div>
+
+                  <h3 className="font-black text-[#1F1607]">{item}</h3>
+
+                  <p className="mt-1 text-xs text-slate-500">
+                    {item === "MTS"
+                      ? "Pendidikan formal tingkat MTS."
+                      : item === "SMK"
+                        ? "Program kejuruan santri."
+                        : "Pendalaman ilmu agama."}
+                  </p>
+                </button>
+              ))}
+            </div>
+
+            {form.jenjang && form.jenjang !== "Takhassus" && (
+              <div className="mt-4 grid gap-4 lg:grid-cols-2">
+                <div className="rounded-3xl border border-[#E7D7A7] bg-white/80 p-4">
+                  <label className="mb-3 block text-xs font-black uppercase tracking-[0.14em] text-slate-600">
+                    Pilih Kelas
+                  </label>
+
+                  <div className="grid grid-cols-3 gap-2">
+                    {(form.jenjang === "MTS" ? ["7", "8", "9"] : ["10", "11", "12"]).map(
+                      (kelas) => (
+                        <button
+                          key={kelas}
+                          type="button"
+                          onClick={() => pilihKelas(kelas)}
+                          className={`rounded-2xl border px-3 py-3 text-xs font-black transition ${
+                            form.kelas === kelas
+                              ? "border-yellow-400 bg-yellow-400 text-green-950"
+                              : "border-slate-200 bg-white text-slate-700 hover:border-green-400 hover:bg-green-50"
+                          }`}
+                        >
+                          Kelas {kelas}
+                        </button>
+                      )
+                    )}
+                  </div>
+                </div>
+
+                {form.jenjang === "SMK" && form.kelas && (
+                  <div className="rounded-3xl border border-[#E7D7A7] bg-white/80 p-4">
+                    <label className="mb-3 block text-xs font-black uppercase tracking-[0.14em] text-slate-600">
+                      Pilih Jurusan SMK
+                    </label>
+
+                    <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                      {jurusanOptions.map((jurusan) => (
+                        <button
+                          key={jurusan}
+                          type="button"
+                          onClick={() => setForm({ ...form, jurusan })}
+                          className={`rounded-2xl border px-3 py-3 text-xs font-black transition ${
+                            form.jurusan === jurusan
+                              ? "border-yellow-400 bg-yellow-400 text-green-950"
+                              : "border-slate-200 bg-white text-slate-700 hover:border-green-400 hover:bg-green-50"
+                          }`}
+                        >
+                          {jurusan}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {form.jenjang === "Takhassus" && (
+              <div className="mt-4 rounded-3xl border border-yellow-300 bg-yellow-50 p-4 text-yellow-900">
+                <p className="text-sm font-black">Program Takhassus</p>
+                <p className="mt-1 text-xs">
+                  Program Takhassus tidak menggunakan kelas seperti MTS atau SMK.
+                </p>
+              </div>
+            )}
+          </FormSection>
+
+          <FormSection title="Identitas Tambahan" icon="🪪">
+            <FormGrid>
+              <Input label="NISN" value={form.nisn} onChange={(v) => setForm({ ...form, nisn: v })} />
+              <Input label="NIK" value={form.nik} onChange={(v) => setForm({ ...form, nik: v })} />
+              <Input label="Tempat Lahir" value={form.tempat_lahir} onChange={(v) => setForm({ ...form, tempat_lahir: v })} />
+              <DateDropdown
+  label="Tanggal Lahir"
+  value={form.tanggal_lahir}
+  onChange={(v) => setForm({ ...form, tanggal_lahir: v })}
+/>
+              <Input label="Agama" value={form.agama} onChange={(v) => setForm({ ...form, agama: v })} />
               <Input label="Hobi" value={form.hobi} onChange={(v) => setForm({ ...form, hobi: v })} />
+              <Input label="Cita-cita" value={form.cita_cita} onChange={(v) => setForm({ ...form, cita_cita: v })} />
+              <Input label="Asal Sekolah" value={form.asal_sekolah} onChange={(v) => setForm({ ...form, asal_sekolah: v })} />
+            </FormGrid>
+          </FormSection>
+
+          <FormSection title="Data Orang Tua" icon="👨‍👩‍👧">
+            <FormGrid>
+              <Input label="Nama Ayah" value={form.ayah_nama} onChange={(v) => setForm({ ...form, ayah_nama: v })} />
+              <Input label="Pekerjaan Ayah" value={form.ayah_pekerjaan} onChange={(v) => setForm({ ...form, ayah_pekerjaan: v })} />
+              <Input label="Nama Ibu" value={form.ibu_nama} onChange={(v) => setForm({ ...form, ibu_nama: v })} />
+              <Input label="Pekerjaan Ibu" value={form.ibu_pekerjaan} onChange={(v) => setForm({ ...form, ibu_pekerjaan: v })} />
             </FormGrid>
           </FormSection>
 
@@ -968,43 +1148,6 @@ function FormModal({
               value={form.alamat}
               onChange={(e) => setForm({ ...form, alamat: e.target.value })}
             />
-          </FormSection>
-
-          <FormSection title="Data Orang Tua" icon="👨‍👩‍👧">
-            <FormGrid>
-              <Input label="Nama Ayah" value={form.ayah_nama} onChange={(v) => setForm({ ...form, ayah_nama: v })} />
-              <Input label="Pekerjaan Ayah" value={form.ayah_pekerjaan} onChange={(v) => setForm({ ...form, ayah_pekerjaan: v })} />
-              <Input label="Nama Ibu" value={form.ibu_nama} onChange={(v) => setForm({ ...form, ibu_nama: v })} />
-              <Input label="Pekerjaan Ibu" value={form.ibu_pekerjaan} onChange={(v) => setForm({ ...form, ibu_pekerjaan: v })} />
-            </FormGrid>
-          </FormSection>
-
-          <FormSection title="Foto Santri" icon="📷">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-              <div className="flex h-28 w-28 shrink-0 items-center justify-center overflow-hidden rounded-3xl border border-[#D8C287] bg-white">
-                {form.foto ? (
-                  <img
-                    src={form.foto}
-                    alt="Foto Santri"
-                    className="h-full w-full object-cover"
-                  />
-                ) : (
-                  <FaCamera className="text-3xl text-slate-400" />
-                )}
-              </div>
-
-              <div className="flex-1">
-                <input
-                  type="file"
-                  accept="image/*"
-                  className="w-full rounded-2xl border border-[#D8C287] bg-white p-3 text-sm"
-                  onChange={(e) => onUpload(e.target.files?.[0])}
-                />
-                <p className="mt-2 text-xs text-slate-500">
-                  Foto akan dikirim ke backend saat data disimpan.
-                </p>
-              </div>
-            </div>
           </FormSection>
 
           <div className="sticky bottom-0 flex flex-col-reverse gap-3 border-t border-[#E7D7A7] bg-[#FFFDF6] py-4 sm:flex-row sm:justify-end">
@@ -1075,6 +1218,153 @@ function Select({ label, value, onChange, options }) {
   );
 }
 
+function DateDropdown({ label, value, onChange }) {
+  const bulanList = [
+    { value: "01", label: "Januari" },
+    { value: "02", label: "Februari" },
+    { value: "03", label: "Maret" },
+    { value: "04", label: "April" },
+    { value: "05", label: "Mei" },
+    { value: "06", label: "Juni" },
+    { value: "07", label: "Juli" },
+    { value: "08", label: "Agustus" },
+    { value: "09", label: "September" },
+    { value: "10", label: "Oktober" },
+    { value: "11", label: "November" },
+    { value: "12", label: "Desember" },
+  ];
+
+  const currentYear = new Date().getFullYear();
+  const tahunList = Array.from({ length: 70 }, (_, i) =>
+    String(currentYear - i)
+  );
+
+  const parseDateValue = (dateValue) => {
+    if (!dateValue) {
+      return {
+        tanggal: "",
+        bulan: "",
+        tahun: "",
+      };
+    }
+
+    const cleanValue = String(dateValue).slice(0, 10);
+    const [tahunValue = "", bulanValue = "", tanggalValue = ""] =
+      cleanValue.split("-");
+
+    return {
+      tanggal: tanggalValue,
+      bulan: bulanValue,
+      tahun: tahunValue,
+    };
+  };
+
+  const parsed = parseDateValue(value);
+
+  const [tanggal, setTanggal] = useState(parsed.tanggal);
+  const [bulan, setBulan] = useState(parsed.bulan);
+  const [tahun, setTahun] = useState(parsed.tahun);
+
+  useEffect(() => {
+    const nextParsed = parseDateValue(value);
+
+    setTanggal(nextParsed.tanggal);
+    setBulan(nextParsed.bulan);
+    setTahun(nextParsed.tahun);
+  }, [value]);
+
+  const getJumlahHari = (selectedYear, selectedMonth) => {
+    if (!selectedYear || !selectedMonth) return 31;
+    return new Date(Number(selectedYear), Number(selectedMonth), 0).getDate();
+  };
+
+  const jumlahHari = getJumlahHari(tahun, bulan);
+
+  const tanggalList = Array.from({ length: jumlahHari }, (_, i) =>
+    String(i + 1).padStart(2, "0")
+  );
+
+  const updateTanggalLahir = (nextTanggal, nextBulan, nextTahun) => {
+    setTanggal(nextTanggal);
+    setBulan(nextBulan);
+    setTahun(nextTahun);
+
+    if (!nextTanggal || !nextBulan || !nextTahun) {
+      onChange("");
+      return;
+    }
+
+    const maxHari = getJumlahHari(nextTahun, nextBulan);
+    const safeTanggal =
+      Number(nextTanggal) > maxHari
+        ? String(maxHari).padStart(2, "0")
+        : nextTanggal;
+
+    onChange(`${nextTahun}-${nextBulan}-${safeTanggal}`);
+  };
+
+  return (
+    <div>
+      <label className="mb-2 block text-xs font-black uppercase tracking-[0.14em] text-slate-600">
+        {label}
+      </label>
+
+      <div className="grid grid-cols-3 gap-2">
+        <select
+          value={tanggal}
+          onChange={(e) =>
+            updateTanggalLahir(e.target.value, bulan, tahun)
+          }
+          className="h-12 w-full rounded-2xl border border-[#D8C287] bg-white px-3 text-sm outline-none transition focus:border-yellow-500 focus:ring-4 focus:ring-yellow-100"
+        >
+          <option value="">Tanggal</option>
+          {tanggalList.map((item) => (
+            <option key={item} value={item}>
+              {item}
+            </option>
+          ))}
+        </select>
+
+        <select
+          value={bulan}
+          onChange={(e) =>
+            updateTanggalLahir(tanggal, e.target.value, tahun)
+          }
+          className="h-12 w-full rounded-2xl border border-[#D8C287] bg-white px-3 text-sm outline-none transition focus:border-yellow-500 focus:ring-4 focus:ring-yellow-100"
+        >
+          <option value="">Bulan</option>
+          {bulanList.map((item) => (
+            <option key={item.value} value={item.value}>
+              {item.label}
+            </option>
+          ))}
+        </select>
+
+        <select
+          value={tahun}
+          onChange={(e) =>
+            updateTanggalLahir(tanggal, bulan, e.target.value)
+          }
+          className="h-12 w-full rounded-2xl border border-[#D8C287] bg-white px-3 text-sm outline-none transition focus:border-yellow-500 focus:ring-4 focus:ring-yellow-100"
+        >
+          <option value="">Tahun</option>
+          {tahunList.map((item) => (
+            <option key={item} value={item}>
+              {item}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {tanggal && bulan && tahun && (
+        <p className="mt-2 text-xs font-semibold text-slate-500">
+          Tanggal dipilih: {tanggal}/{bulan}/{tahun}
+        </p>
+      )}
+    </div>
+  );
+}
+
 function DetailModal({ item, getOrtu, formatTanggal, onClose, onEdit }) {
   const ortu = getOrtu(item);
 
@@ -1113,12 +1403,13 @@ function DetailModal({ item, getOrtu, formatTanggal, onClose, onEdit }) {
               icon={<FaIdCard />}
               title="Identitas"
               items={[
-                ["NISN", item.nisn],
-                ["NIK", item.nik],
-                ["Tempat Lahir", item.tempat_lahir],
-                ["Tanggal Lahir", item.tanggal_lahir],
-                ["Agama", item.agama],
-              ]}
+              ["Jenjang", item.jenjang],
+              ["Kelas", item.kelas],
+              ["Jurusan", item.jurusan],
+              ["Asal Sekolah", item.asal_sekolah],
+              ["Cita-cita", item.cita_cita],
+              ["Hobi", item.hobi],
+            ]}
             />
 
             <InfoBox

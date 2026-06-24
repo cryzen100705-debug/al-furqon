@@ -126,11 +126,7 @@ const kelasMatchWali = (kelas, waliKelas) => {
 };
 
 async function getKelasWaliGuru(guru) {
-  /*
-    Prioritas utama:
-    kelas.wali_guru_id = guru.id
-  */
-  const { data: kelasByWaliId, error: kelasByWaliIdError } = await supabase
+  const { data, error } = await supabase
     .from("kelas")
     .select(
       `
@@ -149,50 +145,11 @@ async function getKelasWaliGuru(guru) {
     .eq("status", "aktif")
     .order("tingkat", { ascending: true });
 
-  if (kelasByWaliIdError) {
-    throw new Error(kelasByWaliIdError.message);
+  if (error) {
+    throw new Error(error.message);
   }
 
-  if (kelasByWaliId && kelasByWaliId.length > 0) {
-    return kelasByWaliId;
-  }
-
-  /*
-    Fallback:
-    kalau masih pakai guru.wali_kelas berupa text.
-    Contoh: "SMP Kelas 7" atau "7"
-  */
-  const waliKelasText = String(guru.wali_kelas || "").trim();
-
-  if (!waliKelasText) {
-    return [];
-  }
-
-  const { data: semuaKelas, error: semuaKelasError } = await supabase
-    .from("kelas")
-    .select(
-      `
-      id,
-      jenjang,
-      nama_kelas,
-      tingkat,
-      jurusan,
-      wali_guru_id,
-      tahun_ajaran,
-      semester,
-      status
-    `
-    )
-    .eq("status", "aktif")
-    .order("tingkat", { ascending: true });
-
-  if (semuaKelasError) {
-    throw new Error(semuaKelasError.message);
-  }
-
-  return (semuaKelas || []).filter((kelas) =>
-    kelasMatchWali(kelas, waliKelasText)
-  );
+  return data || [];
 }
 
 router.get("/dashboard/:userId", verifyGuru, async (req, res) => {
@@ -211,25 +168,23 @@ router.get("/dashboard/:userId", verifyGuru, async (req, res) => {
     const { data: guru, error: guruError } = await supabase
       .from("guru")
       .select(
-        `
-        id,
-        user_id,
-        nama,
-        mapel,
-        no_hp,
-        alamat,
-        pendidikan_terakhir,
-        status_kepegawaian,
-        wali_kelas,
-        status,
-        users:user_id (
-          id,
-          nama,
-          email,
-          role
-        )
-      `
-      )
+  `
+  id,
+  user_id,
+  nama,
+  no_hp,
+  alamat,
+  pendidikan_terakhir,
+  status_kepegawaian,
+  status,
+  users:user_id (
+    id,
+    nama,
+    email,
+    role
+  )
+`
+)
       .eq("user_id", userId)
       .single();
 
@@ -284,32 +239,6 @@ router.get("/dashboard/:userId", verifyGuru, async (req, res) => {
     .toLowerCase()
     .trim()
     .replace(/\s+/g, " ");
-};
-
-const kelasMatchWali = (kelas, waliKelas) => {
-  const target = normalizeText(waliKelas);
-
-  if (!target) return false;
-
-  const namaKelas = normalizeText(kelas.nama_kelas);
-  const tingkat = normalizeText(kelas.tingkat);
-  const jenjang = normalizeText(kelas.jenjang);
-  const jurusan = normalizeText(kelas.jurusan);
-
-  const gabungan = normalizeText(
-    `${kelas.jenjang || ""} ${kelas.nama_kelas || ""} ${kelas.tingkat || ""} ${
-      kelas.jurusan || ""
-    }`
-  );
-
-  return (
-    namaKelas === target ||
-    tingkat === target ||
-    gabungan.includes(target) ||
-    target.includes(namaKelas) ||
-    target === `${jenjang} kelas ${tingkat}` ||
-    target === `${jenjang} kelas ${tingkat} ${jurusan}`.trim()
-  );
 };
 
 async function getKelasWaliGuru(guru) {
@@ -380,6 +309,44 @@ async function getKelasWaliGuru(guru) {
   return (semuaKelas || []).filter((kelas) =>
     kelasMatchWali(kelas, waliKelasText)
   );
+}
+
+async function getMapelGuru(guruId) {
+  const { data, error } = await supabase
+    .from("kelas_mapel")
+    .select(
+      `
+      id,
+      nama_mapel,
+      guru_id,
+      kelas_id,
+      kelas:kelas_id (
+        id,
+        jenjang,
+        nama_kelas,
+        tingkat,
+        jurusan,
+        tahun_ajaran,
+        semester,
+        status
+      )
+    `
+    )
+    .eq("guru_id", guruId);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  const mapelMap = new Map();
+
+  for (const item of data || []) {
+    if (item.nama_mapel) {
+      mapelMap.set(String(item.nama_mapel).toLowerCase(), item.nama_mapel);
+    }
+  }
+
+  return Array.from(mapelMap.values());
 }
 
     const jadwalHariIni = (jadwalGuru || []).filter(
@@ -529,7 +496,7 @@ router.get("/jadwal/:userId", verifyGuru, async (req, res) => {
 
     const { data: guru, error: guruError } = await supabase
       .from("guru")
-      .select("id, user_id, nama, mapel, wali_kelas")
+      .select("id, user_id, nama")
       .eq("user_id", userId)
       .single();
 
@@ -618,7 +585,7 @@ router.get("/santri/:userId", verifyGuru, async (req, res) => {
 
     const { data: guru, error: guruError } = await supabase
       .from("guru")
-      .select("id, user_id, nama, mapel, wali_kelas")
+      .select("id, user_id, nama")
       .eq("user_id", userId)
       .single();
 
@@ -888,7 +855,7 @@ router.get("/nilai/:userId", verifyGuru, async (req, res) => {
 
     const { data: guru, error: guruError } = await supabase
       .from("guru")
-      .select("id, user_id, nama, mapel, wali_kelas")
+      .select("id, user_id, nama")
       .eq("user_id", userId)
       .single();
 
@@ -908,7 +875,7 @@ router.get("/nilai/:userId", verifyGuru, async (req, res) => {
     const kelasSaya = await getKelasWaliGuru(guru);
     const kelasIds = kelasSaya.map((kelas) => kelas.id).filter(Boolean);
 
-    const mapelSaya = guru.mapel ? [guru.mapel] : [];
+    const mapelSaya = await getMapelGuru(guru.id);
 
     let santri = [];
 
@@ -1154,7 +1121,7 @@ router.post("/nilai/:userId", verifyGuru, async (req, res) => {
 
     const { data: guru, error: guruError } = await supabase
   .from("guru")
-  .select("id, user_id, nama, mapel, wali_kelas")
+  .select("id, user_id, nama")
   .eq("user_id", userId)
   .single();
 
@@ -1331,7 +1298,7 @@ router.get("/materi/:userId", verifyGuru, async (req, res) => {
 
     const { data: guru, error: guruError } = await supabase
       .from("guru")
-      .select("id, user_id, nama, mapel, wali_kelas")
+      .select("id, user_id, nama")
       .eq("user_id", userId)
       .single();
 
@@ -1481,7 +1448,7 @@ router.get("/kelulusan/:userId", verifyGuru, async (req, res) => {
 
     const { data: guru, error: guruError } = await supabase
       .from("guru")
-      .select("id, user_id, nama, mapel, wali_kelas")
+      .select("id, user_id, nama")
       .eq("user_id", userId)
       .single();
 
@@ -1501,7 +1468,7 @@ router.get("/kelulusan/:userId", verifyGuru, async (req, res) => {
       return res.json({
         success: true,
         message:
-          "Guru ini belum menjadi wali kelas. Atur wali kelas di data kelas atau data guru.",
+  "Guru ini belum menjadi wali kelas. Atur wali kelas melalui menu kelas.",
         data: [],
         meta: {
           guru,
@@ -1716,11 +1683,11 @@ router.post("/kelulusan/submit", verifyGuru, async (req, res) => {
       });
     }
 
-    const { data: guru, error: guruError } = await supabase
-      .from("guru")
-      .select("id, user_id, nama, wali_kelas")
-      .eq("user_id", user_id)
-      .single();
+const { data: guru, error: guruError } = await supabase
+  .from("guru")
+  .select("id, user_id, nama")
+  .eq("user_id", user_id)
+  .single();
 
     if (guruError || !guru) {
       return res.status(404).json({
@@ -1737,7 +1704,7 @@ router.post("/kelulusan/submit", verifyGuru, async (req, res) => {
       return res.status(403).json({
         success: false,
         message:
-          "Guru ini belum menjadi wali kelas. Admin harus mengatur wali kelas terlebih dahulu.",
+  "Guru ini belum menjadi wali kelas. Admin harus memilih guru sebagai wali kelas di menu kelas terlebih dahulu.",
       });
     }
 
@@ -2036,7 +2003,7 @@ router.get("/pemberitahuan/:userId", verifyGuru, async (req, res) => {
 
     const { data: guru, error: guruError } = await supabase
       .from("guru")
-      .select("id, user_id, nama, mapel, wali_kelas")
+      .select("id, user_id, nama")
       .eq("user_id", userId)
       .single();
 

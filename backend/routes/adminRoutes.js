@@ -250,26 +250,42 @@ router.get("/dashboard", async (req, res) => {
    GET /api/admin/santri
 ========================================================= */
 
+const cleanText = (value) => String(value || "").trim();
+
+const normalizeUpper = (value) => cleanText(value).toUpperCase();
+
 const buildAdminSantriPayload = (body, fotoUrl = null) => {
+  const jenjangNormal = normalizeUpper(body.jenjang);
+
   const payload = {
-    nama: body.nama || "",
-    nisn: body.nisn || "",
-    nik: body.nik || "",
-    tempat_lahir: body.tempat_lahir || "",
-    tanggal_lahir: body.tanggal_lahir || null,
-    agama: body.agama || "",
-    jenjang: body.jenjang || "",
-    kelas: body.kelas || "",
-    jenis_kelamin: body.jenis_kelamin || "",
-    telepon: body.telepon || "",
-    email: body.email || "",
-    alamat: body.alamat || "",
-    kota: body.kota || "",
-    provinsi: body.provinsi || "",
-    kode_pos: body.kode_pos || "",
-    asal_sekolah: body.asal_sekolah || "",
-    cita_cita: body.cita_cita || "",
-    hobi: body.hobi || "",
+    nama: cleanText(body.nama),
+    nisn: cleanText(body.nisn),
+    nik: cleanText(body.nik),
+    tempat_lahir: cleanText(body.tempat_lahir),
+    tanggal_lahir: cleanText(body.tanggal_lahir) || null,
+    agama: cleanText(body.agama),
+
+    jenjang:
+      jenjangNormal === "MTS"
+        ? "MTS"
+        : jenjangNormal === "SMK"
+          ? "SMK"
+          : "Takhassus",
+
+    kelas: jenjangNormal === "TAKHASSUS" ? "Takhassus" : cleanText(body.kelas),
+
+    jurusan: jenjangNormal === "SMK" ? normalizeUpper(body.jurusan) : null,
+
+    jenis_kelamin: cleanText(body.jenis_kelamin),
+    telepon: cleanText(body.telepon),
+    email: cleanText(body.email).toLowerCase(),
+    alamat: cleanText(body.alamat),
+    kota: cleanText(body.kota),
+    provinsi: cleanText(body.provinsi),
+    kode_pos: cleanText(body.kode_pos),
+    asal_sekolah: cleanText(body.asal_sekolah),
+    cita_cita: cleanText(body.cita_cita),
+    hobi: cleanText(body.hobi),
   };
 
   if (fotoUrl) {
@@ -325,12 +341,81 @@ router.post("/santri", upload.single("foto"), async (req, res) => {
   try {
     const body = req.body;
 
-    if (!body.nama || !body.email) {
-      return res.status(400).json({
-        success: false,
-        message: "Nama dan email santri wajib diisi.",
-      });
-    }
+    const nama = cleanText(body.nama);
+const email = cleanText(body.email).toLowerCase();
+const jenjangNormal = normalizeUpper(body.jenjang);
+const kelasNormal = cleanText(body.kelas);
+const jurusanNormal = normalizeUpper(body.jurusan);
+
+if (!nama) {
+  return res.status(400).json({
+    success: false,
+    message: "Nama santri wajib diisi.",
+  });
+}
+
+if (!email) {
+  return res.status(400).json({
+    success: false,
+    message: "Email wajib diisi.",
+  });
+}
+
+if (!body.jenis_kelamin) {
+  return res.status(400).json({
+    success: false,
+    message: "Jenis kelamin wajib dipilih.",
+  });
+}
+
+if (!jenjangNormal) {
+  return res.status(400).json({
+    success: false,
+    message: "Jenjang pendidikan wajib dipilih.",
+  });
+}
+
+if (!["MTS", "SMK", "TAKHASSUS"].includes(jenjangNormal)) {
+  return res.status(400).json({
+    success: false,
+    message: "Jenjang tidak valid. Pilih MTS, SMK, atau Takhassus.",
+  });
+}
+
+if (jenjangNormal !== "TAKHASSUS" && !kelasNormal) {
+  return res.status(400).json({
+    success: false,
+    message: "Kelas wajib dipilih untuk jenjang MTS atau SMK.",
+  });
+}
+
+if (jenjangNormal === "SMK" && !jurusanNormal) {
+  return res.status(400).json({
+    success: false,
+    message: "Jurusan SMK wajib dipilih.",
+  });
+}
+
+if (!cleanText(body.ayah_nama)) {
+  return res.status(400).json({
+    success: false,
+    message: "Nama ayah wajib diisi.",
+  });
+}
+
+if (!cleanText(body.ibu_nama)) {
+  return res.status(400).json({
+    success: false,
+    message: "Nama ibu wajib diisi.",
+  });
+}
+
+if (!cleanText(body.telepon)) {
+  return res.status(400).json({
+    success: false,
+    message: "Nomor HP wajib diisi.",
+  });
+}
 
     let fotoUrl = null;
 
@@ -340,15 +425,36 @@ router.post("/santri", upload.single("foto"), async (req, res) => {
 
     const autoPassword = generatePassword(body.nama, body.tanggal_lahir);
 
+    const { data: existingUser, error: existingUserError } = await supabase
+  .from("users")
+  .select("id,email")
+  .eq("email", email)
+  .maybeSingle();
+
+if (existingUserError) {
+  return res.status(400).json({
+    success: false,
+    message: "Gagal mengecek email user.",
+    error: existingUserError.message,
+  });
+}
+
+if (existingUser) {
+  return res.status(400).json({
+    success: false,
+    message: "Email sudah terdaftar. Gunakan email lain.",
+  });
+}
+
     const { data: userData, error: userError } = await supabase
   .from("users")
   .insert([
     {
-      nama: body.nama || "",
-      email: body.email,
-      password: autoPassword,
-      role: "santri",
-    },
+  nama,
+  email,
+  password: autoPassword,
+  role: "santri",
+}
   ])
   .select()
   .single();
@@ -374,12 +480,17 @@ router.post("/santri", upload.single("foto"), async (req, res) => {
       .single();
 
     if (santriError) {
-      return res.status(400).json({
-        success: false,
-        message: "Gagal menyimpan data santri.",
-        error: santriError.message,
-      });
-    }
+  await supabase.from("users").delete().eq("id", userData.id);
+
+  return res.status(400).json({
+    success: false,
+    message: "Gagal menyimpan data santri.",
+    error: santriError.message,
+    detail: santriError.details || null,
+    hint: santriError.hint || null,
+    code: santriError.code || null,
+  });
+}
 
     const { error: ortuError } = await supabase.from("orang_tua").insert([
       {
@@ -419,12 +530,53 @@ router.put("/santri/:id", upload.single("foto"), async (req, res) => {
     const { id } = req.params;
     const body = req.body;
 
-    if (!body.nama || !body.email) {
-      return res.status(400).json({
-        success: false,
-        message: "Nama dan email santri wajib diisi.",
-      });
-    }
+    const nama = cleanText(body.nama);
+const email = cleanText(body.email).toLowerCase();
+const jenjangNormal = normalizeUpper(body.jenjang);
+const kelasNormal = cleanText(body.kelas);
+const jurusanNormal = normalizeUpper(body.jurusan);
+
+if (!nama) {
+  return res.status(400).json({
+    success: false,
+    message: "Nama santri wajib diisi.",
+  });
+}
+
+if (!email) {
+  return res.status(400).json({
+    success: false,
+    message: "Email wajib diisi.",
+  });
+}
+
+if (!body.jenis_kelamin) {
+  return res.status(400).json({
+    success: false,
+    message: "Jenis kelamin wajib dipilih.",
+  });
+}
+
+if (!["MTS", "SMK", "TAKHASSUS"].includes(jenjangNormal)) {
+  return res.status(400).json({
+    success: false,
+    message: "Jenjang tidak valid. Pilih MTS, SMK, atau Takhassus.",
+  });
+}
+
+if (jenjangNormal !== "TAKHASSUS" && !kelasNormal) {
+  return res.status(400).json({
+    success: false,
+    message: "Kelas wajib dipilih untuk jenjang MTS atau SMK.",
+  });
+}
+
+if (jenjangNormal === "SMK" && !jurusanNormal) {
+  return res.status(400).json({
+    success: false,
+    message: "Jurusan SMK wajib dipilih.",
+  });
+}
 
     let fotoUrl = null;
 
@@ -449,9 +601,9 @@ router.put("/santri/:id", upload.single("foto"), async (req, res) => {
   await supabase
     .from("users")
     .update({
-      nama: body.nama || "",
-      email: body.email || "",
-    })
+  nama,
+  email,
+})
     .eq("id", body.user_id);
 }
 
@@ -1722,7 +1874,7 @@ router.get("/laporan", async (req, res) => {
     const santriPending = santri.filter((s) => s.status === "pending").length;
     const santriDitolak = santri.filter((s) => s.status === "ditolak").length;
 
-    const santriSMP = santri.filter((s) => s.jenjang === "SMP").length;
+    const santriMTS = santri.filter((s) => s.jenjang === "MTS").length;
     const santriSMK = santri.filter((s) => s.jenjang === "SMK").length;
     const santriTakhassus = santri.filter(
       (s) => s.jenjang === "Takhassus"
@@ -1819,7 +1971,7 @@ router.get("/laporan", async (req, res) => {
           aktif: santriAktif,
           pending: santriPending,
           ditolak: santriDitolak,
-          smp: santriSMP,
+          mts: santriMTS,
           smk: santriSMK,
           takhassus: santriTakhassus,
         },

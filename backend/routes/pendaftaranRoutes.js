@@ -147,12 +147,26 @@ router.post(
         .single();
 
       if (userError) {
-        return res.status(400).json({
-          success: false,
-          message: "Gagal membuat user.",
-          error: userError.message,
-        });
-      }
+  console.error("SUPABASE USER ERROR:", userError);
+
+  let message = "Gagal membuat user.";
+
+  if (
+    userError.message?.toLowerCase().includes("duplicate") ||
+    userError.message?.toLowerCase().includes("unique")
+  ) {
+    message = "Email sudah terdaftar. Gunakan email lain.";
+  }
+
+  return res.status(400).json({
+    success: false,
+    message,
+    error: userError.message,
+    details: userError.details || null,
+    hint: userError.hint || null,
+    code: userError.code || null,
+  });
+}
 
       const santriPayload = {
         user_id: userData.id,

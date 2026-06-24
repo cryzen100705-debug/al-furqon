@@ -36,15 +36,32 @@ import { div } from "framer-motion/client";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
-const JENJANG_OPTIONS = ["SMP", "SMK", "Takhassus"];
+const JENJANG_OPTIONS = ["MTS", "SMK", "Takhassus"];
 
 const KELAS_OPTIONS_BY_JENJANG = {
-  SMP: ["7", "8", "9"],
+  MTS: ["7", "8", "9"],
   SMK: ["10", "11", "12"],
   Takhassus: ["Takhassus"],
 };
 
 const JURUSAN_SMK_OPTIONS = ["TKJ", "RPL", "DKV", "OTKP", "AKL", "BDP"];
+
+const getTahunAjaranOtomatis = () => {
+  const now = new Date();
+  const tahun = now.getFullYear();
+  const bulan = now.getMonth() + 1;
+
+  if (bulan >= 7) {
+    return `${tahun}/${tahun + 1}`;
+  }
+
+  return `${tahun - 1}/${tahun}`;
+};
+
+const getSemesterOtomatis = () => {
+  const bulan = new Date().getMonth() + 1;
+  return bulan >= 7 ? "Ganjil" : "Genap";
+};
 
 const HARI_OPTIONS = [
   "Senin",
@@ -61,8 +78,8 @@ const initialForm = {
   kelas: "",
   jurusan: "",
   wali_guru_id: "",
-  tahun_ajaran: "",
-  semester: "",
+  tahun_ajaran: getTahunAjaranOtomatis(),
+  semester: getSemesterOtomatis(),
   deskripsi: "",
   status: "aktif",
 };
@@ -90,8 +107,8 @@ const initialRuang = {
 const buildNamaKelas = ({ jenjang, kelas, jurusan }) => {
   if (!jenjang || !kelas) return "";
 
-  if (jenjang === "SMP") {
-    return `SMP Kelas ${kelas}`;
+  if (jenjang === "MTS") {
+    return `MTS Kelas ${kelas}`;
   }
 
   if (jenjang === "SMK") {
@@ -140,6 +157,7 @@ function FormInput({
   icon,
   type = "text",
   required = false,
+  readOnly = false,
 }) {
   return (
     <div>
@@ -158,7 +176,12 @@ function FormInput({
           value={value}
           onChange={onChange}
           required={required}
-          className="w-full rounded-2xl border border-white/10 bg-slate-950/60 px-12 py-4 text-sm font-semibold text-white outline-none transition placeholder:text-emerald-100/35 focus:border-yellow-300/60 focus:ring-4 focus:ring-yellow-300/10"
+          readOnly={readOnly}
+          className={`w-full rounded-2xl border border-white/10 px-12 py-4 text-sm font-semibold text-white outline-none transition placeholder:text-emerald-100/35 focus:border-yellow-300/60 focus:ring-4 focus:ring-yellow-300/10 ${
+  readOnly
+    ? "cursor-not-allowed bg-slate-800/80 text-yellow-300"
+    : "bg-slate-950/60"
+}`}
           placeholder={placeholder}
         />
       </div>
@@ -644,8 +667,8 @@ const tarikSantriOtomatis = () => {
       });
   }, [kelasList, jadwalFilter]);
 
-  const smpCount = useMemo(
-    () => kelasList.filter((item) => item.jenjang === "SMP").length,
+  const mtsCount = useMemo(
+    () => kelasList.filter((item) => item.jenjang === "MTS").length,
     [kelasList]
   );
 
@@ -722,11 +745,17 @@ const tarikSantriOtomatis = () => {
   };
 
   const resetForm = () => {
-    setEditingId(null);
-    setForm(initialForm);
-    setMapelList([{ ...initialMapel }]);
-    setSiswaList([]);
-  };
+  setEditingId(null);
+
+  setForm({
+    ...initialForm,
+    tahun_ajaran: getTahunAjaranOtomatis(),
+    semester: getSemesterOtomatis(),
+  });
+
+  setMapelList([{ ...initialMapel }]);
+  setSiswaList([]);
+};
 
   const handleEdit = (kelas) => {
     setEditingId(kelas.id);
@@ -1183,8 +1212,8 @@ if (!adminUser) {
             />
             <StatCard
                 icon={<FaSchool />}
-                label="SMP"
-                value={smpCount}
+                label="MTS"
+                value={mtsCount}
                 desc="Kelas tingkat SMP"
                 delay={0.12}
             />
@@ -1330,25 +1359,24 @@ if (!adminUser) {
 
                   <div className="mt-5 grid gap-5 sm:grid-cols-2">
                     <FormInput
-                      label="Tahun Ajaran"
-                      name="tahun_ajaran"
-                      value={form.tahun_ajaran}
-                      onChange={handleFormChange}
-                      icon={<FaBookOpen />}
-                      placeholder="Contoh: 2026/2027"
-                    />
+  label="Tahun Ajaran"
+  name="tahun_ajaran"
+  value={form.tahun_ajaran}
+  onChange={() => {}}
+  icon={<FaBookOpen />}
+  placeholder="Tahun ajaran otomatis"
+  readOnly
+/>
 
-                    <SelectInput
+                    <FormInput
                       label="Semester"
                       name="semester"
                       value={form.semester}
-                      onChange={handleFormChange}
+                      onChange={() => {}}
                       icon={<FaBookOpen />}
-                    >
-                      <option value="">Pilih semester</option>
-                      <option value="Ganjil">Ganjil</option>
-                      <option value="Genap">Genap</option>
-                    </SelectInput>
+                      placeholder="Semester otomatis"
+                      readOnly
+                    />
                   </div>
 
                   <div className="mt-5 grid gap-5 sm:grid-cols-2">
@@ -1361,10 +1389,10 @@ if (!adminUser) {
                     >
                       <option value="">Belum ditentukan</option>
                       {guruList.map((guru) => (
-                        <option key={guru.id} value={guru.id}>
-                          {guru.nama} {guru.mapel ? `- ${guru.mapel}` : ""}
-                        </option>
-                      ))}
+  <option key={guru.id} value={guru.id}>
+    {guru.nama}
+  </option>
+))}
                     </SelectInput>
 
                     <SelectInput
@@ -1459,10 +1487,10 @@ if (!adminUser) {
                           >
                             <option value="">Belum ditentukan</option>
                             {guruList.map((guru) => (
-                              <option key={guru.id} value={guru.id}>
-                                {guru.nama} {guru.mapel ? `- ${guru.mapel}` : ""}
-                              </option>
-                            ))}
+  <option key={guru.id} value={guru.id}>
+    {guru.nama}
+  </option>
+))}
                           </SelectInput>
                         </div>
 

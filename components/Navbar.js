@@ -106,7 +106,7 @@ export default function Navbar() {
     <>
       <nav
   className={`home-navbar-real ${navClass} ${jakarta.className}`}
-  style={{ paddingTop: "max(env(safe-area-inset-top), 6px)" }}
+  style={{ paddingTop: "max(env(safe-area-inset-top), 0px)" }}
 >
         <div className="px-0 md:px-6">
           <div className={shellClass}>

@@ -32,6 +32,7 @@ import {
   FaUserTie,
   FaStickyNote,
   FaInfoCircle,
+  FaCamera,
 } from "react-icons/fa";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
@@ -42,7 +43,6 @@ const initialForm = {
   password: "",
   nip: "",
   nuptk: "",
-  mapel: "",
   no_hp: "",
   alamat: "",
   tempat_lahir: "",
@@ -51,28 +51,9 @@ const initialForm = {
   pendidikan_terakhir: "",
   status_kepegawaian: "",
   tanggal_bergabung: "",
-  wali_kelas: "",
   catatan: "",
 };
 
-const WALI_KELAS_OPTIONS = [
-  {
-    group: "SMP",
-    options: [
-      "SMP Kelas 7",
-      "SMP Kelas 8",
-      "SMP Kelas 9",
-    ],
-  },
-  {
-    group: "SMK",
-    options: ["SMK Kelas 10", "SMK Kelas 11 ", "SMK Kelas 12"],
-  },
-  {
-    group: "Takhassus",
-    options: ["Takhassus", "Takhassus Tahfidz", "Takhassus Kitab"],
-  },
-];
 
 function generatePasswordFromBirthDate(tanggalLahir) {
   if (!tanggalLahir) return "";
@@ -399,7 +380,8 @@ export default function AdminGuruPage() {
   });
 
   const [form, setForm] = useState(initialForm);
-
+  const [fotoGuru, setFotoGuru] = useState(null);
+  const [previewFotoGuru, setPreviewFotoGuru] = useState("");
   const showModal = ({ type = "success", title, message }) => {
     setModal({
       show: true,
@@ -454,18 +436,16 @@ export default function AdminGuruPage() {
 
     return guruList.filter((guru) => {
       const data = [
-        guru.nama,
-        guru.users?.email,
-        guru.mapel,
-        guru.nip,
-        guru.nuptk,
-        guru.no_hp,
-        guru.tempat_lahir,
-        guru.jenis_kelamin,
-        guru.pendidikan_terakhir,
-        guru.status_kepegawaian,
-        guru.wali_kelas,
-      ]
+  guru.nama,
+  guru.users?.email,
+  guru.nip,
+  guru.nuptk,
+  guru.no_hp,
+  guru.tempat_lahir,
+  guru.jenis_kelamin,
+  guru.pendidikan_terakhir,
+  guru.status_kepegawaian,
+]
         .join(" ")
         .toLowerCase();
 
@@ -479,10 +459,6 @@ export default function AdminGuruPage() {
 
   const inactiveGuru = useMemo(() => {
     return guruList.filter((guru) => guru.status !== "aktif").length;
-  }, [guruList]);
-
-  const waliKelasCount = useMemo(() => {
-    return guruList.filter((guru) => guru.wali_kelas).length;
   }, [guruList]);
 
   const fetchGuru = async () => {
@@ -531,6 +507,28 @@ export default function AdminGuruPage() {
       return updated;
     });
   };
+
+  const handleFotoChange = (e) => {
+  const file = e.target.files?.[0];
+
+  if (!file) {
+    setFotoGuru(null);
+    setPreviewFotoGuru("");
+    return;
+  }
+
+  if (!file.type.startsWith("image/")) {
+    showModal({
+      type: "warning",
+      title: "File Tidak Valid",
+      message: "Upload foto harus berupa gambar JPG, PNG, atau WEBP.",
+    });
+    return;
+  }
+
+  setFotoGuru(file);
+  setPreviewFotoGuru(URL.createObjectURL(file));
+};
 
   const generatePassword = () => {
     if (!form.tanggal_lahir) {
@@ -585,9 +583,11 @@ export default function AdminGuruPage() {
   };
 
   const resetForm = () => {
-    setForm(initialForm);
-    setShowPassword(false);
-  };
+  setForm(initialForm);
+  setFotoGuru(null);
+  setPreviewFotoGuru("");
+  setShowPassword(false);
+};
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -619,14 +619,23 @@ export default function AdminGuruPage() {
     try {
       setSaving(true);
 
-      const res = await fetch(`${API_URL}/api/admin/guru`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-user-id": adminUser.id,
-        },
-        body: JSON.stringify(finalForm),
-      });
+      const payload = new FormData();
+
+Object.entries(finalForm).forEach(([key, value]) => {
+  payload.append(key, value || "");
+});
+
+if (fotoGuru) {
+  payload.append("foto", fotoGuru);
+}
+
+const res = await fetch(`${API_URL}/api/admin/guru`, {
+  method: "POST",
+  headers: {
+    "x-user-id": adminUser.id,
+  },
+  body: payload,
+});
 
       const data = await res.json();
 
@@ -815,12 +824,12 @@ export default function AdminGuruPage() {
             />
 
             <StatCard
-              icon={<FaUserTie />}
-              label="Wali Kelas"
-              value={waliKelasCount}
-              desc="Guru yang menjadi wali kelas"
-              delay={0.18}
-            />
+  icon={<FaGraduationCap />}
+  label="Data Guru"
+  value={guruList.length}
+  desc="Guru siap ditugaskan di kelas"
+  delay={0.18}
+/>
 
             <StatCard
               icon={<FaTimesCircle />}
@@ -957,11 +966,45 @@ export default function AdminGuruPage() {
                     <div>
                       <h3 className="font-black text-white">Data Pribadi</h3>
                       <p className="text-xs text-emerald-100/55">
-                        Tanggal lahir wajib karena menjadi password.
+                        Informasi kepegawaian guru. Mapel dan wali kelas ditentukan dari menu kelas.
                       </p>
                     </div>
+                    
                   </div>
 
+
+<div className="mb-5 mt-5 rounded-[24px] border border-white/10 bg-slate-950/40 p-4">
+  <label className="mb-3 block text-sm font-black text-emerald-50">
+    Foto Guru
+  </label>
+
+  <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+    <div className="flex h-28 w-28 shrink-0 items-center justify-center overflow-hidden rounded-3xl border border-yellow-300/25 bg-yellow-300/10">
+      {previewFotoGuru ? (
+        <img
+          src={previewFotoGuru}
+          alt="Preview Foto Guru"
+          className="h-full w-full object-cover"
+        />
+      ) : (
+        <FaCamera className="text-4xl text-yellow-300" />
+      )}
+    </div>
+
+    <div className="flex-1">
+      <input
+        type="file"
+        accept="image/*"
+        onChange={handleFotoChange}
+        className="w-full rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-3 text-sm font-semibold text-white file:mr-4 file:rounded-xl file:border-0 file:bg-yellow-400 file:px-4 file:py-2 file:font-black file:text-emerald-950"
+      />
+
+      <p className="mt-2 text-xs text-emerald-100/55">
+        Format yang disarankan: JPG, PNG, atau WEBP.
+      </p>
+    </div>
+  </div>
+</div>
                   <div className="grid gap-5 sm:grid-cols-2">
                     <FormInput
                       label="Tempat Lahir"
@@ -1057,36 +1100,11 @@ export default function AdminGuruPage() {
                     />
                   </div>
 
-                  <div className="mt-5 grid gap-5 sm:grid-cols-2">
-                    <FormInput
-                      label="Mata Pelajaran"
-                      name="mapel"
-                      value={form.mapel}
-                      onChange={handleChange}
-                      icon={<FaBookOpen />}
-                      placeholder="Contoh: Bahasa Arab"
-                    />
-
-                    <SelectInput
-                      label="Wali Kelas"
-                      name="wali_kelas"
-                      value={form.wali_kelas}
-                      onChange={handleChange}
-                      icon={<FaUserTie />}
-                    >
-                      <option value="">Bukan wali kelas</option>
-
-                      {WALI_KELAS_OPTIONS.map((group) => (
-                        <optgroup key={group.group} label={group.group}>
-                          {group.options.map((kelas) => (
-                            <option key={kelas} value={kelas}>
-                              {kelas}
-                            </option>
-                          ))}
-                        </optgroup>
-                      ))}
-                    </SelectInput>
-                  </div>
+                  <div className="mt-5 rounded-2xl border border-yellow-300/20 bg-yellow-300/10 p-4 text-sm leading-relaxed text-yellow-100">
+                      Mata pelajaran dan wali kelas tidak diisi di form guru.
+                      Data tersebut otomatis mengikuti pengaturan pada menu <b>Kelas</b>,
+                      saat guru dipilih sebagai wali kelas atau guru pengajar mata pelajaran.
+                    </div>
 
                   <div className="mt-5 grid gap-5 sm:grid-cols-2">
                     <FormInput
@@ -1200,7 +1218,7 @@ export default function AdminGuruPage() {
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     className="w-full rounded-2xl border border-white/10 bg-slate-950/50 px-12 py-4 text-sm font-semibold text-white outline-none transition placeholder:text-emerald-100/35 focus:border-yellow-300/60 focus:ring-4 focus:ring-yellow-300/10"
-                    placeholder="Cari nama, email, mapel, NIP, NUPTK, wali kelas..."
+                    placeholder="Cari nama, email, NIP, NUPTK, no HP, status guru..."
                   />
                 </div>
               </div>
@@ -1252,12 +1270,17 @@ export default function AdminGuruPage() {
                           <div className="relative z-10 flex flex-col gap-5">
                             <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                               <div className="flex min-w-0 items-start gap-4">
-                                <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-3xl bg-gradient-to-br from-yellow-300 to-yellow-500 text-xl font-black text-emerald-950 shadow-lg">
-                                  {String(guru.nama || "G")
-                                    .trim()
-                                    .charAt(0)
-                                    .toUpperCase()}
-                                </div>
+                                <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-3xl bg-gradient-to-br from-yellow-300 to-yellow-500 text-xl font-black text-emerald-950 shadow-lg">
+  {guru.foto ? (
+    <img
+      src={guru.foto}
+      alt={guru.nama || "Foto Guru"}
+      className="h-full w-full object-cover"
+    />
+  ) : (
+    String(guru.nama || "G").trim().charAt(0).toUpperCase()
+  )}
+</div>
 
                                 <div className="min-w-0">
                                   <div className="flex flex-wrap items-center gap-2">
@@ -1290,10 +1313,6 @@ export default function AdminGuruPage() {
                             </div>
 
                             <div className="grid gap-3 rounded-[22px] border border-white/10 bg-black/15 p-4 text-sm text-emerald-100/70 sm:grid-cols-2 xl:grid-cols-3">
-                              <p className="flex items-center gap-2">
-                                <FaBookOpen className="text-yellow-300" />
-                                <span>{guru.mapel || "Mapel belum diisi"}</span>
-                              </p>
 
                               <p className="flex items-center gap-2">
                                 <FaIdCard className="text-yellow-300" />
@@ -1339,13 +1358,6 @@ export default function AdminGuruPage() {
                                 <span>
                                   {guru.status_kepegawaian ||
                                     "Status belum diisi"}
-                                </span>
-                              </p>
-
-                              <p className="flex items-center gap-2">
-                                <FaUserTie className="text-yellow-300" />
-                                <span>
-                                  {guru.wali_kelas || "Bukan wali kelas"}
                                 </span>
                               </p>
 

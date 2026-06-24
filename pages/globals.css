@@ -284,3 +284,38 @@ table {
 .animate-gold-glow {
   animation: pulseGlow 3s infinite;
 }
+
+/* ================= FIX NAVBAR PUBLIC ================= */
+
+html,
+body,
+#__next {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+body {
+  overflow-x: hidden !important;
+}
+
+/* Paksa navbar publik menempel ke atas */
+body nav,
+body header {
+  margin-top: 0 !important;
+}
+
+/* Kalau Navbar memakai position fixed */
+body nav.fixed,
+body header.fixed,
+body .fixed.top-4,
+body .fixed.top-5,
+body .fixed.top-6,
+body .fixed.top-8 {
+  top: 0 !important;
+}
+
+/* Jaga navbar tetap di atas konten */
+body nav,
+body header {
+  z-index: 9999 !important;
+}
