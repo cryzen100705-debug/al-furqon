@@ -463,7 +463,7 @@ const progressDitolak = useMemo(() => {
               </div>
             </header>
 
-            <section className="px-4 py-6 sm:px-6 md:px-8 lg:px-10 xl:px-12">
+            <section className="px-4 py-5 sm:px-5 md:px-6 lg:px-7 xl:px-8">
               {errorMessage && (
                 <div className="mb-5 rounded-3xl border border-red-200 bg-red-50 p-5 text-red-700">
                   <p className="font-black">Dashboard gagal dimuat</p>
@@ -472,7 +472,7 @@ const progressDitolak = useMemo(() => {
               )}
 
               {/* HERO */}
-              <section className="relative overflow-hidden rounded-[42px] border border-white/10 bg-[#071B14]/80 p-5 text-white shadow-2xl shadow-black/30 backdrop-blur-2xl sm:p-7 lg:p-9">
+              <section className="relative overflow-hidden rounded-[34px] border border-white/10 bg-[#071B14]/80 p-4 text-white shadow-2xl shadow-black/30 backdrop-blur-2xl sm:p-5 lg:p-6">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_10%,rgba(250,204,21,0.28),transparent_28%),radial-gradient(circle_at_85%_15%,rgba(16,185,129,0.25),transparent_30%),linear-gradient(135deg,rgba(6,78,59,0.92),rgba(7,27,20,0.85),rgba(74,52,16,0.74))]" />
                 <div className="absolute inset-0 bg-[url('/pattern.png')] opacity-[0.07]" />
                 <div className="absolute -right-28 -top-28 h-80 w-80 rounded-full bg-yellow-300/20 blur-3xl" />
@@ -488,14 +488,14 @@ const progressDitolak = useMemo(() => {
                         </span>
                       </div>
 
-                      <h2 className="mt-6 text-[clamp(2.2rem,6vw,5.4rem)] font-black leading-[0.9] tracking-[-0.06em]">
-                        Kendali
-                        <span className="block text-yellow-300">
-                          Operasional.
-                        </span>
-                      </h2>
+                     <h2 className="mt-5 text-xl font-black leading-[0.82] tracking-[-0.085em]">
+  Kendali
+  <span className="block text-yellow-300">
+    Operasional.
+  </span>
+</h2>
 
-                      <p className="mt-5 max-w-3xl text-sm leading-relaxed text-emerald-50/90 sm:text-base">
+                      <p className="mt-4 max-w-2xl text-sm leading-relaxed text-emerald-50/90">
                         Proses pendaftaran, pembayaran, pemberitahuan, dan data
                         santri dari satu pusat kerja admin yang lebih hidup,
                         cepat, dan mudah dipantau.
@@ -588,14 +588,14 @@ const progressDitolak = useMemo(() => {
               </section>
 
               {/* PRIORITY TASKS */}
-              <section className="relative z-10 -mt-4 grid grid-cols-1 gap-4 px-1 xl:grid-cols-3">
+              <section className="relative z-10 mt-6 grid grid-cols-1 gap-6 px-1 xl:grid-cols-3">
                 {priorityTasks.map((item, index) => (
                   <PriorityTaskCard key={index} item={item} loading={loading} />
                 ))}
               </section>
 
               {/* BODY */}
-              <section className="mt-7 rounded-[42px] bg-[#EAF3EE] p-4 shadow-2xl shadow-black/10 sm:p-6 lg:p-7">
+              <section className="mt-5 rounded-[30px] bg-[#EAF3EE] p-4 shadow-2xl shadow-black/10 sm:p-5">
                 {/* STAT CARDS */}
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
                   {stats.map((item, index) => (
@@ -610,22 +610,22 @@ const progressDitolak = useMemo(() => {
                   ))}
                 </div>
 
-                <div className="mt-7 grid grid-cols-1 gap-6 xl:grid-cols-3">
+                <div className="mt-5 grid grid-cols-1 gap-4 xl:grid-cols-3">
                   <div className="space-y-6 xl:col-span-2">
                     {/* MENU MANAGEMENT */}
-                    <div className="relative overflow-hidden rounded-[36px] border border-white bg-white p-5 shadow-xl shadow-emerald-950/5 sm:p-7">
+                    <div className="relative overflow-hidden rounded-[28px] border border-white bg-white p-4 shadow-xl shadow-emerald-950/5 sm:p-5">
                       <div className="absolute -right-20 -top-20 h-56 w-56 rounded-full bg-emerald-300/20 blur-3xl" />
                       <div className="absolute -bottom-20 -left-20 h-56 w-56 rounded-full bg-yellow-300/20 blur-3xl" />
 
                       <div className="relative z-10">
-                        <div className="mb-7 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                        <div className="mb-5 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
                           <div>
                             <div className="inline-flex items-center gap-2 rounded-full bg-emerald-100 px-3 py-1 text-xs font-black text-emerald-700">
                               <FaLayerGroup />
                               Admin Menu
                             </div>
 
-                            <h2 className="mt-3 text-2xl font-black text-slate-900">
+                            <h2 className="mt-2 text-xl font-black text-slate-900">
                               Menu Operasional
                             </h2>
 
@@ -642,12 +642,12 @@ const progressDitolak = useMemo(() => {
                               placeholder="Cari menu..."
                               value={searchMenu}
                               onChange={(e) => setSearchMenu(e.target.value)}
-                              className="h-12 w-full rounded-2xl border border-emerald-100 bg-emerald-50/60 pl-11 pr-4 text-sm font-semibold outline-none transition focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-100"
+                              className="h-11 w-full rounded-2xl border border-emerald-100 bg-emerald-50/60 pl-11 pr-4 text-sm font-semibold outline-none transition focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-100"
                             />
                           </div>
                         </div>
 
-                        <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                           {filteredMenus.map((item, index) => (
                             <MenuCard key={index} item={item} />
                           ))}
@@ -681,7 +681,7 @@ const progressDitolak = useMemo(() => {
                     </PanelCard>
                   </div>
 
-                  <div className="space-y-6">
+                  <div className="space-y-2">
                     <PanelCard
                       title="Ringkasan Verifikasi"
                       subtitle="Komposisi status santri."
@@ -738,8 +738,6 @@ const progressDitolak = useMemo(() => {
                     </PanelCard>
 
                     <NotificationPanel dashboard={dashboard} router={router} />
-
-                    <QuoteCard />
                   </div>
                 </div>
               </section>
@@ -801,32 +799,34 @@ function PriorityTaskCard({ item, loading }) {
   return (
     <button
       onClick={() => router.push(item.href)}
-      className="group relative overflow-hidden rounded-[32px] border border-white/10 bg-[#071B14] p-5 text-left text-white shadow-2xl shadow-black/20 transition hover:-translate-y-1 hover:shadow-yellow-950/20"
+      className="group relative overflow-hidden rounded-[24px] border border-white/10 bg-[#071B14] p-4 text-left text-white shadow-xl shadow-black/20 transition hover:-translate-y-1 hover:shadow-yellow-950/20"
     >
-      <div className={`absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r ${item.color}`} />
-      <div className="absolute -right-12 -top-12 h-32 w-32 rounded-full bg-yellow-300/20 blur-2xl transition group-hover:scale-125" />
+      <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${item.color}`} />
+      <div className="absolute -right-10 -top-10 h-28 w-28 rounded-full bg-yellow-300/15 blur-2xl transition group-hover:scale-125" />
       <div className="absolute inset-0 bg-[url('/pattern.png')] opacity-[0.035]" />
 
       <div className="relative z-10">
-        <div className="flex items-start justify-between gap-4">
+        <div className="flex items-start justify-between gap-3">
           <div
-            className={`flex h-14 w-14 items-center justify-center rounded-3xl bg-gradient-to-br ${item.color} text-2xl text-white shadow-lg transition group-hover:scale-110`}
+            className={`flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br ${item.color} text-xl text-white shadow-lg transition group-hover:scale-110`}
           >
             {item.icon}
           </div>
 
-          <span className="rounded-full border border-white/10 bg-white/10 px-3 py-1 text-xs font-black text-white">
+          <span className="rounded-full border border-white/10 bg-white/10 px-3 py-1 text-[11px] font-black text-white">
             {loading ? "..." : item.value}
           </span>
         </div>
 
-        <h3 className="mt-5 text-xl font-black text-white">{item.title}</h3>
+        <h3 className="mt-4 text-lg font-black text-white">
+          {item.title}
+        </h3>
 
-        <p className="mt-2 text-sm font-semibold leading-relaxed text-emerald-50/75">
+        <p className="mt-2 text-xs font-semibold leading-relaxed text-emerald-50/70">
           {item.desc}
         </p>
 
-        <div className={`mt-5 inline-flex items-center gap-2 text-sm font-black ${item.accent}`}>
+        <div className={`mt-4 inline-flex items-center gap-2 text-xs font-black ${item.accent}`}>
           {item.button}
           <FaArrowRight className="transition group-hover:translate-x-1" />
         </div>
@@ -863,7 +863,7 @@ function StatCard({ item, loading }) {
 
   return (
     <div
-      className={`group relative overflow-hidden rounded-[32px] border border-white bg-gradient-to-br ${color.bg} p-5 shadow-xl shadow-emerald-950/5 transition hover:-translate-y-1 hover:shadow-2xl`}
+      className={`group relative overflow-hidden rounded-[26px] border border-white bg-gradient-to-br ${color.bg} p-4 shadow-xl shadow-emerald-950/5 transition hover:-translate-y-1 hover:shadow-2xl`}
     >
       <div
         className={`absolute -right-10 -top-10 h-32 w-32 rounded-full ${color.glow} blur-2xl transition group-hover:scale-125`}
@@ -873,22 +873,24 @@ function StatCard({ item, loading }) {
         <div className="min-w-0">
           <p className="text-sm font-black text-slate-500">{item.title}</p>
 
-          <h2 className="mt-3 break-words text-[clamp(1.5rem,3vw,2rem)] font-black leading-tight text-slate-950">
-            {loading ? "..." : item.value}
-          </h2>
+          <h2 className="mt-2 max-w-full text-[clamp(1.25rem,2vw,1.65rem)] font-black leading-tight text-slate-950">
+  <span className="block overflow-hidden text-ellipsis whitespace-nowrap">
+    {loading ? "..." : item.value}
+  </span>
+</h2>
 
           <p className="mt-2 text-sm font-semibold text-slate-500">
             {item.desc}
           </p>
 
-          <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-white/70 px-3 py-2 text-xs font-black text-emerald-700">
+          <div className="mt-3 inline-flex max-w-full items-center gap-1 rounded-full bg-white/70 px-2.5 py-2 text-[11px] font-black text-emerald-700">
             <FaArrowUp />
             {item.note}
           </div>
         </div>
 
         <div
-          className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-3xl text-2xl shadow-lg transition group-hover:rotate-6 group-hover:scale-110 ${color.icon}`}
+          className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-xl shadow-lg transition group-hover:rotate-6 group-hover:scale-110 ${color.icon}`}
         >
           {item.icon}
         </div>
@@ -899,19 +901,19 @@ function StatCard({ item, loading }) {
 
 function QuickStat({ item, loading }) {
   return (
-    <div className="group relative overflow-hidden rounded-[28px] border border-white bg-white p-5 shadow-lg shadow-emerald-950/5 transition hover:-translate-y-1 hover:shadow-xl">
+    <div className="group relative overflow-hidden rounded-[24px] border border-white bg-white p-4 shadow-lg shadow-emerald-950/5 transition hover:-translate-y-1 hover:shadow-xl">
       <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${item.color}`} />
 
       <div className="flex items-center gap-4">
         <div
-          className={`flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br text-xl text-white shadow-md ${item.color}`}
+          className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br text-lg text-white shadow-md ${item.color}`}
         >
           {item.icon}
         </div>
 
         <div>
           <p className="text-sm font-black text-slate-500">{item.label}</p>
-          <h3 className="mt-1 text-3xl font-black text-slate-900">
+          <h3 className="mt-1 text-2xl font-black text-slate-900">
             {loading ? "..." : item.value}
           </h3>
         </div>
@@ -926,34 +928,34 @@ function MenuCard({ item }) {
   return (
     <button
       onClick={() => router.push(item.path)}
-      className="group relative overflow-hidden rounded-[30px] border border-slate-100 bg-slate-950 p-5 text-left text-white shadow-lg shadow-black/10 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
+      className="group relative min-h-[190px] overflow-hidden rounded-[24px] border border-slate-100 bg-slate-950 p-4 text-left text-white shadow-lg shadow-black/10 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
     >
-      <div className={`absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r ${item.color}`} />
-      <div className="absolute -right-14 -top-14 h-40 w-40 rounded-full bg-yellow-300/10 blur-3xl transition group-hover:scale-125" />
+      <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${item.color}`} />
+      <div className="absolute -right-12 -top-12 h-32 w-32 rounded-full bg-yellow-300/10 blur-3xl transition group-hover:scale-125" />
       <div className="absolute inset-0 bg-[url('/pattern.png')] opacity-[0.035]" />
 
       <div className="relative z-10">
-        <div className="flex items-start justify-between gap-4">
+        <div className="flex items-start justify-between gap-3">
           <div
-            className={`flex h-16 w-16 items-center justify-center rounded-3xl bg-gradient-to-br ${item.color} text-2xl text-white shadow-lg transition group-hover:scale-110`}
+            className={`flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br ${item.color} text-xl text-white shadow-lg transition group-hover:scale-110`}
           >
             {item.icon}
           </div>
 
-          <span className="rounded-full border border-white/10 bg-white/10 px-3 py-1 text-[11px] font-black text-white">
+          <span className="max-w-[110px] truncate rounded-full border border-white/10 bg-white/10 px-2.5 py-1 text-[10px] font-black text-white">
             {item.badge}
           </span>
         </div>
 
-        <h3 className="mt-5 text-xl font-black text-white group-hover:text-yellow-300">
+        <h3 className="mt-4 text-lg font-black text-white group-hover:text-yellow-300">
           {item.title}
         </h3>
 
-        <p className="mt-2 text-sm font-semibold leading-relaxed text-emerald-50/70">
+        <p className="mt-2 text-xs font-semibold leading-relaxed text-emerald-50/70">
           {item.desc}
         </p>
 
-        <div className="mt-5 inline-flex items-center gap-2 text-sm font-black text-yellow-300">
+        <div className="mt-4 inline-flex items-center gap-2 text-xs font-black text-yellow-300">
           Buka Menu
           <FaArrowRight className="transition group-hover:translate-x-1" />
         </div>
@@ -964,21 +966,21 @@ function MenuCard({ item }) {
 
 function PanelCard({ title, subtitle, icon, actionLabel, onAction, children }) {
   return (
-    <div className="relative overflow-hidden rounded-[36px] border border-white bg-white p-5 shadow-xl shadow-emerald-950/5 sm:p-7">
+    <div className="relative overflow-hidden rounded-[28px] border border-white bg-white p-4 shadow-xl shadow-emerald-950/5 sm:p-5">
       <div className="absolute -right-16 -top-16 h-44 w-44 rounded-full bg-emerald-300/15 blur-3xl" />
 
       <div className="relative z-10">
-        <div className="mb-6 flex items-center justify-between gap-4">
+        <div className="mb-4 flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-100 text-xl text-emerald-700">
+            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald-100 text-lg text-emerald-700">
               {icon}
             </div>
 
             <div>
-              <h2 className="text-xl font-black text-slate-900 sm:text-2xl">
+              <h2 className="text-lg font-black text-slate-900 sm:text-xl">
                 {title}
               </h2>
-              <p className="mt-1 text-sm font-semibold text-slate-500">
+              <p className="mt-1 text-xs font-semibold text-slate-500">
                 {subtitle}
               </p>
             </div>
@@ -1014,7 +1016,7 @@ function LatestSantriRow({ item, getStatusBadge, formatTanggal }) {
         <div className="min-w-0">
           <h3 className="truncate font-black text-slate-900">{item.nama}</h3>
 
-          <p className="mt-1 text-sm font-semibold text-slate-500">
+          <p className="mt-1 text-xs font-semibold text-slate-500">
             {item.jenjang} {item.kelas} • {formatTanggal(item.created_at)}
           </p>
         </div>
@@ -1063,17 +1065,17 @@ function PaymentRow({ item, getStatusBadge, formatTanggal, formatRupiah }) {
 
 function NotificationPanel({ dashboard, router }) {
   return (
-    <div className="relative overflow-hidden rounded-[36px] bg-gradient-to-br from-[#0B3B2E] via-[#166534] to-[#B7791F] p-6 text-white shadow-2xl">
+    <div className="relative overflow-hidden rounded-[26px] bg-gradient-to-br from-[#0B3B2E] via-[#166534] to-[#B7791F] p-4 text-white shadow-xl">
       <div className="absolute inset-0 bg-[url('/pattern.png')] opacity-[0.08]" />
-      <div className="absolute -right-16 -top-16 h-44 w-44 rounded-full bg-yellow-300/25 blur-3xl" />
+      <div className="absolute -right-14 -top-14 h-36 w-36 rounded-full bg-yellow-300/25 blur-3xl" />
 
       <div className="relative z-10">
         <div className="flex items-center gap-3">
-          <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl bg-yellow-400 text-xl text-green-950">
+          <div className="relative flex h-11 w-11 items-center justify-center rounded-2xl bg-yellow-400 text-base text-green-950">
             <FaBell />
 
             {dashboard.adminUnreadNotifications > 0 && (
-              <span className="absolute -right-2 -top-2 flex h-[24px] min-w-[24px] items-center justify-center rounded-full border-2 border-white bg-red-500 px-1 text-[10px] font-black text-white">
+              <span className="absolute -right-2 -top-2 flex h-[21px] min-w-[21px] items-center justify-center rounded-full border-2 border-white bg-red-500 px-1 text-[9px] font-black text-white">
                 {dashboard.adminUnreadNotifications > 99
                   ? "99+"
                   : dashboard.adminUnreadNotifications}
@@ -1082,43 +1084,45 @@ function NotificationPanel({ dashboard, router }) {
           </div>
 
           <div>
-            <p className="text-sm font-semibold text-green-100">
+            <p className="text-xs font-semibold text-green-100">
               Notifikasi Admin
             </p>
 
-            <h3 className="text-4xl font-black">
+            <h3 className="text-3xl font-black leading-none">
               {dashboard.adminUnreadNotifications}
             </h3>
 
-            <p className="mt-1 text-xs text-green-100">
+            <p className="mt-1 text-[11px] text-green-100">
               Santri baru dan pembayaran belum dibaca
             </p>
           </div>
         </div>
 
-        <div className="mt-6 space-y-3">
+        <div className="mt-4 space-y-2">
           {dashboard.latestAdminNotifications.length === 0 ? (
-            <p className="rounded-2xl bg-white/10 p-4 text-sm text-green-100">
+            <p className="rounded-2xl bg-white/10 p-3 text-xs text-green-100">
               Belum ada notifikasi admin.
             </p>
           ) : (
-            dashboard.latestAdminNotifications.slice(0, 3).map((item) => (
+            dashboard.latestAdminNotifications.slice(0, 2).map((item) => (
               <button
                 key={item.id}
                 onClick={() => router.push("/admin/pemberitahuan")}
-                className={`w-full rounded-2xl border p-4 text-left transition hover:bg-white/15 ${
+                className={`w-full rounded-2xl border p-3 text-left transition hover:bg-white/15 ${
                   item.is_read
                     ? "border-white/10 bg-white/10"
                     : "border-yellow-300/30 bg-yellow-400/15"
                 }`}
               >
-                <p className="text-xs font-black uppercase text-yellow-300">
+                <p className="text-[10px] font-black uppercase text-yellow-300">
                   {item.tipe}
                 </p>
 
-                <h4 className="mt-1 truncate font-black">{item.judul}</h4>
+                <h4 className="mt-1 truncate text-sm font-black">
+                  {item.judul}
+                </h4>
 
-                <p className="mt-1 line-clamp-2 text-xs text-green-100">
+                <p className="mt-1 line-clamp-1 text-[11px] text-green-100">
                   {item.isi}
                 </p>
               </button>
@@ -1128,7 +1132,7 @@ function NotificationPanel({ dashboard, router }) {
 
         <button
           onClick={() => router.push("/admin/pemberitahuan")}
-          className="mt-5 h-12 w-full rounded-2xl bg-yellow-400 font-black text-green-950 transition hover:bg-yellow-300"
+          className="mt-4 h-10 w-full rounded-2xl bg-yellow-400 text-sm font-black text-green-950 transition hover:bg-yellow-300"
         >
           Lihat Notifikasi
         </button>
@@ -1139,23 +1143,25 @@ function NotificationPanel({ dashboard, router }) {
 
 function QuoteCard() {
   return (
-    <div className="relative overflow-hidden rounded-[36px] border border-emerald-100 bg-white p-6 shadow-xl shadow-emerald-950/5">
-      <div className="absolute -right-16 -top-16 h-40 w-40 rounded-full bg-emerald-300/15 blur-3xl" />
+    <div className="relative overflow-hidden rounded-[26px] border border-emerald-100 bg-white p-4 shadow-xl shadow-emerald-950/5">
+      <div className="absolute -right-12 -top-12 h-32 w-32 rounded-full bg-emerald-300/15 blur-3xl" />
 
       <div className="relative z-10">
-        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-100 text-2xl text-emerald-700">
+        <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald-100 text-lg text-emerald-700">
           <FaQuran />
         </div>
 
-        <p className="mt-5 text-sm font-semibold text-slate-500">
+        <p className="mt-4 text-xs font-semibold text-slate-500">
           Pesan Hari Ini
         </p>
 
-        <h3 className="mt-3 text-2xl font-black leading-relaxed text-slate-900">
+        <h3 className="mt-2 text-lg font-black leading-relaxed text-slate-900">
           “Tugas admin bukan hanya mengelola data, tetapi menjaga amanah.”
         </h3>
 
-        <p className="mt-3 font-black text-emerald-700">— Sistem Pesantren</p>
+        <p className="mt-2 text-sm font-black text-emerald-700">
+          — Sistem Pesantren
+        </p>
       </div>
     </div>
   );

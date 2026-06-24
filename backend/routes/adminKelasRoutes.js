@@ -3,6 +3,51 @@ import { supabase } from "../config/supabase.js";
 
 const router = express.Router();
 
+const cleanText = (value) => String(value || "").trim();
+
+const syncGuruDariKelas = async ({ kelasData, mapelList = [] }) => {
+  const namaKelas =
+    kelasData.nama_kelas ||
+    `${kelasData.jenjang || ""} Kelas ${kelasData.tingkat || ""}`.trim();
+
+  // Update wali kelas ke tabel guru
+  if (kelasData.wali_guru_id) {
+    await supabase
+      .from("guru")
+      .update({
+        wali_kelas: namaKelas,
+      })
+      .eq("id", kelasData.wali_guru_id);
+  }
+
+  // Update mapel ke tabel guru
+  const mapelByGuru = {};
+
+  for (const item of mapelList || []) {
+    const guruId = cleanText(item.guru_id);
+    const namaMapel = cleanText(item.nama_mapel);
+
+    if (!guruId || !namaMapel) continue;
+
+    if (!mapelByGuru[guruId]) {
+      mapelByGuru[guruId] = [];
+    }
+
+    mapelByGuru[guruId].push(namaMapel);
+  }
+
+  for (const [guruId, mapelNames] of Object.entries(mapelByGuru)) {
+    const uniqueMapel = [...new Set(mapelNames)];
+
+    await supabase
+      .from("guru")
+      .update({
+        mapel: uniqueMapel.join(", "),
+      })
+      .eq("id", guruId);
+  }
+};
+
 function toMinutes(time) {
   if (!time) return null;
 
@@ -272,10 +317,10 @@ router.get("/kelas/options", verifyAdmin, async (req, res) => {
         .order("nama_ruang", { ascending: true }),
 
       supabase
-  .from("santri")
-  .select("id, nama, jenjang, kelas, jurusan, status")
-  .in("status", ["aktif", "pending"])
-  .order("nama", { ascending: true }),
+        .from("santri")
+        .select("id, nama, jenjang, kelas, jurusan, status")
+        .eq("status", "aktif")
+        .order("nama", { ascending: true }),
     ]);
 
     if (guruResult.error) {
@@ -368,17 +413,17 @@ router.get("/kelas", verifyAdmin, async (req, res) => {
           )
         ),
         kelas_siswa (
-  id,
-  santri_id,
-  santri:santri_id (
-    id,
-    nama,
-    jenjang,
-    kelas,
-    jurusan,
-    status
-  )
-)
+          id,
+          santri_id,
+          santri:santri_id (
+            id,
+            nama,
+            jenjang,
+            kelas,
+            jurusan,
+            status
+          )
+        )
       `
       )
       .order("created_at", { ascending: false });
@@ -588,6 +633,11 @@ router.post("/kelas", verifyAdmin, async (req, res) => {
     try {
       await insertMapel(kelasBaru.id, mapelList || []);
       await insertSiswa(kelasBaru.id, siswaList || []);
+
+      await syncGuruDariKelas({
+        kelasData: kelasBaru,
+        mapelList: mapelList || [],
+      });
     } catch (insertError) {
       await supabase.from("kelas").delete().eq("id", kelasBaru.id);
 
@@ -704,6 +754,11 @@ router.put("/kelas/:id", verifyAdmin, async (req, res) => {
 
     await insertMapel(id, mapelList || []);
     await insertSiswa(id, siswaList || []);
+
+    await syncGuruDariKelas({
+      kelasData: updatedKelas,
+      mapelList: mapelList || [],
+    });
 
     return res.json({
       success: true,

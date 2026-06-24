@@ -465,9 +465,9 @@ const normalizeStatus = (value) => {
 const isSantriBolehMasukKelas = (santri) => {
   const status = normalizeStatus(santri.status);
 
-  // Santri aktif dan pending tetap bisa ditarik ke kelas.
-  // Santri ditolak/nonaktif tidak ikut.
-  return status === "aktif" || status === "pending";
+  // Hanya santri aktif yang boleh ditarik ke kelas.
+  // Santri pending, ditolak, nonaktif, atau lulus tidak ikut.
+  return status === "aktif";
 };
 
 const isSantriMatchKelas = (santri) => {
@@ -559,9 +559,9 @@ const tarikSantriOtomatis = () => {
         ? "Santri Berhasil Ditarik"
         : "Santri Tidak Ditemukan",
     message:
-      matchedIds.length > 0
-        ? `${matchedIds.length} santri aktif/pending berhasil dimasukkan ke ${namaKelas}. Santri berbeda jenjang, berbeda kelas, berbeda jurusan, ditolak, atau nonaktif tidak ikut ditarik.`
-        : `Belum ada santri aktif/pending yang cocok dengan ${namaKelas}.`,
+  matchedIds.length > 0
+    ? `${matchedIds.length} santri aktif berhasil dimasukkan ke ${namaKelas}. Santri pending, ditolak, nonaktif, berbeda jenjang, berbeda kelas, atau berbeda jurusan tidak ikut ditarik.`
+    : `Belum ada santri aktif yang cocok dengan ${namaKelas}.`,
   });
 };
   const filteredKelas = useMemo(() => {
@@ -1624,7 +1624,7 @@ if (!adminUser) {
                   <div className="max-h-80 space-y-2 overflow-y-auto pr-2">
                     {visibleSantriList.length === 0 ? (
                     <p className="rounded-2xl border border-dashed border-white/10 p-4 text-sm text-emerald-100/50">
-                        Tidak ada santri aktif atau pending yang cocok dengan pilihan jenjang, kelas, dan jurusan ini. Untuk SMK, pastikan jurusan santri di tabel santri sudah terisi.
+                        Tidak ada santri aktif yang cocok dengan pilihan jenjang, kelas, dan jurusan ini. Santri pending tidak akan ditampilkan. Untuk SMK, pastikan jurusan santri di tabel santri sudah terisi.
                     </p>
                     ) : (
                     visibleSantriList.map((santri) => {
