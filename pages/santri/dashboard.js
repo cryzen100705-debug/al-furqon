@@ -13,6 +13,7 @@ import {
   FaBell,
   FaBookOpen,
   FaCalendarAlt,
+  FaChartPie,
   FaCheckCircle,
   FaClipboardList,
   FaClock,
@@ -21,10 +22,13 @@ import {
   FaGraduationCap,
   FaHandSparkles,
   FaHome,
+  FaIdCard,
+  FaInfoCircle,
   FaMoneyBillWave,
   FaMoon,
   FaMosque,
   FaQuran,
+  FaReceipt,
   FaShieldAlt,
   FaSun,
   FaUserCircle,
@@ -167,6 +171,32 @@ export default function SantriDashboard() {
   const hasPendingPayment = pembayaranInfo.pending > 0;
   const hasPemberitahuanBelumDibaca = pemberitahuanInfo.belum_dibaca > 0;
 
+  const totalPembayaran = Number(pembayaranInfo.total || 0);
+  const totalLunas = Number(pembayaranInfo.lunas || 0);
+  const totalPending = Number(pembayaranInfo.pending || 0);
+  const totalBelumBayar = Number(pembayaranInfo.belum_bayar || 0);
+
+  const progressLunas =
+    totalPembayaran > 0 ? Math.round((totalLunas / totalPembayaran) * 100) : 100;
+
+  const statusPrioritas = hasTagihanBelumBayar
+    ? {
+        label: "Perlu Dibayar",
+        desc: `${totalBelumBayar} tagihan belum dibayar. Segera cek menu pembayaran.`,
+        color: "danger",
+      }
+    : hasPendingPayment
+    ? {
+        label: "Menunggu Verifikasi",
+        desc: `${totalPending} pembayaran sedang menunggu verifikasi admin.`,
+        color: "warning",
+      }
+    : {
+        label: "Aman",
+        desc: "Tidak ada tagihan aktif yang perlu dibayar saat ini.",
+        color: "success",
+      };
+
   const quickStats = useMemo(
     () => [
       {
@@ -261,8 +291,8 @@ export default function SantriDashboard() {
         animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
         transition={{ duration: 0.55, ease: EASE }}
         className={`min-h-screen transition-all duration-300 pt-16 md:pt-0 ${
-  collapsed ? "md:ml-[86px]" : "md:ml-[260px]"
-}`}
+          collapsed ? "md:ml-[86px]" : "md:ml-[260px]"
+        }`}
       >
         <section className="relative min-h-screen overflow-hidden">
           <div className={`absolute inset-0 ${theme.mainBg}`} />
@@ -279,12 +309,12 @@ export default function SantriDashboard() {
             />
 
             <div
-  className={`mx-auto w-full max-w-[1420px] ${
-    isCompact
-      ? "px-3 py-3 sm:px-4 lg:px-5"
-      : "px-3 py-4 sm:px-5 lg:px-6 xl:px-7"
-  }`}
->
+              className={`mx-auto w-full max-w-[1420px] ${
+                isCompact
+                  ? "px-3 py-3 sm:px-4 lg:px-5"
+                  : "px-3 py-4 sm:px-5 lg:px-6 xl:px-7"
+              }`}
+            >
               <div className="grid grid-cols-1 gap-4 2xl:grid-cols-[minmax(0,1fr)_340px]">
                 <div className="min-w-0 space-y-4">
                   <HeroPanel
@@ -297,10 +327,10 @@ export default function SantriDashboard() {
                     hasTagihanBelumBayar={hasTagihanBelumBayar}
                     hasPendingPayment={hasPendingPayment}
                     pembayaranInfo={pembayaranInfo}
-                    hasPemberitahuanBelumDibaca={
-                      hasPemberitahuanBelumDibaca
-                    }
+                    hasPemberitahuanBelumDibaca={hasPemberitahuanBelumDibaca}
                     pemberitahuanInfo={pemberitahuanInfo}
+                    progressLunas={progressLunas}
+                    statusPrioritas={statusPrioritas}
                   />
 
                   <div className="grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
@@ -422,6 +452,8 @@ function HeroPanel({
   pembayaranInfo,
   hasPemberitahuanBelumDibaca,
   pemberitahuanInfo,
+  progressLunas,
+  statusPrioritas,
 }) {
   return (
     <section
@@ -436,7 +468,7 @@ function HeroPanel({
       <div className="absolute -right-20 -top-20 h-56 w-56 rounded-full bg-yellow-300/20 blur-3xl" />
       <div className="absolute -bottom-24 -left-24 h-64 w-64 rounded-full bg-emerald-300/20 blur-3xl" />
 
-      <div className="relative z-10 grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(260px,300px)]">
+      <div className="relative z-10 grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(280px,340px)]">
         <div className="min-w-0 overflow-hidden">
           <motion.div
             initial={{ opacity: 0, y: 14 }}
@@ -458,7 +490,7 @@ function HeroPanel({
                 isDark ? "text-yellow-100" : "text-emerald-800"
               }`}
             >
-              Santri Learning Center
+              Dashboard Informasi Santri
             </span>
           </motion.div>
 
@@ -486,9 +518,19 @@ function HeroPanel({
               isCompact ? "text-xs" : "text-xs sm:text-sm"
             }`}
           >
-            Pantau pembayaran, pemberitahuan, dokumen, nilai, dan profil santri
-            dalam satu dashboard yang lebih nyaman, cepat, dan informatif.
+            Pantau status pembayaran, pemberitahuan penting, data profil, nilai,
+            dan dokumen santri dalam satu halaman ringkas.
           </motion.p>
+
+          <div className="mt-4 grid grid-cols-1 gap-3 lg:grid-cols-[1fr_220px]">
+            <PriorityBox statusPrioritas={statusPrioritas} theme={theme} />
+
+            <PaymentProgressBox
+              progressLunas={progressLunas}
+              pembayaranInfo={pembayaranInfo}
+              theme={theme}
+            />
+          </div>
 
           <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
             <Link
@@ -564,6 +606,93 @@ function HeroPanel({
         </div>
       </div>
     </section>
+  );
+}
+
+function PriorityBox({ statusPrioritas, theme }) {
+  const config = {
+    success: {
+      icon: <FaCheckCircle />,
+      wrapper: "border-emerald-200 bg-emerald-50",
+      iconBox: "bg-emerald-600 text-white",
+      title: "text-emerald-800",
+    },
+    warning: {
+      icon: <FaClock />,
+      wrapper: "border-yellow-200 bg-yellow-50",
+      iconBox: "bg-yellow-400 text-emerald-950",
+      title: "text-yellow-800",
+    },
+    danger: {
+      icon: <FaExclamationTriangle />,
+      wrapper: "border-red-200 bg-red-50",
+      iconBox: "bg-red-600 text-white",
+      title: "text-red-800",
+    },
+  };
+
+  const item = config[statusPrioritas.color] || config.success;
+
+  return (
+    <div className={`rounded-2xl border p-4 ${item.wrapper}`}>
+      <div className="flex items-start gap-3">
+        <div
+          className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${item.iconBox}`}
+        >
+          {item.icon}
+        </div>
+
+        <div>
+          <p className="text-[10px] font-black uppercase tracking-[0.18em] text-slate-500">
+            Prioritas Hari Ini
+          </p>
+
+          <h3 className={`mt-1 text-lg font-black ${item.title}`}>
+            {statusPrioritas.label}
+          </h3>
+
+          <p className="mt-1 text-xs font-semibold leading-relaxed text-slate-600">
+            {statusPrioritas.desc}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function PaymentProgressBox({ progressLunas, pembayaranInfo, theme }) {
+  return (
+    <div className={`rounded-2xl border p-4 ${theme.surface}`}>
+      <div className="mb-3 flex items-center justify-between gap-3">
+        <div>
+          <p
+            className={`text-[10px] font-black uppercase tracking-[0.18em] ${theme.muted}`}
+          >
+            Progress Pembayaran
+          </p>
+
+          <h3 className={`mt-1 text-xl font-black ${theme.title}`}>
+            {progressLunas}%
+          </h3>
+        </div>
+
+        <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-yellow-400 text-emerald-950">
+          <FaChartPie />
+        </div>
+      </div>
+
+      <div className="h-3 overflow-hidden rounded-full bg-white/20">
+        <div
+          className="h-full rounded-full bg-yellow-400 transition-all duration-700"
+          style={{ width: `${progressLunas}%` }}
+        />
+      </div>
+
+      <p className={`mt-3 text-xs font-semibold ${theme.muted}`}>
+        {pembayaranInfo.lunas || 0} lunas dari {pembayaranInfo.total || 0} total
+        pembayaran.
+      </p>
+    </div>
   );
 }
 
@@ -694,14 +823,14 @@ function ProfilePanel({ santri, loading, theme, isCompact }) {
           />
           <MiniProfileData
             label="Status"
-            value="Aktif"
+            value={santri?.status || "Aktif"}
             icon={<FaCheckCircle />}
             theme={theme}
           />
           <MiniProfileData
-            label="Semester"
-            value="Genap"
-            icon={<FaMoon />}
+            label="Identitas"
+            value={santri?.nisn || santri?.nis || "-"}
+            icon={<FaIdCard />}
             theme={theme}
           />
         </div>
@@ -720,7 +849,9 @@ function ProfilePanel({ santri, loading, theme, isCompact }) {
 
 function MiniProfileData({ label, value, icon, theme }) {
   return (
-    <div className={`min-w-0 rounded-2xl border p-3 backdrop-blur-xl ${theme.surface}`}>
+    <div
+      className={`min-w-0 rounded-2xl border p-3 backdrop-blur-xl ${theme.surface}`}
+    >
       <div className="mb-2 flex h-9 w-9 items-center justify-center rounded-xl bg-yellow-400 text-emerald-950">
         {icon}
       </div>
@@ -748,7 +879,7 @@ function AgendaPanel({
       initial={{ opacity: 0, y: 28 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.34, ease: EASE }}
-      className={`rounded-[30px] border p-4 sm:p-5 shadow-xl backdrop-blur-xl ${theme.surfaceStrong}`}
+      className={`rounded-[30px] border p-4 shadow-xl backdrop-blur-xl sm:p-5 ${theme.surfaceStrong}`}
     >
       <div className="flex items-center justify-between gap-4">
         <div>
@@ -819,7 +950,7 @@ function MotivationPanel() {
       initial={{ opacity: 0, y: 28 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.42, ease: EASE }}
-      className="relative overflow-hidden rounded-[30px] bg-gradient-to-br from-[#064E3B] via-[#0B6B4F] to-[#B7791F] p-4 sm:p-5 text-white shadow-2xl shadow-green-950/15"
+      className="relative overflow-hidden rounded-[30px] bg-gradient-to-br from-[#064E3B] via-[#0B6B4F] to-[#B7791F] p-4 text-white shadow-2xl shadow-green-950/15 sm:p-5"
     >
       <div className="absolute inset-0 bg-[url('/pattern.png')] opacity-[0.07]" />
       <div className="absolute -right-20 -top-20 h-56 w-56 rounded-full bg-yellow-300/20 blur-3xl" />
@@ -895,14 +1026,21 @@ function ActionCard({ item, index, theme, isCompact }) {
 }
 
 function PaymentSummary({ theme, pembayaranInfo }) {
+  const total = Number(pembayaranInfo.total || 0);
+  const lunas = Number(pembayaranInfo.lunas || 0);
+  const pending = Number(pembayaranInfo.pending || 0);
+  const belumBayar = Number(pembayaranInfo.belum_bayar || 0);
+
   const rows = [
-    ["Lunas", pembayaranInfo.lunas || 0, "text-emerald-400"],
-    ["Pending", pembayaranInfo.pending || 0, "text-yellow-400"],
-    ["Belum Bayar", pembayaranInfo.belum_bayar || 0, "text-red-400"],
+    ["Lunas", lunas, "text-emerald-400", "bg-emerald-400"],
+    ["Pending", pending, "text-yellow-400", "bg-yellow-400"],
+    ["Belum Bayar", belumBayar, "text-red-400", "bg-red-500"],
   ];
 
   return (
-    <section className={`rounded-[30px] border p-4 sm:p-5 shadow-xl ${theme.surface}`}>
+    <section
+      className={`rounded-[30px] border p-4 shadow-xl sm:p-5 ${theme.surface}`}
+    >
       <div className="flex items-center justify-between gap-3">
         <div>
           <p className={`text-sm font-semibold ${theme.muted}`}>
@@ -914,22 +1052,42 @@ function PaymentSummary({ theme, pembayaranInfo }) {
         </div>
 
         <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-yellow-400 text-xl text-emerald-950">
-          <FaMoneyBillWave />
+          <FaReceipt />
         </div>
       </div>
 
       <div className="mt-5 space-y-3">
-        {rows.map(([label, value, color]) => (
-          <div
-            key={label}
-            className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/10 px-4 py-3"
-          >
-            <span className={`text-sm font-semibold ${theme.desc}`}>
-              {label}
-            </span>
-            <span className={`text-lg font-black ${color}`}>{value}</span>
-          </div>
-        ))}
+        {rows.map(([label, value, textColor, barColor]) => {
+          const percent = total > 0 ? Math.round((value / total) * 100) : 0;
+
+          return (
+            <div
+              key={label}
+              className="rounded-2xl border border-white/10 bg-white/10 px-4 py-3"
+            >
+              <div className="mb-2 flex items-center justify-between">
+                <span className={`text-sm font-semibold ${theme.desc}`}>
+                  {label}
+                </span>
+
+                <span className={`text-lg font-black ${textColor}`}>
+                  {value}
+                </span>
+              </div>
+
+              <div className="h-2 overflow-hidden rounded-full bg-white/20">
+                <div
+                  className={`h-full rounded-full ${barColor}`}
+                  style={{ width: `${percent}%` }}
+                />
+              </div>
+
+              <p className={`mt-2 text-[11px] font-semibold ${theme.muted}`}>
+                {percent}% dari total pembayaran
+              </p>
+            </div>
+          );
+        })}
       </div>
 
       <Link
@@ -944,8 +1102,15 @@ function PaymentSummary({ theme, pembayaranInfo }) {
 }
 
 function NoticeSummary({ theme, pemberitahuanInfo }) {
+  const latestNotices =
+    pemberitahuanInfo.belum_dibaca_terbaru?.length > 0
+      ? pemberitahuanInfo.belum_dibaca_terbaru
+      : pemberitahuanInfo.terbaru || [];
+
   return (
-    <section className={`rounded-[30px] border p-4 sm:p-5 shadow-xl ${theme.surface}`}>
+    <section
+      className={`rounded-[30px] border p-4 shadow-xl sm:p-5 ${theme.surface}`}
+    >
       <div className="flex items-center justify-between gap-3">
         <div>
           <p className={`text-sm font-semibold ${theme.muted}`}>
@@ -977,6 +1142,33 @@ function NoticeSummary({ theme, pemberitahuanInfo }) {
             {pemberitahuanInfo.belum_dibaca || 0}
           </h3>
         </div>
+      </div>
+
+      <div className="mt-4 space-y-2">
+        {latestNotices.length === 0 ? (
+          <div className="rounded-2xl border border-white/10 bg-white/10 p-4">
+            <p className={`text-sm font-semibold ${theme.muted}`}>
+              Belum ada pemberitahuan terbaru.
+            </p>
+          </div>
+        ) : (
+          latestNotices.slice(0, 2).map((item) => (
+            <div
+              key={item.id}
+              className="rounded-2xl border border-white/10 bg-white/10 p-4"
+            >
+              <p className="line-clamp-1 text-sm font-black text-yellow-400">
+                {item.judul || "Pemberitahuan"}
+              </p>
+
+              <p
+                className={`mt-1 line-clamp-2 text-xs leading-relaxed ${theme.muted}`}
+              >
+                {item.isi || item.kategori || "Informasi terbaru dari pesantren."}
+              </p>
+            </div>
+          ))
+        )}
       </div>
 
       <Link

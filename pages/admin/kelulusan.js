@@ -10,6 +10,10 @@ import {
   FaChevronDown,
   FaChevronRight,
   FaSchool,
+  FaClipboardCheck,
+  FaInfoCircle,
+  FaLayerGroup,
+  FaUserTie,
 } from "react-icons/fa";
 import SidebarAdmin from "./sidebar";
 
@@ -20,7 +24,8 @@ function BadgeVerifikasi({ status }) {
 
   if (value === "disetujui") {
     return (
-      <span className="inline-flex rounded-full bg-green-100 px-3 py-1 text-xs font-black text-green-700">
+      <span className="inline-flex items-center gap-2 rounded-full bg-green-100 px-3 py-1 text-xs font-black text-green-700">
+        <FaCheckCircle />
         Disetujui
       </span>
     );
@@ -28,21 +33,25 @@ function BadgeVerifikasi({ status }) {
 
   if (value === "ditolak") {
     return (
-      <span className="inline-flex rounded-full bg-red-100 px-3 py-1 text-xs font-black text-red-700">
+      <span className="inline-flex items-center gap-2 rounded-full bg-red-100 px-3 py-1 text-xs font-black text-red-700">
+        <FaTimesCircle />
         Ditolak
       </span>
     );
   }
 
   return (
-    <span className="inline-flex rounded-full bg-yellow-100 px-3 py-1 text-xs font-black text-yellow-700">
+    <span className="inline-flex items-center gap-2 rounded-full bg-yellow-100 px-3 py-1 text-xs font-black text-yellow-700">
+      <FaHourglassHalf />
       Pending
     </span>
   );
 }
 
 function BadgeKelulusan({ status }) {
-  if (status === "lulus") {
+  const value = String(status || "").toLowerCase();
+
+  if (value === "lulus") {
     return (
       <span className="inline-flex items-center gap-2 rounded-full bg-green-100 px-3 py-1 text-xs font-black text-green-700">
         <FaCheckCircle />
@@ -89,6 +98,54 @@ function BadgeKenaikan({ status }) {
   return (
     <span className="inline-flex rounded-full bg-slate-100 px-3 py-1 text-xs font-black text-slate-600">
       Belum Diproses
+    </span>
+  );
+}
+
+function SummaryCard({ label, value, desc, icon, color = "emerald" }) {
+  const colorMap = {
+    emerald: "from-emerald-600 to-emerald-800 text-emerald-50",
+    yellow: "from-yellow-400 to-orange-500 text-emerald-950",
+    green: "from-green-500 to-emerald-700 text-white",
+    red: "from-red-500 to-rose-700 text-white",
+    blue: "from-blue-500 to-cyan-700 text-white",
+  };
+
+  return (
+    <div className="relative overflow-hidden rounded-[26px] bg-white p-4 shadow-sm ring-1 ring-emerald-100">
+      <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-emerald-200/40 blur-2xl" />
+
+      <div className="relative z-10 flex items-center gap-4">
+        <div
+          className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br text-lg shadow-md ${
+            colorMap[color] || colorMap.emerald
+          }`}
+        >
+          {icon}
+        </div>
+
+        <div className="min-w-0">
+          <p className="text-xs font-black uppercase tracking-[0.15em] text-slate-500">
+            {label}
+          </p>
+
+          <h2 className="mt-1 text-3xl font-black leading-none text-emerald-950">
+            {value}
+          </h2>
+
+          <p className="mt-1 text-xs font-semibold text-slate-500">{desc}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function MiniStatus({ label, value, className }) {
+  return (
+    <span
+      className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-[11px] font-black ${className}`}
+    >
+      {label} {value}
     </span>
   );
 }
@@ -335,6 +392,14 @@ export default function AdminKelulusanPage() {
       "belum_diproses"
   ).length;
 
+  const totalLulus = dataKelulusan.filter(
+    (item) => String(item.status_kelulusan || "").toLowerCase() === "lulus"
+  ).length;
+
+  const totalTidakLulus = dataKelulusan.filter(
+    (item) => String(item.status_kelulusan || "").toLowerCase() !== "lulus"
+  ).length;
+
   return (
     <main className="min-h-screen overflow-x-hidden bg-[#F7F4E8] text-emerald-950">
       <SidebarAdmin
@@ -357,73 +422,132 @@ export default function AdminKelulusanPage() {
       >
         <div className="mx-auto w-full max-w-none px-4 pb-10 pt-6 sm:px-5 lg:px-7">
           <div className="overflow-hidden rounded-[34px] bg-gradient-to-br from-emerald-800 to-emerald-950 p-6 text-white shadow-xl lg:p-8">
-            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div className="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
               <div>
-                <p className="text-xs font-black uppercase tracking-[0.3em] text-yellow-300">
+                <p className="inline-flex items-center gap-2 rounded-full bg-yellow-400/15 px-4 py-2 text-xs font-black uppercase tracking-[0.3em] text-yellow-300">
+                  <FaClipboardCheck />
                   Verifikasi Admin
                 </p>
 
-                <h1 className="mt-2 text-3xl font-black tracking-tight md:text-4xl">
+                <h1 className="mt-4 text-3xl font-black tracking-tight md:text-4xl">
                   Verifikasi Kelulusan Santri
                 </h1>
 
-                <p className="mt-2 max-w-3xl text-sm leading-relaxed text-emerald-100">
-                  Admin melihat data kelulusan berdasarkan kelas terlebih
-                  dahulu. Klik kelas untuk melihat daftar santri di dalamnya.
+                <p className="mt-3 max-w-3xl text-sm leading-relaxed text-emerald-100">
+                  Admin memeriksa pengajuan kelulusan dari guru/wali kelas.
+                  Setelah disetujui, admin dapat memproses santri untuk naik
+                  kelas, tinggal kelas, atau lulus akhir.
                 </p>
               </div>
 
-              <button
-                type="button"
-                onClick={fetchKelulusan}
-                className="inline-flex items-center justify-center gap-3 rounded-2xl bg-yellow-400 px-5 py-3 font-black text-emerald-950 shadow-lg transition hover:bg-yellow-300"
-              >
-                <FaSyncAlt className={loading ? "animate-spin" : ""} />
-                Refresh
-              </button>
+              <div className="grid gap-3 sm:grid-cols-2 xl:w-[520px]">
+                <div className="rounded-3xl border border-white/10 bg-white/10 p-4 backdrop-blur-xl">
+                  <p className="text-xs font-black uppercase tracking-[0.18em] text-yellow-200">
+                    Kelulusan
+                  </p>
+                  <h3 className="mt-2 text-2xl font-black">
+                    {totalLulus} Lulus
+                  </h3>
+                  <p className="mt-1 text-xs text-emerald-100/75">
+                    {totalTidakLulus} tidak lulus
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={fetchKelulusan}
+                  className="inline-flex items-center justify-center gap-3 rounded-3xl bg-yellow-400 px-5 py-4 font-black text-emerald-950 shadow-lg transition hover:bg-yellow-300"
+                >
+                  <FaSyncAlt className={loading ? "animate-spin" : ""} />
+                  Refresh Data
+                </button>
+              </div>
             </div>
           </div>
 
-          <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-5">
-            <div className="rounded-[26px] bg-white p-5 shadow-sm">
-              <p className="text-sm font-bold text-emerald-600">Total Data</p>
-              <h2 className="mt-2 text-3xl font-black">
-                {dataKelulusan.length}
-              </h2>
-            </div>
+          <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-5">
+            <SummaryCard
+              label="Total Data"
+              value={dataKelulusan.length}
+              desc="Semua pengajuan"
+              icon={<FaClipboardCheck />}
+              color="emerald"
+            />
 
-            <div className="rounded-[26px] bg-white p-5 shadow-sm">
-              <p className="text-sm font-bold text-yellow-600">Pending</p>
-              <h2 className="mt-2 text-3xl font-black">{totalPending}</h2>
-            </div>
+            <SummaryCard
+              label="Pending"
+              value={totalPending}
+              desc="Menunggu keputusan"
+              icon={<FaHourglassHalf />}
+              color="yellow"
+            />
 
-            <div className="rounded-[26px] bg-white p-5 shadow-sm">
-              <p className="text-sm font-bold text-green-600">Disetujui</p>
-              <h2 className="mt-2 text-3xl font-black">{totalDisetujui}</h2>
-            </div>
+            <SummaryCard
+              label="Disetujui"
+              value={totalDisetujui}
+              desc="Sudah diverifikasi"
+              icon={<FaCheckCircle />}
+              color="green"
+            />
 
-            <div className="rounded-[26px] bg-white p-5 shadow-sm">
-              <p className="text-sm font-bold text-red-600">Ditolak</p>
-              <h2 className="mt-2 text-3xl font-black">{totalDitolak}</h2>
-            </div>
+            <SummaryCard
+              label="Ditolak"
+              value={totalDitolak}
+              desc="Tidak disetujui"
+              icon={<FaTimesCircle />}
+              color="red"
+            />
 
-            <div className="rounded-[26px] bg-white p-5 shadow-sm">
-              <p className="text-sm font-bold text-blue-600">Belum Diproses</p>
-              <h2 className="mt-2 text-3xl font-black">
-                {totalBelumDiproses}
-              </h2>
-            </div>
+            <SummaryCard
+              label="Belum Diproses"
+              value={totalBelumDiproses}
+              desc="Belum masuk kelas"
+              icon={<FaExchangeAlt />}
+              color="blue"
+            />
           </div>
 
-          <div className="mt-6 rounded-[28px] bg-white p-4 shadow-sm">
-            <div className="grid gap-3 lg:grid-cols-[1fr_220px]">
+          <div className="mt-6 rounded-[28px] bg-white p-4 shadow-sm ring-1 ring-emerald-100">
+            <div className="mb-4 flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
+              <div>
+                <h2 className="text-lg font-black text-emerald-950">
+                  Filter & Pencarian Data
+                </h2>
+
+                <p className="mt-1 text-xs font-semibold text-slate-500">
+                  Menampilkan {filteredData.length} dari {dataKelulusan.length}{" "}
+                  data kelulusan.
+                </p>
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={openAllKelas}
+                  className="rounded-xl bg-emerald-700 px-4 py-2 text-xs font-black text-white transition hover:bg-emerald-800"
+                >
+                  Buka Semua Kelas
+                </button>
+
+                <button
+                  type="button"
+                  onClick={closeAllKelas}
+                  className="rounded-xl bg-slate-100 px-4 py-2 text-xs font-black text-slate-700 transition hover:bg-slate-200"
+                >
+                  Tutup Semua
+                </button>
+              </div>
+            </div>
+
+            <div className="grid gap-3 lg:grid-cols-[1fr_240px]">
               <div className="relative">
                 <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-emerald-500" />
+
                 <input
                   type="text"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Cari nama santri, NIS, guru, kelas, kelulusan, atau status..."
+                  placeholder="Cari nama santri, NIS, guru, kelas, kelulusan, atau status kenaikan..."
                   className="w-full rounded-2xl border border-emerald-100 bg-emerald-50 px-12 py-3 text-sm font-semibold outline-none transition focus:border-emerald-400 focus:bg-white"
                 />
               </div>
@@ -433,21 +557,34 @@ export default function AdminKelulusanPage() {
                 onChange={(e) => setFilterStatus(e.target.value)}
                 className="rounded-2xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm font-black outline-none transition focus:border-emerald-400 focus:bg-white"
               >
-                <option value="semua">Semua Status</option>
+                <option value="semua">Semua Verifikasi</option>
                 <option value="pending">Pending</option>
                 <option value="disetujui">Disetujui</option>
                 <option value="ditolak">Ditolak</option>
               </select>
             </div>
+
+            <div className="mt-4 rounded-2xl border border-blue-100 bg-blue-50 p-4 text-xs leading-relaxed text-blue-800">
+              <div className="flex gap-3">
+                <FaInfoCircle className="mt-0.5 shrink-0" />
+                <p>
+                  Alur: guru/wali kelas mengajukan kelulusan, admin melakukan
+                  verifikasi, lalu admin menekan <b>Proses Kelas</b> untuk
+                  memindahkan status kelas santri sesuai hasil kelulusan.
+                </p>
+              </div>
+            </div>
           </div>
 
-          <div className="mt-6 rounded-[30px] bg-white p-4 shadow-sm">
+          <div className="mt-6 rounded-[30px] bg-white p-4 shadow-sm ring-1 ring-emerald-100">
             {loading ? (
-              <div className="p-8 text-center font-bold text-emerald-700">
+              <div className="flex min-h-[220px] flex-col items-center justify-center text-center font-bold text-emerald-700">
+                <FaSyncAlt className="mb-4 animate-spin text-3xl" />
                 Mengambil data kelulusan...
               </div>
             ) : groupedByKelas.length === 0 ? (
-              <div className="p-8 text-center font-bold text-emerald-700">
+              <div className="flex min-h-[220px] flex-col items-center justify-center text-center font-bold text-emerald-700">
+                <FaLayerGroup className="mb-4 text-4xl text-emerald-400" />
                 Belum ada data kelulusan.
               </div>
             ) : (
@@ -459,26 +596,12 @@ export default function AdminKelulusanPage() {
                     </h2>
 
                     <p className="mt-1 text-sm font-semibold text-slate-500">
-                      Klik salah satu kelas untuk melihat daftar santri.
+                      Klik kelas untuk melihat santri yang mengajukan kelulusan.
                     </p>
                   </div>
 
-                  <div className="flex flex-wrap gap-2">
-                    <button
-                      type="button"
-                      onClick={openAllKelas}
-                      className="rounded-xl bg-emerald-700 px-4 py-2 text-xs font-black text-white transition hover:bg-emerald-800"
-                    >
-                      Buka Semua
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={closeAllKelas}
-                      className="rounded-xl bg-slate-100 px-4 py-2 text-xs font-black text-slate-700 transition hover:bg-slate-200"
-                    >
-                      Tutup Semua
-                    </button>
+                  <div className="rounded-2xl bg-emerald-50 px-4 py-3 text-xs font-black text-emerald-700">
+                    Total Kelas: {groupedByKelas.length}
                   </div>
                 </div>
 
@@ -517,7 +640,7 @@ export default function AdminKelulusanPage() {
                       <button
                         type="button"
                         onClick={() => toggleKelas(kelas.id)}
-                        className="flex w-full flex-col gap-4 p-5 text-left transition hover:bg-emerald-50 lg:flex-row lg:items-center lg:justify-between"
+                        className="flex w-full flex-col gap-4 p-5 text-left transition hover:bg-emerald-50 xl:flex-row xl:items-center xl:justify-between"
                       >
                         <div className="flex min-w-0 items-start gap-4">
                           <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-emerald-700 text-xl text-white">
@@ -542,21 +665,29 @@ export default function AdminKelulusanPage() {
                         </div>
 
                         <div className="flex flex-wrap items-center gap-2">
-                          <span className="rounded-full bg-yellow-100 px-3 py-1 text-xs font-black text-yellow-700">
-                            Pending {totalPendingKelas}
-                          </span>
+                          <MiniStatus
+                            label="Pending"
+                            value={totalPendingKelas}
+                            className="bg-yellow-100 text-yellow-700"
+                          />
 
-                          <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-black text-green-700">
-                            Disetujui {totalDisetujuiKelas}
-                          </span>
+                          <MiniStatus
+                            label="Disetujui"
+                            value={totalDisetujuiKelas}
+                            className="bg-green-100 text-green-700"
+                          />
 
-                          <span className="rounded-full bg-red-100 px-3 py-1 text-xs font-black text-red-700">
-                            Ditolak {totalDitolakKelas}
-                          </span>
+                          <MiniStatus
+                            label="Ditolak"
+                            value={totalDitolakKelas}
+                            className="bg-red-100 text-red-700"
+                          />
 
-                          <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-black text-blue-700">
-                            Belum Diproses {totalBelumDiprosesKelas}
-                          </span>
+                          <MiniStatus
+                            label="Belum Diproses"
+                            value={totalBelumDiprosesKelas}
+                            className="bg-blue-100 text-blue-700"
+                          />
 
                           <span className="ml-1 flex h-10 w-10 items-center justify-center rounded-xl bg-white text-emerald-700 shadow-sm">
                             {isOpen ? <FaChevronDown /> : <FaChevronRight />}
@@ -592,22 +723,40 @@ export default function AdminKelulusanPage() {
                                   return (
                                     <tr
                                       key={item.id}
-                                      className="border-b border-emerald-50 align-top"
+                                      className="border-b border-emerald-50 align-top transition hover:bg-emerald-50/50"
                                     >
                                       <td className="px-5 py-4">
-                                        <p className="font-black text-emerald-950">
-                                          {item.nama_santri ||
-                                            item.santri?.nama ||
-                                            "-"}
-                                        </p>
+                                        <div className="flex items-start gap-3">
+                                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-700">
+                                            <FaUserGraduate />
+                                          </div>
 
-                                        <p className="mt-1 text-xs font-semibold text-emerald-600">
-                                          NIS/NISN: {item.nis || "-"}
-                                        </p>
+                                          <div>
+                                            <p className="font-black text-emerald-950">
+                                              {item.nama_santri ||
+                                                item.santri?.nama ||
+                                                "-"}
+                                            </p>
+
+                                            <p className="mt-1 text-xs font-semibold text-emerald-600">
+                                              NIS/NISN: {item.nis || "-"}
+                                            </p>
+
+                                            <p className="mt-1 text-xs font-semibold text-slate-500">
+                                              Kelas:{" "}
+                                              {item.nama_kelas ||
+                                                item.kelas?.nama_kelas ||
+                                                "-"}
+                                            </p>
+                                          </div>
+                                        </div>
                                       </td>
 
-                                      <td className="px-5 py-4 text-sm font-bold">
-                                        {item.nama_guru || "-"}
+                                      <td className="px-5 py-4">
+                                        <div className="inline-flex items-center gap-2 rounded-2xl bg-slate-50 px-3 py-2 text-sm font-bold text-slate-700">
+                                          <FaUserTie className="text-emerald-600" />
+                                          {item.nama_guru || "-"}
+                                        </div>
                                       </td>
 
                                       <td className="px-5 py-4">
@@ -639,7 +788,7 @@ export default function AdminKelulusanPage() {
                                         <div className="max-w-sm space-y-2 text-sm">
                                           <div className="rounded-2xl bg-emerald-50 p-3">
                                             <p className="text-xs font-black text-emerald-700">
-                                              Guru
+                                              Catatan Guru
                                             </p>
 
                                             <p className="mt-1 text-slate-600">
@@ -650,7 +799,7 @@ export default function AdminKelulusanPage() {
                                           {item.catatan_admin && (
                                             <div className="rounded-2xl bg-yellow-50 p-3">
                                               <p className="text-xs font-black text-yellow-700">
-                                                Admin
+                                                Catatan Admin
                                               </p>
 
                                               <p className="mt-1 text-slate-600">
@@ -662,7 +811,7 @@ export default function AdminKelulusanPage() {
                                       </td>
 
                                       <td className="px-5 py-4">
-                                        <div className="flex min-w-[220px] flex-wrap gap-2">
+                                        <div className="flex min-w-[240px] flex-wrap gap-2">
                                           <button
                                             type="button"
                                             disabled={processingId === item.id}

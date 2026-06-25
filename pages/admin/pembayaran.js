@@ -1255,7 +1255,7 @@ function TagihanForm({
                   className="input"
                 >
                   <option value="">Pilih Jenjang</option>
-                  <option value="SMP">SMP</option>
+                  <option value="MTS">MTS</option>
                   <option value="SMK">SMK</option>
                   <option value="Takhassus">Takhassus</option>
                 </select>

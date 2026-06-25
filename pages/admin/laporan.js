@@ -7,6 +7,10 @@ import AuthLoading from "../../components/AuthLoading";
 
 import {
   FaChartBar,
+  FaExclamationTriangle,
+  FaArrowUp,
+  FaReceipt,
+  FaListAlt,
   FaUsers,
   FaMoneyBillWave,
   FaClock,
@@ -601,20 +605,138 @@ if (checking) {
                 </section>
 
                 {/* INSIGHT */}
-                <section className="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-[1.1fr_0.9fr] print:hidden">
-                  <ExecutiveInsight
-                    insightText={insightText}
-                    rasioAktif={rasioAktif}
-                    rasioLunas={rasioLunas}
-                    pending={laporan.pembayaran.pending}
-                  />
+<section className="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-[1.1fr_0.9fr] print:hidden">
+  <ExecutiveInsight
+    insightText={insightText}
+    rasioAktif={rasioAktif}
+    rasioLunas={rasioLunas}
+    pending={laporan.pembayaran.pending}
+  />
 
-                  <ReportPreviewCard
-                    nomorLaporan={nomorLaporan}
-                    periodeLabel={periodeLabel}
-                    handlePrint={handlePrint}
-                  />
-                </section>
+  <ReportPreviewCard
+    nomorLaporan={nomorLaporan}
+    periodeLabel={periodeLabel}
+    handlePrint={handlePrint}
+  />
+</section>
+
+{/* INFORMATIVE SUMMARY */}
+<section className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4 print:hidden">
+  <InformativeMetric
+    title="Status Santri"
+    value={`${rasioAktif}% Aktif`}
+    desc={`${laporan.santri.pending} pending dan ${laporan.santri.ditolak} ditolak dari total data santri.`}
+    icon={<FaUsers />}
+    tone="emerald"
+  />
+
+  <InformativeMetric
+    title="Status Pembayaran"
+    value={`${rasioLunas}% Lunas`}
+    desc={`${laporan.pembayaran.pending} transaksi masih pending dan perlu dicek admin.`}
+    icon={<FaReceipt />}
+    tone={laporan.pembayaran.pending > 0 ? "yellow" : "green"}
+  />
+
+  <InformativeMetric
+    title="Pemasukan"
+    value={formatRupiah(laporan.pembayaran.totalPemasukan)}
+    desc={`Total pemasukan dari ${laporan.pembayaran.lunas} transaksi lunas.`}
+    icon={<FaArrowUp />}
+    tone="blue"
+  />
+
+  <InformativeMetric
+    title="Perlu Perhatian"
+    value={laporan.pembayaran.pending}
+    desc="Pembayaran pending perlu diverifikasi agar laporan lebih akurat."
+    icon={<FaExclamationTriangle />}
+    tone={laporan.pembayaran.pending > 0 ? "red" : "emerald"}
+  />
+</section>
+
+{/* VISUAL BREAKDOWN */}
+<section className="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-2 print:hidden">
+  <div className="relative overflow-hidden rounded-[36px] border border-[#D8C287] bg-gradient-to-br from-white via-[#FFFDF6] to-[#E8F5E9] p-5 shadow-xl shadow-yellow-950/10">
+    <div className="mb-5 flex items-center gap-3">
+      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-600 text-xl text-white">
+        <FaChartPie />
+      </div>
+
+      <div>
+        <h2 className="text-xl font-black text-[#1F1607]">
+          Komposisi Santri
+        </h2>
+        <p className="text-sm font-semibold text-slate-500">
+          Perbandingan status santri pada sistem.
+        </p>
+      </div>
+    </div>
+
+    <div className="space-y-3">
+      <ProgressInfo
+        label="Santri Aktif"
+        value={laporan.santri.aktif}
+        total={laporan.santri.total}
+        color="bg-emerald-600"
+      />
+
+      <ProgressInfo
+        label="Santri Pending"
+        value={laporan.santri.pending}
+        total={laporan.santri.total}
+        color="bg-yellow-400"
+      />
+
+      <ProgressInfo
+        label="Santri Ditolak"
+        value={laporan.santri.ditolak}
+        total={laporan.santri.total}
+        color="bg-red-500"
+      />
+    </div>
+  </div>
+
+  <div className="relative overflow-hidden rounded-[36px] border border-[#D8C287] bg-gradient-to-br from-white via-[#FFFDF6] to-[#FFF4D1] p-5 shadow-xl shadow-yellow-950/10">
+    <div className="mb-5 flex items-center gap-3">
+      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-yellow-400 text-xl text-green-950">
+        <FaMoneyBillWave />
+      </div>
+
+      <div>
+        <h2 className="text-xl font-black text-[#1F1607]">
+          Komposisi Pembayaran
+        </h2>
+        <p className="text-sm font-semibold text-slate-500">
+          Ringkasan transaksi berdasarkan status.
+        </p>
+      </div>
+    </div>
+
+    <div className="space-y-3">
+      <ProgressInfo
+        label="Pembayaran Lunas"
+        value={laporan.pembayaran.lunas}
+        total={laporan.pembayaran.total}
+        color="bg-emerald-600"
+      />
+
+      <ProgressInfo
+        label="Pembayaran Pending"
+        value={laporan.pembayaran.pending}
+        total={laporan.pembayaran.total}
+        color="bg-yellow-400"
+      />
+
+      <ProgressInfo
+        label="Pembayaran Ditolak"
+        value={laporan.pembayaran.ditolak}
+        total={laporan.pembayaran.total}
+        color="bg-red-500"
+      />
+    </div>
+  </div>
+</section>
 
                 {/* DETAIL CARDS */}
                 <section className="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-2 print:grid-cols-2">
@@ -629,7 +751,7 @@ if (checking) {
                       label="Santri Ditolak"
                       value={laporan.santri.ditolak}
                     />
-                    <InfoRow label="SMP" value={laporan.santri.smp} />
+                    <InfoRow label="MTS" value={laporan.santri.mts} />
                     <InfoRow label="SMK" value={laporan.santri.smk} />
                     <InfoRow
                       label="Takhassus"
@@ -683,12 +805,12 @@ if (checking) {
 
                           <div>
                             <h2 className="text-xl font-black text-[#1F1607]">
-                              Pembayaran Terbaru
-                            </h2>
+  Riwayat Pembayaran Terbaru
+</h2>
 
-                            <p className="text-sm font-semibold text-slate-600">
-                              Data transaksi berdasarkan periode laporan.
-                            </p>
+<p className="text-sm font-semibold text-slate-600">
+  Menampilkan {laporan.pembayaran.terbaru.length} transaksi terbaru pada periode {periodeLabel}.
+</p>
                           </div>
                         </div>
 
@@ -917,6 +1039,65 @@ function InsightMini({ title, value, icon }) {
 
       <p className="text-xs font-bold text-slate-500">{title}</p>
       <p className="mt-1 text-2xl font-black text-[#1F1607]">{value}</p>
+    </div>
+  );
+}
+
+function InformativeMetric({ title, value, desc, icon, tone = "emerald" }) {
+  const toneMap = {
+    emerald: "bg-emerald-100 text-emerald-700 border-emerald-200",
+    yellow: "bg-yellow-100 text-yellow-700 border-yellow-200",
+    red: "bg-red-100 text-red-700 border-red-200",
+    blue: "bg-blue-100 text-blue-700 border-blue-200",
+  };
+
+  return (
+    <div className="rounded-3xl border border-[#E7D7A7] bg-white/80 p-4 shadow-sm backdrop-blur-xl">
+      <div className="flex items-start gap-3">
+        <div
+          className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border text-lg ${
+            toneMap[tone] || toneMap.emerald
+          }`}
+        >
+          {icon}
+        </div>
+
+        <div>
+          <p className="text-xs font-black uppercase tracking-[0.16em] text-slate-500">
+            {title}
+          </p>
+
+          <h3 className="mt-1 text-2xl font-black text-[#1F1607]">
+            {value}
+          </h3>
+
+          <p className="mt-1 text-xs font-semibold leading-relaxed text-slate-500">
+            {desc}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ProgressInfo({ label, value, total, color = "bg-emerald-600" }) {
+  const percent = total > 0 ? Math.round((Number(value || 0) / total) * 100) : 0;
+
+  return (
+    <div className="rounded-2xl border border-[#E7D7A7] bg-white/80 p-4">
+      <div className="mb-2 flex items-center justify-between gap-3">
+        <p className="text-sm font-black text-slate-700">{label}</p>
+        <p className="text-sm font-black text-[#1F1607]">
+          {value} data • {percent}%
+        </p>
+      </div>
+
+      <div className="h-3 overflow-hidden rounded-full bg-slate-100">
+        <div
+          className={`h-full rounded-full ${color} transition-all duration-700`}
+          style={{ width: `${percent}%` }}
+        />
+      </div>
     </div>
   );
 }

@@ -685,12 +685,6 @@ if (checking) {
                             options={["Laki-laki", "Perempuan"]}
                           />
 
-                          <Input
-                            label="Agama"
-                            value={form.agama}
-                            onChange={(v) => handleChange("agama", v)}
-                            disabled={!editMode}
-                          />
                         </div>
                       </ProfileSection>
 
@@ -705,7 +699,7 @@ if (checking) {
   value={form.jenjang}
   onChange={(v) => handleChange("jenjang", v)}
   disabled={true}
-  options={["SMP", "SMK", "Takhassus"]}
+  options={["MTS", "SMK", "Takhassus"]}
 />
 <Input
   label={form.jenjang === "Takhassus" ? "Marhalah" : "Kelas"}

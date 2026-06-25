@@ -5,27 +5,64 @@ const router = express.Router();
 
 const cleanText = (value) => String(value || "").trim();
 
-const syncGuruDariKelas = async ({ kelasData, mapelList = [] }) => {
-  const namaKelas =
-    kelasData.nama_kelas ||
-    `${kelasData.jenjang || ""} Kelas ${kelasData.tingkat || ""}`.trim();
+/* =========================================================
+   SYNC GURU DARI DATA KELAS
+   - wali_kelas diambil dari kelas.wali_guru_id
+   - mapel diambil dari semua kelas_mapel.guru_id
+   - tidak menimpa mapel lama, tapi menggabungkan semua mapel guru
+========================================================= */
 
-  // Update wali kelas ke tabel guru
-  if (kelasData.wali_guru_id) {
-    await supabase
-      .from("guru")
-      .update({
-        wali_kelas: namaKelas,
-      })
-      .eq("id", kelasData.wali_guru_id);
+const syncGuruDariKelas = async () => {
+  const { data: guruList, error: guruError } = await supabase
+    .from("guru")
+    .select("id");
+
+  if (guruError) {
+    throw new Error(guruError.message);
   }
 
-  // Update mapel ke tabel guru
+  const { data: kelasList, error: kelasError } = await supabase
+    .from("kelas")
+    .select("id, nama_kelas, jenjang, tingkat, wali_guru_id")
+    .not("wali_guru_id", "is", null);
+
+  if (kelasError) {
+    throw new Error(kelasError.message);
+  }
+
+  const { data: kelasMapelList, error: mapelError } = await supabase
+    .from("kelas_mapel")
+    .select("id, nama_mapel, guru_id")
+    .not("guru_id", "is", null);
+
+  if (mapelError) {
+    throw new Error(mapelError.message);
+  }
+
+  const waliByGuru = {};
   const mapelByGuru = {};
 
-  for (const item of mapelList || []) {
-    const guruId = cleanText(item.guru_id);
-    const namaMapel = cleanText(item.nama_mapel);
+  for (const kelas of kelasList || []) {
+    const guruId = cleanText(kelas.wali_guru_id);
+
+    if (!guruId) continue;
+
+    const namaKelas =
+      kelas.nama_kelas ||
+      `${kelas.jenjang || ""} Kelas ${kelas.tingkat || ""}`.trim();
+
+    if (!waliByGuru[guruId]) {
+      waliByGuru[guruId] = [];
+    }
+
+    if (namaKelas) {
+      waliByGuru[guruId].push(namaKelas);
+    }
+  }
+
+  for (const mapel of kelasMapelList || []) {
+    const guruId = cleanText(mapel.guru_id);
+    const namaMapel = cleanText(mapel.nama_mapel);
 
     if (!guruId || !namaMapel) continue;
 
@@ -36,15 +73,23 @@ const syncGuruDariKelas = async ({ kelasData, mapelList = [] }) => {
     mapelByGuru[guruId].push(namaMapel);
   }
 
-  for (const [guruId, mapelNames] of Object.entries(mapelByGuru)) {
-    const uniqueMapel = [...new Set(mapelNames)];
+  for (const guru of guruList || []) {
+    const guruId = guru.id;
 
-    await supabase
+    const waliKelas = [...new Set(waliByGuru[guruId] || [])].join(", ");
+    const mapel = [...new Set(mapelByGuru[guruId] || [])].join(", ");
+
+    const { error: updateGuruError } = await supabase
       .from("guru")
       .update({
-        mapel: uniqueMapel.join(", "),
+        wali_kelas: waliKelas || null,
+        mapel: mapel || null,
       })
       .eq("id", guruId);
+
+    if (updateGuruError) {
+      throw new Error(updateGuruError.message);
+    }
   }
 };
 
@@ -634,10 +679,7 @@ router.post("/kelas", verifyAdmin, async (req, res) => {
       await insertMapel(kelasBaru.id, mapelList || []);
       await insertSiswa(kelasBaru.id, siswaList || []);
 
-      await syncGuruDariKelas({
-        kelasData: kelasBaru,
-        mapelList: mapelList || [],
-      });
+      await syncGuruDariKelas();
     } catch (insertError) {
       await supabase.from("kelas").delete().eq("id", kelasBaru.id);
 
@@ -755,10 +797,7 @@ router.put("/kelas/:id", verifyAdmin, async (req, res) => {
     await insertMapel(id, mapelList || []);
     await insertSiswa(id, siswaList || []);
 
-    await syncGuruDariKelas({
-      kelasData: updatedKelas,
-      mapelList: mapelList || [],
-    });
+    await syncGuruDariKelas();
 
     return res.json({
       success: true,
@@ -787,6 +826,8 @@ router.delete("/kelas/:id", verifyAdmin, async (req, res) => {
         error: error.message,
       });
     }
+
+    await syncGuruDariKelas();
 
     return res.json({
       success: true,

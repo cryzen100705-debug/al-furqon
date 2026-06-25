@@ -265,7 +265,7 @@ export default function VerifikasiSantri() {
       tampil: filteredData.length,
       putra: data.filter((item) => item.jenis_kelamin === "Laki-laki").length,
       putri: data.filter((item) => item.jenis_kelamin === "Perempuan").length,
-      smp: data.filter((item) => item.jenjang === "SMP").length,
+      mts: data.filter((item) => item.jenjang === "MTS").length,
       smk: data.filter((item) => item.jenjang === "SMK").length,
       takhassus: data.filter((item) => item.jenjang === "Takhassus").length,
     };
@@ -424,8 +424,8 @@ if (checking) {
                 />
 
                 <StatCard
-                  title="SMP"
-                  value={stats.smp}
+                  title="MTS"
+                  value={stats.mts}
                   icon={<FaSchool />}
                   color="bg-blue-600 text-white"
                 />
@@ -505,7 +505,7 @@ if (checking) {
                       className="h-12 rounded-2xl border border-[#D8C287] bg-white/80 px-4 text-sm font-semibold text-slate-700 outline-none transition focus:border-yellow-500 focus:bg-white focus:ring-4 focus:ring-yellow-100"
                     >
                       <option value="">Semua Jenjang</option>
-                      <option value="SMP">SMP</option>
+                      <option value="MTS">MTS</option>
                       <option value="SMK">SMK</option>
                       <option value="Takhassus">Takhassus</option>
                     </select>

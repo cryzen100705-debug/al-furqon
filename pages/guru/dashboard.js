@@ -380,8 +380,8 @@ export default function GuruDashboard() {
                       Wali Kelas
                     </p>
                     <p className="mt-1 font-black text-emerald-950">
-                      {guruData?.wali_kelas || "Tidak"}
-                    </p>
+                    {guruData?.wali_kelas || "Belum menjadi wali kelas"}
+                  </p>
                   </div>
                 </div>
               </div>

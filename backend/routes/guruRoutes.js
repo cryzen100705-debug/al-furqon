@@ -166,27 +166,30 @@ router.get("/dashboard/:userId", verifyGuru, async (req, res) => {
     const today = getTodayName();
 
     const { data: guru, error: guruError } = await supabase
-      .from("guru")
-      .select(
-  `
-  id,
-  user_id,
-  nama,
-  no_hp,
-  alamat,
-  pendidikan_terakhir,
-  status_kepegawaian,
-  status,
-  users:user_id (
+  .from("guru")
+  .select(
+    `
     id,
+    user_id,
     nama,
-    email,
-    role
+    no_hp,
+    alamat,
+    pendidikan_terakhir,
+    status_kepegawaian,
+    tanggal_bergabung,
+    status,
+    mapel,
+    wali_kelas,
+    users:user_id (
+      id,
+      nama,
+      email,
+      role
+    )
+  `
   )
-`
-)
-      .eq("user_id", userId)
-      .single();
+  .eq("user_id", userId)
+  .single();
 
     if (guruError || !guru) {
       return res.status(404).json({
@@ -276,7 +279,7 @@ async function getKelasWaliGuru(guru) {
   /*
     Prioritas 2:
     Fallback kalau kamu masih pakai kolom guru.wali_kelas berbentuk text.
-    Contoh guru.wali_kelas = "SMP Kelas 7" atau "7".
+    Contoh guru.wali_kelas = "MTS Kelas 7" atau "7".
   */
   const waliKelasText = String(guru.wali_kelas || "").trim();
 
