@@ -1464,7 +1464,6 @@ function PembinaScreen({ pembinaItems, step, direction, setStep }) {
           <motion.div
             initial={{ opacity: 0, x: -24, filter: "blur(7px)" }}
             animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
-            transition={{ delay: 0.14, duration: 0.5, ease: EASE_PREMIUM }}
             className="pembina-photo-card-v2"
           >
             <div className="relative h-full overflow-hidden rounded-[1.55rem] border border-white/10 bg-white/10 p-3 shadow-2xl backdrop-blur-xl">
