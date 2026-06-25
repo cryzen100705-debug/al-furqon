@@ -712,7 +712,7 @@ export default function SantriNilaiPage() {
                 )}
               </div>
 
-              <div className="grid gap-3 xl:grid-cols-[1fr_220px_220px_220px_220px]">
+              <div className="grid min-w-0 grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(220px,1fr)_minmax(150px,190px)_minmax(150px,190px)_minmax(150px,180px)_minmax(140px,170px)]">
                 <div className="relative">
                   <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-yellow-400" />
 
@@ -720,7 +720,7 @@ export default function SantriNilaiPage() {
                     type="text"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    className="w-full rounded-2xl border border-white/10 bg-white/10 px-12 py-3 text-sm font-bold text-white outline-none placeholder:text-emerald-100/40 focus:border-yellow-400"
+                    className="w-full min-w-0 rounded-2xl border border-white/10 bg-white/10 px-12 py-3 text-sm font-bold text-white outline-none placeholder:text-emerald-100/40 focus:border-yellow-400"
                     placeholder="Cari mapel, nilai, guru, kelas..."
                   />
                 </div>
@@ -728,7 +728,7 @@ export default function SantriNilaiPage() {
                 <select
                   value={filterMapel}
                   onChange={(e) => setFilterMapel(e.target.value)}
-                  className="rounded-2xl border border-white/10 bg-[#0B2A1B] px-4 py-3 text-sm font-bold text-white outline-none focus:border-yellow-400"
+                  className="w-full min-w-0 rounded-2xl border border-white/10 bg-[#0B2A1B] px-4 py-3 text-sm font-bold text-white outline-none focus:border-yellow-400"
                 >
                   <option value="">Semua mapel</option>
                   {mapelOptions.map((mapel) => (
@@ -741,7 +741,7 @@ export default function SantriNilaiPage() {
                 <select
                   value={filterJenis}
                   onChange={(e) => setFilterJenis(e.target.value)}
-                  className="rounded-2xl border border-white/10 bg-[#0B2A1B] px-4 py-3 text-sm font-bold text-white outline-none focus:border-yellow-400"
+                  className="w-full min-w-0 rounded-2xl border border-white/10 bg-[#0B2A1B] px-4 py-3 text-sm font-bold text-white outline-none focus:border-yellow-400"
                 >
                   <option value="">Semua jenis</option>
                   {jenisOptions.map((jenis) => (
