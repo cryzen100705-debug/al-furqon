@@ -29,24 +29,26 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 function StatCard({ icon, label, value, desc }) {
   return (
-    <div className="relative min-w-0 overflow-hidden rounded-[30px] border border-emerald-100 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
-      <div className="absolute -right-10 -top-10 h-28 w-28 rounded-full bg-emerald-100 blur-2xl" />
+    <div className="relative min-w-0 overflow-hidden rounded-[22px] border border-emerald-100 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg">
+      <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-emerald-100 blur-2xl" />
 
-      <div className="relative z-10 flex min-w-0 items-center gap-4">
-        <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-3xl bg-emerald-700 text-xl text-white">
+      <div className="relative z-10 flex min-w-0 items-center gap-3">
+        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-emerald-700 text-base text-white">
           {icon}
         </div>
 
         <div className="min-w-0">
-          <p className="truncate text-sm font-black text-emerald-700">
+          <p className="truncate text-xs font-black text-emerald-700">
             {label}
           </p>
 
-          <h3 className="mt-1 truncate text-3xl font-black text-emerald-950">
+          <h3 className="mt-1 truncate text-2xl font-black leading-none text-emerald-950">
             {value}
           </h3>
 
-          <p className="mt-1 text-xs leading-snug text-slate-500">{desc}</p>
+          <p className="mt-1 text-[11px] leading-snug text-slate-500">
+            {desc}
+          </p>
         </div>
       </div>
     </div>
@@ -67,22 +69,26 @@ function FeatureCard({ icon, title, desc, href, router, color = "emerald" }) {
     <button
       type="button"
       onClick={() => router.push(href)}
-      className="group relative overflow-hidden rounded-[32px] border border-emerald-100 bg-white p-6 text-left shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
+      className="group relative min-h-[175px] overflow-hidden rounded-[24px] border border-emerald-100 bg-white p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg"
     >
-      <div className="absolute -right-14 -top-14 h-36 w-36 rounded-full bg-emerald-50 blur-2xl transition group-hover:bg-amber-100" />
+      <div className="absolute -right-12 -top-12 h-32 w-32 rounded-full bg-emerald-50 blur-2xl transition group-hover:bg-amber-100" />
 
       <div className="relative z-10">
         <div
-          className={`flex h-16 w-16 items-center justify-center rounded-3xl text-2xl ${colorClass}`}
+          className={`flex h-12 w-12 items-center justify-center rounded-2xl text-lg ${colorClass}`}
         >
           {icon}
         </div>
 
-        <h3 className="mt-5 text-xl font-black text-emerald-950">{title}</h3>
+        <h3 className="mt-4 text-lg font-black text-emerald-950">
+          {title}
+        </h3>
 
-        <p className="mt-2 text-sm leading-relaxed text-slate-500">{desc}</p>
+        <p className="mt-2 text-xs font-semibold leading-relaxed text-slate-500">
+          {desc}
+        </p>
 
-        <div className="mt-5 inline-flex items-center gap-2 text-sm font-black text-emerald-700">
+        <div className="mt-4 inline-flex items-center gap-2 text-xs font-black text-emerald-700">
           Buka Fitur
           <FaArrowRight className="transition group-hover:translate-x-1" />
         </div>
@@ -93,40 +99,38 @@ function FeatureCard({ icon, title, desc, href, router, color = "emerald" }) {
 
 function JadwalCard({ item }) {
   return (
-    <div className="rounded-[26px] border border-emerald-100 bg-white p-5 shadow-sm">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div>
-          <div className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1 text-xs font-black text-emerald-700">
+    <div className="rounded-[22px] border border-emerald-100 bg-white p-4 shadow-sm">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div className="min-w-0">
+          <div className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-black text-emerald-700">
             <FaClock />
             {item.hari || "Hari belum diatur"}
           </div>
 
-          <h3 className="mt-3 text-xl font-black text-emerald-950">
+          <h3 className="mt-3 truncate text-lg font-black text-emerald-950">
             {item.nama_mapel || "Mata pelajaran"}
           </h3>
 
-          <p className="mt-1 text-sm font-semibold text-slate-500">
+          <p className="mt-1 text-xs font-semibold text-slate-500">
             {item.kelas?.nama_kelas || "Kelas belum ditentukan"}
           </p>
         </div>
 
-        <div className="rounded-2xl bg-amber-100 px-4 py-3 text-sm font-black text-emerald-950">
+        <div className="w-fit rounded-2xl bg-amber-100 px-3 py-2 text-xs font-black text-emerald-950">
           {item.jam_mulai || "--:--"} - {item.jam_selesai || "--:--"}
         </div>
       </div>
 
-      <div className="mt-4 flex flex-wrap gap-2 text-xs font-bold">
-        <span className="rounded-full bg-emerald-50 px-3 py-2 text-emerald-700">
+      <div className="mt-3 flex flex-wrap gap-2 text-[11px] font-bold">
+        <span className="rounded-full bg-emerald-50 px-3 py-1.5 text-emerald-700">
           {item.kelas?.jenjang || "Jenjang"}
         </span>
 
-        <span className="rounded-full bg-amber-50 px-3 py-2 text-amber-700">
-          {item.ruang ||
-            item.ruang_detail?.nama_ruang ||
-            "Ruang belum diatur"}
+        <span className="rounded-full bg-amber-50 px-3 py-1.5 text-amber-700">
+          {item.ruang || item.ruang_detail?.nama_ruang || "Ruang belum diatur"}
         </span>
 
-        <span className="rounded-full bg-sky-50 px-3 py-2 text-sky-700">
+        <span className="rounded-full bg-sky-50 px-3 py-1.5 text-sky-700">
           {item.status || "aktif"}
         </span>
       </div>
@@ -136,14 +140,16 @@ function JadwalCard({ item }) {
 
 function EmptyState({ icon, title, desc }) {
   return (
-    <div className="rounded-[30px] border border-dashed border-emerald-200 bg-emerald-50 p-8 text-center">
-      <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-3xl bg-white text-3xl text-emerald-700 shadow-sm">
+    <div className="rounded-[24px] border border-dashed border-emerald-200 bg-emerald-50 p-6 text-center">
+      <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-xl text-emerald-700 shadow-sm">
         {icon}
       </div>
 
-      <h3 className="mt-4 text-xl font-black text-emerald-950">{title}</h3>
+      <h3 className="mt-3 text-lg font-black text-emerald-950">
+        {title}
+      </h3>
 
-      <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-slate-500">
+      <p className="mx-auto mt-2 max-w-md text-xs font-semibold leading-relaxed text-slate-500">
         {desc}
       </p>
     </div>
@@ -300,7 +306,7 @@ export default function GuruDashboard() {
           }
         `}
       >
-        <div className="relative min-h-screen w-full overflow-hidden px-4 py-6 sm:px-5 lg:px-7">
+        <div className="relative min-h-screen w-full overflow-hidden px-3 py-4 sm:px-4 lg:px-5">
           <div className="pointer-events-none absolute inset-0">
             <div className="absolute inset-0 bg-[linear-gradient(135deg,#F8F4E8_0%,#ECFDF5_45%,#FFFBEB_100%)]" />
             <div className="absolute -left-32 top-20 h-96 w-96 rounded-full bg-emerald-200/60 blur-3xl" />
@@ -324,146 +330,142 @@ export default function GuruDashboard() {
             )}
 
             {/* HEADER */}
-            <section className="mb-7 flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
-              <div>
-                <div className="inline-flex items-center gap-3 rounded-full border border-emerald-200 bg-white px-4 py-2 text-xs font-black uppercase tracking-[0.22em] text-emerald-700 shadow-sm">
-                  <FaLeaf />
-                  Teacher Workspace
-                </div>
+<section className="mb-5 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+  <div className="min-w-0">
+    <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-white px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] text-emerald-700 shadow-sm">
+      <FaLeaf />
+      Teacher Workspace
+    </div>
 
-                <h1 className="mt-5 text-[clamp(2.4rem,5vw,5rem)] font-black leading-[0.95] tracking-[-0.06em] text-emerald-950">
-                  Ruang Guru
-                  <span className="block text-amber-500">Al-Furqon.</span>
-                </h1>
+    <h1 className="mt-4 text-[clamp(2rem,4vw,3.8rem)] font-black leading-[0.95] tracking-[-0.055em] text-emerald-950">
+      Ruang Guru
+      <span className="block text-amber-500">Al-Furqon.</span>
+    </h1>
 
-                <p className="mt-5 max-w-2xl text-sm leading-relaxed text-slate-600 sm:text-base">
-                  Assalamu’alaikum,{" "}
-                  <span className="font-black text-emerald-700">
-                    {guruData?.nama || user?.nama || user?.email}
-                  </span>
-                  . Ini adalah ruang kerja guru untuk mengelola pembelajaran,
-                  jadwal, nilai, dan santri.
-                </p>
-              </div>
+    <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-600">
+      Assalamu’alaikum,{" "}
+      <span className="font-black text-emerald-700">
+        {guruData?.nama || user?.nama || user?.email}
+      </span>
+      . Kelola jadwal, kelas, nilai, materi, dan aktivitas pembelajaran dari satu halaman.
+    </p>
+  </div>
 
-              <div className="rounded-[34px] border border-emerald-100 bg-yellow-200 p-5 shadow-sm lg:w-[380px]">
-                <div className="flex items-center gap-4">
-                  <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-emerald-700 text-3xl text-white">
-                    <FaChalkboardTeacher />
-                  </div>
+  <div className="rounded-[26px] border border-emerald-100 bg-yellow-100 p-4 shadow-sm lg:w-[360px]">
+    <div className="flex items-center gap-3">
+      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-700 text-xl text-white">
+        <FaChalkboardTeacher />
+      </div>
 
-                  <div className="min-w-0">
-                    <p className="text-sm font-black text-emerald-700">
-                      Login sebagai
-                    </p>
+      <div className="min-w-0">
+        <p className="text-xs font-black text-emerald-700">
+          Login sebagai
+        </p>
 
-                    <h3 className="mt-1 truncate text-lg font-black text-emerald-950">
-                      {guruData?.nama || user?.nama || "Guru"}
-                    </h3>
+        <h3 className="mt-1 truncate text-base font-black text-emerald-950">
+          {guruData?.nama || user?.nama || "Guru"}
+        </h3>
 
-                    <p className="truncate text-xs font-semibold text-slate-500">
-                      {guruData?.users?.email || user?.email || "guru@alfurqon"}
-                    </p>
-                  </div>
-                </div>
+        <p className="truncate text-[11px] font-semibold text-slate-500">
+          {guruData?.users?.email || user?.email || "guru@alfurqon"}
+        </p>
+      </div>
+    </div>
 
-                <div className="mt-4 grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
-                  <div className="rounded-2xl bg-emerald-50 p-3">
-                    <p className="text-xs font-bold text-emerald-700">Mapel</p>
-                    <p className="mt-1 font-black text-emerald-950">
-                      {guruData?.mapel || "Belum diisi"}
-                    </p>
-                  </div>
+    <div className="mt-3 grid grid-cols-1 gap-2 text-sm sm:grid-cols-2">
+      <div className="rounded-2xl bg-white/80 p-3">
+        <p className="text-[11px] font-bold text-emerald-700">Mapel</p>
+        <p className="mt-1 line-clamp-2 text-xs font-black text-emerald-950">
+          {guruData?.mapel || "Belum diisi"}
+        </p>
+      </div>
 
-                  <div className="rounded-2xl bg-amber-50 p-3">
-                    <p className="text-xs font-bold text-amber-700">
-                      Wali Kelas
-                    </p>
-                    <p className="mt-1 font-black text-emerald-950">
-                    {guruData?.wali_kelas || "Belum menjadi wali kelas"}
-                  </p>
-                  </div>
-                </div>
-              </div>
-            </section>
+      <div className="rounded-2xl bg-white/80 p-3">
+        <p className="text-[11px] font-bold text-amber-700">
+          Wali Kelas
+        </p>
+        <p className="mt-1 line-clamp-2 text-xs font-black text-emerald-950">
+          {guruData?.wali_kelas || "Belum menjadi wali kelas"}
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
 
             {/* HERO */}
-            <section className="mb-7 grid gap-6 lg:grid-cols-[1.25fr_0.75fr]">
-              <div className="relative overflow-hidden rounded-[42px] bg-emerald-800 p-7 text-white shadow-xl lg:p-9">
-                <div className="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-amber-300/20 blur-3xl" />
-                <div className="absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-emerald-300/20 blur-3xl" />
+<section className="mb-5 grid gap-4 lg:grid-cols-[1.25fr_0.75fr]">
+  <div className="relative overflow-hidden rounded-[30px] bg-emerald-800 p-5 text-white shadow-lg lg:p-6">
+    <div className="absolute -right-16 -top-16 h-60 w-60 rounded-full bg-amber-300/20 blur-3xl" />
+    <div className="absolute -bottom-20 -left-20 h-60 w-60 rounded-full bg-emerald-300/20 blur-3xl" />
 
-                <div className="relative z-10">
-                  <p className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-xs font-black uppercase tracking-[0.18em] text-amber-200">
-                    <FaQuran />
-                    Amanah Pembelajaran
-                  </p>
+    <div className="relative z-10">
+      <p className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.16em] text-amber-200">
+        <FaQuran />
+        Amanah Pembelajaran
+      </p>
 
-                  <h2 className="mt-5 max-w-3xl text-3xl font-black leading-tight sm:text-4xl lg:text-5xl">
-                    Fokus mengajar, membimbing, dan menumbuhkan adab santri.
-                  </h2>
+      <h2 className="mt-4 max-w-3xl text-2xl font-black leading-tight sm:text-3xl lg:text-4xl">
+        Fokus mengajar, membimbing, dan menumbuhkan adab santri.
+      </h2>
 
-                  <p className="mt-4 max-w-3xl text-sm leading-relaxed text-emerald-50/80">
-                    Cek jadwal hari ini, pantau kelas yang diajar, dan lanjutkan
-                    tugas pembelajaran dari satu ruang guru digital.
-                  </p>
+      <p className="mt-3 max-w-3xl text-xs font-semibold leading-relaxed text-emerald-50/80 sm:text-sm">
+        Cek jadwal hari ini, pantau kelas yang diajar, dan lanjutkan tugas pembelajaran dari ruang guru digital.
+      </p>
 
-                  <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                    <button
-                      type="button"
-                      onClick={() => router.push("/guru/jadwal")}
-                      className="inline-flex h-12 items-center justify-center gap-3 rounded-2xl bg-amber-300 px-6 text-sm font-black text-emerald-950 transition hover:-translate-y-0.5 hover:bg-amber-200"
-                    >
-                      Lihat Jadwal
-                      <FaCalendarAlt />
-                    </button>
+      <div className="mt-5 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+        <button
+          type="button"
+          onClick={() => router.push("/guru/jadwal")}
+          className="inline-flex h-10 items-center justify-center gap-2 rounded-2xl bg-amber-300 px-4 text-xs font-black text-emerald-950 transition hover:-translate-y-0.5 hover:bg-amber-200"
+        >
+          Lihat Jadwal
+          <FaCalendarAlt />
+        </button>
 
-                    <button
-                      type="button"
-                      onClick={() => router.push("/guru/nilai")}
-                      className="inline-flex h-12 items-center justify-center gap-3 rounded-2xl border border-white/15 bg-white/10 px-6 text-sm font-black text-white transition hover:bg-white/20"
-                    >
-                      Input Nilai
-                      <FaPenFancy />
-                    </button>
+        <button
+          type="button"
+          onClick={() => router.push("/guru/nilai")}
+          className="inline-flex h-10 items-center justify-center gap-2 rounded-2xl border border-white/15 bg-white/10 px-4 text-xs font-black text-white transition hover:bg-white/20"
+        >
+          Input Nilai
+          <FaPenFancy />
+        </button>
 
-                    <button
-                      type="button"
-                      onClick={() => fetchDashboardGuru()}
-                      className="inline-flex h-12 items-center justify-center gap-3 rounded-2xl border border-white/15 bg-white/10 px-6 text-sm font-black text-white transition hover:bg-white/20"
-                    >
-                      Refresh
-                      <FaSyncAlt
-                        className={loadingDashboard ? "animate-spin" : ""}
-                      />
-                    </button>
-                  </div>
-                </div>
-              </div>
+        <button
+          type="button"
+          onClick={() => fetchDashboardGuru()}
+          className="inline-flex h-10 items-center justify-center gap-2 rounded-2xl border border-white/15 bg-white/10 px-4 text-xs font-black text-white transition hover:bg-white/20"
+        >
+          Refresh
+          <FaSyncAlt className={loadingDashboard ? "animate-spin" : ""} />
+        </button>
+      </div>
+    </div>
+  </div>
 
-              <div className="rounded-[42px] border border-emerald-100 bg-yellow-200 p-7 shadow-sm">
-                <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-amber-300 text-2xl text-emerald-950">
-                  <FaCalendarAlt />
-                </div>
+  <div className="rounded-[30px] border border-emerald-100 bg-yellow-100 p-5 shadow-sm">
+    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-300 text-xl text-emerald-950">
+      <FaCalendarAlt />
+    </div>
 
-                <p className="mt-6 text-sm font-black uppercase tracking-[0.16em] text-emerald-700">
-                  Hari Ini
-                </p>
+    <p className="mt-4 text-xs font-black uppercase tracking-[0.16em] text-emerald-700">
+      Hari Ini
+    </p>
 
-                <h3 className="mt-2 text-3xl font-black leading-tight text-emerald-950">
-                  {today}
-                </h3>
+    <h3 className="mt-2 text-2xl font-black leading-tight text-emerald-950">
+      {today}
+    </h3>
 
-                <p className="mt-4 text-sm leading-relaxed text-slate-500">
-                  {ringkasan.jadwalHariIni > 0
-                    ? `Ada ${ringkasan.jadwalHariIni} jadwal mengajar hari ini.`
-                    : "Tidak ada jadwal mengajar hari ini. Gunakan waktu untuk menyiapkan materi."}
-                </p>
-              </div>
-            </section>
+    <p className="mt-3 text-xs font-semibold leading-relaxed text-slate-500">
+      {ringkasan.jadwalHariIni > 0
+        ? `Ada ${ringkasan.jadwalHariIni} jadwal mengajar hari ini.`
+        : "Tidak ada jadwal mengajar hari ini. Gunakan waktu untuk menyiapkan materi."}
+    </p>
+  </div>
+</section>
 
             {/* STATS */}
-            <section className="mb-7 grid w-full min-w-0 grid-cols-1 gap-4 sm:grid-cols-2 2xl:grid-cols-4">
+            <section className="mb-5 grid w-full min-w-0 grid-cols-1 gap-3 sm:grid-cols-2 2xl:grid-cols-4">
               <StatCard
                 icon={<FaCalendarAlt />}
                 label="Jadwal Hari Ini"
@@ -494,7 +496,7 @@ export default function GuruDashboard() {
             </section>
 
             {/* FITUR */}
-            <section className="grid w-full min-w-0 grid-cols-1 gap-5 md:grid-cols-2 2xl:grid-cols-4">
+            <section className="grid w-full min-w-0 grid-cols-1 gap-3 md:grid-cols-2 2xl:grid-cols-4">
               <FeatureCard
                 router={router}
                 href="/guru/jadwal"
@@ -532,7 +534,7 @@ export default function GuruDashboard() {
             </section>
 
             {/* JADWAL DAN KELAS */}
-            <section className="mt-7 grid w-full min-w-0 grid-cols-1 gap-6 xl:grid-cols-[1fr_420px]">
+            <section className="mt-5 grid w-full min-w-0 grid-cols-1 gap-4 xl:grid-cols-[1fr_390px]">
               <div className="rounded-[34px] border border-emerald-100 bg-white p-6 shadow-sm">
                 <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <div className="flex items-center gap-3">
@@ -619,7 +621,7 @@ export default function GuruDashboard() {
             </section>
 
             {/* TUGAS DAN AKTIVITAS */}
-            <section className="mt-7 grid w-full min-w-0 grid-cols-1 gap-6 xl:grid-cols-[420px_1fr]">
+            <section className="mt-5 grid w-full min-w-0 grid-cols-1 gap-4 xl:grid-cols-[390px_1fr]">
               <div className="rounded-[34px] border border-emerald-100 bg-white p-6 shadow-sm">
                 <div className="flex items-center gap-3">
                   <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-700 text-white">

@@ -126,7 +126,8 @@ const kelasMatchWali = (kelas, waliKelas) => {
 };
 
 async function getKelasWaliGuru(guru) {
-  const { data, error } = await supabase
+  // Prioritas 1: ambil dari relasi kelas.wali_guru_id
+  const { data: kelasByWaliId, error: kelasByWaliIdError } = await supabase
     .from("kelas")
     .select(
       `
@@ -145,11 +146,84 @@ async function getKelasWaliGuru(guru) {
     .eq("status", "aktif")
     .order("tingkat", { ascending: true });
 
+  if (kelasByWaliIdError) {
+    throw new Error(kelasByWaliIdError.message);
+  }
+
+  if (kelasByWaliId && kelasByWaliId.length > 0) {
+    return kelasByWaliId;
+  }
+
+  // Prioritas 2: fallback dari kolom guru.wali_kelas
+  const waliKelasText = String(guru.wali_kelas || "").trim();
+
+  if (!waliKelasText) {
+    return [];
+  }
+
+  const { data: semuaKelas, error: semuaKelasError } = await supabase
+    .from("kelas")
+    .select(
+      `
+      id,
+      jenjang,
+      nama_kelas,
+      tingkat,
+      jurusan,
+      wali_guru_id,
+      tahun_ajaran,
+      semester,
+      status
+    `
+    )
+    .eq("status", "aktif")
+    .order("tingkat", { ascending: true });
+
+  if (semuaKelasError) {
+    throw new Error(semuaKelasError.message);
+  }
+
+  return (semuaKelas || []).filter((kelas) =>
+    kelasMatchWali(kelas, waliKelasText)
+  );
+}
+
+async function getMapelGuru(guruId) {
+  const { data, error } = await supabase
+    .from("kelas_mapel")
+    .select(
+      `
+      id,
+      nama_mapel,
+      guru_id,
+      kelas_id,
+      kelas:kelas_id (
+        id,
+        jenjang,
+        nama_kelas,
+        tingkat,
+        jurusan,
+        tahun_ajaran,
+        semester,
+        status
+      )
+    `
+    )
+    .eq("guru_id", guruId);
+
   if (error) {
     throw new Error(error.message);
   }
 
-  return data || [];
+  const mapelMap = new Map();
+
+  for (const item of data || []) {
+    if (item.nama_mapel) {
+      mapelMap.set(String(item.nama_mapel).toLowerCase(), item.nama_mapel);
+    }
+  }
+
+  return Array.from(mapelMap.values());
 }
 
 router.get("/dashboard/:userId", verifyGuru, async (req, res) => {
@@ -236,121 +310,6 @@ router.get("/dashboard/:userId", verifyGuru, async (req, res) => {
         .order("hari", { ascending: true })
         .order("jam_mulai", { ascending: true })
     );
-
-    const normalizeText = (value = "") => {
-  return String(value || "")
-    .toLowerCase()
-    .trim()
-    .replace(/\s+/g, " ");
-};
-
-async function getKelasWaliGuru(guru) {
-  /*
-    Prioritas 1:
-    Ambil kelas berdasarkan kolom kelas.wali_guru_id = guru.id
-  */
-  const { data: kelasByWaliId, error: kelasByWaliIdError } = await supabase
-    .from("kelas")
-    .select(
-      `
-      id,
-      jenjang,
-      nama_kelas,
-      tingkat,
-      jurusan,
-      wali_guru_id,
-      tahun_ajaran,
-      semester,
-      status
-    `
-    )
-    .eq("wali_guru_id", guru.id)
-    .eq("status", "aktif")
-    .order("tingkat", { ascending: true });
-
-  if (kelasByWaliIdError) {
-    throw new Error(kelasByWaliIdError.message);
-  }
-
-  if (kelasByWaliId && kelasByWaliId.length > 0) {
-    return kelasByWaliId;
-  }
-
-  /*
-    Prioritas 2:
-    Fallback kalau kamu masih pakai kolom guru.wali_kelas berbentuk text.
-    Contoh guru.wali_kelas = "MTS Kelas 7" atau "7".
-  */
-  const waliKelasText = String(guru.wali_kelas || "").trim();
-
-  if (!waliKelasText) {
-    return [];
-  }
-
-  const { data: semuaKelas, error: semuaKelasError } = await supabase
-    .from("kelas")
-    .select(
-      `
-      id,
-      jenjang,
-      nama_kelas,
-      tingkat,
-      jurusan,
-      wali_guru_id,
-      tahun_ajaran,
-      semester,
-      status
-    `
-    )
-    .eq("status", "aktif")
-    .order("tingkat", { ascending: true });
-
-  if (semuaKelasError) {
-    throw new Error(semuaKelasError.message);
-  }
-
-  return (semuaKelas || []).filter((kelas) =>
-    kelasMatchWali(kelas, waliKelasText)
-  );
-}
-
-async function getMapelGuru(guruId) {
-  const { data, error } = await supabase
-    .from("kelas_mapel")
-    .select(
-      `
-      id,
-      nama_mapel,
-      guru_id,
-      kelas_id,
-      kelas:kelas_id (
-        id,
-        jenjang,
-        nama_kelas,
-        tingkat,
-        jurusan,
-        tahun_ajaran,
-        semester,
-        status
-      )
-    `
-    )
-    .eq("guru_id", guruId);
-
-  if (error) {
-    throw new Error(error.message);
-  }
-
-  const mapelMap = new Map();
-
-  for (const item of data || []) {
-    if (item.nama_mapel) {
-      mapelMap.set(String(item.nama_mapel).toLowerCase(), item.nama_mapel);
-    }
-  }
-
-  return Array.from(mapelMap.values());
-}
 
     const jadwalHariIni = (jadwalGuru || []).filter(
       (item) =>
@@ -857,10 +816,10 @@ router.get("/nilai/:userId", verifyGuru, async (req, res) => {
     }
 
     const { data: guru, error: guruError } = await supabase
-      .from("guru")
-      .select("id, user_id, nama")
-      .eq("user_id", userId)
-      .single();
+  .from("guru")
+  .select("id, user_id, nama, mapel, wali_kelas")
+  .eq("user_id", userId)
+  .single();
 
     if (guruError || !guru) {
       return res.status(404).json({
@@ -1122,9 +1081,9 @@ router.post("/nilai/:userId", verifyGuru, async (req, res) => {
       });
     }
 
-    const { data: guru, error: guruError } = await supabase
+  const { data: guru, error: guruError } = await supabase
   .from("guru")
-  .select("id, user_id, nama")
+  .select("id, user_id, nama, mapel, wali_kelas")
   .eq("user_id", userId)
   .single();
 
