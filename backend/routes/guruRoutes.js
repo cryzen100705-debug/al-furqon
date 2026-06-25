@@ -1699,6 +1699,44 @@ const { data: guru, error: guruError } = await supabase
 
     const santriIds = data.map((item) => item.santri_id).filter(Boolean);
 
+    const { data: existingKelulusan, error: existingKelulusanError } =
+  await supabase
+    .from("kelulusan_santri")
+    .select(
+      `
+      id,
+      guru_id,
+      santri_id,
+      kelas_id,
+      status_verifikasi,
+      status_kelulusan
+    `
+    )
+    .eq("guru_id", guru.id)
+    .in("santri_id", santriIds);
+
+if (existingKelulusanError) {
+  return res.status(500).json({
+    success: false,
+    message: "Gagal mengecek data kelulusan yang sudah terkirim.",
+    error: existingKelulusanError.message,
+  });
+}
+
+const dataSudahTerkirim = (existingKelulusan || []).filter((item) =>
+  ["pending", "disetujui", "ditolak"].includes(
+    String(item.status_verifikasi || "").toLowerCase()
+  )
+);
+
+if (dataSudahTerkirim.length > 0) {
+  return res.status(403).json({
+    success: false,
+    message:
+      "Data kelulusan sudah terkirim ke admin dan tidak dapat diubah kembali.",
+  });
+}
+
     const { data: siswaKelas, error: siswaKelasError } = await supabase
       .from("kelas_siswa")
       .select("id, kelas_id, santri_id")
@@ -1738,20 +1776,6 @@ const { data: guru, error: guruError } = await supabase
       status_verifikasi: "pending",
       submitted_at: new Date().toISOString(),
     }));
-
-    const { error: deleteError } = await supabase
-      .from("kelulusan_santri")
-      .delete()
-      .eq("guru_id", guru.id)
-      .in("santri_id", santriIds);
-
-    if (deleteError) {
-      return res.status(500).json({
-        success: false,
-        message: "Gagal memperbarui data kelulusan lama.",
-        error: deleteError.message,
-      });
-    }
 
     const { data: inserted, error: insertError } = await supabase
       .from("kelulusan_santri")

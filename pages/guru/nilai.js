@@ -42,13 +42,21 @@ function getDefaultTahunAjaran() {
   return `${year - 1}/${year}`;
 }
 
+function getDefaultSemester() {
+  const month = new Date().getMonth() + 1;
+
+  // Juli - Desember = Ganjil
+  // Januari - Juni = Genap
+  return month >= 7 ? "Ganjil" : "Genap";
+}
+
 const initialForm = {
   kelas_id: "",
   santri_id: "",
   mapel: "",
   jenis_nilai: "",
   nilai: "",
-  semester: "Ganjil",
+  semester: getDefaultSemester(),
   tahun_ajaran: getDefaultTahunAjaran(),
   keterangan: "",
 };
@@ -159,8 +167,8 @@ export default function GuruNilaiPage() {
   const [filterKelas, setFilterKelas] = useState("");
   const [filterJenis, setFilterJenis] = useState("");
 
-  const [filterSemester, setFilterSemester] = useState("Ganjil");
-  const [filterTahunAjaran, setFilterTahunAjaran] = useState(
+const [filterSemester, setFilterSemester] = useState(getDefaultSemester());
+const [filterTahunAjaran, setFilterTahunAjaran] = useState(
   getDefaultTahunAjaran()
 );
 
@@ -196,6 +204,20 @@ export default function GuruNilaiPage() {
         fetchNilai(user);
       }
     }, [user, filterSemester, filterTahunAjaran]);
+
+    useEffect(() => {
+  const semesterOtomatis = getDefaultSemester();
+  const tahunAjaranOtomatis = getDefaultTahunAjaran();
+
+  setFilterSemester(semesterOtomatis);
+  setFilterTahunAjaran(tahunAjaranOtomatis);
+
+  setForm((prev) => ({
+    ...prev,
+    semester: semesterOtomatis,
+    tahun_ajaran: tahunAjaranOtomatis,
+  }));
+}, []);
 
   const fetchNilai = async (currentUser = user) => {
     if (!currentUser?.id) return;
@@ -326,24 +348,25 @@ const res = await fetch(
       };
 
       if (name === "kelas_id") {
-        updated.santri_id = "";
+  updated.santri_id = "";
 
-        const selectedKelas = kelasSaya.find((kelas) => kelas.id === value);
-
-        if (selectedKelas) {
-          updated.semester = selectedKelas.semester || "";
-          updated.tahun_ajaran = selectedKelas.tahun_ajaran || "";
-        }
-      }
+  // Semester dan tahun ajaran tetap otomatis dari sistem
+  updated.semester = getDefaultSemester();
+  updated.tahun_ajaran = getDefaultTahunAjaran();
+}
 
       return updated;
     });
   };
 
   const resetForm = () => {
-    setEditingId(null);
-    setForm(initialForm);
-  };
+  setEditingId(null);
+  setForm({
+    ...initialForm,
+    semester: getDefaultSemester(),
+    tahun_ajaran: getDefaultTahunAjaran(),
+  });
+};
 
   const handleEdit = (item) => {
     setEditingId(item.id);
@@ -750,40 +773,39 @@ const res = await fetch(
                   </div>
 
                   <div className="grid gap-4 sm:grid-cols-2">
-                    <div>
-                      <label className="mb-2 block text-sm font-black text-emerald-700">
-                        Semester
-                      </label>
-                      <select
-  name="semester"
-  value={form.semester}
-  onChange={handleChange}
-  className="w-full rounded-2xl border border-emerald-100 bg-emerald-50 px-4 py-4 text-sm font-bold text-emerald-950 outline-none focus:border-emerald-500 focus:bg-white"
->
-  <option value="">Pilih semester</option>
-  {SEMESTER_OPTIONS.map((semester) => (
-    <option key={semester} value={semester}>
-      {semester}
-    </option>
-  ))}
-</select>
-                    </div>
+  <div>
+    <label className="mb-2 block text-sm font-black text-emerald-700">
+      Semester Otomatis
+    </label>
+    <input
+      type="text"
+      name="semester"
+      value={form.semester}
+      readOnly
+      className="w-full cursor-not-allowed rounded-2xl border border-emerald-100 bg-slate-100 px-4 py-4 text-sm font-black text-emerald-950 outline-none"
+    />
+    <p className="mt-1 text-xs font-semibold text-slate-500">
+      Semester otomatis mengikuti bulan berjalan.
+    </p>
+  </div>
 
-                    <div>
-                      <label className="mb-2 block text-sm font-black text-emerald-700">
-                        Tahun Ajaran
-                      </label>
-                      <input
-                        type="text"
-                        name="tahun_ajaran"
-                        value={form.tahun_ajaran}
-                        onChange={handleChange}
-                        className="w-full rounded-2xl border border-emerald-100 bg-emerald-50 px-4 py-4 text-sm font-bold text-emerald-950 outline-none focus:border-emerald-500 focus:bg-white"
-                        placeholder="2025/2026"
-                      />
-                    </div>
-                  </div>
-
+  <div>
+    <label className="mb-2 block text-sm font-black text-emerald-700">
+      Tahun Ajaran Otomatis
+    </label>
+    <input
+      type="text"
+      name="tahun_ajaran"
+      value={form.tahun_ajaran}
+      readOnly
+      className="w-full cursor-not-allowed rounded-2xl border border-emerald-100 bg-slate-100 px-4 py-4 text-sm font-black text-emerald-950 outline-none"
+      placeholder="2025/2026"
+    />
+    <p className="mt-1 text-xs font-semibold text-slate-500">
+      Tahun ajaran otomatis dihitung dari kalender akademik.
+    </p>
+  </div>
+</div>
                   <div>
                     <label className="mb-2 block text-sm font-black text-emerald-700">
                       Keterangan
@@ -852,23 +874,18 @@ const res = await fetch(
                     />
                   </div>
 
-                  <select
-  value={filterSemester}
-  onChange={(e) => setFilterSemester(e.target.value)}
-  className="rounded-2xl border border-emerald-100 bg-emerald-50 px-4 py-4 text-sm font-bold text-emerald-950 outline-none focus:border-emerald-500 focus:bg-white"
->
-  {SEMESTER_OPTIONS.map((semester) => (
-    <option key={semester} value={semester}>
-      Semester {semester}
-    </option>
-  ))}
-</select>
+                  <input
+  type="text"
+  value={`Semester ${filterSemester}`}
+  readOnly
+  className="cursor-not-allowed rounded-2xl border border-emerald-100 bg-slate-100 px-4 py-4 text-sm font-black text-emerald-950 outline-none"
+/>
 
 <input
   type="text"
   value={filterTahunAjaran}
-  onChange={(e) => setFilterTahunAjaran(e.target.value)}
-  className="rounded-2xl border border-emerald-100 bg-emerald-50 px-4 py-4 text-sm font-bold text-emerald-950 outline-none focus:border-emerald-500 focus:bg-white"
+  readOnly
+  className="cursor-not-allowed rounded-2xl border border-emerald-100 bg-slate-100 px-4 py-4 text-sm font-black text-emerald-950 outline-none"
   placeholder="2025/2026"
 />
 

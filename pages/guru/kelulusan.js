@@ -8,6 +8,9 @@ import {
   FaClipboardCheck,
   FaCheckCircle,
   FaTimesCircle,
+  FaChevronDown,
+  FaChevronRight,
+  FaLayerGroup,
 } from "react-icons/fa";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
@@ -22,6 +25,7 @@ export default function KelulusanGuruPage() {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [openKelas, setOpenKelas] = useState({});
 
   useEffect(() => {
     try {
@@ -44,11 +48,12 @@ export default function KelulusanGuruPage() {
 
         const userId = user?.id;
 
-const res = await fetch(`${API_URL}/api/guru/kelulusan/${userId}`, {
-  headers: {
-    "x-user-id": userId,
-  },
-});
+        const res = await fetch(`${API_URL}/api/guru/kelulusan/${userId}`, {
+          headers: {
+            "x-user-id": userId,
+          },
+        });
+
         const result = await res.json();
 
         if (!res.ok || !result.success) {
@@ -82,10 +87,55 @@ const res = await fetch(`${API_URL}/api/guru/kelulusan/${userId}`, {
       return (
         String(item.nama || "").toLowerCase().includes(keyword) ||
         String(item.nis || "").toLowerCase().includes(keyword) ||
+        String(item.nisn || "").toLowerCase().includes(keyword) ||
         String(item.kelas_nama || "").toLowerCase().includes(keyword)
       );
     });
   }, [search, santriList]);
+
+  const groupedByKelas = useMemo(() => {
+    const map = new Map();
+
+    filteredSantri.forEach((item) => {
+      const kelasId = item.kelas_id || item.kelas_nama || "tanpa-kelas";
+      const kelasNama = item.kelas_nama || "Tanpa Kelas";
+
+      if (!map.has(kelasId)) {
+        map.set(kelasId, {
+          id: kelasId,
+          nama_kelas: kelasNama,
+          santri: [],
+        });
+      }
+
+      map.get(kelasId).santri.push(item);
+    });
+
+    return Array.from(map.values()).sort((a, b) =>
+      String(a.nama_kelas || "").localeCompare(String(b.nama_kelas || ""))
+    );
+  }, [filteredSantri]);
+
+  const toggleKelas = (kelasId) => {
+    setOpenKelas((prev) => ({
+      ...prev,
+      [kelasId]: !prev[kelasId],
+    }));
+  };
+
+  const openAllKelas = () => {
+    const next = {};
+
+    groupedByKelas.forEach((kelas) => {
+      next[kelas.id] = true;
+    });
+
+    setOpenKelas(next);
+  };
+
+  const closeAllKelas = () => {
+    setOpenKelas({});
+  };
 
   const updateStatus = (santriId, status) => {
     setSantriList((prev) =>
@@ -134,23 +184,25 @@ const res = await fetch(`${API_URL}/api/guru/kelulusan/${userId}`, {
 
       const userId = user?.id;
 
-const payload = {
-  user_id: userId,
-  data: santriList.map((item) => ({
-    santri_id: item.id,
-    kelas_id: item.kelas_id,
-    status_kelulusan: item.status_kelulusan,
-    catatan_guru: item.catatan_guru || "",
-  })),
-};
+      const payload = {
+        user_id: userId,
+        data: santriList.map((item) => ({
+          santri_id: item.id,
+          kelas_id: item.kelas_id,
+          status_kelulusan: item.status_kelulusan,
+          catatan_guru: item.catatan_guru || "",
+        })),
+      };
+
       const res = await fetch(`${API_URL}/api/guru/kelulusan/submit`, {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-    "x-user-id": userId,
-  },
-  body: JSON.stringify(payload),
-});
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-user-id": userId,
+        },
+        body: JSON.stringify(payload),
+      });
+
       const result = await res.json();
 
       if (!res.ok || !result.success) {
@@ -170,6 +222,15 @@ const payload = {
     (item) => item.status_kelulusan === "lulus"
   ).length;
 
+  const totalSudahTerkirim = santriList.filter((item) =>
+  ["pending", "disetujui", "ditolak"].includes(
+    String(item.status_verifikasi || "").toLowerCase()
+  )
+).length;
+
+const semuaSudahTerkirim =
+  santriList.length > 0 && totalSudahTerkirim === santriList.length;
+
   const totalTidakLulus = santriList.filter(
     (item) => item.status_kelulusan === "tidak_lulus"
   ).length;
@@ -179,26 +240,26 @@ const payload = {
   ).length;
 
   return (
-  <main className="min-h-screen overflow-x-hidden bg-[#F7F4E8] text-emerald-950">
-    <SidebarGuru
-      open={sidebarOpen}
-      setOpen={setSidebarOpen}
-      collapsed={collapsed}
-      setCollapsed={setCollapsed}
-    />
+    <main className="min-h-screen overflow-x-hidden bg-[#F7F4E8] text-emerald-950">
+      <SidebarGuru
+        open={sidebarOpen}
+        setOpen={setSidebarOpen}
+        collapsed={collapsed}
+        setCollapsed={setCollapsed}
+      />
 
-    <section
-      className={`
-        min-h-screen w-full overflow-x-hidden transition-all duration-300
-        pt-16 md:pt-0
-        ${
-          collapsed
-            ? "md:ml-[92px] md:w-[calc(100%-92px)]"
-            : "md:ml-[272px] md:w-[calc(100%-272px)]"
-        }
-      `}
-    >
-      <div className="mx-auto w-full max-w-none px-4 pb-10 pt-6 sm:px-5 lg:px-7">
+      <section
+        className={`
+          min-h-screen w-full overflow-x-hidden transition-all duration-300
+          pt-16 md:pt-0
+          ${
+            collapsed
+              ? "md:ml-[92px] md:w-[calc(100%-92px)]"
+              : "md:ml-[272px] md:w-[calc(100%-272px)]"
+          }
+        `}
+      >
+        <div className="mx-auto w-full max-w-none px-4 pb-10 pt-6 sm:px-5 lg:px-7">
           <div className="overflow-hidden rounded-[32px] bg-gradient-to-br from-emerald-800 to-emerald-950 p-6 text-white shadow-xl">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
               <div>
@@ -211,20 +272,24 @@ const payload = {
                 </h1>
 
                 <p className="mt-2 max-w-2xl text-sm leading-relaxed text-emerald-100">
-                  Guru wali kelas dapat menentukan santri yang layak lulus atau
-                  belum layak lulus. Setelah dikirim, data akan masuk ke admin
-                  untuk proses verifikasi.
+                  Guru wali kelas dapat menentukan kelulusan santri berdasarkan
+                  kelas. Buka kelas terlebih dahulu, lalu tentukan status lulus
+                  atau tidak lulus pada setiap santri.
                 </p>
               </div>
 
               <button
                 type="button"
                 onClick={handleSubmitKelulusan}
-                disabled={submitting || loading || santriList.length === 0}
+                disabled={submitting || loading || santriList.length === 0 || semuaSudahTerkirim}
                 className="inline-flex items-center justify-center gap-3 rounded-2xl bg-amber-300 px-5 py-3 font-black text-emerald-950 shadow-lg transition hover:bg-amber-200 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 <FaPaperPlane />
-                {submitting ? "Mengirim..." : "Kirim ke Admin"}
+                {submitting
+  ? "Mengirim..."
+  : semuaSudahTerkirim
+  ? "Sudah Terkirim"
+  : "Kirim ke Admin"}
               </button>
             </div>
           </div>
@@ -235,11 +300,14 @@ const payload = {
                 <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-700">
                   <FaClipboardCheck />
                 </div>
+
                 <div>
                   <p className="text-sm font-bold text-emerald-600">
                     Belum Dinilai
                   </p>
-                  <h2 className="text-2xl font-black">{totalBelumDinilai}</h2>
+                  <h2 className="text-2xl font-black">
+                    {totalBelumDinilai}
+                  </h2>
                 </div>
               </div>
             </div>
@@ -249,6 +317,7 @@ const payload = {
                 <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-green-100 text-green-700">
                   <FaCheckCircle />
                 </div>
+
                 <div>
                   <p className="text-sm font-bold text-green-600">Lulus</p>
                   <h2 className="text-2xl font-black">{totalLulus}</h2>
@@ -261,6 +330,7 @@ const payload = {
                 <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-red-100 text-red-700">
                   <FaTimesCircle />
                 </div>
+
                 <div>
                   <p className="text-sm font-bold text-red-600">
                     Tidak Lulus
@@ -272,8 +342,40 @@ const payload = {
           </div>
 
           <div className="mt-6 rounded-[28px] bg-white p-4 shadow-sm">
+            <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+              <div>
+                <h2 className="text-lg font-black text-emerald-950">
+                  Daftar Kelas Wali
+                </h2>
+
+                <p className="mt-1 text-xs font-semibold text-slate-500">
+                  Menampilkan {groupedByKelas.length} kelas dan{" "}
+                  {filteredSantri.length} santri.
+                </p>
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={openAllKelas}
+                  className="rounded-xl bg-emerald-700 px-4 py-2 text-xs font-black text-white transition hover:bg-emerald-800"
+                >
+                  Buka Semua Kelas
+                </button>
+
+                <button
+                  type="button"
+                  onClick={closeAllKelas}
+                  className="rounded-xl bg-slate-100 px-4 py-2 text-xs font-black text-slate-700 transition hover:bg-slate-200"
+                >
+                  Tutup Semua
+                </button>
+              </div>
+            </div>
+
             <div className="relative">
               <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-emerald-500" />
+
               <input
                 type="text"
                 value={search}
@@ -284,154 +386,229 @@ const payload = {
             </div>
           </div>
 
-          <div className="mt-6 overflow-hidden rounded-[30px] bg-white shadow-sm">
+          <div className="mt-6 rounded-[30px] bg-white p-4 shadow-sm">
             {loading ? (
               <div className="p-8 text-center font-bold text-emerald-700">
                 Mengambil data santri...
               </div>
-            ) : filteredSantri.length === 0 ? (
+            ) : groupedByKelas.length === 0 ? (
               <div className="p-8 text-center font-bold text-emerald-700">
                 Data santri belum tersedia.
               </div>
             ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full min-w-[1350px] border-collapse">
-                  <thead>
-  <tr className="bg-emerald-800 text-left text-xs uppercase tracking-wider text-white">
-    <th className="px-5 py-4">Santri</th>
-    <th className="px-5 py-4">NIS</th>
-    <th className="px-5 py-4">Kelas</th>
-    <th className="px-5 py-4">Status Guru</th>
-    <th className="px-5 py-4">Status Admin</th>
-    <th className="px-5 py-4">Catatan Guru</th>
-  </tr>
-</thead>
-<tbody>
-  {filteredSantri.map((item) => {
-    const statusAdmin = item.status_verifikasi || "belum_dikirim";
-    const isLocked =
-      statusAdmin === "pending" ||
-      statusAdmin === "disetujui" ||
-      statusAdmin === "ditolak";
+              <div className="space-y-4">
+                {groupedByKelas.map((kelas) => {
+                  const isOpen = !!openKelas[kelas.id];
 
-    return (
-      <tr
-        key={item.id}
-        className="border-b border-emerald-50 align-top"
-      >
-        {/* SANTRI */}
-        <td className="px-5 py-5">
-          <div className="min-w-[180px]">
-            <p className="font-black text-emerald-950">
-              {item.nama || "-"}
-            </p>
+                  const totalSantri = kelas.santri.length;
 
-            <p className="mt-1 text-xs font-semibold text-emerald-600">
-              ID: {item.id}
-            </p>
-          </div>
-        </td>
+                  const totalLulusKelas = kelas.santri.filter(
+                    (item) => item.status_kelulusan === "lulus"
+                  ).length;
 
-        {/* NIS */}
-        <td className="px-5 py-5">
-          <p className="min-w-[120px] text-sm font-black text-emerald-800">
-            {item.nis || item.nisn || "-"}
-          </p>
-        </td>
+                  const totalTidakLulusKelas = kelas.santri.filter(
+                    (item) => item.status_kelulusan === "tidak_lulus"
+                  ).length;
 
-        {/* KELAS */}
-        <td className="px-5 py-5">
-          <p className="min-w-[130px] text-sm font-black text-emerald-800">
-            {item.kelas_nama || "-"}
-          </p>
-        </td>
+                  const totalBelumDinilaiKelas = kelas.santri.filter(
+                    (item) => !item.status_kelulusan
+                  ).length;
 
-        {/* STATUS GURU */}
-        <td className="px-5 py-5">
-          <div className="flex min-w-[210px] flex-wrap gap-2">
-            <button
-              type="button"
-              disabled={isLocked}
-              onClick={() => updateStatus(item.id, "lulus")}
-              className={`inline-flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-black transition disabled:cursor-not-allowed disabled:opacity-60 ${
-                item.status_kelulusan === "lulus"
-                  ? "bg-green-600 text-white"
-                  : "bg-green-50 text-green-700 hover:bg-green-100"
-              }`}
-            >
-              <FaUserCheck />
-              Lulus
-            </button>
+                  return (
+                    <div
+                      key={kelas.id}
+                      className="overflow-hidden rounded-[28px] border border-emerald-100 bg-gradient-to-br from-white to-emerald-50 shadow-sm"
+                    >
+                      <button
+                        type="button"
+                        onClick={() => toggleKelas(kelas.id)}
+                        className="flex w-full flex-col gap-4 p-5 text-left transition hover:bg-emerald-50 lg:flex-row lg:items-center lg:justify-between"
+                      >
+                        <div className="flex min-w-0 items-start gap-4">
+                          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-emerald-700 text-xl text-white">
+                            <FaLayerGroup />
+                          </div>
 
-            <button
-              type="button"
-              disabled={isLocked}
-              onClick={() => updateStatus(item.id, "tidak_lulus")}
-              className={`inline-flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-black transition disabled:cursor-not-allowed disabled:opacity-60 ${
-                item.status_kelulusan === "tidak_lulus"
-                  ? "bg-red-600 text-white"
-                  : "bg-red-50 text-red-700 hover:bg-red-100"
-              }`}
-            >
-              <FaUserTimes />
-              Tidak Lulus
-            </button>
-          </div>
+                          <div className="min-w-0">
+                            <h3 className="text-xl font-black text-emerald-950">
+                              {kelas.nama_kelas}
+                            </h3>
 
-          {isLocked && (
-            <p className="mt-2 text-xs font-semibold text-slate-500">
-              Data sudah dikirim, menunggu proses admin.
-            </p>
-          )}
-        </td>
+                            <p className="mt-1 text-sm font-semibold text-slate-500">
+                              Total {totalSantri} santri dalam kelas ini
+                            </p>
 
-        {/* STATUS ADMIN */}
-        <td className="px-5 py-5">
-          <div className="min-w-[170px]">
-            <span
-              className={`inline-flex rounded-full px-4 py-2 text-xs font-black ${
-                statusAdmin === "disetujui"
-                  ? "bg-green-100 text-green-700"
-                  : statusAdmin === "ditolak"
-                  ? "bg-red-100 text-red-700"
-                  : statusAdmin === "pending"
-                  ? "bg-yellow-100 text-yellow-700"
-                  : "bg-slate-100 text-slate-600"
-              }`}
-            >
-              {statusAdmin === "disetujui"
-                ? "Disetujui Admin"
-                : statusAdmin === "ditolak"
-                ? "Ditolak Admin"
-                : statusAdmin === "pending"
-                ? "Menunggu Admin"
-                : "Belum Dikirim"}
-            </span>
+                            <div className="mt-3 flex flex-wrap gap-2">
+                              <span className="rounded-full bg-slate-100 px-3 py-1 text-[11px] font-black text-slate-600">
+                                Belum Dinilai: {totalBelumDinilaiKelas}
+                              </span>
 
-            {item.catatan_admin && (
-              <p className="mt-2 max-w-[220px] text-xs leading-relaxed text-slate-500">
-                Catatan admin: {item.catatan_admin}
-              </p>
-            )}
-          </div>
-        </td>
+                              <span className="rounded-full bg-green-100 px-3 py-1 text-[11px] font-black text-green-700">
+                                Lulus: {totalLulusKelas}
+                              </span>
 
-        {/* CATATAN GURU */}
-        <td className="px-5 py-5">
-          <textarea
-            value={item.catatan_guru || ""}
-            disabled={isLocked}
-            onChange={(e) => updateCatatan(item.id, e.target.value)}
-            placeholder="Catatan wali kelas..."
-            className="min-h-[76px] w-[260px] rounded-2xl border border-emerald-100 bg-emerald-50 px-3 py-2 text-sm outline-none transition focus:border-emerald-400 focus:bg-white disabled:cursor-not-allowed disabled:opacity-60"
-          />
-        </td>
-      </tr>
-    );
-  })}
-</tbody>
-                
-                </table>
+                              <span className="rounded-full bg-red-100 px-3 py-1 text-[11px] font-black text-red-700">
+                                Tidak Lulus: {totalTidakLulusKelas}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-emerald-700 shadow-sm">
+                          {isOpen ? <FaChevronDown /> : <FaChevronRight />}
+                        </span>
+                      </button>
+
+                      {isOpen && (
+                        <div className="border-t border-emerald-100 bg-white">
+                          <div className="overflow-x-auto">
+                            <table className="w-full min-w-[1150px] border-collapse">
+                              <thead>
+                                <tr className="bg-emerald-800 text-left text-xs uppercase tracking-wider text-white">
+                                  <th className="px-5 py-4">Santri</th>
+                                  <th className="px-5 py-4">NIS</th>
+                                  <th className="px-5 py-4">Status Guru</th>
+                                  <th className="px-5 py-4">Status Admin</th>
+                                  <th className="px-5 py-4">Catatan Guru</th>
+                                </tr>
+                              </thead>
+
+                              <tbody>
+                                {kelas.santri.map((item) => {
+                                  const statusAdmin =
+                                    item.status_verifikasi || "belum_dikirim";
+
+                                  const isLocked =
+                                    statusAdmin === "pending" ||
+                                    statusAdmin === "disetujui" ||
+                                    statusAdmin === "ditolak";
+
+                                  return (
+                                    <tr
+                                      key={item.id}
+                                      className="border-b border-emerald-50 align-top transition hover:bg-emerald-50/60"
+                                    >
+                                      <td className="px-5 py-5">
+                                        <div className="min-w-[180px]">
+                                          <p className="font-black text-emerald-950">
+                                            {item.nama || "-"}
+                                          </p>
+
+                                          <p className="mt-1 text-xs font-semibold text-emerald-600">
+                                            ID: {item.id}
+                                          </p>
+                                        </div>
+                                      </td>
+
+                                      <td className="px-5 py-5">
+                                        <p className="min-w-[120px] text-sm font-black text-emerald-800">
+                                          {item.nis || item.nisn || "-"}
+                                        </p>
+                                      </td>
+
+                                      <td className="px-5 py-5">
+                                        <div className="flex min-w-[210px] flex-wrap gap-2">
+                                          <button
+                                            type="button"
+                                            disabled={isLocked}
+                                            onClick={() =>
+                                              updateStatus(item.id, "lulus")
+                                            }
+                                            className={`inline-flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-black transition disabled:cursor-not-allowed disabled:opacity-60 ${
+                                              item.status_kelulusan === "lulus"
+                                                ? "bg-green-600 text-white"
+                                                : "bg-green-50 text-green-700 hover:bg-green-100"
+                                            }`}
+                                          >
+                                            <FaUserCheck />
+                                            Lulus
+                                          </button>
+
+                                          <button
+                                            type="button"
+                                            disabled={isLocked}
+                                            onClick={() =>
+                                              updateStatus(
+                                                item.id,
+                                                "tidak_lulus"
+                                              )
+                                            }
+                                            className={`inline-flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-black transition disabled:cursor-not-allowed disabled:opacity-60 ${
+                                              item.status_kelulusan ===
+                                              "tidak_lulus"
+                                                ? "bg-red-600 text-white"
+                                                : "bg-red-50 text-red-700 hover:bg-red-100"
+                                            }`}
+                                          >
+                                            <FaUserTimes />
+                                            Tidak Lulus
+                                          </button>
+                                        </div>
+
+                                        {isLocked && (
+                                          <p className="mt-2 text-xs font-semibold text-slate-500">
+                                            Data sudah dikirim, menunggu proses
+                                            admin.
+                                          </p>
+                                        )}
+                                      </td>
+
+                                      <td className="px-5 py-5">
+                                        <div className="min-w-[170px]">
+                                          <span
+                                            className={`inline-flex rounded-full px-4 py-2 text-xs font-black ${
+                                              statusAdmin === "disetujui"
+                                                ? "bg-green-100 text-green-700"
+                                                : statusAdmin === "ditolak"
+                                                ? "bg-red-100 text-red-700"
+                                                : statusAdmin === "pending"
+                                                ? "bg-yellow-100 text-yellow-700"
+                                                : "bg-slate-100 text-slate-600"
+                                            }`}
+                                          >
+                                            {statusAdmin === "disetujui"
+                                              ? "Disetujui Admin"
+                                              : statusAdmin === "ditolak"
+                                              ? "Ditolak Admin"
+                                              : statusAdmin === "pending"
+                                              ? "Menunggu Admin"
+                                              : "Belum Dikirim"}
+                                          </span>
+
+                                          {item.catatan_admin && (
+                                            <p className="mt-2 max-w-[220px] text-xs leading-relaxed text-slate-500">
+                                              Catatan admin:{" "}
+                                              {item.catatan_admin}
+                                            </p>
+                                          )}
+                                        </div>
+                                      </td>
+
+                                      <td className="px-5 py-5">
+                                        <textarea
+                                          value={item.catatan_guru || ""}
+                                          disabled={isLocked}
+                                          onChange={(e) =>
+                                            updateCatatan(
+                                              item.id,
+                                              e.target.value
+                                            )
+                                          }
+                                          placeholder="Catatan wali kelas..."
+                                          className="min-h-[76px] w-[260px] rounded-2xl border border-emerald-100 bg-emerald-50 px-3 py-2 text-sm outline-none transition focus:border-emerald-400 focus:bg-white disabled:cursor-not-allowed disabled:opacity-60"
+                                        />
+                                      </td>
+                                    </tr>
+                                  );
+                                })}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             )}
           </div>
